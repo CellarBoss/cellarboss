@@ -1,0 +1,16 @@
+{
+  "name": "cellarboss",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "docker:api": "docker build -f docker/api.Dockerfile apps/api"
+  },
+  "devDependencies": {
+    "turbo": "^1.13.0",
+    "typescript": "^5.3.0",
+    "eslint": "^9.0.0"
+  }
+}

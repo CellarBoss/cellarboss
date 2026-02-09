@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "strict": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "types": [
+      "node"
+    ],
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "paths": {
+      "@cellarboss/types": [
+        "../../packages/types/src/index.ts"
+      ],
+      "@cellarboss/validators": [
+        "../../packages/validators/src/index.ts"
+      ],
+      "@controllers/*": [
+        "controllers/*"
+      ],
+      "@middleware/*": [
+        "middleware/*"
+      ],
+      "@utils/*": [
+        "utils/*"
+      ],
+      "@db": [
+        "utils/database.ts"
+      ],
+      "@routes/*": [
+        "routes/*"
+      ],
+      "@schema/*": [
+        "schema/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
