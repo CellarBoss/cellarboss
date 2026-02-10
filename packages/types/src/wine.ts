@@ -1,6 +1,6 @@
-export interface Wine {
-  id: number;
-  name: string;
+import { GenericType } from "./generic.js";
+
+export interface Wine extends GenericType {
   wineMakerId: number;
   regionId: number | null;
 }

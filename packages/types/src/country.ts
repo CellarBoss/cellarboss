@@ -1,6 +1,7 @@
-export interface Country {
-  id: number;
-  name: string;
+import { GenericType } from "./generic.js";
+
+export interface Country extends GenericType{
+
 }
 
 export type CreateCountry = Omit<Country, 'id'>;

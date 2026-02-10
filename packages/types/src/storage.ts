@@ -1,6 +1,6 @@
-export interface Storage {
-  id: number;
-  name: string;
+import { GenericType } from "./generic.js";
+
+export interface Storage extends GenericType {
   locationId: number | null;
   parent: number | null;
 }

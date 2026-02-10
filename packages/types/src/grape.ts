@@ -1,6 +1,7 @@
-export interface Grape {
-  id: number;
-  name: string;
+import { GenericType } from "./generic.js";
+
+export interface Grape extends GenericType {
+
 }
 
 export type CreateGrape = Omit<Grape, 'id'>;

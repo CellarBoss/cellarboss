@@ -1,6 +1,7 @@
-export interface Location {
-  id: number;
-  name: string;
+import { GenericType } from "./generic.js";
+
+export interface Location extends GenericType {
+
 }
 
 export type CreateLocation = Omit<Location, 'id'>;

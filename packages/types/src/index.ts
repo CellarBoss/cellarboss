@@ -1,3 +1,4 @@
+export type { GenericType } from './generic.js';
 export type { Bottle, CreateBottle, UpdateBottle } from './bottle.js';
 export type { Country, CreateCountry, UpdateCountry } from './country.js';
 export type { Grape, CreateGrape, UpdateGrape } from './grape.js';

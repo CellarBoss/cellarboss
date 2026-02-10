@@ -1,6 +1,6 @@
-export interface Region {
-  id: number;
-  name: string;
+import { GenericType } from "./generic.js";
+
+export interface Region extends GenericType {
   countryId: number;
 }
 
