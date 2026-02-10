@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const createRegionSchema = z.object({
   name: z.string().min(1).max(255).trim(),
-  countryId: z.number().int().positive(),
+  countryId: z.coerce.number().int().positive(),
 });
 
 export const updateRegionSchema = createRegionSchema.partial().refine(
