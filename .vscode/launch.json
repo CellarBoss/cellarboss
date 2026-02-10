@@ -2,6 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Debug Web Server",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev -- --inspect",
+      "cwd": "${workspaceFolder}/apps/web",
+    },
+    {
       "type": "node",
       "request": "launch",
       "name": "Debug Backend Server",
