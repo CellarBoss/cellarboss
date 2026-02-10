@@ -7,6 +7,7 @@
     "start": "node dist/index.js",
     "test": "vitest",
     "test:ui": "vitest --ui",
+    "auth:migrate": "pnpm dlx @better-auth/cli@latest migrate",
     "migrate": "tsx node_modules/kysely-ctl/dist/bin.mjs migrate latest",
     "migrate:down": "tsx node_modules/kysely-ctl/dist/bin.mjs migrate down",
     "seed": "tsx node_modules/kysely-ctl/dist/bin.mjs seed run"
