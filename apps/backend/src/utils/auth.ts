@@ -1,7 +1,13 @@
 import { betterAuth } from "better-auth";
 import { getDialect } from "@db";
 
+if (!process.env.BETTER_AUTH_SECRET) {
+  throw new Error("Missing BETTER_AUTH_SECRET");
+}
+
 export const auth = betterAuth({
+  basePath: "/api/auth",
+  secret: process.env.BETTER_AUTH_SECRET,
   user: {
     additionalFields: {
       role: {
