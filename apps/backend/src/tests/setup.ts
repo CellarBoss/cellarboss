@@ -72,6 +72,7 @@ export function createMockSession(userId: string = 'test-user-1', email: string 
       name: 'Test User',
       createdAt: new Date(),
       updatedAt: new Date(),
+      role: 'admin' as const,
     },
   };
 }
