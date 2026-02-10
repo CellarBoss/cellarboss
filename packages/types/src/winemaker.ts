@@ -1,4 +1,6 @@
-export interface WineMaker {
+import { GenericType } from "./generic.js";
+
+export interface WineMaker extends GenericType {
   id: number;
   name: string;
 }
