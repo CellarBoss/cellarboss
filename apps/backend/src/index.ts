@@ -1,8 +1,8 @@
 import 'dotenv/config';
-import { serve } from '@hono/node-server'
-import { Hono } from 'hono'
-import { auth } from '@utils/auth.js';
+import { Hono } from 'hono';
+import { serve } from '@hono/node-server';
 import { cors } from 'hono/cors';
+import { auth } from '@utils/auth.js';
 import { env } from '@utils/env.js';
 import { registerRoutes } from '@routes/index.js';
 import { errorHandler } from '@middleware/error.middleware.js';
@@ -11,34 +11,40 @@ const app = new Hono();
 
 app.onError(errorHandler);
 
+// CORS
 app.use(
-	"*",
-	cors({
-		origin: env.CORS || (env.NODE_ENV === 'development' ? 'http://localhost:5173' : ''),
-		allowHeaders: ["Content-Type", "Authorization"],
-		allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-		exposeHeaders: ["Content-Length"],
-		maxAge: 600,
-		credentials: true,
-	}),
+  "*",
+  cors({
+    origin:
+      env.CORS || (env.NODE_ENV === "development" ? "http://localhost:3000" : ""),
+    allowHeaders: ["Content-Type", "Authorization"],
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    exposeHeaders: ["Content-Length"],
+    maxAge: 600,
+    credentials: true,
+  })
 );
 
-app.get('/', (c) => {
-  return c.text('Hello World!')
-});
+// Base route, testing only
+app.get("/", (c) => c.text("Hello World!"));
 
-app.on(["POST", "GET"], "/api/auth/*", (c) => {
-	return auth.handler(c.req.raw);
+// Register authentication routes
+app.all("/api/auth/*", (c) => { 
+	console.log("Auth route hit: ", c.req.url);
+	return auth.handler(c.req.raw); 
 });
 
 // Register API routes
 const api = new Hono();
 registerRoutes(api);
-app.route('/api', api);
+app.route("/api", api);
 
-serve({
-  fetch: app.fetch,
-  port: 3000
-}, (info) => {
-  console.log(`Server is running on http://localhost:${info.port}`)
-})
+serve(
+  {
+    fetch: app.fetch,
+    port: 5000,
+  },
+  (info) => {
+    console.log(`Server running on http://localhost:${info.port}`);
+  }
+);
