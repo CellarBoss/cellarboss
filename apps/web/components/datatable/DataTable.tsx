@@ -6,10 +6,12 @@ import {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
+  ExpandedState,
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
   getPaginationRowModel,
+  getExpandedRowModel,
   useReactTable,
   flexRender,
 } from "@tanstack/react-table";
@@ -28,7 +30,7 @@ import { PaginationControl } from "@/components/datatable/PaginationControl";
 import { PaginationSelector } from "./PaginationSelector";
 import { FilterControl } from "./FilterControl";
 import { AddButton } from "../buttons/AddButton";
-import { ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowUp, ArrowDown, ChevronRight, ChevronDown } from "lucide-react";
 
 
 type DataTableProps<T> = {
@@ -38,9 +40,11 @@ type DataTableProps<T> = {
   filterColumnName?: string;
   defaultSortColumn?: string;
   buttons?: ReactNode[];
+  getSubRows?: (row: T) => T[] | undefined;
+  defaultExpanded?: true | Record<string, boolean>;
 };
 
-export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName, defaultSortColumn, buttons }: DataTableProps<T>) {
+export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName, defaultSortColumn, buttons, getSubRows, defaultExpanded }: DataTableProps<T>) {
   const router = useRouter();
 
   if (defaultPageSize === undefined) {
@@ -60,6 +64,10 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
     defaultSortColumn ? [{ id: defaultSortColumn, desc: false }] : []
   )
 
+  const [expanded, setExpanded] = useState<ExpandedState>(
+    defaultExpanded ?? true
+  )
+
   if(data === undefined) {
     data = [];
   }
@@ -71,6 +79,7 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
       pagination,
       columnFilters,
       sorting,
+      ...(getSubRows ? { expanded } : {}),
     },
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
@@ -79,6 +88,14 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
+    ...(getSubRows
+      ? {
+          getSubRows,
+          getExpandedRowModel: getExpandedRowModel(),
+          onExpandedChange: setExpanded,
+          filterFromLeafRows: true,
+        }
+      : {}),
   });
 
   const { pageSize } = table.getState().pagination;
@@ -130,12 +147,38 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
           )}
           {table.getRowModel().rows.map((row) => (
             <TableRow key={row.id} className="group border-b border-default">
-              {row.getVisibleCells().map((cell) => (
+              {row.getVisibleCells().map((cell, cellIndex) => (
                 <TableCell
                   key={cell.id}
                   className={"border p-2 bg-table-row group-hover:bg-table-row-hover"}
+                  style={
+                    cellIndex === 0 && getSubRows
+                      ? { paddingLeft: `${row.depth * 24 + 8}px` }
+                      : undefined
+                  }
                 >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  {cellIndex === 0 && getSubRows ? (
+                    <div className="flex items-center gap-1">
+                      {row.getCanExpand() ? (
+                        <button
+                          onClick={row.getToggleExpandedHandler()}
+                          className="cursor-pointer p-0.5 rounded hover:bg-muted"
+                          aria-label={row.getIsExpanded() ? "Collapse row" : "Expand row"}
+                        >
+                          {row.getIsExpanded() ? (
+                            <ChevronDown className="w-4 h-4" />
+                          ) : (
+                            <ChevronRight className="w-4 h-4" />
+                          )}
+                        </button>
+                      ) : (
+                        <span className="w-5" />
+                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </div>
+                  ) : (
+                    flexRender(cell.column.columnDef.cell, cell.getContext())
+                  )}
                 </TableCell>
               ))}
             </TableRow>
