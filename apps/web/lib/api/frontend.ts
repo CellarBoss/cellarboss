@@ -50,7 +50,7 @@ function processBackendError(
   }
 
   return {
-    message: data?.message ?? "Unexpected error",
+    message: data?.error ?? data?.message ?? "Unexpected error",
     status: response.status,
   };
 }
