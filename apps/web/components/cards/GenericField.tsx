@@ -5,7 +5,11 @@ import { GenericSelector } from "../selector/GenericSelector";
 import { Field, FieldLabel, FieldError } from "../ui/field";
 import { Input } from "../ui/input";
 import { getCountries } from "@/lib/api/countries";
+import { getLocations } from "@/lib/api/locations";
+import { getStorages } from "@/lib/api/storages";
 import type { Country } from "@cellarboss/types";
+import type { Location } from "@cellarboss/types";
+import type { Storage } from "@cellarboss/types";
 
 type FieldProps = {
   name: string;
@@ -36,6 +40,48 @@ function CountrySelector({ editable, field }: SelectorProps) {
     <GenericSelector<Country>
       field={field}
       options={countries.data}
+      editable={editable}
+      isInvalid={isInvalid}
+    />
+  );
+}
+
+function LocationSelector({ editable, field }: SelectorProps) {
+  const { data: locations, isLoading } = useQuery({
+    queryKey: ["locations"],
+    queryFn: getLocations,
+  })
+
+  if(isLoading) { return <span>Loading... </span> }
+  if(!locations?.ok) { throw new Error("Failed to fetch locations"); }
+
+  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+
+  return (
+    <GenericSelector<Location>
+      field={field}
+      options={locations.data}
+      editable={editable}
+      isInvalid={isInvalid}
+    />
+  );
+}
+
+function StorageSelector({ editable, field }: SelectorProps) {
+  const { data: storages, isLoading } = useQuery({
+    queryKey: ["storages"],
+    queryFn: getStorages,
+  })
+
+  if(isLoading) { return <span>Loading... </span> }
+  if(!storages?.ok) { throw new Error("Failed to fetch storages"); }
+
+  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+
+  return (
+    <GenericSelector<Storage>
+      field={field}
+      options={storages.data}
       editable={editable}
       isInvalid={isInvalid}
     />
@@ -86,7 +132,7 @@ export function GenericField({
           name={name}
           children={(field: any) => {
             const isInvalid = editable && field.state.meta.isTouched && !field.state.meta.isValid;
-            
+
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
@@ -94,6 +140,54 @@ export function GenericField({
                   editable={editable}
                   field={field}
                  />
+
+                {isInvalid && (
+                  <FieldError errors={field.state.meta.errors} />
+                )}
+              </Field>
+            );
+          }}
+        />
+      );
+
+    case "location":
+      return (
+        <form.Field
+          name={name}
+          children={(field: any) => {
+            const isInvalid = editable && field.state.meta.isTouched && !field.state.meta.isValid;
+
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+                <LocationSelector
+                  editable={editable}
+                  field={field}
+                />
+
+                {isInvalid && (
+                  <FieldError errors={field.state.meta.errors} />
+                )}
+              </Field>
+            );
+          }}
+        />
+      );
+
+    case "storage":
+      return (
+        <form.Field
+          name={name}
+          children={(field: any) => {
+            const isInvalid = editable && field.state.meta.isTouched && !field.state.meta.isValid;
+
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+                <StorageSelector
+                  editable={editable}
+                  field={field}
+                />
 
                 {isInvalid && (
                   <FieldError errors={field.state.meta.errors} />
