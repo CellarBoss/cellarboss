@@ -31,8 +31,25 @@ export async function update(id: number, data: UpdateWine) {
 }
 
 export async function remove(id: number) {
-  return await db
-    .deleteFrom('wine')
-    .where('id', '=', id)
-    .executeTakeFirstOrThrow();
+  return await db.transaction().execute(async (trx) => {
+    const vintages = await trx
+      .selectFrom('vintage')
+      .where('wineId', '=', id)
+      .select('id')
+      .execute();
+
+    if (vintages.length > 0) {
+      throw new Error('Cannot delete wine: it still has vintages associated');
+    }
+
+    await trx
+      .deleteFrom('winegrape')
+      .where('wineId', '=', id)
+      .execute();
+
+    return await trx
+      .deleteFrom('wine')
+      .where('id', '=', id)
+      .executeTakeFirstOrThrow();
+  });
 }

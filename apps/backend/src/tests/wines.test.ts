@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, beforeAll } from 'vitest';
 import type { Hono } from 'hono';
-import { createTestApp, createTestAppWithAuth, runMigrations, createTestWineMaker, createTestRegion, createTestCountry } from './setup.js';
+import { createTestApp, createTestAppWithAuth, runMigrations, createTestWineMaker, createTestRegion, createTestCountry, createTestGrape, createTestVintage } from './setup.js';
 import { registerWineRoutes } from '@routes/wines.routes.js';
 import { db } from '@utils/database.js';
 
@@ -166,6 +166,59 @@ describe('Wine API', () => {
         });
         expect(res.status).toBe(200);
         expect(res.json()).resolves.toEqual({ success: true });
+      });
+
+      it('cascade-deletes winegrape records when deleting a wine', async () => {
+        const wine = await app.request('/wine', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: 'Cascade Test Wine',
+            wineMakerId: testWineMakerId,
+            regionId: null
+          }),
+        });
+        const createdWine = await wine.json();
+
+        const grape = await createTestGrape(db, 'Shiraz');
+        await db
+          .insertInto('winegrape')
+          .values({ wineId: createdWine.id, grapeId: grape.id })
+          .execute();
+
+        const res = await app.request(`/wine/${createdWine.id}`, {
+          method: 'DELETE',
+        });
+        expect(res.status).toBe(200);
+
+        const remaining = await db
+          .selectFrom('winegrape')
+          .selectAll()
+          .where('wineId', '=', createdWine.id)
+          .execute();
+        expect(remaining).toHaveLength(0);
+      });
+
+      it('returns 409 when wine has vintages', async () => {
+        const wine = await app.request('/wine', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: 'Vintage Block Test Wine',
+            wineMakerId: testWineMakerId,
+            regionId: null
+          }),
+        });
+        const createdWine = await wine.json();
+
+        await createTestVintage(db, createdWine.id, 2020);
+
+        const res = await app.request(`/wine/${createdWine.id}`, {
+          method: 'DELETE',
+        });
+        expect(res.status).toBe(409);
+        const data = await res.json();
+        expect(data.error).toContain('still has vintages');
       });
     });
   });

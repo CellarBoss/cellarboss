@@ -36,8 +36,15 @@ export function registerWineRoutes(app: Hono) {
 
   wine.delete('/:id', async (c) => {
     const id = Number(c.req.param('id'));
-    await winesController.remove(id);
-    return c.json({ success: true });
+    try {
+      await winesController.remove(id);
+      return c.json({ success: true });
+    } catch (e: any) {
+      if (e.message?.includes('still has vintages')) {
+        return c.json({ error: e.message }, 409);
+      }
+      throw e;
+    }
   });
 
   app.route('/wine', wine);
