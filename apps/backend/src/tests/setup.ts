@@ -95,11 +95,8 @@ export async function createTestCountry(db: Kysely<Database>, name: string = 'Te
 }
 
 export async function createTestLocation(db: Kysely<Database>, name: string = 'Test Location') {
-  return await db
-    .insertInto('location')
-    .values({ name })
-    .returning('id')
-    .executeTakeFirstOrThrow();
+  await db.insertInto('location').values({ name }).onConflict((oc) => oc.column('name').doNothing()).execute();
+  return await db.selectFrom('location').select('id').where('name', '=', name).executeTakeFirstOrThrow();
 }
 
 export async function createTestGrape(db: Kysely<Database>, name: string = 'Test Grape') {
@@ -116,11 +113,8 @@ export async function createTestWineMaker(db: Kysely<Database>, name: string = '
 }
 
 export async function createTestRegion(db: Kysely<Database>, countryId: number, name: string = 'Test Region') {
-  return await db
-    .insertInto('region')
-    .values({ name, countryId })
-    .returning('id')
-    .executeTakeFirstOrThrow();
+  await db.insertInto('region').values({ name, countryId }).onConflict((oc) => oc.columns(['name', 'countryId']).doNothing()).execute();
+  return await db.selectFrom('region').select('id').where('name', '=', name).where('countryId', '=', countryId).executeTakeFirstOrThrow();
 }
 
 export async function createTestStorage(db: Kysely<Database>, locationId: number | null = null, name: string = 'Test Storage') {

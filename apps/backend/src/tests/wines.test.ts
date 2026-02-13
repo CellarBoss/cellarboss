@@ -140,11 +140,11 @@ describe('Wine API', () => {
         const res = await app.request(`/wine/${created.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ regionId: 2 }),
+          body: JSON.stringify({ regionId: testRegionId }),
         });
         expect(res.status).toBe(200);
         const data = await res.json();
-        expect(data.regionId).toBe(2);
+        expect(data.regionId).toBe(testRegionId);
       });
     });
 
