@@ -2,6 +2,7 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Wine, WineGrape } from "@cellarboss/types";
+import { getCountries } from "@/lib/api/countries";
 import { getWines, deleteWine } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { getRegions } from "@/lib/api/regions";
@@ -69,7 +70,12 @@ export default function WinesPage() {
     queryFn: getWineGrapes,
   });
 
-  if (wineQuery.isLoading || winemakerQuery.isLoading || regionQuery.isLoading || grapeQuery.isLoading || wineGrapeQuery.isLoading) {
+  const countryQuery = useQuery({
+    queryKey: ["countries"],
+    queryFn: getCountries,
+  })
+
+  if (wineQuery.isLoading || winemakerQuery.isLoading || regionQuery.isLoading || grapeQuery.isLoading || wineGrapeQuery.isLoading || countryQuery.isLoading) {
     return <LoadingCard />;
   }
 
@@ -78,12 +84,14 @@ export default function WinesPage() {
   if (!regionQuery.data?.ok) return <ErrorCard message={`Error receiving data: ` + regionQuery.data?.error.message} />;
   if (!grapeQuery.data?.ok) return <ErrorCard message={`Error receiving data: ` + grapeQuery.data?.error.message} />;
   if (!wineGrapeQuery.data?.ok) return <ErrorCard message={`Error receiving data: ` + wineGrapeQuery.data?.error.message} />;
+  if (!countryQuery.data?.ok) return <ErrorCard message={`Error receiving data: ` + countryQuery.data?.error.message} />;
 
   var winesList = wineQuery.data.data;
   var winemakerList = winemakerQuery.data.data;
   var regionList = regionQuery.data.data;
   var grapeList = grapeQuery.data.data;
   var wineGrapeList = wineGrapeQuery.data.data;
+  var countryList = countryQuery.data.data;
 
   function getGrapeNamesForWine(wineId: number): string {
     const grapeIds = wineGrapeList
@@ -115,7 +123,9 @@ export default function WinesPage() {
       cell: ({ row }) => {
         var winemaker = winemakerList.find(w => w.id === row.original.wineMakerId);
         if (!winemaker) return <span>-</span>;
-        return <span>{winemaker.name}</span>;
+        return (
+          <span><a href={"/winemakers/" + winemaker.id}>{winemaker.name}</a></span>
+        );
       }
     },
     {
@@ -126,8 +136,17 @@ export default function WinesPage() {
       cell: ({ row }) => {
         if (!row.original.regionId) return <span>-</span>;
         var region = regionList.find(r => r.id === row.original.regionId);
-        if (!region) return <span>-</span>;
-        return <span>{region.name}</span>;
+        var country = region ? countryList.find(c => c.id === region!.countryId) : undefined;
+        return (
+          <span>
+            {
+              region ? <a href={"/regions/" + region.id}>{region.name}</a> : <span>-</span>
+            }
+            {
+              country ? <span>,&nbsp;<a href={"/countries/" + country.id}>{country.name}</a></span> : null
+            }
+          </span>
+        );
       }
     },
     {
