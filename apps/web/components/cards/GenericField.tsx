@@ -7,9 +7,15 @@ import { Input } from "../ui/input";
 import { getCountries } from "@/lib/api/countries";
 import { getLocations } from "@/lib/api/locations";
 import { getStorages } from "@/lib/api/storages";
+import { getWinemakers } from "@/lib/api/winemakers";
+import { getRegions } from "@/lib/api/regions";
+import { getGrapes } from "@/lib/api/grapes";
 import type { Country } from "@cellarboss/types";
 import type { Location } from "@cellarboss/types";
 import type { Storage } from "@cellarboss/types";
+import type { WineMaker } from "@cellarboss/types";
+import type { Region } from "@cellarboss/types";
+import type { Grape } from "@cellarboss/types";
 
 type FieldProps = {
   name: string;
@@ -84,6 +90,70 @@ function StorageSelector({ editable, field }: SelectorProps) {
       options={storages.data}
       editable={editable}
       isInvalid={isInvalid}
+    />
+  );
+}
+
+function WineMakerSelector({ editable, field }: SelectorProps) {
+  const { data: winemakers, isLoading } = useQuery({
+    queryKey: ["winemakers"],
+    queryFn: getWinemakers,
+  })
+
+  if(isLoading) { return <span>Loading... </span> }
+  if(!winemakers?.ok) { throw new Error("Failed to fetch winemakers"); }
+
+  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+
+  return (
+    <GenericSelector<WineMaker>
+      field={field}
+      options={winemakers.data}
+      editable={editable}
+      isInvalid={isInvalid}
+    />
+  );
+}
+
+function RegionSelector({ editable, field }: SelectorProps) {
+  const { data: regions, isLoading } = useQuery({
+    queryKey: ["regions"],
+    queryFn: getRegions,
+  })
+
+  if(isLoading) { return <span>Loading... </span> }
+  if(!regions?.ok) { throw new Error("Failed to fetch regions"); }
+
+  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+
+  return (
+    <GenericSelector<Region>
+      field={field}
+      options={regions.data}
+      editable={editable}
+      isInvalid={isInvalid}
+    />
+  );
+}
+
+function GrapeSelector({ editable, field }: SelectorProps) {
+  const { data: grapes, isLoading } = useQuery({
+    queryKey: ["grapes"],
+    queryFn: getGrapes,
+  })
+
+  if(isLoading) { return <span>Loading... </span> }
+  if(!grapes?.ok) { throw new Error("Failed to fetch grapes"); }
+
+  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+
+  return (
+    <GenericSelector<Grape>
+      field={field}
+      options={grapes.data}
+      editable={editable}
+      isInvalid={isInvalid}
+      allowMultiple={true}
     />
   );
 }
@@ -185,6 +255,78 @@ export function GenericField({
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
                 <StorageSelector
+                  editable={editable}
+                  field={field}
+                />
+
+                {isInvalid && (
+                  <FieldError errors={field.state.meta.errors} />
+                )}
+              </Field>
+            );
+          }}
+        />
+      );
+
+    case "winemaker":
+      return (
+        <form.Field
+          name={name}
+          children={(field: any) => {
+            const isInvalid = editable && field.state.meta.isTouched && !field.state.meta.isValid;
+
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+                <WineMakerSelector
+                  editable={editable}
+                  field={field}
+                />
+
+                {isInvalid && (
+                  <FieldError errors={field.state.meta.errors} />
+                )}
+              </Field>
+            );
+          }}
+        />
+      );
+
+    case "region":
+      return (
+        <form.Field
+          name={name}
+          children={(field: any) => {
+            const isInvalid = editable && field.state.meta.isTouched && !field.state.meta.isValid;
+
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+                <RegionSelector
+                  editable={editable}
+                  field={field}
+                />
+
+                {isInvalid && (
+                  <FieldError errors={field.state.meta.errors} />
+                )}
+              </Field>
+            );
+          }}
+        />
+      );
+
+    case "grapes":
+      return (
+        <form.Field
+          name={name}
+          children={(field: any) => {
+            const isInvalid = editable && field.state.meta.isTouched && !field.state.meta.isValid;
+
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+                <GrapeSelector
                   editable={editable}
                   field={field}
                 />
