@@ -2,6 +2,9 @@ import * as z from "zod";
 import type { Wine } from "@cellarboss/types";
 import type { FieldConfig } from "@/lib/types/field";
 import { createWineSchema } from "@cellarboss/validators/wines.validator";
+import { getWinemakers } from "@/lib/api/winemakers";
+import { getRegions } from "@/lib/api/regions";
+import { getGrapes } from "@/lib/api/grapes";
 
 export type WineFormData = Wine & { grapeIds: number[] };
 
@@ -14,13 +17,21 @@ export const wineFields: FieldConfig<WineFormData>[] = [
   {
     key: "wineMakerId",
     label: "Winemaker",
-    type: "winemaker",
+    type: "selector",
+    selectorConfig: {
+      queryKey: "winemakers",
+      queryFn: getWinemakers,
+    },
     validator: z.coerce.number().int().positive(),
   },
   {
     key: "regionId",
     label: "Region",
-    type: "region",
+    type: "selector",
+    selectorConfig: {
+      queryKey: "regions",
+      queryFn: getRegions,
+    },
     validator: z.preprocess(
       (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
       z.number().int().positive().nullable()
@@ -29,7 +40,12 @@ export const wineFields: FieldConfig<WineFormData>[] = [
   {
     key: "grapeIds",
     label: "Grapes",
-    type: "grapes",
+    type: "selector",
+    selectorConfig: {
+      queryKey: "grapes",
+      queryFn: getGrapes,
+      allowMultiple: true,
+    },
     validator: z.preprocess(
       (val) => {
         if (!Array.isArray(val)) return [];

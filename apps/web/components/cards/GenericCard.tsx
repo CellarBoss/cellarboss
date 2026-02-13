@@ -96,9 +96,9 @@ export function GenericCard<T extends GenericType>({
                 form={form}
                 key={String(field.key)}
                 name={String(field.key)}
-                type={field.type}
                 label={field.label}
                 editable={editable && field.editable !== false}
+                selectorConfig={"selectorConfig" in field ? field.selectorConfig : undefined}
               />
             ))}
           </div>

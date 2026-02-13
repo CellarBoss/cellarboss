@@ -1,11 +1,21 @@
 import * as z from "zod";
+import type { GenericType } from "@cellarboss/types";
+import type { ApiResult } from "@/lib/api/frontend";
 
 type FieldValue<T, K extends keyof T> = T[K];
+
+export type SelectorConfig = {
+  queryKey: string;
+  queryFn: () => Promise<ApiResult<GenericType[]>>;
+  allowMultiple?: boolean;
+};
 
 export type FieldConfig<T, K extends keyof T = keyof T> = {
   key: keyof T;
   label: string;
-  type?: "text" | "number" | "textarea" | "country" | "location" | "storage" | "winemaker" | "region" | "grapes";
   editable?: boolean;
   validator?: z.ZodType<FieldValue<T, K>>;
-};
+} & (
+  | { type?: "text" | "number" | "textarea"; selectorConfig?: never }
+  | { type: "selector"; selectorConfig: SelectorConfig }
+);
