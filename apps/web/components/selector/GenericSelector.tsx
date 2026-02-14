@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import type { GenericType } from "@cellarboss/types";
+import type { OptionGroup } from "./DataSelector";
 
 type GenericSelectorProps<T extends GenericType> = {
   options: T[],
@@ -25,6 +26,7 @@ type GenericSelectorProps<T extends GenericType> = {
   editable?: boolean,
   isInvalid: boolean,
   field: any,
+  groups?: OptionGroup[],
 }
 
 export function GenericSelector<T extends GenericType>({
@@ -33,6 +35,7 @@ export function GenericSelector<T extends GenericType>({
   allowMultiple = false,
   editable = true,
   field,
+  groups,
 }: GenericSelectorProps<T>) {
   if (allowMultiple) {
     return (
@@ -51,6 +54,7 @@ export function GenericSelector<T extends GenericType>({
       isInvalid={isInvalid}
       editable={editable}
       field={field}
+      groups={groups}
     />
   );
 }
@@ -60,11 +64,13 @@ function SingleSelect<T extends GenericType>({
   isInvalid,
   editable,
   field,
+  groups,
 }: {
   options: T[];
   isInvalid: boolean;
   editable: boolean;
   field: any;
+  groups?: OptionGroup[];
 }) {
   const [open, setOpen] = useState(false);
 
@@ -80,6 +86,28 @@ function SingleSelect<T extends GenericType>({
           <span className="text-muted-foreground">None</span>
         )}
       </div>
+    );
+  }
+
+  function renderItem(option: GenericType) {
+    const id = option.id.toString();
+    return (
+      <CommandItem
+        key={option.id}
+        value={option.name}
+        onSelect={() => {
+          field.handleChange(id === currentValue ? "" : id);
+          setOpen(false);
+        }}
+      >
+        {option.name}
+        <CheckIcon
+          className={cn(
+            "ml-auto size-4",
+            currentValue === id ? "opacity-100" : "opacity-0"
+          )}
+        />
+      </CommandItem>
     );
   }
 
@@ -105,31 +133,17 @@ function SingleSelect<T extends GenericType>({
           <CommandInput placeholder="Search..." />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup>
-              {options.map((option) => {
-                const id = option.id.toString();
-                return (
-                  <CommandItem
-                    key={option.id}
-                    value={option.name}
-                    onSelect={() => {
-                      field.handleChange(id === currentValue ? "" : id);
-                      setOpen(false);
-                    }}
-                  >
-                    {option.name}
-                    <CheckIcon
-                      className={cn(
-                        "ml-auto size-4",
-                        currentValue === id
-                          ? "opacity-100"
-                          : "opacity-0"
-                      )}
-                    />
-                  </CommandItem>
-                );
-              })}
-            </CommandGroup>
+            {groups ? (
+              groups.map((group) => (
+                <CommandGroup key={group.label} heading={group.label}>
+                  {group.options.map(renderItem)}
+                </CommandGroup>
+              ))
+            ) : (
+              <CommandGroup>
+                {options.map(renderItem)}
+              </CommandGroup>
+            )}
           </CommandList>
         </Command>
       </PopoverContent>

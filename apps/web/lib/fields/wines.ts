@@ -5,6 +5,7 @@ import { createWineSchema } from "@cellarboss/validators/wines.validator";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { getRegions } from "@/lib/api/regions";
 import { getGrapes } from "@/lib/api/grapes";
+import { getCountries } from "@/lib/api/countries";
 
 export type WineFormData = Wine & { grapeIds: number[] };
 
@@ -31,6 +32,11 @@ export const wineFields: FieldConfig<WineFormData>[] = [
     selectorConfig: {
       queryKey: "regions",
       queryFn: getRegions,
+      groupBy: {
+        key: "countryId",
+        queryKey: "countries",
+        queryFn: getCountries,
+      },
     },
     validator: z.preprocess(
       (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
