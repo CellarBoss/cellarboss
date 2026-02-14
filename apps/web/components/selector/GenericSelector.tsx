@@ -1,18 +1,22 @@
-import {
-  Select,
-  SelectItem,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { useState } from "react"
+import { CheckIcon, ChevronsUpDownIcon } from "lucide-react"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from "@/components/ui/command"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import type { GenericType } from "@cellarboss/types";
 
 type GenericSelectorProps<T extends GenericType> = {
@@ -42,27 +46,94 @@ export function GenericSelector<T extends GenericType>({
   }
 
   return (
-    <Select
-      name={field.name}
-      onValueChange={(e) => field.handleChange(e)}
-      aria-invalid={isInvalid}
-      disabled={!editable}
-      value={field.state.value ?? ""}
-    >
-      <SelectTrigger>
-        <SelectValue placeholder="Choose an option..." />
-      </SelectTrigger>
-      <SelectContent>
-        {options.map((option) => (
-          <SelectItem
-            key={option.id}
-            value={option.id.toString()}
-          >
-            {option.name}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <SingleSelect<T>
+      options={options}
+      isInvalid={isInvalid}
+      editable={editable}
+      field={field}
+    />
+  );
+}
+
+function SingleSelect<T extends GenericType>({
+  options,
+  isInvalid,
+  editable,
+  field,
+}: {
+  options: T[];
+  isInvalid: boolean;
+  editable: boolean;
+  field: any;
+}) {
+  const [open, setOpen] = useState(false);
+
+  const currentValue = field.state.value ?? "";
+  const selectedOption = options.find(
+    (o) => o.id.toString() === currentValue
+  );
+
+  if (!editable) {
+    return (
+      <div className="flex min-h-9 items-center px-3 py-2 border rounded-md bg-muted text-sm">
+        {selectedOption?.name ?? (
+          <span className="text-muted-foreground">None</span>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          type="button"
+          aria-expanded={open}
+          aria-invalid={isInvalid}
+          className="w-full justify-between font-normal"
+        >
+          {selectedOption
+            ? selectedOption.name
+            : "Choose an option..."}
+          <ChevronsUpDownIcon className="ml-2 size-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="min-w-[--radix-popover-trigger-width] p-0" align="start">
+        <Command>
+          <CommandInput placeholder="Search..." />
+          <CommandList>
+            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandGroup>
+              {options.map((option) => {
+                const id = option.id.toString();
+                return (
+                  <CommandItem
+                    key={option.id}
+                    value={option.name}
+                    onSelect={() => {
+                      field.handleChange(id === currentValue ? "" : id);
+                      setOpen(false);
+                    }}
+                  >
+                    {option.name}
+                    <CheckIcon
+                      className={cn(
+                        "ml-auto size-4",
+                        currentValue === id
+                          ? "opacity-100"
+                          : "opacity-0"
+                      )}
+                    />
+                  </CommandItem>
+                );
+              })}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }
 
@@ -128,28 +199,32 @@ function MultiSelect<T extends GenericType>({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-2" align="start">
-        <div className="max-h-60 overflow-y-auto flex flex-col gap-1">
-          {options.map((option) => {
-            const id = option.id.toString();
-            const checked = selectedIds.includes(id);
-            return (
-              <label
-                key={option.id}
-                className="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-accent cursor-pointer text-sm"
-              >
-                <Checkbox
-                  checked={checked}
-                  onCheckedChange={() => handleToggle(id)}
-                />
-                {option.name}
-              </label>
-            );
-          })}
-          {options.length === 0 && (
-            <span className="text-muted-foreground text-sm px-2 py-1">No options available</span>
-          )}
-        </div>
+      <PopoverContent className="min-w-[--radix-popover-trigger-width] p-0" align="start">
+        <Command>
+          <CommandInput placeholder="Search..." />
+          <CommandList>
+            <CommandEmpty>No options found.</CommandEmpty>
+            <CommandGroup>
+              {options.map((option) => {
+                const id = option.id.toString();
+                const checked = selectedIds.includes(id);
+                return (
+                  <CommandItem
+                    key={option.id}
+                    value={option.name}
+                    onSelect={() => handleToggle(id)}
+                  >
+                    <Checkbox
+                      checked={checked}
+                      className="pointer-events-none"
+                    />
+                    {option.name}
+                  </CommandItem>
+                );
+              })}
+            </CommandGroup>
+          </CommandList>
+        </Command>
       </PopoverContent>
     </Popover>
   );
