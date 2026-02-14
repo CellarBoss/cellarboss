@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { skipToken, useQuery } from "@tanstack/react-query";
 import { GenericSelector } from "./GenericSelector";
 import type { SelectorConfig } from "@/lib/types/field";
 import type { GenericType } from "@cellarboss/types";
@@ -25,9 +25,8 @@ export function DataSelector({ selectorConfig, field, editable }: DataSelectorPr
   });
 
   const { data: groupData, isLoading: groupLoading } = useQuery({
-    queryKey: [groupBy?.queryKey],
-    queryFn: groupBy?.queryFn,
-    enabled: !!groupBy,
+    queryKey: [groupBy?.queryKey ?? "unused"],
+    queryFn: groupBy ? groupBy.queryFn : skipToken,
   });
 
   if (isLoading || (groupBy && groupLoading)) {
