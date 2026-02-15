@@ -1,9 +1,10 @@
 "use client";
 
 import { skipToken, useQuery } from "@tanstack/react-query";
-import { GenericSelector } from "./GenericSelector";
 import type { SelectorConfig } from "@/lib/types/field";
 import type { GenericType } from "@cellarboss/types";
+import MultiSelector from "./MultipleSelector";
+import SingleSelector from "./SingleSelector";
 
 export type OptionGroup = {
   label: string;
@@ -48,13 +49,23 @@ export function DataSelector({ selectorConfig, field, editable }: DataSelectorPr
       ? buildGroups(data.data, groupData.data, groupBy.key)
       : undefined;
 
+  if (allowMultiple) {
+    return (
+      <MultiSelector
+        options={data.data}
+        isInvalid={isInvalid}
+        editable={editable}
+        field={field}
+      />
+    );
+  }
+
   return (
-    <GenericSelector
-      field={field}
+    <SingleSelector
       options={data.data}
-      editable={editable}
       isInvalid={isInvalid}
-      allowMultiple={allowMultiple}
+      editable={editable}
+      field={field}
       groups={groups}
     />
   );
