@@ -13,25 +13,19 @@ import {
   getPaginationRowModel,
   getExpandedRowModel,
   useReactTable,
-  flexRender,
 } from "@tanstack/react-table";
 
 import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
   TableRow,
 } from "@/components/ui/table"
 
-import { PaginationControl } from "@/components/datatable/PaginationControl";
-import { PaginationSelector } from "./PaginationSelector";
+import DataTableHeader from "./DataTableHeader";
+import DataTableFooter from "./DataTableFooter";
+import DataTableRow from "./DataTableRow";
 import { FilterControl } from "./FilterControl";
-import { AddButton } from "../buttons/AddButton";
-import { ArrowUp, ArrowDown, ChevronRight, ChevronDown } from "lucide-react";
-
 
 type DataTableProps<T> = {
   data?: T[];
@@ -68,7 +62,7 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
     defaultExpanded ?? true
   )
 
-  if(data === undefined) {
+  if (data === undefined) {
     data = [];
   }
 
@@ -90,11 +84,11 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
     onSortingChange: setSorting,
     ...(getSubRows
       ? {
-          getSubRows,
-          getExpandedRowModel: getExpandedRowModel(),
-          onExpandedChange: setExpanded,
-          filterFromLeafRows: true,
-        }
+        getSubRows,
+        getExpandedRowModel: getExpandedRowModel(),
+        onExpandedChange: setExpanded,
+        filterFromLeafRows: true,
+      }
       : {}),
   });
 
@@ -117,26 +111,7 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
         </div>
       </div>
       <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead
-                  key={header.id}
-                  onClick={header.column.getCanSort() ? header.column.getToggleSortingHandler() : undefined}
-                  className={"bg-table-header " + (header.column.id === 'options' ? 'w-[100px]' : '')}>
-                  <div className={"flex items-center gap-1 select-none " + (header.column.getCanSort() ? 'cursor-pointer' : '')}>
-                    {flexRender(header.column.columnDef.header, header.getContext())}
-                    {{
-                      asc: <ArrowUp className="w-4 h-4" />,
-                      desc: <ArrowDown className="w-4 h-4" />,
-                    }[header.column.getIsSorted() as string] ?? null}
-                  </div>
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
+        <DataTableHeader table={table} sorting={sorting} />
         <TableBody>
           {table.getRowCount() === 0 && (
             <TableRow>
@@ -146,59 +121,10 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
             </TableRow>
           )}
           {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id} className="group border-b border-default">
-              {row.getVisibleCells().map((cell, cellIndex) => (
-                <TableCell
-                  key={cell.id}
-                  className={"border p-2 bg-table-row group-hover:bg-table-row-hover"}
-                  style={
-                    cellIndex === 0 && getSubRows
-                      ? { paddingLeft: `${row.depth * 24 + 8}px` }
-                      : undefined
-                  }
-                >
-                  {cellIndex === 0 && getSubRows ? (
-                    <div className="flex items-center gap-1">
-                      {row.getCanExpand() ? (
-                        <button
-                          onClick={row.getToggleExpandedHandler()}
-                          className="cursor-pointer p-0.5 rounded hover:bg-muted"
-                          aria-label={row.getIsExpanded() ? "Collapse row" : "Expand row"}
-                        >
-                          {row.getIsExpanded() ? (
-                            <ChevronDown className="w-4 h-4" />
-                          ) : (
-                            <ChevronRight className="w-4 h-4" />
-                          )}
-                        </button>
-                      ) : (
-                        <span className="w-5" />
-                      )}
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </div>
-                  ) : (
-                    flexRender(cell.column.columnDef.cell, cell.getContext())
-                  )}
-                </TableCell>
-              ))}
-            </TableRow>
+            <DataTableRow key={row.id} row={row} getSubRows={getSubRows} />
           ))}
         </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={columns.length}>
-              <div className="relative flex w-full items-center">
-                <div className="absolute left-1/2 -translate-x-1/2">
-                  <PaginationControl table={table} pagination={pagination} pageCount={pageCount} />
-                </div>
-
-                <div className="ml-auto flex items-center gap-2">
-                  <PaginationSelector table={table} pageSize={pageSize} />
-                </div>
-              </div>
-            </TableCell>
-          </TableRow>
-        </TableFooter>
+        <DataTableFooter columns={columns} pagination={pagination} pageCount={pageCount} pageSize={pageSize} table={table} />
       </Table>
     </>
   );
