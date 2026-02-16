@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import type { Region } from "@cellarboss/types";
 import { getRegions, deleteRegion } from "@/lib/api/regions";
 import { DataTable } from "@/components/datatable/DataTable";
@@ -10,8 +10,8 @@ import { useRouter } from 'next/navigation';
 import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
 import { getCountries } from "@/lib/api/countries";
-import { LoadingCard } from "@/components/cards/LoadingCard";
-import { ErrorCard } from "@/components/cards/ErrorCard";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { queryGate } from "@/lib/query-gate";
 
 export default function RegionsPage() {
   const queryClient = useQueryClient();
@@ -41,25 +41,13 @@ export default function RegionsPage() {
     }
   }
 
-  const regionQuery = useQuery({
-    queryKey: ["regions"],
-    queryFn: getRegions,
-  });
+  const regionQuery = useApiQuery({ queryKey: ["regions"], queryFn: getRegions });
+  const countryQuery = useApiQuery({ queryKey: ["countries"], queryFn: getCountries });
 
-  const countryQuery = useQuery({
-    queryKey: ["countries"],
-    queryFn: getCountries,
-  })
+  const result = queryGate(regionQuery, countryQuery);
+  if (!result.ready) return result.gate;
 
-  if (regionQuery.isLoading || countryQuery.isLoading) return <LoadingCard />;
-
-  if (!regionQuery.data?.ok) return <ErrorCard message={`Error receiving data: ` + regionQuery.data?.error.message} />;
-  if (!countryQuery.data?.ok) return <ErrorCard message={`Error receiving data: ` + countryQuery.data?.error.message} />;
-  if (regionQuery.error) return <ErrorCard message={`An error occurred: ` + (regionQuery.error as any).message} />;
-  if (countryQuery.error) return <ErrorCard message={`An error occurred: ` + (countryQuery.error as any).message} />;
-
-  var regionsList = regionQuery.data.data;
-  var countryList = countryQuery.data.data;
+  const [regionsList, countryList] = result.data;
 
 
   const columns = [

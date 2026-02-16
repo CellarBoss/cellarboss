@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { DataTable } from "@/components/datatable/DataTable";
 import type { WineMaker } from "@cellarboss/types";
@@ -10,8 +10,8 @@ import { useRouter } from 'next/navigation';
 import { deleteWinemaker } from "@/lib/api/winemakers";
 import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
-import { LoadingCard } from "@/components/cards/LoadingCard";
-import { ErrorCard } from "@/components/cards/ErrorCard";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { queryGate } from "@/lib/query-gate";
 
 export default function WinemakersPage() {
   const queryClient = useQueryClient();
@@ -41,16 +41,12 @@ export default function WinemakersPage() {
     }
   }
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["winemakers"],
-    queryFn: getWinemakers,
-  });
+  const winemakerQuery = useApiQuery({ queryKey: ["winemakers"], queryFn: getWinemakers });
 
-  if (isLoading) return <LoadingCard />;
-  if (!data?.ok) return <ErrorCard message={`Error receiving data: ` + data?.error.message } />;
-  if (error) return <ErrorCard message={`An error occurred: ` +  error.message } />;
+  const result = queryGate(winemakerQuery);
+  if (!result.ready) return result.gate;
 
-  var winemakersList = data.data;
+  const [winemakersList] = result.data;
 
   const columns = [
     {

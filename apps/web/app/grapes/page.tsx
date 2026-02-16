@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { DataTable } from "@/components/datatable/DataTable";
 import type { Grape } from "@cellarboss/types";
 import { EditButton } from "@/components/buttons/EditButton";
@@ -9,8 +9,8 @@ import { useRouter } from 'next/navigation';
 import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
 import { deleteGrape, getGrapes } from "@/lib/api/grapes";
-import { LoadingCard } from "@/components/cards/LoadingCard";
-import { ErrorCard } from "@/components/cards/ErrorCard";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { queryGate } from "@/lib/query-gate";
 
 export default function GrapesPage() {
   const queryClient = useQueryClient();
@@ -40,16 +40,12 @@ export default function GrapesPage() {
     }
   }
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["grapes"],
-    queryFn: getGrapes,
-  });
+  const grapeQuery = useApiQuery({ queryKey: ["grapes"], queryFn: getGrapes });
 
-  if (isLoading) return <LoadingCard />;
-  if (error) return <ErrorCard message={`An error occurred: ` + (error as any).message} />;
-  if (!data?.ok) return <ErrorCard message={`Error receiving data: ` + data?.error.message } />;
+  const result = queryGate(grapeQuery);
+  if (!result.ready) return result.gate;
 
-  var grapesList = data.data;
+  const [grapesList] = result.data;
 
   const columns = [
     {

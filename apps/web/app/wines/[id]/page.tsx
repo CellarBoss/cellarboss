@@ -1,38 +1,35 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { useParams } from 'next/navigation';
 import { getWineById } from "@/lib/api/wines";
 import { getWineGrapes } from "@/lib/api/winegrapes";
 import { GenericCard } from "@/components/cards/GenericCard";
 import { wineFields, WineFormData } from "@/lib/fields/wines";
 import { PageHeader } from "@/components/page/PageHeader";
-import { LoadingCard } from "@/components/cards/LoadingCard";
-import { ErrorCard } from "@/components/cards/ErrorCard";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { queryGate } from "@/lib/query-gate";
 
 export default function ViewWinePage() {
   const params = useParams();
   const wineId = Number(params.id);
 
-  const { data: queryResult, isLoading, error } = useQuery({
+  const wineQuery = useApiQuery({
     queryKey: ['wine', wineId],
     queryFn: () => getWineById(wineId),
     enabled: !!wineId,
   });
 
-  const { data: wineGrapesResult, isLoading: wgLoading } = useQuery({
+  const wineGrapesQuery = useApiQuery({
     queryKey: ['winegrapes'],
     queryFn: getWineGrapes,
   });
 
-  if (isLoading || wgLoading) return <LoadingCard />;
-  if (error) return <ErrorCard message={`An error occurred: ` + (error as any).message} />;
-  if (!queryResult?.ok) return <ErrorCard message={`Error receiving data: ` + queryResult?.error.message} />;
-  if (!wineGrapesResult?.ok) return <ErrorCard message={`Error receiving data: ` + wineGrapesResult?.error.message} />;
+  const result = queryGate(wineQuery, wineGrapesQuery);
+  if (!result.ready) return result.gate;
 
-  var wine = queryResult.data;
+  const [wine, wineGrapesList] = result.data;
 
-  const grapeIds = wineGrapesResult.data
+  const grapeIds = wineGrapesList
     .filter((wg) => wg.wineId === wineId)
     .map((wg) => wg.grapeId);
 

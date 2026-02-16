@@ -4,6 +4,16 @@ export type ApiError = {
   status: number;
 }
 
+export class ApiQueryError extends Error {
+  public readonly apiError: ApiError;
+
+  constructor(apiError: ApiError) {
+    super(apiError.message);
+    this.name = "ApiQueryError";
+    this.apiError = apiError;
+  }
+}
+
 export type ApiResult<T> =
   | { ok: true; data: T }
   | { ok: false; error: ApiError };

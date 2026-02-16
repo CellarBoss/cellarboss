@@ -1,56 +1,31 @@
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Wine, WineGrape } from "@cellarboss/types";
 import { getCountries } from "@/lib/api/countries";
 import { getWinemakerById } from "@/lib/api/winemakers";
-import { getRegionById } from "@/lib/api/regions";
 import { getGrapes } from "@/lib/api/grapes";
 import { getWineGrapes } from "@/lib/api/winegrapes";
-import { LoadingCard } from "@/components/cards/LoadingCard";
-import { ErrorCard } from "@/components/cards/ErrorCard";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { queryGate } from "@/lib/query-gate";
 
 export default function WineDetailRow({ wine }: { wine: Wine }) {
-  const winemakerQuery = useQuery({
+  const winemakerQuery = useApiQuery({
     queryKey: ["winemaker-" + wine.wineMakerId],
-    queryFn: getWinemakerById.bind(null, wine.wineMakerId),
+    queryFn: () => getWinemakerById(wine.wineMakerId),
   });
 
-  /*
-  const regionQuery = useQuery({
-    queryKey: ["regions"],
-    queryFn: getRegionById.bind(null, wine.regionId),
-  });
-*/
+  const grapeQuery = useApiQuery({ queryKey: ["grapes"], queryFn: getGrapes });
+  const wineGrapeQuery = useApiQuery({ queryKey: ["winegrapes"], queryFn: getWineGrapes });
+  const countryQuery = useApiQuery({ queryKey: ["countries"], queryFn: getCountries });
 
-  const grapeQuery = useQuery({
-    queryKey: ["grapes"],
-    queryFn: getGrapes,
-  });
+  const result = queryGate(winemakerQuery, grapeQuery, wineGrapeQuery, countryQuery);
+  if (!result.ready) return result.gate;
 
-  const wineGrapeQuery = useQuery({
-    queryKey: ["winegrapes"],
-    queryFn: getWineGrapes,
-  });
-
-  const countryQuery = useQuery({
-    queryKey: ["countries"],
-    queryFn: getCountries,
-  })
-
-  if (winemakerQuery.isLoading || grapeQuery.isLoading || wineGrapeQuery.isLoading || countryQuery.isLoading) {
-    return <LoadingCard />;
-  }
-
-    if (!winemakerQuery.data?.ok) return <ErrorCard message={`Error receiving data: ` + winemakerQuery.data?.error.message} />;
-    //if (!regionQuery.data?.ok) return <ErrorCard message={`Error receiving data: ` + regionQuery.data?.error.message} />;
-    if (!grapeQuery.data?.ok) return <ErrorCard message={`Error receiving data: ` + grapeQuery.data?.error.message} />;
-    if (!wineGrapeQuery.data?.ok) return <ErrorCard message={`Error receiving data: ` + wineGrapeQuery.data?.error.message} />;
-    if (!countryQuery.data?.ok) return <ErrorCard message={`Error receiving data: ` + countryQuery.data?.error.message} />;
+  const [winemaker, grapes, wineGrapes, countries] = result.data;
 
   return (
     <>
-      This is a detail row for Wine. Winemaker: {winemakerQuery.data?.data.name}. 
+      This is a detail row for Wine. Winemaker: {winemaker.name}.
     </>
   );
 }

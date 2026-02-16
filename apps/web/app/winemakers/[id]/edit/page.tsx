@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { useParams } from 'next/navigation';
 import { getWinemakerById } from "@/lib/api/winemakers";
 import type { WineMaker } from "@cellarboss/types";
@@ -9,8 +8,8 @@ import { winemakerFields } from "@/lib/fields/winemakers";
 import { updateWinemaker } from "@/lib/api/winemakers";
 import { ApiResult } from "@/lib/api/frontend";
 import { PageHeader } from "@/components/page/PageHeader";
-import { LoadingCard } from "@/components/cards/LoadingCard";
-import { ErrorCard } from "@/components/cards/ErrorCard";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { queryGate } from "@/lib/query-gate";
 
 async function handleUpdate(winemaker: WineMaker): Promise<ApiResult<WineMaker>> {
   console.log("Update winemaker:", winemaker);
@@ -27,17 +26,16 @@ export default function EditWinemakerPage() {
   const params = useParams();
   const winemakerId = Number(params.id);
 
-  const { data: queryResult, isLoading, error } = useQuery({
+  const winemakerQuery = useApiQuery({
     queryKey: ["winemaker", winemakerId],
     queryFn: () => getWinemakerById(winemakerId),
     enabled: !!winemakerId,
   });
 
-  if (isLoading) return <LoadingCard />;
-  if (error) return <ErrorCard message={`An error occurred: ` + (error as any).message} />;
-  if (!queryResult?.ok) return <ErrorCard message={`Error receiving data: ` + queryResult?.error.message } />;
+  const result = queryGate(winemakerQuery);
+  if (!result.ready) return result.gate;
 
-  var winemaker = queryResult.data;
+  const [winemaker] = result.data;
 
   return (
     <section>

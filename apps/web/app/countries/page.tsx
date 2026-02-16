@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { getCountries } from "@/lib/api/countries";
 import { DataTable } from "@/components/datatable/DataTable";
 import type { Country } from "@cellarboss/types";
@@ -10,8 +10,8 @@ import { useRouter } from 'next/navigation';
 import { deleteCountry } from "@/lib/api/countries";
 import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
-import { LoadingCard } from "@/components/cards/LoadingCard";
-import { ErrorCard } from "@/components/cards/ErrorCard";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { queryGate } from "@/lib/query-gate";
 
 export default function CountriesPage() {
   const queryClient = useQueryClient();
@@ -41,16 +41,12 @@ export default function CountriesPage() {
     }
   }
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["countries"],
-    queryFn: getCountries,
-  });
+  const countryQuery = useApiQuery({ queryKey: ["countries"], queryFn: getCountries });
 
-  if (isLoading) return <LoadingCard />;
-  if (!data?.ok) return <ErrorCard message={`Error receiving data: ` + data?.error.message } />;
-  if (error) return <ErrorCard message={`An error occurred: ` +  error.message } />;
+  const result = queryGate(countryQuery);
+  if (!result.ready) return result.gate;
 
-  var countriesList = data.data;
+  const [countriesList] = result.data;
 
   const columns = [
     {

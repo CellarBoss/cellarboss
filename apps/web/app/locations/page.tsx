@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { getLocations } from "@/lib/api/locations";
 import { DataTable } from "@/components/datatable/DataTable";
 import type { Location } from "@cellarboss/types";
@@ -10,8 +10,8 @@ import { useRouter } from 'next/navigation';
 import { deleteLocation } from "@/lib/api/locations";
 import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
-import { LoadingCard } from "@/components/cards/LoadingCard";
-import { ErrorCard } from "@/components/cards/ErrorCard";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { queryGate } from "@/lib/query-gate";
 
 export default function LocationsPage() {
   const queryClient = useQueryClient();
@@ -41,16 +41,12 @@ export default function LocationsPage() {
     }
   }
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["locations"],
-    queryFn: getLocations,
-  });
+  const locationQuery = useApiQuery({ queryKey: ["locations"], queryFn: getLocations });
 
-  if (isLoading) return <LoadingCard />;
-  if (!data?.ok) return <ErrorCard message={`Error receiving data: ` + data?.error.message } />;
-  if (error) return <ErrorCard message={`An error occurred: ` +  error.message } />;
+  const result = queryGate(locationQuery);
+  if (!result.ready) return result.gate;
 
-  var locationsList = data.data;
+  const [locationsList] = result.data;
 
   const columns = [
     {

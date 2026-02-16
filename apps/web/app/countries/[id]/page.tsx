@@ -1,30 +1,28 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { useParams } from 'next/navigation';
 import { getCountryById } from "@/lib/api/countries";
 import type { Country } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
 import { countryFields } from "@/lib/fields/countries";
 import { PageHeader } from "@/components/page/PageHeader";
-import { LoadingCard } from "@/components/cards/LoadingCard";
-import { ErrorCard } from "@/components/cards/ErrorCard";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { queryGate } from "@/lib/query-gate";
 
 export default function ViewCountryPage() {
   const params = useParams();
   const countryId = params.id;
 
-  const { data: queryResult, isLoading, error } = useQuery({
+  const countryQuery = useApiQuery({
     queryKey: ['country', countryId],
-    queryFn: () => getCountryById(Number(countryId)), 
+    queryFn: () => getCountryById(Number(countryId)),
     enabled: !!countryId,
   });
 
-  if (isLoading) return <LoadingCard />;
-  if (error) return <ErrorCard message={`An error occurred: ` + (error as any).message} />;
-  if (!queryResult?.ok) return <ErrorCard message={`Error receiving data: ` + queryResult?.error.message } />;
+  const result = queryGate(countryQuery);
+  if (!result.ready) return result.gate;
 
-  var country = queryResult.data;
+  const [country] = result.data;
 
   return (
     <section>

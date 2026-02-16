@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import type { Storage } from "@cellarboss/types";
 import { buildTree, TreeNode } from "@/lib/functions";
 import { getStorages, deleteStorage } from "@/lib/api/storages";
@@ -12,8 +12,8 @@ import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { useRouter } from 'next/navigation';
 import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
-import { LoadingCard } from "@/components/cards/LoadingCard";
-import { ErrorCard } from "@/components/cards/ErrorCard";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { queryGate } from "@/lib/query-gate";
 
 export default function StoragesPage() {
   const queryClient = useQueryClient();
@@ -43,25 +43,13 @@ export default function StoragesPage() {
     }
   }
 
-  const storageQuery = useQuery({
-    queryKey: ["storages"],
-    queryFn: getStorages,
-  });
+  const storageQuery = useApiQuery({ queryKey: ["storages"], queryFn: getStorages });
+  const locationQuery = useApiQuery({ queryKey: ["locations"], queryFn: getLocations });
 
-  const locationQuery = useQuery({
-    queryKey: ["locations"],
-    queryFn: getLocations,
-  });
+  const result = queryGate(storageQuery, locationQuery);
+  if (!result.ready) return result.gate;
 
-  if (storageQuery.isLoading || locationQuery.isLoading) return <LoadingCard />;
-
-  if (!storageQuery.data?.ok) return <ErrorCard message={`Error receiving data: ` + storageQuery.data?.error.message} />;
-  if (!locationQuery.data?.ok) return <ErrorCard message={`Error receiving data: ` + locationQuery.data?.error.message} />;
-  if (storageQuery.error) return <ErrorCard message={`An error occurred: ` + (storageQuery.error as any).message} />;
-  if (locationQuery.error) return <ErrorCard message={`An error occurred: ` + (locationQuery.error as any).message} />;
-
-  var storagesList = storageQuery.data.data;
-  var locationList = locationQuery.data.data;
+  const [storagesList, locationList] = result.data;
   const treeData = buildTree(storagesList, "parent");
 
   const columns: ColumnDef<TreeNode<Storage>>[] = [

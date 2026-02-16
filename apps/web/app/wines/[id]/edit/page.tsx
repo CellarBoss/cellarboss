@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { useParams } from 'next/navigation';
 import { getWineById, updateWine } from "@/lib/api/wines";
 import { getWineGrapes, createWineGrape, deleteWineGrape } from "@/lib/api/winegrapes";
@@ -9,32 +8,30 @@ import { GenericCard } from "@/components/cards/GenericCard";
 import { wineFields, WineFormData } from "@/lib/fields/wines";
 import { ApiResult } from "@/lib/api/frontend";
 import { PageHeader } from "@/components/page/PageHeader";
-import { LoadingCard } from "@/components/cards/LoadingCard";
-import { ErrorCard } from "@/components/cards/ErrorCard";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { queryGate } from "@/lib/query-gate";
 
 export default function EditWinePage() {
   const params = useParams();
   const wineId = Number(params.id);
 
-  const { data: queryResult, isLoading, error } = useQuery({
+  const wineQuery = useApiQuery({
     queryKey: ["wine", wineId],
     queryFn: () => getWineById(wineId),
     enabled: !!wineId,
   });
 
-  const { data: wineGrapesResult, isLoading: wgLoading } = useQuery({
+  const wineGrapesQuery = useApiQuery({
     queryKey: ['winegrapes'],
     queryFn: getWineGrapes,
   });
 
-  if (isLoading || wgLoading) return <LoadingCard />;
-  if (error) return <ErrorCard message={`An error occurred: ` + (error as any).message} />;
-  if (!queryResult?.ok) return <ErrorCard message={`Error receiving data: ` + queryResult?.error.message} />;
-  if (!wineGrapesResult?.ok) return <ErrorCard message={`Error receiving data: ` + wineGrapesResult?.error.message} />;
+  const result = queryGate(wineQuery, wineGrapesQuery);
+  if (!result.ready) return result.gate;
 
-  var wine = queryResult.data;
+  const [wine, wineGrapesList] = result.data;
 
-  const currentWineGrapes = wineGrapesResult.data.filter((wg: WineGrape) => wg.wineId === wineId);
+  const currentWineGrapes = wineGrapesList.filter((wg: WineGrape) => wg.wineId === wineId);
   const currentGrapeIds = currentWineGrapes.map((wg: WineGrape) => wg.grapeId);
 
   const wineFormData: WineFormData = {

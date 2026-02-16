@@ -1,30 +1,28 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { useParams } from 'next/navigation';
 import { getStorageById } from "@/lib/api/storages";
 import type { Storage } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
 import { storageFields } from "@/lib/fields/storages";
 import { PageHeader } from "@/components/page/PageHeader";
-import { LoadingCard } from "@/components/cards/LoadingCard";
-import { ErrorCard } from "@/components/cards/ErrorCard";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { queryGate } from "@/lib/query-gate";
 
 export default function ViewStoragePage() {
   const params = useParams();
   const storageId = params.id;
 
-  const { data: queryResult, isLoading, error } = useQuery({
+  const storageQuery = useApiQuery({
     queryKey: ['storage', storageId],
     queryFn: () => getStorageById(Number(storageId)),
     enabled: !!storageId,
   });
 
-  if (isLoading) return <LoadingCard />;
-  if (error) return <ErrorCard message={`An error occurred: ` + (error as any).message} />;
-  if (!queryResult?.ok) return <ErrorCard message={`Error receiving data: ` + queryResult?.error.message } />;
+  const result = queryGate(storageQuery);
+  if (!result.ready) return result.gate;
 
-  var storage = queryResult.data;
+  const [storage] = result.data;
 
   return (
     <section>
