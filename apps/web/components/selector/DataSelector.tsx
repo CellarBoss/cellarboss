@@ -1,10 +1,11 @@
 "use client";
 
-import { skipToken, useQuery } from "@tanstack/react-query";
+import { skipToken } from "@tanstack/react-query";
 import type { SelectorConfig } from "@/lib/types/field";
 import type { GenericType } from "@cellarboss/types";
 import MultiSelector from "./MultipleSelector";
 import SingleSelector from "./SingleSelector";
+import { useApiQuery } from "@/hooks/use-api-query";
 
 export type OptionGroup = {
   label: string;
@@ -20,12 +21,12 @@ type DataSelectorProps = {
 export function DataSelector({ selectorConfig, field, editable }: DataSelectorProps) {
   const { queryKey, queryFn, allowMultiple = false, groupBy } = selectorConfig;
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useApiQuery<GenericType[]>({
     queryKey: [queryKey],
     queryFn: queryFn,
   });
 
-  const { data: groupData, isLoading: groupLoading } = useQuery({
+  const { data: groupData, isLoading: groupLoading } = useApiQuery<GenericType[]>({
     queryKey: [groupBy?.queryKey ?? "unused"],
     queryFn: groupBy ? groupBy.queryFn : skipToken,
   });
@@ -34,25 +35,25 @@ export function DataSelector({ selectorConfig, field, editable }: DataSelectorPr
     return <span>Loading...</span>;
   }
 
-  if (!data?.ok) {
+  if (!data) {
     throw new Error(`Failed to fetch ${queryKey}`);
   }
 
-  if (groupBy && !groupData?.ok) {
+  if (groupBy && !groupData) {
     throw new Error(`Failed to fetch ${groupBy.queryKey}`);
   }
 
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   const groups =
-    groupBy && groupData?.ok
-      ? buildGroups(data.data, groupData.data, groupBy.key)
+    groupBy && groupData
+      ? buildGroups(data, groupData, groupBy.key)
       : undefined;
 
   if (allowMultiple) {
     return (
       <MultiSelector
-        options={data.data}
+        options={data}
         isInvalid={isInvalid}
         editable={editable}
         field={field}
@@ -62,7 +63,7 @@ export function DataSelector({ selectorConfig, field, editable }: DataSelectorPr
 
   return (
     <SingleSelector
-      options={data.data}
+      options={data}
       isInvalid={isInvalid}
       editable={editable}
       field={field}
