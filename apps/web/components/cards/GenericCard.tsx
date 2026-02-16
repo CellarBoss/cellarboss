@@ -9,7 +9,7 @@ import { SaveButton } from "@/components/buttons/SaveButton";
 import { ResetButton } from "@/components/buttons/ResetButton";
 import { FieldConfig } from "@/lib/types/field";
 import { BackButton } from "@/components/buttons/BackButton";
-import { ApiResult } from "@/lib/api/frontend";
+import { ApiResult } from "@/lib/api/types";
 import { stringifyValues } from "@/lib/functions";
 import type { GenericType } from "@cellarboss/types";
 import * as z from "zod";

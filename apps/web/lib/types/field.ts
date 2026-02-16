@@ -1,6 +1,6 @@
 import * as z from "zod";
 import type { GenericType } from "@cellarboss/types";
-import type { ApiResult } from "@/lib/api/frontend";
+import type { ApiResult } from "@/lib/api/types";
 
 type FieldValue<T, K extends keyof T> = T[K];
 

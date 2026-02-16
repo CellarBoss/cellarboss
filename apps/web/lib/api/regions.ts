@@ -1,24 +1,25 @@
-"use client";
+"use server";
 
 import type { Region } from "@cellarboss/types";
-import { ApiResult, makeRequest } from "./frontend";
+import type { ApiResult } from "./types";
+import { makeServerRequest } from "./server";
 
 export async function getRegions(): Promise<ApiResult<Region[]>> {
-  return makeRequest<Region[]>("/api/regions", "GET");
+  return makeServerRequest<Region[]>("region", "GET");
 }
 
 export async function deleteRegion(id: number): Promise<ApiResult<boolean>> {
-  return makeRequest<boolean>("/api/regions/" + id, "DELETE");
+  return makeServerRequest<boolean>("region/" + id, "DELETE");
 }
 
 export async function getRegionById(id: number): Promise<ApiResult<Region>> {
-  return makeRequest<Region>("/api/regions/" + id, "GET");
+  return makeServerRequest<Region>("region/" + id, "GET");
 }
 
 export async function updateRegion(region: Region): Promise<ApiResult<Region>> {
-  return makeRequest<Region>("/api/regions/" + region.id, "PUT", JSON.stringify(region));
+  return makeServerRequest<Region>("region/" + region.id, "PUT", JSON.stringify(region));
 }
 
 export async function createRegion(region: Region): Promise<ApiResult<Region>> {
-  return makeRequest<Region>("/api/regions/", "POST", JSON.stringify(region));
+  return makeServerRequest<Region>("region", "POST", JSON.stringify(region));
 }

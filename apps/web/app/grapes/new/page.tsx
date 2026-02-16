@@ -4,7 +4,7 @@ import type { Grape } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
 import { grapeFields } from "@/lib/fields/grapes";
 import { createGrape } from "@/lib/api/grapes";
-import { ApiResult } from "@/lib/api/frontend";
+import { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
 
 async function handleCreate(grape: Grape): Promise<ApiResult<Grape>> {

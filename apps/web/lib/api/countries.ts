@@ -1,24 +1,25 @@
-"use client";
+"use server";
 
 import type { Country } from "@cellarboss/types";
-import { ApiResult, makeRequest } from "./frontend";
+import type { ApiResult } from "./types";
+import { makeServerRequest } from "./server";
 
 export async function getCountries(): Promise<ApiResult<Country[]>> {
-  return makeRequest<Country[]>("/api/countries", "GET");
+  return makeServerRequest<Country[]>("country", "GET");
 }
 
 export async function deleteCountry(id: number): Promise<ApiResult<boolean>> {
-  return makeRequest<boolean>("/api/countries/" + id, "DELETE");
+  return makeServerRequest<boolean>("country/" + id, "DELETE");
 }
 
 export async function getCountryById(id: number): Promise<ApiResult<Country>> {
-  return makeRequest<Country>("/api/countries/" + id, "GET");
+  return makeServerRequest<Country>("country/" + id, "GET");
 }
 
 export async function updateCountry(country: Country): Promise<ApiResult<Country>> {
-  return makeRequest<Country>("/api/countries/" + country.id, "PUT", JSON.stringify(country));
+  return makeServerRequest<Country>("country/" + country.id, "PUT", JSON.stringify(country));
 }
 
 export async function createCountry(country: Country): Promise<ApiResult<Country>> {
-  return makeRequest<Country>("/api/countries/", "POST", JSON.stringify(country));
+  return makeServerRequest<Country>("country", "POST", JSON.stringify(country));
 }

@@ -1,18 +1,19 @@
-"use client";
+"use server";
 
 import type { Wine } from "@cellarboss/types";
-import { ApiResult, makeRequest } from "./frontend";
+import type { ApiResult } from "./types";
+import { makeServerRequest } from "./server";
 
 export async function getWines(): Promise<ApiResult<Wine[]>> {
-  return makeRequest<Wine[]>("/api/wines", "GET");
+  return makeServerRequest<Wine[]>("wine", "GET");
 }
 
 export async function deleteWine(id: number): Promise<ApiResult<boolean>> {
-  return makeRequest<boolean>("/api/wines/" + id, "DELETE");
+  return makeServerRequest<boolean>("wine/" + id, "DELETE");
 }
 
 export async function getWineById(id: number): Promise<ApiResult<Wine>> {
-  return makeRequest<Wine>("/api/wines/" + id, "GET");
+  return makeServerRequest<Wine>("wine/" + id, "GET");
 }
 
 export async function updateWine(wine: Wine): Promise<ApiResult<Wine>> {
@@ -21,7 +22,7 @@ export async function updateWine(wine: Wine): Promise<ApiResult<Wine>> {
     wineMakerId: Number(wine.wineMakerId),
     regionId: wine.regionId ? Number(wine.regionId) : null,
   };
-  return makeRequest<Wine>("/api/wines/" + wine.id, "PUT", JSON.stringify(body));
+  return makeServerRequest<Wine>("wine/" + wine.id, "PUT", JSON.stringify(body));
 }
 
 export async function createWine(wine: Wine): Promise<ApiResult<Wine>> {
@@ -30,5 +31,5 @@ export async function createWine(wine: Wine): Promise<ApiResult<Wine>> {
     wineMakerId: Number(wine.wineMakerId),
     regionId: wine.regionId ? Number(wine.regionId) : null,
   };
-  return makeRequest<Wine>("/api/wines/", "POST", JSON.stringify(body));
+  return makeServerRequest<Wine>("wine", "POST", JSON.stringify(body));
 }

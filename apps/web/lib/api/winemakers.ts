@@ -1,24 +1,25 @@
-"use client";
+"use server";
 
 import type { WineMaker } from "@cellarboss/types";
-import { ApiResult, makeRequest } from "./frontend";
+import type { ApiResult } from "./types";
+import { makeServerRequest } from "./server";
 
 export async function getWinemakers(): Promise<ApiResult<WineMaker[]>> {
-  return makeRequest<WineMaker[]>("/api/winemakers", "GET");
+  return makeServerRequest<WineMaker[]>("winemaker", "GET");
 }
 
 export async function deleteWinemaker(id: number): Promise<ApiResult<boolean>> {
-  return makeRequest<boolean>("/api/winemakers/" + id, "DELETE");
+  return makeServerRequest<boolean>("winemaker/" + id, "DELETE");
 }
 
 export async function getWinemakerById(id: number): Promise<ApiResult<WineMaker>> {
-  return makeRequest<WineMaker>("/api/winemakers/" + id, "GET");
+  return makeServerRequest<WineMaker>("winemaker/" + id, "GET");
 }
 
 export async function updateWinemaker(winemaker: WineMaker): Promise<ApiResult<WineMaker>> {
-  return makeRequest<WineMaker>("/api/winemakers/" + winemaker.id, "PUT", JSON.stringify(winemaker));
+  return makeServerRequest<WineMaker>("winemaker/" + winemaker.id, "PUT", JSON.stringify(winemaker));
 }
 
 export async function createWinemaker(winemaker: WineMaker): Promise<ApiResult<WineMaker>> {
-  return makeRequest<WineMaker>("/api/winemakers/", "POST", JSON.stringify(winemaker));
+  return makeServerRequest<WineMaker>("winemaker", "POST", JSON.stringify(winemaker));
 }

@@ -1,5 +1,5 @@
 import { useQuery, UseQueryOptions, UseQueryResult, skipToken } from "@tanstack/react-query";
-import { ApiResult, ApiQueryError } from "@/lib/api/frontend";
+import { ApiResult, ApiQueryError } from "@/lib/api/types";
 
 type UseApiQueryOptions<T> = Omit<
   UseQueryOptions<T, ApiQueryError>,

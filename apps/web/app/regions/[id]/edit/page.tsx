@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import type { Region } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
-import { ApiResult } from "@/lib/api/frontend";
+import { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
 import { getRegionById, updateRegion } from "@/lib/api/regions";
 import { regionFields } from "@/lib/fields/regions";

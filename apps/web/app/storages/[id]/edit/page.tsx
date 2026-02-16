@@ -6,7 +6,7 @@ import type { Storage } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
 import { storageFields } from "@/lib/fields/storages";
 import { updateStorage } from "@/lib/api/storages";
-import { ApiResult } from "@/lib/api/frontend";
+import { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/query-gate";

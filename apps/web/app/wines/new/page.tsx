@@ -6,7 +6,7 @@ import { GenericCard } from "@/components/cards/GenericCard";
 import { wineFields, WineFormData } from "@/lib/fields/wines";
 import { createWine } from "@/lib/api/wines";
 import { createWineGrape } from "@/lib/api/winegrapes";
-import { ApiResult } from "@/lib/api/frontend";
+import { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
 
 async function handleCreate(formData: any): Promise<ApiResult<WineFormData>> {

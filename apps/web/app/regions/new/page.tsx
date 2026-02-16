@@ -4,7 +4,7 @@ import type { Region } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
 import { regionFields } from "@/lib/fields/regions";
 import { createRegion } from "@/lib/api/regions";
-import { ApiResult } from "@/lib/api/frontend";
+import { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
 
 async function handleCreate(region: Region): Promise<ApiResult<Region>> {

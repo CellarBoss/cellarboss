@@ -1,18 +1,19 @@
-"use client";
+"use server";
 
 import type { Storage } from "@cellarboss/types";
-import { ApiResult, makeRequest } from "./frontend";
+import type { ApiResult } from "./types";
+import { makeServerRequest } from "./server";
 
 export async function getStorages(): Promise<ApiResult<Storage[]>> {
-  return makeRequest<Storage[]>("/api/storages", "GET");
+  return makeServerRequest<Storage[]>("storage", "GET");
 }
 
 export async function deleteStorage(id: number): Promise<ApiResult<boolean>> {
-  return makeRequest<boolean>("/api/storages/" + id, "DELETE");
+  return makeServerRequest<boolean>("storage/" + id, "DELETE");
 }
 
 export async function getStorageById(id: number): Promise<ApiResult<Storage>> {
-  return makeRequest<Storage>("/api/storages/" + id, "GET");
+  return makeServerRequest<Storage>("storage/" + id, "GET");
 }
 
 export async function updateStorage(storage: Storage): Promise<ApiResult<Storage>> {
@@ -21,7 +22,7 @@ export async function updateStorage(storage: Storage): Promise<ApiResult<Storage
     locationId: storage.locationId ? Number(storage.locationId) : null,
     parent: storage.parent ? Number(storage.parent) : null,
   };
-  return makeRequest<Storage>("/api/storages/" + storage.id, "PUT", JSON.stringify(body));
+  return makeServerRequest<Storage>("storage/" + storage.id, "PUT", JSON.stringify(body));
 }
 
 export async function createStorage(storage: Storage): Promise<ApiResult<Storage>> {
@@ -30,5 +31,5 @@ export async function createStorage(storage: Storage): Promise<ApiResult<Storage
     locationId: storage.locationId ? Number(storage.locationId) : null,
     parent: storage.parent ? Number(storage.parent) : null,
   };
-  return makeRequest<Storage>("/api/storages/", "POST", JSON.stringify(body));
+  return makeServerRequest<Storage>("storage", "POST", JSON.stringify(body));
 }
