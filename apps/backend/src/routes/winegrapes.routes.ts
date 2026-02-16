@@ -21,6 +21,12 @@ export function registerWineGrapeRoutes(app: Hono) {
     return c.json(data);
   });
 
+  winegrape.get('/wine/:wineId', async (c) => {
+    const wineId = Number(c.req.param('wineId'));
+    const data = await winegrapesController.getByWineId(wineId);
+    return c.json(data);
+  });
+
   winegrape.post('/', zValidator('json', createWineGrapeSchema), async (c) => {
     const body = c.req.valid('json');
     const data = await winegrapesController.create(body);

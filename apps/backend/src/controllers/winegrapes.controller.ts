@@ -13,6 +13,14 @@ export async function getById(id: number) {
     .executeTakeFirst();
 }
 
+export async function getByWineId(wineId: number) {
+  return await db
+    .selectFrom('winegrape')
+    .selectAll()
+    .where('wineId', '=', wineId)
+    .execute();
+}
+
 export async function create(data: CreateWineGrape) {
   return await db
     .insertInto('winegrape')

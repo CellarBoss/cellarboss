@@ -117,6 +117,27 @@ describe('WineGrape API', () => {
       });
     });
 
+    describe('GET /winegrape/wine/:id', () => {
+      it('returns empty for non-existent wine', async () => {
+        const res = await app.request('/winegrape/wine/999');
+        expect(res.status).toBe(200);
+        expect(await res.json()).toEqual([]);
+      });
+
+      it('returns winegrape by wine id', async () => {
+        await app.request('/winegrape', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ wineId: testWineId, grapeId: testGrapeId }),
+        });
+
+        const res = await app.request(`/winegrape/wine/${testWineId}`);
+        expect(res.status).toBe(200);
+        const data = await res.json();
+        expect(data[0].wineId).toBe(testWineId);
+      });
+    });
+
     describe('PUT /winegrape/:id', () => {
       it('updates a winegrape', async () => {
         // Create a second grape for updating to
