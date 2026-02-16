@@ -17,6 +17,7 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
 import { LoadingCard } from "@/components/cards/LoadingCard";
 import { ErrorCard } from "@/components/cards/ErrorCard";
+import WineDetailRow from "@/components/datatable/detail/WineDetailRow";
 
 export default function WinesPage() {
   const queryClient = useQueryClient();
@@ -190,6 +191,11 @@ export default function WinesPage() {
         columns={columns}
         filterColumnName="name"
         defaultSortColumn="name"
+        renderDetail={(wine) => {
+          return (
+            <WineDetailRow wine={wine} />
+          );
+        }}
         buttons={[
           <AddButton onClick={async () => router.push(`/wines/new`)} subject="Wine" key="add" />
         ]}

@@ -25,6 +25,7 @@ import {
 import DataTableHeader from "./DataTableHeader";
 import DataTableFooter from "./DataTableFooter";
 import DataTableRow from "./DataTableRow";
+import DataTableDetailRow from "./DataTableDetailRow";
 import { FilterControl } from "./FilterControl";
 
 type DataTableProps<T> = {
@@ -35,10 +36,11 @@ type DataTableProps<T> = {
   defaultSortColumn?: string;
   buttons?: ReactNode[];
   getSubRows?: (row: T) => T[] | undefined;
+  renderDetail?: (row: T) => React.ReactNode;
   defaultExpanded?: true | Record<string, boolean>;
 };
 
-export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName, defaultSortColumn, buttons, getSubRows, defaultExpanded }: DataTableProps<T>) {
+export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName, defaultSortColumn, buttons, getSubRows, renderDetail, defaultExpanded }: DataTableProps<T>) {
   const router = useRouter();
 
   if (defaultPageSize === undefined) {
@@ -59,7 +61,7 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
   )
 
   const [expanded, setExpanded] = useState<ExpandedState>(
-    defaultExpanded ?? true
+    defaultExpanded ?? (getSubRows ? true : {})
   )
 
   if (data === undefined) {
@@ -73,7 +75,7 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
       pagination,
       columnFilters,
       sorting,
-      ...(getSubRows ? { expanded } : {}),
+      ...(getSubRows || renderDetail ? { expanded } : {}),
     },
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
@@ -89,6 +91,9 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
         onExpandedChange: setExpanded,
         filterFromLeafRows: true,
       }
+      : {}),
+    ...(renderDetail
+      ? { onExpandedChange: setExpanded }
       : {}),
   });
 
@@ -121,7 +126,12 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
             </TableRow>
           )}
           {table.getRowModel().rows.map((row) => (
-            <DataTableRow key={row.id} row={row} getSubRows={getSubRows} />
+            <Fragment key={row.id}>
+              <DataTableRow row={row} isExpanded={row.getIsExpanded()} canExpand={row.getCanExpand() || !!renderDetail} />
+              {renderDetail && row.getIsExpanded() && (
+                <DataTableDetailRow row={row} columnSpan={columns.length} renderDetail={renderDetail} />
+              )}
+            </Fragment>
           ))}
         </TableBody>
         <DataTableFooter columns={columns} pagination={pagination} pageCount={pageCount} pageSize={pageSize} table={table} />
