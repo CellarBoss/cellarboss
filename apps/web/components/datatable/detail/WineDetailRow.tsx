@@ -132,7 +132,7 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
                   </td>
                   <td className="py-1 pr-4 text-muted-foreground">
                     {v.drinkFrom || v.drinkUntil
-                      ? `${v.drinkFrom ?? "?"} – ${v.drinkUntil ?? "?"}`
+                      ? `${v.drinkFrom ?? "?"} - ${v.drinkUntil ?? "?"}`
                       : "—"}
                   </td>
                   <td className="py-1 text-right">
