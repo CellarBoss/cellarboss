@@ -49,24 +49,12 @@ export default function WinesPage() {
   const wineQuery = useApiQuery({ queryKey: ["wines"], queryFn: getWines });
   const winemakerQuery = useApiQuery({ queryKey: ["winemakers"], queryFn: getWinemakers });
   const regionQuery = useApiQuery({ queryKey: ["regions"], queryFn: getRegions });
-  const grapeQuery = useApiQuery({ queryKey: ["grapes"], queryFn: getGrapes });
-  const wineGrapeQuery = useApiQuery({ queryKey: ["winegrapes"], queryFn: getWineGrapes });
   const countryQuery = useApiQuery({ queryKey: ["countries"], queryFn: getCountries });
 
-  const result = queryGate(wineQuery, winemakerQuery, regionQuery, grapeQuery, wineGrapeQuery, countryQuery);
+  const result = queryGate(wineQuery, winemakerQuery, regionQuery, countryQuery);
   if (!result.ready) return result.gate;
 
-  const [winesList, winemakerList, regionList, grapeList, wineGrapeList, countryList] = result.data;
-
-  function getGrapeNamesForWine(wineId: number): string {
-    const grapeIds = wineGrapeList
-      .filter((wg: WineGrape) => wg.wineId === wineId)
-      .map((wg: WineGrape) => wg.grapeId);
-    return grapeList
-      .filter((g) => grapeIds.includes(g.id))
-      .map((g) => g.name)
-      .join(", ");
-  }
+  const [winesList, winemakerList, regionList, countryList] = result.data;
 
   const columns: ColumnDef<Wine>[] = [
     {
@@ -112,16 +100,6 @@ export default function WinesPage() {
             }
           </span>
         );
-      }
-    },
-    {
-      accessorKey: 'grapes',
-      header: 'Grapes',
-      enableColumnFilter: false,
-      enableSorting: false,
-      cell: ({ row }) => {
-        const names = getGrapeNamesForWine(row.original.id);
-        return <span>{names || "-"}</span>;
       }
     },
     {
