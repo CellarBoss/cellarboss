@@ -20,7 +20,6 @@ const menuItems = {
   "Wines": [
     { title: "Bottles", url: "/bottles", icon: BottleWine },
     { title: "Wines", url: "/wines", icon: Barrel },
-    { title: "Vintages", url: "/vintages", icon: CalendarFold },
     { title: "Grapes", url: "/grapes", icon: Grape },
     { title: "Winemakers", url: "/winemakers", icon: User },
   ],
