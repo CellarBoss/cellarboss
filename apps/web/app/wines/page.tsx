@@ -1,13 +1,11 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import type { Wine, WineGrape } from "@cellarboss/types";
+import type { Wine } from "@cellarboss/types";
 import { getCountries } from "@/lib/api/countries";
 import { getWines, deleteWine } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { getRegions } from "@/lib/api/regions";
-import { getGrapes } from "@/lib/api/grapes";
-import { getWineGrapes } from "@/lib/api/winegrapes";
 import { DataTable } from "@/components/datatable/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { EditButton } from "@/components/buttons/EditButton";
