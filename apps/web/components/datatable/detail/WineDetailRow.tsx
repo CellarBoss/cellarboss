@@ -8,12 +8,19 @@ import { getRegionById } from "@/lib/api/regions";
 import { getCountryById } from "@/lib/api/countries";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/query-gate";
-import { getVintagesByWineId } from "@/lib/api/vintages";
+import { getVintagesByWineId, deleteVintage } from "@/lib/api/vintages";
 import { Badge } from "@/components/ui/badge";
-import { Earth, User, Grape, Wine as WineIcon, Plus } from "lucide-react";
+import { EditButton } from "@/components/buttons/EditButton";
+import { DeleteButton } from "@/components/buttons/DeleteButton";
+import { CalendarFold, Earth, User, Grape, Wine as WineIcon, Plus } from "lucide-react";
 import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export default function WineDetailRow({ wine }: { wine: Wine }) {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
   const winemakerQuery = useApiQuery({
     queryKey: ["winemaker", wine.wineMakerId],
     queryFn: () => getWinemakerById(wine.wineMakerId),
@@ -97,7 +104,8 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
 
       <div className="text-sm">
         <span className="flex items-center gap-2">
-          <span className="text-muted-foreground">Vintages</span>
+          <CalendarFold className="h-3.5 w-5 shrink-0" />
+          <span>Vintages</span>
           <Link href={`/vintages/new?wineId=${wine.id}`}>
             <Plus className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
           </Link>
@@ -106,20 +114,45 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
         {vintageQuery.isLoading ? (
           <p className="mt-1 text-muted-foreground italic">Loading...</p>
         ) : vintageQuery.data && vintageQuery.data.length > 0 ? (
-          <ul className="mt-1 space-y-1">
-            {vintageQuery.data.map((v) => (
-              <li key={v.id} className="flex items-center gap-2">
-                <Link href={`/vintages/${v.id}`} className="hover:underline">
-                  {v.year ?? "NV"}
-                </Link>
-                {(v.drinkFrom || v.drinkUntil) && (
-                  <span className="text-muted-foreground text-xs">
-                    ({v.drinkFrom ?? "?"} - {v.drinkUntil ?? "?"})
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
+          <table className="mt-1 w-100 text-sm">
+            <thead>
+              <tr className="text-muted-foreground text-xs">
+                <th className="text-left font-medium py-1 pr-4">Year</th>
+                <th className="text-left font-medium py-1 pr-4">Drink Window</th>
+                <th className="text-right font-medium py-1"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {vintageQuery.data.map((v) => (
+                <tr key={v.id} className="border-t border-border/50">
+                  <td className="py-1 pr-4">
+                    <Link href={`/vintages/${v.id}`} className="hover:underline">
+                      {v.year ?? "NV"}
+                    </Link>
+                  </td>
+                  <td className="py-1 pr-4 text-muted-foreground">
+                    {v.drinkFrom || v.drinkUntil
+                      ? `${v.drinkFrom ?? "?"} – ${v.drinkUntil ?? "?"}`
+                      : "—"}
+                  </td>
+                  <td className="py-1 text-right">
+                    <span className="inline-flex items-center gap-1">
+                      <EditButton onEdit={async () => router.push(`/vintages/${v.id}/edit`)} />
+                      <DeleteButton
+                        itemDescription={`${v.year ?? "NV"} ${wine.name}`}
+                        onDelete={async () => {
+                          const result = await deleteVintage(v.id);
+                          if (!result.ok) throw new Error(result.error.message);
+                          queryClient.invalidateQueries({ queryKey: ["vintages", wine.id] });
+                          return true;
+                        }}
+                      />
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         ) : (
           <p className="mt-1 text-muted-foreground italic">No vintages</p>
         )}
