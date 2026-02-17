@@ -14,6 +14,12 @@ export function registerVintageRoutes(app: Hono) {
     return c.json(data);
   });
 
+  vintage.get('/wine/:wineId', async (c) => {
+    const wineId = Number(c.req.param('wineId'));
+    const data = await vintagesController.getByWineId(wineId);
+    return c.json(data);
+  });
+
   vintage.get('/:id', async (c) => {
     const id = Number(c.req.param('id'));
     const data = await vintagesController.getById(id);

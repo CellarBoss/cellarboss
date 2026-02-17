@@ -5,6 +5,14 @@ export async function list() {
   return await db.selectFrom('vintage').selectAll().execute();
 }
 
+export async function getByWineId(wineId: number) {
+  return await db
+    .selectFrom('vintage')
+    .selectAll()
+    .where('wineId', '=', wineId)
+    .execute();
+}
+
 export async function getById(id: number) {
   return await db
     .selectFrom('vintage')
