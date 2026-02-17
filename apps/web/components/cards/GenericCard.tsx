@@ -11,10 +11,9 @@ import { FieldConfig } from "@/lib/types/field";
 import { BackButton } from "@/components/buttons/BackButton";
 import { ApiResult } from "@/lib/api/types";
 import { stringifyValues } from "@/lib/functions";
-import type { GenericType } from "@cellarboss/types";
 import * as z from "zod";
 
-type GenericCardProps<T extends GenericType> = {
+type GenericCardProps<T extends { id: number }> = {
   mode: "view" | "edit" | "create" | "clone";
   data?: T;
   fields: FieldConfig<T>[];
@@ -22,7 +21,7 @@ type GenericCardProps<T extends GenericType> = {
   redirectTo?: string;
 };
 
-export function GenericCard<T extends GenericType>({
+export function GenericCard<T extends { id: number }>({
   mode,
   data,
   fields,

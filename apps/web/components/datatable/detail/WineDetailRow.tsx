@@ -8,8 +8,9 @@ import { getRegionById } from "@/lib/api/regions";
 import { getCountryById } from "@/lib/api/countries";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/query-gate";
+import { getVintagesByWineId } from "@/lib/api/vintages";
 import { Badge } from "@/components/ui/badge";
-import { Earth, Barrel, User, Grape, Wine as WineIcon } from "lucide-react";
+import { Earth, User, Grape, Wine as WineIcon, Plus } from "lucide-react";
 import Link from "next/link";
 
 export default function WineDetailRow({ wine }: { wine: Wine }) {
@@ -34,6 +35,11 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
     queryKey: ["country", regionQuery.data?.countryId],
     queryFn: () => getCountryById(regionQuery.data!.countryId),
     enabled: regionQuery.isSuccess,
+  });
+
+  const vintageQuery = useApiQuery({
+    queryKey: ["vintages", wine.id],
+    queryFn: () => getVintagesByWineId(wine.id),
   });
 
   const result = queryGate(winemakerQuery, grapeQuery, wineGrapeQuery);
@@ -90,8 +96,33 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
       </div>
 
       <div className="text-sm">
-        <span className="text-muted-foreground">Vintages</span>
-        <p className="mt-1 text-muted-foreground italic">Coming soon</p>
+        <span className="flex items-center gap-2">
+          <span className="text-muted-foreground">Vintages</span>
+          <Link href={`/vintages/new?wineId=${wine.id}`}>
+            <Plus className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
+          </Link>
+        </span>
+
+        {vintageQuery.isLoading ? (
+          <p className="mt-1 text-muted-foreground italic">Loading...</p>
+        ) : vintageQuery.data && vintageQuery.data.length > 0 ? (
+          <ul className="mt-1 space-y-1">
+            {vintageQuery.data.map((v) => (
+              <li key={v.id} className="flex items-center gap-2">
+                <Link href={`/vintages/${v.id}`} className="hover:underline">
+                  {v.year ?? "NV"}
+                </Link>
+                {(v.drinkFrom || v.drinkUntil) && (
+                  <span className="text-muted-foreground text-xs">
+                    ({v.drinkFrom ?? "?"} - {v.drinkUntil ?? "?"})
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-1 text-muted-foreground italic">No vintages</p>
+        )}
       </div>
     </div>
   );
