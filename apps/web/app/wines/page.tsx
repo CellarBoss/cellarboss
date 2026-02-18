@@ -16,6 +16,7 @@ import { AddButton } from "@/components/buttons/AddButton";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/query-gate";
 import WineDetailRow from "@/components/datatable/detail/WineDetailRow";
+import { WINE_TYPE_COLORS, WINE_TYPE_LABELS } from "@/lib/constants/wine-colouring";
 
 export default function WinesPage() {
   const queryClient = useQueryClient();
@@ -60,11 +61,15 @@ export default function WinesPage() {
       header: 'Wine Name',
       enableColumnFilter: true,
       enableSorting: true,
-      cell: ({ row }) => {
-        return (
+      cell: ({ row }) => (
+        <div className="flex items-center justify-between gap-2 flex-1 min-w-0">
           <a href={"/wines/" + row.original.id}>{row.original.name}</a>
-        )
-      }
+          <span
+            className={`inline-block w-3 h-3 rounded-full shrink-0 ${WINE_TYPE_COLORS[row.original.type]}`}
+            title={WINE_TYPE_LABELS[row.original.type]}
+          />
+        </div>
+      ),
     },
     {
       accessorKey: 'winemaker',

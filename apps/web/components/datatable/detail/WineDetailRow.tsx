@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { CalendarFold, Earth, User, Grape, Wine as WineIcon, Plus } from "lucide-react";
+import { WINE_TYPE_COLORS, WINE_TYPE_LABELS } from "@/lib/constants/wine-colouring";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -65,9 +66,11 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
     .filter((entry): entry is NonNullable<typeof entry> => entry !== null);
 
   return (
-    <div className="grid grid-cols-[auto_1fr_1fr] gap-6">
-      <div className="flex items-center justify-center w-24 h-32 rounded-lg bg-muted">
-        <WineIcon className="w-10 h-10 text-muted-foreground" />
+    <div className="flex gap-4">
+    <div className={`w-1 self-stretch rounded-full shrink-0 ${WINE_TYPE_COLORS[wine.type]}`} />
+    <div className="grid grid-cols-[auto_1fr_1fr] gap-6 flex-1">
+      <div className="flex items-center justify-center w-24 h-32 rounded-lg bg-muted" title={WINE_TYPE_LABELS[wine.type]}>
+        <WineIcon className={`w-10 h-10`} />
       </div>
 
       <div className="flex flex-col gap-2 text-sm">
@@ -158,6 +161,7 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
           <p className="mt-1 text-muted-foreground italic">No vintages</p>
         )}
       </div>
+    </div>
     </div>
   );
 }

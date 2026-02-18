@@ -5,6 +5,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .createTable('wine')
     .addColumn('id', 'integer', (col) => col.primaryKey().autoIncrement())
     .addColumn('name', 'text', (col) => col.notNull())
+    .addColumn('type', 'text', (col) => col.notNull())
     .addColumn('wineMakerId', 'integer', (col) => col.notNull().references('winemaker.id'))
     .addColumn('regionId', 'integer', (col) => col.references('region.id'))
     .execute();
