@@ -31,6 +31,7 @@ export const storageFields: FieldConfig<Storage>[] = [
     selectorConfig: {
       queryKey: "storages",
       queryFn: getStorages,
+      hierarchical: true,
     },
     validator: z.preprocess(
       (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
