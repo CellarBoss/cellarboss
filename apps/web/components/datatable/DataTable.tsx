@@ -98,8 +98,10 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
   });
 
   const { pageSize } = table.getState().pagination;
-  const filteredRows = table.getFilteredRowModel().rows
-  const pageCount = Math.ceil(filteredRows.length / pagination.pageSize)
+  const paginationRowCount = getSubRows
+    ? table.getExpandedRowModel().rows.length
+    : table.getFilteredRowModel().rows.length;
+  const pageCount = Math.ceil(paginationRowCount / pagination.pageSize)
 
   return (
     <>
