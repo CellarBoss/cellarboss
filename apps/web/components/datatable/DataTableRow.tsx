@@ -10,21 +10,23 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import { cn } from "@/lib/utils";
 import { ChevronRight, ChevronDown } from "lucide-react";
 
 type DataTableRowProps<T> = {
   row: Row<T>;
   isExpanded: boolean;
   canExpand: boolean;
+  isContext?: boolean;
 };
 
-export default function DataTableRow<T>({ row, isExpanded, canExpand }: DataTableRowProps<T>) {
+export default function DataTableRow<T>({ row, isExpanded, canExpand, isContext }: DataTableRowProps<T>) {
   return (
-    <TableRow key={row.id} className="group border-b border-default">
+    <TableRow key={row.id} className={cn("group border-b border-default", isContext && "opacity-60")}>
       {row.getVisibleCells().map((cell, cellIndex) => (
         <TableCell
           key={cell.id}
-          className={"border p-2 bg-table-row group-hover:bg-table-row-hover"}
+          className={cn("border p-2 bg-table-row", !isContext && "group-hover:bg-table-row-hover")}
           style={
             cellIndex === 0 && (canExpand || row.depth > 0)
               ? { paddingLeft: `${row.depth * 24 + 8}px` }
@@ -33,7 +35,7 @@ export default function DataTableRow<T>({ row, isExpanded, canExpand }: DataTabl
         >
           {cellIndex === 0 && (canExpand || row.depth > 0) ? (
             <div className="flex items-center gap-1">
-              {canExpand ? (
+              {!isContext && canExpand ? (
                 <button
                   onClick={() => row.toggleExpanded()}
                   className="cursor-pointer p-0.5 rounded hover:bg-muted"

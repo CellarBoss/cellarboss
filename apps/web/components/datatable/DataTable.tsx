@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import {
   ColumnDef,
   ColumnFiltersState,
+  Row,
   SortingState,
   ExpandedState,
   getCoreRowModel,
@@ -103,6 +104,21 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
     : table.getFilteredRowModel().rows.length;
   const pageCount = Math.ceil(paginationRowCount / pagination.pageSize)
 
+  const pageRows = table.getRowModel().rows;
+  const contextRows: Row<T>[] = [];
+  if (getSubRows) {
+    const pageRowIds = new Set(pageRows.map(r => r.id));
+    const seenContextIds = new Set<string>();
+    for (const row of pageRows) {
+      for (const ancestor of row.getParentRows()) {
+        if (!pageRowIds.has(ancestor.id) && !seenContextIds.has(ancestor.id)) {
+          contextRows.push(ancestor);
+          seenContextIds.add(ancestor.id);
+        }
+      }
+    }
+  }
+
   return (
     <>
       <div className="relative flex w-full items-center">
@@ -127,7 +143,10 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
               </TableCell>
             </TableRow>
           )}
-          {table.getRowModel().rows.map((row) => (
+          {contextRows.map((row) => (
+            <DataTableRow key={`context-${row.id}`} row={row} isExpanded={false} canExpand={false} isContext={true} />
+          ))}
+          {pageRows.map((row) => (
             <Fragment key={row.id}>
               <DataTableRow row={row} isExpanded={row.getIsExpanded()} canExpand={row.getCanExpand() || !!renderDetail} />
               {renderDetail && row.getIsExpanded() && (
