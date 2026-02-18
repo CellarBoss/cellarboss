@@ -96,8 +96,11 @@ export function GenericCard<T extends { id: number }>({
                 key={String(field.key)}
                 name={String(field.key)}
                 label={field.label}
+                type={field.type}
                 editable={editable && field.editable !== false}
                 selectorConfig={"selectorConfig" in field ? field.selectorConfig : undefined}
+                options={"options" in field ? field.options : undefined}
+                numberProps={"numberProps" in field ? field.numberProps : undefined}
               />
             ))}
           </div>

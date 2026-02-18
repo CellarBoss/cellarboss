@@ -5,6 +5,7 @@ import type { SelectorConfig } from "@/lib/types/field";
 import type { GenericType } from "@cellarboss/types";
 import MultiSelector from "./MultipleSelector";
 import SingleSelector from "./SingleSelector";
+import HierarchicalSingleSelector from "./HierarchicalSingleSelector";
 import { useApiQuery } from "@/hooks/use-api-query";
 
 export type OptionGroup = {
@@ -19,7 +20,7 @@ type DataSelectorProps = {
 };
 
 export function DataSelector({ selectorConfig, field, editable }: DataSelectorProps) {
-  const { queryKey, queryFn, allowMultiple = false, groupBy } = selectorConfig;
+  const { queryKey, queryFn, allowMultiple = false, groupBy, hierarchical = false } = selectorConfig;
 
   const { data, isLoading } = useApiQuery<GenericType[]>({
     queryKey: [queryKey],
@@ -44,6 +45,17 @@ export function DataSelector({ selectorConfig, field, editable }: DataSelectorPr
   }
 
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+
+  if (hierarchical) {
+    return (
+      <HierarchicalSingleSelector
+        options={data}
+        isInvalid={isInvalid}
+        editable={editable}
+        field={field}
+      />
+    );
+  }
 
   const groups =
     groupBy && groupData
