@@ -123,7 +123,8 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
               </tr>
             </thead>
             <tbody>
-              {vintageQuery.data.map((v) => (
+              {/* Custom sort to put NV at the end */}
+              {[...vintageQuery.data].sort((a, b) => (b.year ?? -Infinity) - (a.year ?? -Infinity)).map((v) => (
                 <tr key={v.id} className="border-t border-border/50">
                   <td className="py-1 pr-4">
                     <Link href={`/vintages/${v.id}`} className="hover:underline">
