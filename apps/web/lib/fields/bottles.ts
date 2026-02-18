@@ -3,15 +3,9 @@ import type { Bottle } from "@cellarboss/types";
 import type { FieldConfig } from "@/lib/types/field";
 import { getStorages } from "@/lib/api/storages";
 import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
+import { formatStatus } from "@/lib/functions";
 
 export type BottleFormData = Bottle & { quantity: number };
-
-function formatStatus(status: string): string {
-  return status
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
 
 export const bottleFields: FieldConfig<Bottle>[] = [
   {

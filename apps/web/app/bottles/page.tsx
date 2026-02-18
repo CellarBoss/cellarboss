@@ -2,7 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { getBottles, deleteBottle } from "@/lib/api/bottles";
+import { getBottles, deleteBottle, updateBottle } from "@/lib/api/bottles";
 import { getVintages } from "@/lib/api/vintages";
 import { getWines } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
@@ -10,6 +10,8 @@ import { getStorages } from "@/lib/api/storages";
 import { DataTable } from "@/components/datatable/DataTable";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
+import { MoveBottleButton } from "@/components/buttons/MoveBottleButton";
+import { ChangeStatusButton } from "@/components/buttons/ChangeStatusButton";
 import { AddButton } from "@/components/buttons/AddButton";
 import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
@@ -57,6 +59,18 @@ export default function BottlesPage() {
     return true;
   }
 
+  async function handleMove(bottle: Bottle, newStorageId: number | null): Promise<void> {
+    const result = await updateBottle({ ...bottle, storageId: newStorageId });
+    if (!result.ok) throw new Error(result.error.message);
+    queryClient.invalidateQueries({ queryKey: ["bottles"] });
+  }
+
+  async function handleChangeStatus(bottle: Bottle, newStatus: Bottle["status"]): Promise<void> {
+    const result = await updateBottle({ ...bottle, status: newStatus });
+    if (!result.ok) throw new Error(result.error.message);
+    queryClient.invalidateQueries({ queryKey: ["bottles"] });
+  }
+
   const columns = [
     {
       id: "vintage",
@@ -101,11 +115,20 @@ export default function BottlesPage() {
     {
       id: "options",
       header: "",
-      minSize: 100,
-      maxSize: 100,
+      minSize: 175,
+      maxSize: 175,
       enableSorting: false,
       cell: ({ row }: { row: { original: Bottle } }) => (
         <div className="flex gap-1 justify-center mx-5">
+          <MoveBottleButton
+            storages={storages}
+            currentStorageId={row.original.storageId}
+            onMove={(id) => handleMove(row.original, id)}
+          />
+          <ChangeStatusButton
+            currentStatus={row.original.status}
+            onChangeStatus={(s) => handleChangeStatus(row.original, s)}
+          />
           <EditButton onEdit={async () => router.push(`/bottles/${row.original.id}/edit`)} />
           <DeleteButton
             itemDescription={getVintageName(row.original.vintageId, vintageMap, wineMap, winemakerMap)}

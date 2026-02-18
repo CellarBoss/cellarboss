@@ -18,6 +18,13 @@ export function stringifyValues<T>(data: T): any {
   return String(data);
 }
 
+export function formatStatus(status: string): string {
+  return status
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 export type TreeNode<T> = T & { subRows: TreeNode<T>[]; };
 
 export function buildTree<T extends { id: number; }>(
