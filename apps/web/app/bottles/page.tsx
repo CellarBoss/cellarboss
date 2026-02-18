@@ -17,6 +17,8 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/query-gate";
 import type { Bottle, Vintage, Wine, WineMaker } from "@cellarboss/types";
+import { Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 function getVintageName(
   vintageId: number,
@@ -148,6 +150,9 @@ export default function BottlesPage() {
         filterColumnName="vintage"
         defaultSortColumn="purchaseDate"
         buttons={[
+          <Button size="lg" variant="outline" onClick={async () => router.push("/import")} className="cursor-pointer">
+            <Download /> Import Bottle
+          </Button>,
           <AddButton
             onClick={async () => router.push("/bottles/new")}
             subject="Bottle"
