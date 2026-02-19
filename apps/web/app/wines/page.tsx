@@ -17,6 +17,9 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/query-gate";
 import WineDetailRow from "@/components/datatable/detail/WineDetailRow";
 import { WINE_TYPE_COLORS, WINE_TYPE_LABELS } from "@/lib/constants/wine-colouring";
+import { Button } from "@/components/ui/button";
+import { BottleWine } from "lucide-react";
+import { VintageButton } from "@/components/buttons/VintageButton";
 
 export default function WinesPage() {
   const queryClient = useQueryClient();
@@ -103,6 +106,7 @@ export default function WinesPage() {
       cell: ({ row }) => {
         return (
           <div className="flex gap-1 justify-center mx-5">
+            <VintageButton onClick={() => router.push(`/vintages/new?wineId=${row.original.id}`)} />
             <EditButton
               onEdit={() => handleEdit(row.original)}
             />

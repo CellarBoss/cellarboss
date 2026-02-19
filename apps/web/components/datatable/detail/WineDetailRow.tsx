@@ -12,7 +12,7 @@ import { getVintagesByWineId, deleteVintage } from "@/lib/api/vintages";
 import { Badge } from "@/components/ui/badge";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
-import { CalendarFold, Earth, User, Grape, Wine as WineIcon, Plus, Check, Hourglass, AlertCircle } from "lucide-react";
+import { Earth, User, Grape, Wine as WineIcon, Check, Hourglass, AlertCircle } from "lucide-react";
 import { WINE_TYPE_COLORS, WINE_TYPE_LABELS } from "@/lib/constants/wine-colouring";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
@@ -109,21 +109,13 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
       </div>
 
       <div className="text-sm">
-        <span className="flex items-center gap-2">
-          <CalendarFold className="h-3.5 w-5 shrink-0" />
-          <span>Vintages</span>
-          <Link href={`/vintages/new?wineId=${wine.id}`}>
-            <Plus className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
-          </Link>
-        </span>
-
         {vintageQuery.isLoading ? (
           <p className="mt-1 text-muted-foreground italic">Loading...</p>
         ) : vintageQuery.data && vintageQuery.data.length > 0 ? (
           <table className="mt-1 w-100 text-sm">
             <thead>
               <tr className="text-muted-foreground text-xs">
-                <th className="text-left font-medium py-1 pr-4">Year</th>
+                <th className="text-left font-medium py-1 pr-4">Vintage</th>
                 <th className="text-left font-medium py-1 pr-4">Drinking Window</th>
                 <th className="text-right font-medium py-1"></th>
               </tr>
