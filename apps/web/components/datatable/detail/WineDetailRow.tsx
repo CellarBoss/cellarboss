@@ -12,11 +12,12 @@ import { getVintagesByWineId, deleteVintage } from "@/lib/api/vintages";
 import { Badge } from "@/components/ui/badge";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
-import { CalendarFold, Earth, User, Grape, Wine as WineIcon, Plus } from "lucide-react";
+import { CalendarFold, Earth, User, Grape, Wine as WineIcon, Plus, Check, Hourglass, AlertCircle } from "lucide-react";
 import { WINE_TYPE_COLORS, WINE_TYPE_LABELS } from "@/lib/constants/wine-colouring";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { formatDrinkingWindow, getDrinkingStatus } from "@/lib/functions";
 
 export default function WineDetailRow({ wine }: { wine: Wine }) {
   const queryClient = useQueryClient();
@@ -57,6 +58,8 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
 
   const region = regionQuery.data;
   const country = countryQuery.data;
+
+  const currentYear = new Date().getFullYear();
 
   const grapeEntries = wineGrapes
     .map((wg) => {
@@ -121,7 +124,7 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
             <thead>
               <tr className="text-muted-foreground text-xs">
                 <th className="text-left font-medium py-1 pr-4">Year</th>
-                <th className="text-left font-medium py-1 pr-4">Drink Window</th>
+                <th className="text-left font-medium py-1 pr-4">Drinking Window</th>
                 <th className="text-right font-medium py-1"></th>
               </tr>
             </thead>
@@ -135,9 +138,21 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
                     </Link>
                   </td>
                   <td className="py-1 pr-4 text-muted-foreground">
-                    {v.drinkFrom || v.drinkUntil
-                      ? `${v.drinkFrom ?? "?"} - ${v.drinkUntil ?? "?"}`
-                      : "—"}
+                    <span className="flex items-center gap-2">
+                    {(() => {
+                      const status = getDrinkingStatus(v.drinkFrom, v.drinkUntil, currentYear);
+                      switch (status) {
+                        case 'drinkable':
+                          return <Check className="inline-block h-3.5 w-3.5 text-green-500" />;
+                        case 'wait':
+                          return <Hourglass className="inline-block h-3.5 w-3.5 text-yellow-500" />;
+                        case 'past':
+                          return <AlertCircle className="inline-block h-3.5 w-3.5 text-red-500" />;
+                      }
+                    })()}
+                    {' '}
+                    {formatDrinkingWindow(v.drinkFrom, v.drinkUntil)}
+                    </span>
                   </td>
                   <td className="py-1 text-right">
                     <span className="inline-flex items-center gap-1">

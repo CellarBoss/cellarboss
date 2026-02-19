@@ -25,6 +25,32 @@ export function formatStatus(status: string): string {
     .join(" ");
 }
 
+export function formatDrinkingWindow(begin: number | null, end: number | null): string {
+  if(begin !== null && end !== null) return `${begin} until ${end}`;
+  if(begin === null && end !== null) return `Now until ${end}`;
+  if(begin !== null) return `From ${begin}`;
+  if(end !== null) return `Until ${end}`;
+  return "-";
+}
+
+export type DrinkingStatus = 'drinkable' | 'wait' | 'past' | 'unknown';
+
+export function getDrinkingStatus(drinkFrom: number | null, drinkUntil: number | null, currentYear: number): DrinkingStatus {
+  if (drinkFrom === null && drinkUntil === null) {
+    return 'unknown';
+  }
+  
+  if (drinkUntil !== null && currentYear > drinkUntil) {
+    return 'past';
+  }
+  
+  if (drinkFrom !== null && currentYear < drinkFrom) {
+    return 'wait';
+  }
+  
+  return 'drinkable';
+}
+
 export type TreeNode<T> = T & { subRows: TreeNode<T>[]; };
 
 export function expandNamePattern(name: string): string[] {
