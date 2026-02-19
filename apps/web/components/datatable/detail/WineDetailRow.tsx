@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { formatDrinkingWindow, getDrinkingStatus } from "@/lib/functions";
+import { BottleButton } from "@/components/buttons/BottleButton";
 
 export default function WineDetailRow({ wine }: { wine: Wine }) {
   const queryClient = useQueryClient();
@@ -148,6 +149,7 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
                   </td>
                   <td className="py-1 text-right">
                     <span className="inline-flex items-center gap-1">
+                      <BottleButton onClick={async () => router.push(`/bottles/new?vintageId=${v.id}`)} />
                       <EditButton onEdit={async () => router.push(`/vintages/${v.id}/edit`)} />
                       <DeleteButton
                         itemDescription={`${v.year ?? "NV"} ${wine.name}`}
