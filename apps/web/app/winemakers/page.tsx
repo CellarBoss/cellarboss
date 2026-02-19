@@ -22,23 +22,10 @@ export default function WinemakersPage() {
   }
 
   async function handleDelete(row: WineMaker): Promise<boolean> {
-    console.log("Delete row:", row);
-
-    try {
-      if (!row.id) throw new Error("Invalid winemaker ID");
-
-      var delResult = await deleteWinemaker(row.id);
-      if (!delResult.ok) {
-        throw new Error("Error deleting winemaker: " + delResult.error.message);
-      }
-
-      queryClient.invalidateQueries({ queryKey: ['winemakers'] })
-
-      return true;
-    } catch (err: any) {
-      console.error("Delete failed:", err);
-      throw err;
-    }
+    const delResult = await deleteWinemaker(row.id);
+    if (!delResult.ok) throw new Error("Error deleting winemaker: " + delResult.error.message);
+    queryClient.invalidateQueries({ queryKey: ["winemakers"] });
+    return true;
   }
 
   const winemakerQuery = useApiQuery({ queryKey: ["winemakers"], queryFn: getWinemakers });

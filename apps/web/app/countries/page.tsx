@@ -22,23 +22,10 @@ export default function CountriesPage() {
   }
 
   async function handleDelete(row: Country): Promise<boolean> {
-    console.log("Delete row:", row);
-
-    try {
-      if (!row.id) throw new Error("Invalid country ID");
-
-      var delResult = await deleteCountry(row.id);
-      if (!delResult.ok) {
-        throw new Error("Error deleting country: " + delResult.error.message);
-      }
-
-      queryClient.invalidateQueries({ queryKey: ['countries'] })
-
-      return true;
-    } catch (err: any) {
-      console.error("Delete failed:", err);
-      throw err;
-    }
+    const delResult = await deleteCountry(row.id);
+    if (!delResult.ok) throw new Error("Error deleting country: " + delResult.error.message);
+    queryClient.invalidateQueries({ queryKey: ["countries"] });
+    return true;
   }
 
   const countryQuery = useApiQuery({ queryKey: ["countries"], queryFn: getCountries });

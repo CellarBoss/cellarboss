@@ -27,22 +27,10 @@ export default function WinesPage() {
   }
 
   async function handleDelete(row: Wine): Promise<boolean> {
-    try {
-      if (!row.id) throw new Error("Invalid wine ID");
-
-      var delResult = await deleteWine(row.id);
-      if (!delResult.ok) {
-        throw new Error("Error deleting wine: " + delResult.error.message);
-      }
-
-      queryClient.invalidateQueries({ queryKey: ['wines'] });
-      queryClient.invalidateQueries({ queryKey: ['winegrapes'] });
-
-      return true;
-    } catch (err: any) {
-      console.error("Delete failed:", err);
-      throw err;
-    }
+    const delResult = await deleteWine(row.id);
+    if (!delResult.ok) throw new Error("Error deleting wine: " + delResult.error.message);
+    queryClient.invalidateQueries({ queryKey: ["wines"] });
+    return true;
   }
 
   const wineQuery = useApiQuery({ queryKey: ["wines"], queryFn: getWines });

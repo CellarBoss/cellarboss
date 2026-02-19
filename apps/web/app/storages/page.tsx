@@ -24,23 +24,10 @@ export default function StoragesPage() {
   }
 
   async function handleDelete(row: Storage): Promise<boolean> {
-    console.log("Delete row:", row);
-
-    try {
-      if (!row.id) throw new Error("Invalid storage ID");
-
-      var delResult = await deleteStorage(row.id);
-      if (!delResult.ok) {
-        throw new Error("Error deleting storage: " + delResult.error.message);
-      }
-
-      queryClient.invalidateQueries({ queryKey: ['storages'] })
-
-      return true;
-    } catch (err: any) {
-      console.error("Delete failed:", err);
-      throw err;
-    }
+    const delResult = await deleteStorage(row.id);
+    if (!delResult.ok) throw new Error("Error deleting storage: " + delResult.error.message);
+    queryClient.invalidateQueries({ queryKey: ["storages"] });
+    return true;
   }
 
   const storageQuery = useApiQuery({ queryKey: ["storages"], queryFn: getStorages });

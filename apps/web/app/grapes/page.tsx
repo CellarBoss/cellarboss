@@ -21,23 +21,10 @@ export default function GrapesPage() {
   }
 
   async function handleDelete(row: Grape): Promise<boolean> {
-    console.log("Delete row:", row);
-
-    try {
-      if(!row.id) throw new Error("Invalid grape ID");
-
-      var delResult = await deleteGrape(row.id);
-      if(!delResult.ok) {
-        throw new Error("Error deleting grape: " + delResult.error.message);
-      }
-
-      queryClient.invalidateQueries({ queryKey: ['grapes'] })
-
-      return true;
-    } catch (err: any) {
-      console.error("Delete failed:", err);
-      throw err;
-    }
+    const delResult = await deleteGrape(row.id);
+    if (!delResult.ok) throw new Error("Error deleting grape: " + delResult.error.message);
+    queryClient.invalidateQueries({ queryKey: ["grapes"] });
+    return true;
   }
 
   const grapeQuery = useApiQuery({ queryKey: ["grapes"], queryFn: getGrapes });

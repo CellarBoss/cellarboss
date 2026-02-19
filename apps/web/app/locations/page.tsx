@@ -22,23 +22,10 @@ export default function LocationsPage() {
   }
 
   async function handleDelete(row: Location): Promise<boolean> {
-    console.log("Delete row:", row);
-
-    try {
-      if (!row.id) throw new Error("Invalid location ID");
-
-      var delResult = await deleteLocation(row.id);
-      if (!delResult.ok) {
-        throw new Error("Error deleting location: " + delResult.error.message);
-      }
-
-      queryClient.invalidateQueries({ queryKey: ['locations'] })
-
-      return true;
-    } catch (err: any) {
-      console.error("Delete failed:", err);
-      throw err;
-    }
+    const delResult = await deleteLocation(row.id);
+    if (!delResult.ok) throw new Error("Error deleting location: " + delResult.error.message);
+    queryClient.invalidateQueries({ queryKey: ["locations"] });
+    return true;
   }
 
   const locationQuery = useApiQuery({ queryKey: ["locations"], queryFn: getLocations });

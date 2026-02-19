@@ -22,23 +22,10 @@ export default function RegionsPage() {
   }
 
   async function handleDelete(row: Region): Promise<boolean> {
-    console.log("Delete row:", row);
-
-    try {
-      if (!row.id) throw new Error("Invalid region ID");
-
-      var delResult = await deleteRegion(row.id);
-      if (!delResult.ok) {
-        throw new Error("Error deleting region: " + delResult.error.message);
-      }
-
-      queryClient.invalidateQueries({ queryKey: ['regions'] })
-
-      return true;
-    } catch (err: any) {
-      console.error("Delete failed:", err);
-      throw err;
-    }
+    const delResult = await deleteRegion(row.id);
+    if (!delResult.ok) throw new Error("Error deleting region: " + delResult.error.message);
+    queryClient.invalidateQueries({ queryKey: ["regions"] });
+    return true;
   }
 
   const regionQuery = useApiQuery({ queryKey: ["regions"], queryFn: getRegions });
