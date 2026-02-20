@@ -17,8 +17,6 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
 import WineDetailRow from "@/components/datatable/detail/WineDetailRow";
 import { WINE_TYPE_COLORS, WINE_TYPE_LABELS } from "@/lib/constants/wine-colouring";
-import { Button } from "@/components/ui/button";
-import { BottleWine } from "lucide-react";
 import { VintageButton } from "@/components/buttons/VintageButton";
 
 export default function WinesPage() {

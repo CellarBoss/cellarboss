@@ -1,7 +1,6 @@
 "use client";
 
 import { Fragment, ReactNode, useState } from "react";
-import { useRouter } from 'next/navigation';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -42,8 +41,6 @@ type DataTableProps<T> = {
 };
 
 export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName, defaultSortColumn, buttons, getSubRows, renderDetail, defaultExpanded }: DataTableProps<T>) {
-  const router = useRouter();
-
   if (defaultPageSize === undefined) {
     defaultPageSize = 20;
   }

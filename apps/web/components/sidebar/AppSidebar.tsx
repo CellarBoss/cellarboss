@@ -1,4 +1,4 @@
-import { Home, BottleWine, Settings, Grape, CalendarFold, User, Refrigerator, MapPin, Earth, Flag, Barrel, UserCircle } from "lucide-react"
+import { BottleWine, Settings, Grape, User, Refrigerator, MapPin, Earth, Flag, Barrel, UserCircle } from "lucide-react"
 
 import {
   Sidebar,
@@ -6,15 +6,11 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { LogoutButton } from "@/components/sidebar/LogoutButton";
-
-import { authClient } from "@/lib/auth-client";
 
 const menuItems = {
   "Wines": [
@@ -66,21 +62,3 @@ export function AppSidebar() {
     </Sidebar>
   )
 }
-
-/*
-export function UserDisplay() {
-  const session = authClient.useSession();
-
-  if (!session) return null;
-
-  const user = session.data?.user;
-  
-  if (!user) return null;
-  return (
-    <SidebarFooter>
-      Hello, {user.name}
-      <LogoutButton />
-    </SidebarFooter>
-  )
-}
-*/
