@@ -40,6 +40,17 @@ export function useSettings(key?: string) {
   });
 }
 
+export function useSetting(key: string) {
+  const query = useSettings(key);
+
+  return {
+    data: query.data?.get(key),
+    isLoading: query.isLoading,
+    isError: query.isError,
+    error: query.error,
+  };
+}
+
 export function useUpdateSetting() {
   const queryClient = useQueryClient();
 

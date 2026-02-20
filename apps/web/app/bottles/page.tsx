@@ -15,7 +15,9 @@ import { ChangeStatusButton } from "@/components/buttons/ChangeStatusButton";
 import { AddButton } from "@/components/buttons/AddButton";
 import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
+import { useSetting } from "@/hooks/use-settings";
 import { queryGate } from "@/lib/query-gate";
+import { formatPrice } from "@/lib/functions";
 import type { Bottle, Vintage, Wine, WineMaker } from "@cellarboss/types";
 
 function getVintageName(
@@ -41,6 +43,7 @@ export default function BottlesPage() {
   const wineQuery = useApiQuery({ queryKey: ["wines"], queryFn: getWines });
   const winemakerQuery = useApiQuery({ queryKey: ["winemakers"], queryFn: getWinemakers });
   const storageQuery = useApiQuery({ queryKey: ["storages"], queryFn: getStorages });
+  const { data: currency } = useSetting("currency");
 
   const result = queryGate(bottleQuery, vintageQuery, wineQuery, winemakerQuery, storageQuery);
   if (!result.ready) return result.gate;
@@ -94,7 +97,7 @@ export default function BottlesPage() {
       header: "Price",
       enableSorting: true,
       cell: ({ row }: { row: { original: Bottle } }) => (
-        <span>{Number(row.original.purchasePrice).toFixed(2)}</span>
+        <span>{formatPrice(row.original.purchasePrice, (currency as string) || "USD")}</span>
       ),
     },
     {

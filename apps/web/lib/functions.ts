@@ -99,3 +99,17 @@ export function buildTree<T extends { id: number; }>(
 
   return roots;
 }
+
+export function formatPrice(price: number | string, currency: string): string {
+  try {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(typeof price === 'string' ? parseFloat(price) : price);
+  } catch {
+    // Fallback if currency is invalid
+    return `${Number(price).toFixed(2)} ${currency}`;
+  }
+}
