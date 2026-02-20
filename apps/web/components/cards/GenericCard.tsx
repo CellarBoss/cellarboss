@@ -33,6 +33,7 @@ export function GenericCard<T extends { id: number }>({
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const zodShape: Record<string, z.ZodTypeAny> = {};
 
@@ -56,6 +57,7 @@ export function GenericCard<T extends { id: number }>({
       }
       setIsProcessing(true);
       setErrorMessage(null);
+      setSuccessMessage(null);
       try {
         var result = await processSave(value);
 
@@ -68,7 +70,11 @@ export function GenericCard<T extends { id: number }>({
           return;
         }
 
-        router.push(redirectTo);
+        setSuccessMessage("Changes saved successfully!");
+        
+        setTimeout(() => {
+          router.push(redirectTo);
+        }, 1500);
       } catch (err: any) {
         console.error(err);
         var message = JSON.parse(err.message).error;
@@ -116,6 +122,9 @@ export function GenericCard<T extends { id: number }>({
           )}
           {errorMessage && (
             <span className="mx-2 text-red-600">{errorMessage}</span>
+          )}
+          {successMessage && (
+            <span className="mx-2 text-green-600">{successMessage}</span>
           )}
         </span>
       </form>

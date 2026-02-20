@@ -1,4 +1,4 @@
-import { Home, BottleWine, Settings, Grape, CalendarFold, User, Refrigerator, MapPin, Earth, Flag, Barrel } from "lucide-react"
+import { Home, BottleWine, Settings, Grape, CalendarFold, User, Refrigerator, MapPin, Earth, Flag, Barrel, UserCircle } from "lucide-react"
 
 import {
   Sidebar,
@@ -32,6 +32,7 @@ const menuItems = {
     { title: "Countries", url: "/countries", icon: Earth },
   ],
   "Settings": [
+    { title: "Profile", url: "/profile", icon: UserCircle },
     { title: "Users", url: "/users", icon: User },
     { title: "Application Settings", url: "/settings", icon: Settings },
   ]

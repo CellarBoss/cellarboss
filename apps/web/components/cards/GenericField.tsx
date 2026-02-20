@@ -12,7 +12,7 @@ type FieldProps = {
   name: string;
   label: string;
   editable?: boolean;
-  type?: "text" | "number" | "textarea" | "selector" | "date" | "fixed-list" | "wine-vintage";
+  type?: "text" | "password" | "number" | "textarea" | "selector" | "date" | "fixed-list" | "wine-vintage";
   numberProps?: { min?: number; max?: number; step?: number };
   selectorConfig?: SelectorConfig;
   options?: SelectOption[];
@@ -60,6 +60,17 @@ export function GenericField({
                 value={field.state.value ?? ""}
                 type="number"
                 {...numberProps}
+                disabled={!editable}
+                onChange={(e) => field.handleChange(e.target.value)}
+                aria-invalid={isInvalid}
+                autoComplete="off"
+              />
+            ) : type === "password" ? (
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value ?? ""}
+                type="password"
                 disabled={!editable}
                 onChange={(e) => field.handleChange(e.target.value)}
                 aria-invalid={isInvalid}
