@@ -55,7 +55,7 @@ export default function RegionsPage() {
       enableColumnFolder: false,
       enableSorting: true,
       cell: ({ row }: { row: { original: Region } }) => {
-        var country = countryList.filter(country => country.id === row.original.countryId)[0]
+        const country = countryList.filter(country => country.id === row.original.countryId)[0]
         return (
           <a href={"/countries/" + country.id}>{country.name}</a>
         )

@@ -68,7 +68,7 @@ export default function WinesPage() {
       enableColumnFilter: false,
       enableSorting: true,
       cell: ({ row }) => {
-        var winemaker = winemakerList.find(w => w.id === row.original.wineMakerId);
+        const winemaker = winemakerList.find(w => w.id === row.original.wineMakerId);
         if (!winemaker) return <span>-</span>;
         return (
           <span><a href={"/winemakers/" + winemaker.id}>{winemaker.name}</a></span>
@@ -82,8 +82,8 @@ export default function WinesPage() {
       enableSorting: true,
       cell: ({ row }) => {
         if (!row.original.regionId) return <span>-</span>;
-        var region = regionList.find(r => r.id === row.original.regionId);
-        var country = region ? countryList.find(c => c.id === region!.countryId) : undefined;
+        const region = regionList.find(r => r.id === row.original.regionId);
+        const country = region ? countryList.find(c => c.id === region!.countryId) : undefined;
         return (
           <span>
             {

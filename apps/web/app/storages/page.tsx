@@ -58,7 +58,7 @@ export default function StoragesPage() {
       enableSorting: true,
       cell: ({ row }) => {
         if (!row.original.locationId) return <span>-</span>;
-        var location = locationList.filter(l => l.id === row.original.locationId)[0];
+        const location = locationList.filter(l => l.id === row.original.locationId)[0];
         if (!location) return <span>-</span>;
         return (
           <a href={"/locations/" + location.id}>{location.name}</a>

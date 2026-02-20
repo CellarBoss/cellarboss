@@ -59,11 +59,11 @@ export function GenericCard<T extends { id: number }>({
       setErrorMessage(null);
       setSuccessMessage(null);
       try {
-        var result = await processSave(value);
+        const result = await processSave(value);
 
         if (!result.ok) {
-          var errors = [];
-          for (let err in result.error.errors) {
+          const errors = [];
+          for (const err in result.error.errors) {
             errors.push(result.error.errors[err]);
           }
           setErrorMessage(result.error.message + ": " + errors.join(", "));
@@ -77,7 +77,7 @@ export function GenericCard<T extends { id: number }>({
         }, 1500);
       } catch (err: any) {
         console.error(err);
-        var message = JSON.parse(err.message).error;
+        const message = JSON.parse(err.message).error;
         setErrorMessage(message || "Something went wrong.");
       } finally {
         setIsProcessing(false);
