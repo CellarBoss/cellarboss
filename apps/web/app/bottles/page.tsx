@@ -19,6 +19,7 @@ import { useSetting } from "@/hooks/use-settings";
 import { queryGate } from "@/lib/functions/query-gate";
 import { formatPrice } from "@/lib/functions/format";
 import type { Bottle, Vintage, Wine, WineMaker } from "@cellarboss/types";
+import { LoadingCard } from "@/components/cards/LoadingCard";
 
 function getVintageName(
   vintageId: number,
@@ -43,10 +44,11 @@ export default function BottlesPage() {
   const wineQuery = useApiQuery({ queryKey: ["wines"], queryFn: getWines });
   const winemakerQuery = useApiQuery({ queryKey: ["winemakers"], queryFn: getWinemakers });
   const storageQuery = useApiQuery({ queryKey: ["storages"], queryFn: getStorages });
-  const { data: currency } = useSetting("currency");
+  const { data: currency, isLoading: currencyLoading } = useSetting("currency");
 
   const result = queryGate(bottleQuery, vintageQuery, wineQuery, winemakerQuery, storageQuery);
   if (!result.ready) return result.gate;
+  if (currencyLoading) return <LoadingCard />;
 
   const [bottles, vintages, wines, winemakers, storages] = result.data;
 
