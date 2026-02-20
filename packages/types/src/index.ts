@@ -9,3 +9,4 @@ export type { Vintage, CreateVintage, UpdateVintage } from './vintage.js';
 export type { Wine, CreateWine, UpdateWine } from './wine.js';
 export type { WineGrape, CreateWineGrape, UpdateWineGrape } from './winegrape.js';
 export type { WineMaker, CreateWineMaker, UpdateWineMaker } from './winemaker.js';
+export type { Setting, UpdateSetting } from './setting.js';

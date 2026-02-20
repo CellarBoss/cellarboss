@@ -9,7 +9,8 @@ import type {
   Vintage,
   Wine,
   WineGrape,
-  WineMaker
+  WineMaker,
+  Setting
 } from "@cellarboss/types";
 
 // Kysely table definitions - wrap auto-increment IDs with Generated<>
@@ -53,6 +54,8 @@ export interface WineMakerTable extends Omit<WineMaker, 'id'> {
   id: Generated<number>;
 }
 
+export interface SettingTable extends Setting {}
+
 // Database interface for Kysely
 export interface Database {
   bottle: BottleTable;
@@ -65,4 +68,5 @@ export interface Database {
   wine: WineTable;
   winegrape: WineGrapeTable;
   winemaker: WineMakerTable;
+  setting: SettingTable;
 }

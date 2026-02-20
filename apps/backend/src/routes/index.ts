@@ -9,6 +9,7 @@ import { registerVintageRoutes } from './vintages.routes.js';
 import { registerWineRoutes } from './wines.routes.js';
 import { registerWineGrapeRoutes } from './winegrapes.routes.js';
 import { registerWineMakerRoutes } from './winemakers.routes.js';
+import { registerSettingsRoutes } from './settings.routes.js';
 
 export function registerRoutes(app: Hono) {
   registerBottleRoutes(app);
@@ -21,4 +22,5 @@ export function registerRoutes(app: Hono) {
   registerWineRoutes(app);
   registerWineGrapeRoutes(app);
   registerWineMakerRoutes(app);
+  registerSettingsRoutes(app);
 }
