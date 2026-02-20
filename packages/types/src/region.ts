@@ -1,4 +1,4 @@
-import { GenericType } from "./generic.js";
+import type { GenericType } from "./generic.js";
 
 export interface Region extends GenericType {
   countryId: number;
