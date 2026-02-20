@@ -17,7 +17,7 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useSetting } from "@/hooks/use-settings";
 import { queryGate } from "@/lib/functions/query-gate";
-import { formatPrice } from "@/lib/functions/format";
+import { formatPrice, formatStatus } from "@/lib/functions/format";
 import type { Bottle, Vintage, Wine, WineMaker } from "@cellarboss/types";
 import { LoadingCard } from "@/components/cards/LoadingCard";
 
@@ -113,9 +113,7 @@ export default function BottlesPage() {
       accessorKey: "status",
       header: "Status",
       enableSorting: true,
-      cell: ({ row }: { row: { original: Bottle } }) => (
-        <span className="capitalize">{row.original.status.replace(/-/g, " ")}</span>
-      ),
+      cell: ({ row }: { row: { original: Bottle } }) => (formatStatus(row.original.status)),
     },
     {
       id: "options",
