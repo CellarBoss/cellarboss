@@ -16,8 +16,8 @@ import { AddButton } from "@/components/buttons/AddButton";
 import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useSetting } from "@/hooks/use-settings";
-import { queryGate } from "@/lib/query-gate";
-import { formatPrice } from "@/lib/functions";
+import { queryGate } from "@/lib/functions/query-gate";
+import { formatPrice } from "@/lib/functions/format";
 import type { Bottle, Vintage, Wine, WineMaker } from "@cellarboss/types";
 
 function getVintageName(

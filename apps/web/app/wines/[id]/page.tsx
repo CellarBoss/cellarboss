@@ -7,7 +7,7 @@ import { GenericCard } from "@/components/cards/GenericCard";
 import { wineFields, WineFormData } from "@/lib/fields/wines";
 import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { queryGate } from "@/lib/query-gate";
+import { queryGate } from "@/lib/functions/query-gate";
 
 export default function ViewWinePage() {
   const params = useParams();

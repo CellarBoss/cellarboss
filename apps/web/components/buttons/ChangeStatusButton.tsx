@@ -12,7 +12,7 @@ import { Tag, Loader2 } from "lucide-react";
 import { FixedListField } from "@/components/cards/FixedListField";
 import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
 import type { Bottle } from "@cellarboss/types";
-import { formatStatus } from "@/lib/functions";
+import { formatStatus } from "@/lib/functions/format";
 
 type BottleStatus = Bottle["status"];
 

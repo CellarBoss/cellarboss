@@ -6,7 +6,7 @@ import { storageFields } from "@/lib/fields/storages";
 import { createStorage } from "@/lib/api/storages";
 import { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
-import { expandNamePattern } from "@/lib/functions";
+import { expandNamePattern } from "@/lib/functions/strings";
 
 async function handleCreate(storage: Storage): Promise<ApiResult<Storage>> {
   const names = expandNamePattern(storage.name);

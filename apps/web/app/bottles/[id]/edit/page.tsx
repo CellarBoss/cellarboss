@@ -8,7 +8,7 @@ import { getBottleById, updateBottle } from "@/lib/api/bottles";
 import type { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { queryGate } from "@/lib/query-gate";
+import { queryGate } from "@/lib/functions/query-gate";
 
 async function handleUpdate(bottle: Bottle): Promise<ApiResult<Bottle>> {
   return updateBottle(bottle);

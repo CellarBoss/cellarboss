@@ -9,7 +9,7 @@ import { updateStorage } from "@/lib/api/storages";
 import { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { queryGate } from "@/lib/query-gate";
+import { queryGate } from "@/lib/functions/query-gate";
 
 async function handleUpdate(storage: Storage): Promise<ApiResult<Storage>> {
   console.log("Update storage:", storage);

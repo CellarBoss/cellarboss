@@ -7,7 +7,7 @@ import { bottleFields } from "@/lib/fields/bottles";
 import { getBottleById } from "@/lib/api/bottles";
 import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { queryGate } from "@/lib/query-gate";
+import { queryGate } from "@/lib/functions/query-gate";
 
 export default function ViewBottlePage() {
   const params = useParams();

@@ -7,7 +7,7 @@ import { GenericCard } from "@/components/cards/GenericCard";
 import { grapeFields } from "@/lib/fields/grapes";
 import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { queryGate } from "@/lib/query-gate";
+import { queryGate } from "@/lib/functions/query-gate";
 
 export default function ViewGrapePage() {
   const params = useParams();

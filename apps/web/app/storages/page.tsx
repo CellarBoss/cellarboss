@@ -2,7 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import type { Storage } from "@cellarboss/types";
-import { buildTree, TreeNode } from "@/lib/functions";
+import { buildTree, TreeNode } from "@/lib/functions/tree";
 import { getStorages, deleteStorage } from "@/lib/api/storages";
 import { getLocations } from "@/lib/api/locations";
 import { DataTable } from "@/components/datatable/DataTable";
@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { queryGate } from "@/lib/query-gate";
+import { queryGate } from "@/lib/functions/query-gate";
 
 export default function StoragesPage() {
   const queryClient = useQueryClient();

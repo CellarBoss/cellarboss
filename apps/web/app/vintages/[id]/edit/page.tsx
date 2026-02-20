@@ -8,7 +8,7 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { getVintageById, updateVintage } from "@/lib/api/vintages";
 import { vintageFields } from "@/lib/fields/vintages";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { queryGate } from "@/lib/query-gate";
+import { queryGate } from "@/lib/functions/query-gate";
 
 async function handleUpdate(vintage: Vintage): Promise<ApiResult<Vintage>> {
   return updateVintage(vintage);

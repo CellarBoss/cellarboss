@@ -10,7 +10,7 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
 import { deleteGrape, getGrapes } from "@/lib/api/grapes";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { queryGate } from "@/lib/query-gate";
+import { queryGate } from "@/lib/functions/query-gate";
 
 export default function GrapesPage() {
   const queryClient = useQueryClient();

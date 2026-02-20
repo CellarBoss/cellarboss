@@ -8,7 +8,7 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { getRegionById, updateRegion } from "@/lib/api/regions";
 import { regionFields } from "@/lib/fields/regions";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { queryGate } from "@/lib/query-gate";
+import { queryGate } from "@/lib/functions/query-gate";
 
 async function handleUpdate(region: Region): Promise<ApiResult<Region>> {
   console.log("Update region:", region);

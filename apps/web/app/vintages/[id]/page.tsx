@@ -7,7 +7,7 @@ import { GenericCard } from "@/components/cards/GenericCard";
 import { PageHeader } from "@/components/page/PageHeader";
 import { vintageFields } from "@/lib/fields/vintages";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { queryGate } from "@/lib/query-gate";
+import { queryGate } from "@/lib/functions/query-gate";
 
 export default function ViewVintagePage() {
   const params = useParams();

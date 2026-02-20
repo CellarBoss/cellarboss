@@ -3,7 +3,7 @@ import type { Bottle } from "@cellarboss/types";
 import type { FieldConfig } from "@/lib/types/field";
 import { getStorages } from "@/lib/api/storages";
 import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
-import { formatStatus } from "@/lib/functions";
+import { formatStatus } from "@/lib/functions/format";
 
 export type BottleFormData = Bottle & { quantity: number };
 

@@ -7,7 +7,7 @@ import { getWineGrapesByWineId } from "@/lib/api/winegrapes";
 import { getRegionById } from "@/lib/api/regions";
 import { getCountryById } from "@/lib/api/countries";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { queryGate } from "@/lib/query-gate";
+import { queryGate } from "@/lib/functions/query-gate";
 import { getVintagesByWineId, deleteVintage } from "@/lib/api/vintages";
 import { Badge } from "@/components/ui/badge";
 import { EditButton } from "@/components/buttons/EditButton";
@@ -17,7 +17,7 @@ import { WINE_TYPE_COLORS, WINE_TYPE_LABELS } from "@/lib/constants/wine-colouri
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { formatDrinkingWindow, getDrinkingStatus } from "@/lib/functions";
+import { formatDrinkingWindow, formatDrinkingStatus } from "@/lib/functions/format";
 import { BottleButton } from "@/components/buttons/BottleButton";
 
 export default function WineDetailRow({ wine }: { wine: Wine }) {
@@ -133,7 +133,7 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
                   <td className="py-1 pr-4 text-muted-foreground">
                     <span className="flex items-center gap-2">
                     {(() => {
-                      const status = getDrinkingStatus(v.drinkFrom, v.drinkUntil, currentYear);
+                      const status = formatDrinkingStatus(v.drinkFrom, v.drinkUntil, currentYear);
                       switch (status) {
                         case 'drinkable':
                           return <Check className="inline-block h-3.5 w-3.5 text-green-500" />;
