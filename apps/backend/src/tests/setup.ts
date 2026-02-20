@@ -128,7 +128,7 @@ export async function createTestStorage(db: Kysely<Database>, locationId: number
 export async function createTestWine(db: Kysely<Database>, wineMakerId: number, regionId: number | null = null, name: string = 'Test Wine') {
   return await db
     .insertInto('wine')
-    .values({ name, wineMakerId, regionId })
+    .values({ name, wineMakerId, regionId, type: 'red' })
     .returning('id')
     .executeTakeFirstOrThrow();
 }
