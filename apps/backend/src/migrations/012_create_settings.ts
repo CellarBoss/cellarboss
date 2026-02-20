@@ -6,11 +6,6 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('key', 'text', (col) => col.primaryKey())
     .addColumn('value', 'text', (col) => col.notNull())
     .execute();
-  
-  await db.insertInto('setting').values([
-    { key: 'currency', value: 'GBP' },
-    { key: 'language', value: 'en' },
-  ]).execute();
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
