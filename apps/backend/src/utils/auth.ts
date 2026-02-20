@@ -8,6 +8,7 @@ if (!process.env.BETTER_AUTH_SECRET) {
 export const auth = betterAuth({
   basePath: "/api/auth",
   secret: process.env.BETTER_AUTH_SECRET,
+  trustedOrigins: (process.env.CORS || "http://localhost:3000").split(","),
   user: {
     additionalFields: {
       role: {
