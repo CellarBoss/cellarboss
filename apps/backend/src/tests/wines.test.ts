@@ -88,7 +88,8 @@ describe('Wine API', () => {
           body: JSON.stringify({
             name: 'Château Margaux',
             wineMakerId: testWineMakerId,
-            regionId: testRegionId
+            regionId: testRegionId,
+            type: 'red',
           }),
         });
         expect(res.status).toBe(201);
@@ -111,7 +112,8 @@ describe('Wine API', () => {
           body: JSON.stringify({
             name: 'Opus One',
             wineMakerId: testWineMakerId,
-            regionId: null
+            regionId: null,
+            type: 'red',
           }),
         });
         const created = await createRes.json();
@@ -132,7 +134,8 @@ describe('Wine API', () => {
           body: JSON.stringify({
             name: 'Penfolds Grange',
             wineMakerId: testWineMakerId,
-            regionId: null
+            regionId: null,
+            type: 'red',
           }),
         });
         const created = await createRes.json();
@@ -156,7 +159,8 @@ describe('Wine API', () => {
           body: JSON.stringify({
             name: 'Dom Pérignon',
             wineMakerId: testWineMakerId,
-            regionId: null
+            regionId: null,
+            type: 'sparkling',
           }),
         });
         const created = await createRes.json();
@@ -165,7 +169,7 @@ describe('Wine API', () => {
           method: 'DELETE',
         });
         expect(res.status).toBe(200);
-        expect(res.json()).resolves.toEqual({ success: true });
+        await expect(res.json()).resolves.toEqual({ success: true });
       });
 
       it('cascade-deletes winegrape records when deleting a wine', async () => {
@@ -175,7 +179,8 @@ describe('Wine API', () => {
           body: JSON.stringify({
             name: 'Cascade Test Wine',
             wineMakerId: testWineMakerId,
-            regionId: null
+            regionId: null,
+            type: 'red',
           }),
         });
         const createdWine = await wine.json();
@@ -206,7 +211,8 @@ describe('Wine API', () => {
           body: JSON.stringify({
             name: 'Vintage Block Test Wine',
             wineMakerId: testWineMakerId,
-            regionId: null
+            regionId: null,
+            type: 'red',
           }),
         });
         const createdWine = await wine.json();
