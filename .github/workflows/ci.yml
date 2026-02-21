@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build backend
+        run: pnpm --filter backend build
+
+      - name: Build frontend
+        run: pnpm --filter @cellarboss/web build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+          CELLARBOSS_SERVER: http://localhost:5000
+          BETTER_AUTH_SECRET: ci-build-placeholder
+          BETTER_AUTH_URL: http://localhost:5000
+
+      - name: Run backend tests
+        run: pnpm --filter backend test
+        env:
+          DATABASE_TYPE: sqlite
+          DATABASE_URL: ':memory:'
+          NODE_ENV: test
+          BETTER_AUTH_URL: http://localhost:3000
+          BETTER_AUTH_SECRET: ci-test-placeholder
