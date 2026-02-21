@@ -7,7 +7,7 @@ import { getVintages } from "@/lib/api/vintages";
 import { getWines } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { getStorages } from "@/lib/api/storages";
-import { DataTable } from "@/components/datatable/DataTable";
+import { DataTable, type BulkEditField } from "@/components/datatable/DataTable";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { MoveBottleButton } from "@/components/buttons/MoveBottleButton";
@@ -20,6 +20,7 @@ import { queryGate } from "@/lib/functions/query-gate";
 import { formatPrice, formatStatus } from "@/lib/functions/format";
 import type { Bottle, Vintage, Wine, WineMaker } from "@cellarboss/types";
 import { LoadingCard } from "@/components/cards/LoadingCard";
+import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
 
 function getVintageName(
   vintageId: number,
@@ -76,6 +77,41 @@ export default function BottlesPage() {
     queryClient.invalidateQueries({ queryKey: ["bottles"] });
   }
 
+  async function handleBulkDelete(rows: Bottle[]): Promise<void> {
+    for (const row of rows) {
+      const result = await deleteBottle(row.id);
+      if (!result.ok) throw new Error("Error deleting bottle: " + result.error.message);
+    }
+    queryClient.invalidateQueries({ queryKey: ["bottles"] });
+  }
+
+  async function handleBulkEdit(rows: Bottle[], partial: Record<string, any>): Promise<void> {
+    for (const row of rows) {
+      const result = await updateBottle({
+        ...row,
+        ...(partial.status ? { status: partial.status } : {}),
+        ...(partial.storageId ? { storageId: Number(partial.storageId) } : {}),
+      });
+      if (!result.ok) throw new Error("Error updating bottle: " + result.error.message);
+    }
+    queryClient.invalidateQueries({ queryKey: ["bottles"] });
+  }
+
+  const bulkEditFields: BulkEditField<Bottle>[] = [
+    {
+      key: "status",
+      label: "Status",
+      type: "select",
+      options: BOTTLE_STATUSES.map((s) => ({ value: s, label: formatStatus(s) })),
+    },
+    {
+      key: "storageId",
+      label: "Storage",
+      type: "select",
+      options: storages.map((s) => ({ value: String(s.id), label: s.name })),
+    },
+  ];
+
   const columns = [
     {
       id: "vintage",
@@ -118,8 +154,7 @@ export default function BottlesPage() {
     {
       id: "options",
       header: "",
-      minSize: 175,
-      maxSize: 175,
+      size: 100,
       enableSorting: false,
       cell: ({ row }: { row: { original: Bottle } }) => (
         <div className="flex gap-1 justify-center mx-5">
@@ -150,6 +185,9 @@ export default function BottlesPage() {
         columns={columns}
         filterColumnName="vintage"
         defaultSortColumn="purchaseDate"
+        onBulkDelete={handleBulkDelete}
+        bulkEditFields={bulkEditFields}
+        onBulkEdit={handleBulkEdit}
         buttons={[
           <AddButton
             onClick={async () => router.push("/bottles/new")}

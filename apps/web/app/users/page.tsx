@@ -47,6 +47,14 @@ export default function UsersPage() {
     return true;
   }
 
+  async function handleBulkDelete(rows: AdminUser[]): Promise<void> {
+    for (const row of rows) {
+      const result = await deleteUser(row.id);
+      if (!result.ok) throw new Error("Error deleting user: " + result.error.message);
+    }
+    queryClient.invalidateQueries({ queryKey: ["users"] });
+  }
+
   const columns = [
     {
       accessorKey: "name",
@@ -97,6 +105,7 @@ export default function UsersPage() {
         columns={columns}
         filterColumnName="name"
         defaultSortColumn="name"
+        onBulkDelete={handleBulkDelete}
         buttons={[
           <AddButton
             key="add"

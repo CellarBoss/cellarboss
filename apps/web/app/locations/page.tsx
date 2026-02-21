@@ -1,13 +1,12 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { getLocations } from "@/lib/api/locations";
+import { getLocations, deleteLocation } from "@/lib/api/locations";
 import { DataTable } from "@/components/datatable/DataTable";
 import type { Location } from "@cellarboss/types";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { useRouter } from 'next/navigation';
-import { deleteLocation } from "@/lib/api/locations";
 import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
 import { useApiQuery } from "@/hooks/use-api-query";
@@ -26,6 +25,14 @@ export default function LocationsPage() {
     if (!delResult.ok) throw new Error("Error deleting location: " + delResult.error.message);
     queryClient.invalidateQueries({ queryKey: ["locations"] });
     return true;
+  }
+
+  async function handleBulkDelete(rows: Location[]): Promise<void> {
+    for (const row of rows) {
+      const result = await deleteLocation(row.id);
+      if (!result.ok) throw new Error("Error deleting location: " + result.error.message);
+    }
+    queryClient.invalidateQueries({ queryKey: ["locations"] });
   }
 
   const locationQuery = useApiQuery({ queryKey: ["locations"], queryFn: getLocations });
@@ -78,6 +85,7 @@ export default function LocationsPage() {
         columns={columns}
         filterColumnName="name"
         defaultSortColumn="name"
+        onBulkDelete={handleBulkDelete}
         buttons={[
           <AddButton onClick={async () => router.push(`/locations/new`)} subject="Location" key="add" />
         ]}

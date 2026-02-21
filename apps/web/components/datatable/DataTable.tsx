@@ -1,10 +1,11 @@
 "use client";
 
-import { Fragment, ReactNode, useState } from "react";
+import { createContext, useContext, Fragment, ReactNode, useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
   Row,
+  RowSelectionState,
   SortingState,
   ExpandedState,
   getCoreRowModel,
@@ -13,6 +14,7 @@ import {
   getPaginationRowModel,
   getExpandedRowModel,
   useReactTable,
+  Table as TableInstance,
 } from "@tanstack/react-table";
 
 import {
@@ -22,11 +24,45 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import { Checkbox } from "@/components/ui/checkbox";
 import DataTableHeader from "./DataTableHeader";
 import DataTableFooter from "./DataTableFooter";
 import DataTableRow from "./DataTableRow";
 import DataTableDetailRow from "./DataTableDetailRow";
 import { FilterControl } from "./FilterControl";
+import { BulkActionBar } from "@/components/bulk/BulkActionBar";
+import { BulkDeleteDialog } from "@/components/bulk/BulkDeleteDialog";
+import { BulkEditDialog, BulkEditField } from "@/components/bulk/BulkEditDialog";
+export type { BulkEditField } from "@/components/bulk/BulkEditDialog";
+
+// Context so selection cells can read the live rowSelection state without
+// relying on a closure captured in TanStack Table's memoised column model.
+const RowSelectionContext = createContext<RowSelectionState>({});
+
+function SelectAllCheckbox({ table }: { table: TableInstance<any> }) {
+  const rowSelection = useContext(RowSelectionContext);
+  const pageRows = table.getRowModel().rows;
+  const allSelected = pageRows.length > 0 && pageRows.every(r => !!rowSelection[r.id]);
+  return (
+    <Checkbox
+      checked={allSelected}
+      onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
+      aria-label="Select all"
+    />
+  );
+}
+
+function SelectionCell({ row }: { row: Row<any> }) {
+  const rowSelection = useContext(RowSelectionContext);
+  return (
+    <Checkbox
+      checked={!!rowSelection[row.id]}
+      onCheckedChange={(v) => row.toggleSelected(!!v)}
+      aria-label="Select row"
+      onClick={(e) => e.stopPropagation()}
+    />
+  );
+}
 
 type DataTableProps<T> = {
   data?: T[];
@@ -38,12 +74,17 @@ type DataTableProps<T> = {
   getSubRows?: (row: T) => T[] | undefined;
   renderDetail?: (row: T) => React.ReactNode;
   defaultExpanded?: true | Record<string, boolean>;
+  onBulkDelete?: (rows: T[]) => Promise<void>;
+  bulkEditFields?: BulkEditField<T>[];
+  onBulkEdit?: (rows: T[], partial: Record<string, any>) => Promise<void>;
 };
 
-export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName, defaultSortColumn, buttons, getSubRows, renderDetail, defaultExpanded }: DataTableProps<T>) {
+export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName, defaultSortColumn, buttons, getSubRows, renderDetail, defaultExpanded, onBulkDelete, bulkEditFields, onBulkEdit }: DataTableProps<T>) {
   if (defaultPageSize === undefined) {
     defaultPageSize = 20;
   }
+
+  const enableRowSelection = onBulkDelete !== undefined || onBulkEdit !== undefined;
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -62,19 +103,43 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
     defaultExpanded ?? (getSubRows ? true : {})
   )
 
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+
   if (data === undefined) {
     data = [];
   }
 
+  const selectionColumn: ColumnDef<T> = {
+    id: "select",
+    header: ({ table }) => <SelectAllCheckbox table={table} />,
+    cell: ({ row }) => <SelectionCell row={row} />,
+    enableSorting: false,
+    size: 50,
+  };
+
+  const allColumns = enableRowSelection ? [selectionColumn, ...columns] : columns;
+
+  const processedColumns: ColumnDef<T>[] = allColumns.map(col => ({
+    ...col,
+    meta: { ...(col.meta ?? {}), _hasExplicitSize: col.size !== undefined },
+  }));
+
   const table = useReactTable({
     data,
-    columns,
+    columns: processedColumns,
     state: {
       pagination,
       columnFilters,
       sorting,
       ...(getSubRows || renderDetail ? { expanded } : {}),
+      ...(enableRowSelection ? { rowSelection } : {}),
     },
+    ...(enableRowSelection ? {
+      enableRowSelection: true,
+      onRowSelectionChange: setRowSelection,
+    } : {}),
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -94,6 +159,20 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
       ? { onExpandedChange: setExpanded }
       : {}),
   });
+
+  const selectedRows = table.getSelectedRowModel().rows.map(r => r.original);
+  const selectedCount = selectedRows.length;
+
+  async function handleBulkDeleteConfirm() {
+    await onBulkDelete!(selectedRows);
+    setRowSelection({});
+  }
+
+  async function handleBulkEditSave(partial: Record<string, any>) {
+    await onBulkEdit!(selectedRows, partial);
+    setRowSelection({});
+    setEditDialogOpen(false);
+  }
 
   const { pageSize } = table.getState().pagination;
   const paginationRowCount = getSubRows
@@ -117,7 +196,7 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
   }
 
   return (
-    <>
+    <RowSelectionContext.Provider value={rowSelection}>
       <div className="relative flex w-full items-center">
         <div className="left-0 w-[50%]">
           <FilterControl table={table} filterColumnName={filterColumnName} columnFilters={columnFilters} />
@@ -135,7 +214,7 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
         <TableBody>
           {table.getRowCount() === 0 && (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell colSpan={processedColumns.length} className="h-24 text-center">
                 No results.
               </TableCell>
             </TableRow>
@@ -147,13 +226,40 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
             <Fragment key={row.id}>
               <DataTableRow row={row} isExpanded={row.getIsExpanded()} canExpand={row.getCanExpand() || !!renderDetail} />
               {renderDetail && row.getIsExpanded() && (
-                <DataTableDetailRow row={row} columnSpan={columns.length} renderDetail={renderDetail} />
+                <DataTableDetailRow row={row} columnSpan={processedColumns.length} renderDetail={renderDetail} />
               )}
             </Fragment>
           ))}
         </TableBody>
-        <DataTableFooter columns={columns} pagination={pagination} pageCount={pageCount} pageSize={pageSize} table={table} />
+        <DataTableFooter columns={processedColumns} pagination={pagination} pageCount={pageCount} pageSize={pageSize} table={table} />
       </Table>
-    </>
+      {enableRowSelection && (
+        <>
+          <BulkActionBar
+            selectedCount={selectedCount}
+            onClear={() => setRowSelection({})}
+            onDelete={onBulkDelete ? () => setDeleteDialogOpen(true) : undefined}
+            onEdit={onBulkEdit ? () => setEditDialogOpen(true) : undefined}
+          />
+          {onBulkDelete && (
+            <BulkDeleteDialog
+              open={deleteDialogOpen}
+              onOpenChange={setDeleteDialogOpen}
+              selectedCount={selectedCount}
+              onConfirm={handleBulkDeleteConfirm}
+            />
+          )}
+          {bulkEditFields && onBulkEdit && (
+            <BulkEditDialog<T>
+              open={editDialogOpen}
+              onOpenChange={setEditDialogOpen}
+              selectedCount={selectedCount}
+              fields={bulkEditFields}
+              onSave={handleBulkEditSave}
+            />
+          )}
+        </>
+      )}
+    </RowSelectionContext.Provider>
   );
 }

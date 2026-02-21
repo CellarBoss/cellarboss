@@ -27,6 +27,14 @@ export default function GrapesPage() {
     return true;
   }
 
+  async function handleBulkDelete(rows: Grape[]): Promise<void> {
+    for (const row of rows) {
+      const result = await deleteGrape(row.id);
+      if (!result.ok) throw new Error("Error deleting grape: " + result.error.message);
+    }
+    queryClient.invalidateQueries({ queryKey: ["grapes"] });
+  }
+
   const grapeQuery = useApiQuery({ queryKey: ["grapes"], queryFn: getGrapes });
 
   const result = queryGate(grapeQuery);
@@ -77,10 +85,11 @@ export default function GrapesPage() {
         columns={columns}
         filterColumnName="name"
         defaultSortColumn="name"
+        onBulkDelete={handleBulkDelete}
         buttons={[
           <AddButton onClick={async () => router.push(`/grapes/new`)} subject="Grape" key="add" />
         ]}
-        />
+      />
     </section>
   );
 }

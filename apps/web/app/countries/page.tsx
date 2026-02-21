@@ -1,13 +1,12 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { getCountries } from "@/lib/api/countries";
+import { getCountries, deleteCountry } from "@/lib/api/countries";
 import { DataTable } from "@/components/datatable/DataTable";
 import type { Country } from "@cellarboss/types";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { useRouter } from 'next/navigation';
-import { deleteCountry } from "@/lib/api/countries";
 import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
 import { useApiQuery } from "@/hooks/use-api-query";
@@ -26,6 +25,14 @@ export default function CountriesPage() {
     if (!delResult.ok) throw new Error("Error deleting country: " + delResult.error.message);
     queryClient.invalidateQueries({ queryKey: ["countries"] });
     return true;
+  }
+
+  async function handleBulkDelete(rows: Country[]): Promise<void> {
+    for (const row of rows) {
+      const result = await deleteCountry(row.id);
+      if (!result.ok) throw new Error("Error deleting country: " + result.error.message);
+    }
+    queryClient.invalidateQueries({ queryKey: ["countries"] });
   }
 
   const countryQuery = useApiQuery({ queryKey: ["countries"], queryFn: getCountries });
@@ -78,6 +85,7 @@ export default function CountriesPage() {
         columns={columns}
         filterColumnName="name"
         defaultSortColumn="name"
+        onBulkDelete={handleBulkDelete}
         buttons={[
           <AddButton onClick={async () => router.push(`/countries/new`)} subject="Country" key="add" />
         ]}

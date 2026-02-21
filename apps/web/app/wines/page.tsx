@@ -3,10 +3,10 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { Wine } from "@cellarboss/types";
 import { getCountries } from "@/lib/api/countries";
-import { getWines, deleteWine } from "@/lib/api/wines";
+import { getWines, deleteWine, updateWine } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { getRegions } from "@/lib/api/regions";
-import { DataTable } from "@/components/datatable/DataTable";
+import { DataTable, type BulkEditField } from "@/components/datatable/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
@@ -18,6 +18,11 @@ import { queryGate } from "@/lib/functions/query-gate";
 import WineDetailRow from "@/components/datatable/detail/WineDetailRow";
 import { WINE_TYPE_COLORS, WINE_TYPE_LABELS } from "@/lib/constants/wine-colouring";
 import { VintageButton } from "@/components/buttons/VintageButton";
+import { WINE_TYPES } from "@cellarboss/validators/constants";
+
+function formatWineType(type: string): string {
+  return type.charAt(0).toUpperCase() + type.slice(1);
+}
 
 export default function WinesPage() {
   const queryClient = useQueryClient();
@@ -34,6 +39,27 @@ export default function WinesPage() {
     return true;
   }
 
+  async function handleBulkDelete(rows: Wine[]): Promise<void> {
+    for (const row of rows) {
+      const result = await deleteWine(row.id);
+      if (!result.ok) throw new Error("Error deleting wine: " + result.error.message);
+    }
+    queryClient.invalidateQueries({ queryKey: ["wines"] });
+  }
+
+  async function handleBulkEdit(rows: Wine[], partial: Record<string, any>): Promise<void> {
+    for (const row of rows) {
+      const result = await updateWine({
+        ...row,
+        ...(partial.type ? { type: partial.type } : {}),
+        ...(partial.wineMakerId ? { wineMakerId: Number(partial.wineMakerId) } : {}),
+        ...(partial.regionId ? { regionId: Number(partial.regionId) } : {}),
+      });
+      if (!result.ok) throw new Error("Error updating wine: " + result.error.message);
+    }
+    queryClient.invalidateQueries({ queryKey: ["wines"] });
+  }
+
   const wineQuery = useApiQuery({ queryKey: ["wines"], queryFn: getWines });
   const winemakerQuery = useApiQuery({ queryKey: ["winemakers"], queryFn: getWinemakers });
   const regionQuery = useApiQuery({ queryKey: ["regions"], queryFn: getRegions });
@@ -43,6 +69,30 @@ export default function WinesPage() {
   if (!result.ready) return result.gate;
 
   const [winesList, winemakerList, regionList, countryList] = result.data;
+
+  const bulkEditFields: BulkEditField<Wine>[] = [
+    {
+      key: "type",
+      label: "Type",
+      type: "select",
+      options: WINE_TYPES.map((t) => ({ value: t, label: formatWineType(t) })),
+    },
+    {
+      key: "wineMakerId",
+      label: "Winemaker",
+      type: "select",
+      options: winemakerList.map((w) => ({ value: String(w.id), label: w.name })),
+    },
+    {
+      key: "regionId",
+      label: "Region",
+      type: "select",
+      options: regionList.map((r) => {
+        const country = countryList.find((c) => c.id === r.countryId);
+        return { value: String(r.id), label: country ? `${r.name}, ${country.name}` : r.name };
+      }),
+    },
+  ];
 
   const columns: ColumnDef<Wine>[] = [
     {
@@ -126,11 +176,12 @@ export default function WinesPage() {
         columns={columns}
         filterColumnName="name"
         defaultSortColumn="name"
-        renderDetail={(wine) => {
-          return (
-            <WineDetailRow wine={wine} />
-          );
-        }}
+        onBulkDelete={handleBulkDelete}
+        bulkEditFields={bulkEditFields}
+        onBulkEdit={handleBulkEdit}
+        renderDetail={(wine) => (
+          <WineDetailRow wine={wine} />
+        )}
         buttons={[
           <AddButton onClick={async () => router.push(`/wines/new`)} subject="Wine" key="add" />
         ]}

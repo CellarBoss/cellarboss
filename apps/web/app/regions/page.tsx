@@ -2,8 +2,8 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import type { Region } from "@cellarboss/types";
-import { getRegions, deleteRegion } from "@/lib/api/regions";
-import { DataTable } from "@/components/datatable/DataTable";
+import { getRegions, deleteRegion, updateRegion } from "@/lib/api/regions";
+import { DataTable, type BulkEditField } from "@/components/datatable/DataTable";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { useRouter } from 'next/navigation';
@@ -28,6 +28,25 @@ export default function RegionsPage() {
     return true;
   }
 
+  async function handleBulkDelete(rows: Region[]): Promise<void> {
+    for (const row of rows) {
+      const result = await deleteRegion(row.id);
+      if (!result.ok) throw new Error("Error deleting region: " + result.error.message);
+    }
+    queryClient.invalidateQueries({ queryKey: ["regions"] });
+  }
+
+  async function handleBulkEdit(rows: Region[], partial: Record<string, any>): Promise<void> {
+    for (const row of rows) {
+      const result = await updateRegion({
+        ...row,
+        ...(partial.countryId ? { countryId: Number(partial.countryId) } : {}),
+      });
+      if (!result.ok) throw new Error("Error updating region: " + result.error.message);
+    }
+    queryClient.invalidateQueries({ queryKey: ["regions"] });
+  }
+
   const regionQuery = useApiQuery({ queryKey: ["regions"], queryFn: getRegions });
   const countryQuery = useApiQuery({ queryKey: ["countries"], queryFn: getCountries });
 
@@ -36,6 +55,14 @@ export default function RegionsPage() {
 
   const [regionsList, countryList] = result.data;
 
+  const bulkEditFields: BulkEditField<Region>[] = [
+    {
+      key: "countryId",
+      label: "Country",
+      type: "select",
+      options: countryList.map((c) => ({ value: String(c.id), label: c.name })),
+    },
+  ];
 
   const columns = [
     {
@@ -92,6 +119,9 @@ export default function RegionsPage() {
         columns={columns}
         filterColumnName="name"
         defaultSortColumn="name"
+        onBulkDelete={handleBulkDelete}
+        bulkEditFields={bulkEditFields}
+        onBulkEdit={handleBulkEdit}
         buttons={[
           <AddButton onClick={async () => router.push(`/regions/new`)} subject="Region" key="add" />
         ]}

@@ -30,7 +30,7 @@ export default function DataTableHeader<T>({ table, sorting }: DataTableHeaderPr
               <TableHead
                 key={header.id}
                 onClick={header.column.getCanSort() ? header.column.getToggleSortingHandler() : undefined}
-                className={"bg-table-header " + (header.column.id === 'options' ? 'w-[100px]' : '')}>
+                className={"bg-table-header " + ((header.column.columnDef.meta as any)?._hasExplicitSize ? `w-[${header.column.getSize()}px]` : '')}>
                 <div className={"flex items-center gap-1 select-none " + (header.column.getCanSort() ? 'cursor-pointer' : '')}>
                   {flexRender(header.column.columnDef.header, header.getContext())}
                   {sortDirection && (

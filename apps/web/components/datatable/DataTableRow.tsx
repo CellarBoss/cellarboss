@@ -21,19 +21,22 @@ type DataTableRowProps<T> = {
 };
 
 export default function DataTableRow<T>({ row, isExpanded, canExpand, isContext }: DataTableRowProps<T>) {
+  const cells = row.getVisibleCells();
+  const firstDataCellIndex = cells.findIndex(c => c.column.id !== "select");
+
   return (
     <TableRow key={row.id} className={cn("group border-b border-default", isContext && "opacity-60")}>
-      {row.getVisibleCells().map((cell, cellIndex) => (
+      {cells.map((cell, cellIndex) => (
         <TableCell
           key={cell.id}
           className={cn("border p-2 bg-table-row", !isContext && "group-hover:bg-table-row-hover")}
           style={
-            cellIndex === 0 && (canExpand || row.depth > 0)
+            cellIndex === firstDataCellIndex && (canExpand || row.depth > 0)
               ? { paddingLeft: `${row.depth * 24 + 8}px` }
               : undefined
           }
         >
-          {cellIndex === 0 && (canExpand || row.depth > 0) ? (
+          {cellIndex === firstDataCellIndex && (canExpand || row.depth > 0) ? (
             <div className="flex items-center gap-1">
               {!isContext && canExpand ? (
                 <button
