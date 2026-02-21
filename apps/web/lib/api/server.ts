@@ -10,6 +10,7 @@ export async function makeServerRequest<T>(
 ): Promise<ApiResult<T>> {
   const headersList = await headers();
   const cookie = headersList.get("cookie");
+  const origin = headersList.get("origin");
 
   if (!cookie) {
     return { ok: false, error: { message: "Unauthorized", status: 401 } };
@@ -18,6 +19,9 @@ export async function makeServerRequest<T>(
   const reqHeaders = new Headers();
   reqHeaders.set("cookie", cookie);
   reqHeaders.set("Content-Type", "application/json");
+  if (origin) {
+    reqHeaders.set("origin", origin);
+  }
 
   try {
     const res = await fetch(`${process.env.CELLARBOSS_SERVER}/api/${path}`, {
@@ -26,7 +30,8 @@ export async function makeServerRequest<T>(
       body,
     });
 
-    const data = await res.json();
+    const text = await res.text();
+    const data = text ? JSON.parse(text) : null;
 
     if (!res.ok) {
       const error = processBackendError(res, data);

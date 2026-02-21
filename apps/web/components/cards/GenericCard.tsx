@@ -13,7 +13,7 @@ import { ApiResult } from "@/lib/api/types";
 import { stringifyValues } from "@/lib/functions/strings";
 import * as z from "zod";
 
-type GenericCardProps<T extends { id: number }> = {
+type GenericCardProps<T extends { id: number | string }> = {
   mode: "view" | "edit" | "create" | "clone";
   data?: T;
   fields: FieldConfig<T>[];
@@ -21,7 +21,7 @@ type GenericCardProps<T extends { id: number }> = {
   redirectTo?: string;
 };
 
-export function GenericCard<T extends { id: number }>({
+export function GenericCard<T extends { id: number | string }>({
   mode,
   data,
   fields,

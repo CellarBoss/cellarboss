@@ -1,6 +1,6 @@
 "use client";
 
-import { BottleWine, Settings, Grape, User, Refrigerator, MapPin, Earth, Flag, Barrel, UserCircle, LogOut } from "lucide-react"
+import { BottleWine, Settings, Grape, User, Refrigerator, MapPin, Earth, Flag, Barrel, UserCircle, LogOut, Users } from "lucide-react"
 import { authClient } from "@/lib/auth-client"
 
 import {
@@ -16,39 +16,51 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-const menuItems = {
-  "Wines": [
-    { title: "Bottles", url: "/bottles", icon: BottleWine },
-    { title: "Wines", url: "/wines", icon: Barrel },
-    { title: "Grapes", url: "/grapes", icon: Grape },
-    { title: "Winemakers", url: "/winemakers", icon: User },
-  ],
-  "Storage": [
-    { title: "Storages", url: "/storages", icon: Refrigerator },
-    { title: "Locations", url: "/locations", icon: MapPin },
-  ],
-  "Geography": [
-    { title: "Regions", url: "/regions", icon: Flag },
-    { title: "Countries", url: "/countries", icon: Earth },
-  ],
-  "Settings": [
-    { title: "Profile", url: "/profile", icon: UserCircle },
-    { title: "Users", url: "/users", icon: User },
-    { title: "Application Settings", url: "/settings", icon: Settings },
-  ]
-}
+const wineItems = [
+  { title: "Bottles", url: "/bottles", icon: BottleWine },
+  { title: "Wines", url: "/wines", icon: Barrel },
+  { title: "Grapes", url: "/grapes", icon: Grape },
+  { title: "Winemakers", url: "/winemakers", icon: User },
+];
+
+const storageItems = [
+  { title: "Storages", url: "/storages", icon: Refrigerator },
+  { title: "Locations", url: "/locations", icon: MapPin },
+];
+
+const geographyItems = [
+  { title: "Regions", url: "/regions", icon: Flag },
+  { title: "Countries", url: "/countries", icon: Earth },
+];
+
+const settingsItems = [
+  { title: "Profile", url: "/profile", icon: UserCircle },
+  { title: "Application Settings", url: "/settings", icon: Settings },
+];
+
+const adminItems = [
+  { title: "Users", url: "/users", icon: Users },
+];
 
 export function AppSidebar() {
   const session = authClient.useSession();
   const user = session.data?.user;
+  const isAdmin = (user as any)?.role === "admin";
+
+  const sections = [
+    { label: "Wines", items: wineItems },
+    { label: "Storage", items: storageItems },
+    { label: "Geography", items: geographyItems },
+    { label: "Settings", items: isAdmin ? [...settingsItems, ...adminItems] : settingsItems },
+  ];
 
   return (
     <Sidebar>
       <SidebarHeader><a href="/">CellarBoss</a></SidebarHeader>
       <SidebarContent>
-        {Object.entries(menuItems).map(([section, items]) => (
-          <SidebarGroup key={section}>
-            <SidebarGroupLabel>{section}</SidebarGroupLabel>
+        {sections.map(({ label, items }) => (
+          <SidebarGroup key={label}>
+            <SidebarGroupLabel>{label}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {items.map((item) => (
