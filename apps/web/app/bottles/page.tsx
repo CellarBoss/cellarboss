@@ -17,10 +17,12 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useSetting } from "@/hooks/use-settings";
 import { queryGate } from "@/lib/functions/query-gate";
-import { formatPrice, formatStatus } from "@/lib/functions/format";
+import { formatPrice, formatStatus, formatDate } from "@/lib/functions/format";
 import type { Bottle, Vintage, Wine, WineMaker } from "@cellarboss/types";
 import { LoadingCard } from "@/components/cards/LoadingCard";
 import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
+import { Row } from "@tanstack/react-table";
+import { compareAsc } from "date-fns";
 
 function getVintageName(
   vintageId: number,
@@ -46,10 +48,11 @@ export default function BottlesPage() {
   const winemakerQuery = useApiQuery({ queryKey: ["winemakers"], queryFn: getWinemakers });
   const storageQuery = useApiQuery({ queryKey: ["storages"], queryFn: getStorages });
   const { data: currency, isLoading: currencyLoading } = useSetting("currency");
+  const { data: dateFormat, isLoading: dateFormatLoading } = useSetting("date");
 
   const result = queryGate(bottleQuery, vintageQuery, wineQuery, winemakerQuery, storageQuery);
   if (!result.ready) return result.gate;
-  if (currencyLoading) return <LoadingCard />;
+  if (currencyLoading || dateFormatLoading) return <LoadingCard />;
 
   const [bottles, vintages, wines, winemakers, storages] = result.data;
 
@@ -129,6 +132,12 @@ export default function BottlesPage() {
       accessorKey: "purchaseDate",
       header: "Purchase Date",
       enableSorting: true,
+      sortingFn: (rowA : Row<Bottle>, rowB: Row<Bottle>, columnId : string) => {
+        return compareAsc(rowA.original.purchaseDate, rowB.original.purchaseDate); 
+      },
+      cell: ({ row }: { row: { original: Bottle } }) => (
+        <span>{formatDate(row.original.purchaseDate, (dateFormat as string))}</span>
+      ),
     },
     {
       accessorKey: "purchasePrice",

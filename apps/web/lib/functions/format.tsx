@@ -12,6 +12,13 @@ export function formatPrice(price: number | string, currency: string): string {
   }
 }
 
+import { format } from 'date-fns';
+
+// TODO: This is a very simple wrapper. In future, deprecate the dateFormat parameter and fetch the setting from this function
+export function formatDate(dateStr: string, dateFormat: string): string {
+  return format(dateStr, dateFormat);
+}
+
 export function formatStatus(status: string): string {
   return status
     .split("-")
