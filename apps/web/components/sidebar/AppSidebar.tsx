@@ -1,8 +1,12 @@
-import { BottleWine, Settings, Grape, User, Refrigerator, MapPin, Earth, Flag, Barrel, UserCircle } from "lucide-react"
+"use client";
+
+import { BottleWine, Settings, Grape, User, Refrigerator, MapPin, Earth, Flag, Barrel, UserCircle, LogOut } from "lucide-react"
+import { authClient } from "@/lib/auth-client"
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -35,6 +39,9 @@ const menuItems = {
 }
 
 export function AppSidebar() {
+  const session = authClient.useSession();
+  const user = session.data?.user;
+
   return (
     <Sidebar>
       <SidebarHeader><a href="/">CellarBoss</a></SidebarHeader>
@@ -59,6 +66,18 @@ export function AppSidebar() {
           </SidebarGroup>
         ))}
       </SidebarContent>
+      <SidebarFooter>
+        <div className="flex items-center justify-between px-2 py-2 text-sm">
+          <div className="flex items-center gap-2 min-w-0">
+            <UserCircle className="h-5 w-5 shrink-0 text-muted-foreground" />
+            <span className="truncate text-muted-foreground">{user?.name || user?.email}</span>
+          </div>
+          <a href="/logout" className="flex items-center gap-1 text-muted-foreground hover:text-foreground shrink-0 ml-2" title="Log out">
+            <LogOut className="h-4 w-4" />
+            <span>Logout</span>
+          </a>
+        </div>
+      </SidebarFooter>
     </Sidebar>
   )
 }
