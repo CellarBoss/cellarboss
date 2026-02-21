@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: cbuser
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: cellarboss
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cbuser -d cellarboss"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    environment:
+      BETTER_AUTH_SECRET: supersecretkeythatshouldnotbeusedinproduction
+      BETTER_AUTH_URL: http://backend:5000
+      DATABASE_TYPE: sqlite
+      DATABASE_URL: 'cellarboss.db'
+      NODE_ENV: development
+      CORS: http://localhost:3000
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    environment:
+      CELLARBOSS_SERVER: http://backend:5000
+      BETTER_AUTH_SECRET: supersecretkeythatshouldnotbeusedinproduction
+      BETTER_AUTH_URL: http://backend:5000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
