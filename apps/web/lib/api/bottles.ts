@@ -8,6 +8,14 @@ export async function getBottles(): Promise<ApiResult<Bottle[]>> {
   return makeServerRequest<Bottle[]>("bottle", "GET");
 }
 
+export async function getBottlesByVintageId(vintageId: number): Promise<ApiResult<Bottle[]>> {
+  return makeServerRequest<Bottle[]>("bottle/vintage/" + vintageId, "GET");
+}
+
+export async function getBottleCountsByVintageId(vintageId: number): Promise<ApiResult<Array<{ status: string; count: number }>>> {
+  return makeServerRequest<Array<{ status: string; count: number }>>("bottle/vintage/" + vintageId + "/counts", "GET");
+}
+
 export async function getBottleById(id: number): Promise<ApiResult<Bottle>> {
   return makeServerRequest<Bottle>("bottle/" + id, "GET");
 }

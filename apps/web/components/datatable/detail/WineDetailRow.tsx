@@ -9,6 +9,7 @@ import { getCountryById } from "@/lib/api/countries";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
 import { getVintagesByWineId, deleteVintage } from "@/lib/api/vintages";
+import { getBottleCountsByVintageId } from "@/lib/api/bottles";
 import { Badge } from "@/components/ui/badge";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
@@ -17,8 +18,33 @@ import { WINE_TYPE_COLORS, WINE_TYPE_LABELS } from "@/lib/constants/wine-colouri
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { formatDrinkingWindow, formatDrinkingStatus } from "@/lib/functions/format";
+import { formatDrinkingWindow, formatDrinkingStatus, formatStatus } from "@/lib/functions/format";
 import { BottleButton } from "@/components/buttons/BottleButton";
+
+function BottleCountDisplay({ vintageId }: { vintageId: number }) {
+  const bottleCountsQuery = useApiQuery({
+    queryKey: ["bottleCounts", vintageId],
+    queryFn: () => getBottleCountsByVintageId(vintageId),
+  });
+
+  if (bottleCountsQuery.isLoading) return <span className="text-muted-foreground">...</span>;
+  if (!bottleCountsQuery.data || bottleCountsQuery.data.length === 0) return <span className="text-muted-foreground">0</span>;
+
+  return (
+    <span>
+      {bottleCountsQuery.data
+        .filter((item) => !['drunk', 'gifted', 'sold'].includes(item.status))
+        .map((item, index, filtered) => (
+        <span key={item.status}>
+          <Link href={`/bottles?vintageId=${vintageId}&status=${item.status}`} className="hover:underline">
+            {item.count} {formatStatus(item.status)}
+          </Link>
+          {index < filtered.length - 1 && ', '}
+        </span>
+      ))}
+    </span>
+  );
+}
 
 export default function WineDetailRow({ wine }: { wine: Wine }) {
   const queryClient = useQueryClient();
@@ -118,6 +144,7 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
               <tr className="text-muted-foreground text-xs">
                 <th className="text-left font-medium py-1 pr-4">Vintage</th>
                 <th className="text-left font-medium py-1 pr-4">Drinking Window</th>
+                <th className="text-left font-medium py-1 pr-4">Bottles</th>
                 <th className="text-right font-medium py-1"></th>
               </tr>
             </thead>
@@ -146,6 +173,9 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
                     {' '}
                     {formatDrinkingWindow(v.drinkFrom, v.drinkUntil)}
                     </span>
+                  </td>
+                  <td className="py-1 pr-4 text-muted-foreground">
+                    <BottleCountDisplay vintageId={v.id} />
                   </td>
                   <td className="py-1 text-right">
                     <span className="inline-flex items-center gap-1">

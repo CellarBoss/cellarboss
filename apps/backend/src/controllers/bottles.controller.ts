@@ -13,6 +13,26 @@ export async function getById(id: number) {
     .executeTakeFirst();
 }
 
+export async function getByVintageId(vintageId: number) {
+  return await db
+    .selectFrom('bottle')
+    .where('vintageId', '=', vintageId)
+    .selectAll()
+    .execute();
+}
+
+export async function getCountsByVintageId(vintageId: number) {
+  return await db
+    .selectFrom('bottle')
+    .select(eb => [
+      'status',
+      eb.fn.count('id').as('count')
+    ])
+    .where('vintageId', '=', vintageId)
+    .groupBy('status')
+    .execute();
+}
+
 export async function create(data: CreateBottle) {
   return await db
     .insertInto('bottle')

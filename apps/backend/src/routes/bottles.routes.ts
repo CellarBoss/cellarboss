@@ -16,6 +16,20 @@ export function registerBottleRoutes(app: Hono) {
     return c.json(data);
   });
 
+  // GET /api/bottle/vintage/:vintageId/counts
+  bottle.get('/vintage/:vintageId/counts', async (c) => {
+    const vintageId = Number(c.req.param('vintageId'));
+    const data = await bottlesController.getCountsByVintageId(vintageId);
+    return c.json(data);
+  });
+
+  // GET /api/bottle/vintage/:vintageId
+  bottle.get('/vintage/:vintageId', async (c) => {
+    const vintageId = Number(c.req.param('vintageId'));
+    const data = await bottlesController.getByVintageId(vintageId);
+    return c.json(data);
+  });
+
   // GET /api/bottle/:id
   bottle.get('/:id', async (c) => {
     const id = Number(c.req.param('id'));
