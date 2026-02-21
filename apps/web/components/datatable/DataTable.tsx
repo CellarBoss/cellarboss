@@ -113,8 +113,8 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
 
   const selectionColumn: ColumnDef<T> = {
     id: "select",
-    header: ({ table }) => <SelectAllCheckbox table={table} />,
-    cell: ({ row }) => <SelectionCell row={row} />,
+    header: ({ table }) => <div className="flex gap-1 justify-center mx-5"><SelectAllCheckbox table={table} /></div>,
+    cell: ({ row }) => <div className="flex gap-1 justify-center mx-5"><SelectionCell row={row} /></div>,
     enableSorting: false,
     size: 50,
   };
