@@ -58,8 +58,7 @@ export default function LocationsPage() {
       accessorKey: 'options',
       id: 'options',
       header: '',
-      minSize: 100,
-      maxSize: 100,
+      size: 100,
       enableSorting: false,
       cell: ({ row }: { row: { original: Location } }) => {
         return (

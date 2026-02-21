@@ -82,8 +82,7 @@ export default function UsersPage() {
       accessorKey: "options",
       id: "options",
       header: "",
-      minSize: 100,
-      maxSize: 100,
+      size: 100,
       enableSorting: false,
       cell: ({ row }: { row: { original: AdminUser } }) => (
         <div className="flex gap-1 justify-center mx-5">
