@@ -174,7 +174,7 @@ describe('WineGrape API', () => {
           method: 'DELETE',
         });
         expect(res.status).toBe(200);
-        expect(res.json()).resolves.toEqual({ success: true });
+        await expect(res.json()).resolves.toEqual({ success: true });
       });
     });
   });
