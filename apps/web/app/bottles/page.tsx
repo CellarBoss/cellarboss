@@ -23,6 +23,7 @@ import { LoadingCard } from "@/components/cards/LoadingCard";
 import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
 import { Row } from "@tanstack/react-table";
 import { compareAsc } from "date-fns";
+import { DrinkingWindowDisplay } from "@/components/datatable/detail/DrinkingWindowDisplay";
 
 function getVintageName(
   vintageId: number,
@@ -127,6 +128,16 @@ export default function BottlesPage() {
           {getVintageName(row.original.vintageId, vintageMap, wineMap, winemakerMap)}
         </a>
       ),
+    },
+    {
+      accessorKey: "drinkingWindow",
+      header: "Drinking Window",
+      enableSorting: false,
+      cell: ({ row }: { row: { original: Bottle } }) => {
+        const vintage = vintageMap.get(row.original.vintageId);
+        if (!vintage) return "Unknown";
+        return <DrinkingWindowDisplay drinkFrom={vintage.drinkFrom} drinkUntil={vintage.drinkUntil} />;
+      },
     },
     {
       accessorKey: "purchaseDate",

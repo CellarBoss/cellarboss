@@ -9,42 +9,17 @@ import { getCountryById } from "@/lib/api/countries";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
 import { getVintagesByWineId, deleteVintage } from "@/lib/api/vintages";
-import { getBottleCountsByVintageId } from "@/lib/api/bottles";
 import { Badge } from "@/components/ui/badge";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
-import { Earth, User, Grape, Wine as WineIcon, Check, Hourglass, AlertCircle } from "lucide-react";
+import { Earth, User, Grape, Wine as WineIcon } from "lucide-react";
 import { WINE_TYPE_COLORS, WINE_TYPE_LABELS } from "@/lib/constants/wine-colouring";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { formatDrinkingWindow, formatDrinkingStatus, formatStatus } from "@/lib/functions/format";
 import { BottleButton } from "@/components/buttons/BottleButton";
-
-function BottleCountDisplay({ vintageId }: { vintageId: number }) {
-  const bottleCountsQuery = useApiQuery({
-    queryKey: ["bottleCounts", vintageId],
-    queryFn: () => getBottleCountsByVintageId(vintageId),
-  });
-
-  if (bottleCountsQuery.isLoading) return <span className="text-muted-foreground">...</span>;
-  if (!bottleCountsQuery.data || bottleCountsQuery.data.length === 0) return <span className="text-muted-foreground">0</span>;
-
-  return (
-    <span>
-      {bottleCountsQuery.data
-        .filter((item) => !['drunk', 'gifted', 'sold'].includes(item.status))
-        .map((item, index, filtered) => (
-        <span key={item.status}>
-          <Link href={`/bottles?vintageId=${vintageId}&status=${item.status}`} className="hover:underline">
-            {item.count} {formatStatus(item.status)}
-          </Link>
-          {index < filtered.length - 1 && ', '}
-        </span>
-      ))}
-    </span>
-  );
-}
+import { DrinkingWindowDisplay } from "./DrinkingWindowDisplay";
+import { BottleCountDisplay } from "./BottleCountDisplay";
 
 export default function WineDetailRow({ wine }: { wine: Wine }) {
   const queryClient = useQueryClient();
@@ -85,8 +60,6 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
 
   const region = regionQuery.data;
   const country = countryQuery.data;
-
-  const currentYear = new Date().getFullYear();
 
   const grapeEntries = wineGrapes
     .map((wg) => {
@@ -158,21 +131,7 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
                     </Link>
                   </td>
                   <td className="py-1 pr-4 text-muted-foreground">
-                    <span className="flex items-center gap-2">
-                    {(() => {
-                      const status = formatDrinkingStatus(v.drinkFrom, v.drinkUntil, currentYear);
-                      switch (status) {
-                        case 'drinkable':
-                          return <Check className="inline-block h-3.5 w-3.5 text-green-500" />;
-                        case 'wait':
-                          return <Hourglass className="inline-block h-3.5 w-3.5 text-yellow-500" />;
-                        case 'past':
-                          return <AlertCircle className="inline-block h-3.5 w-3.5 text-red-500" />;
-                      }
-                    })()}
-                    {' '}
-                    {formatDrinkingWindow(v.drinkFrom, v.drinkUntil)}
-                    </span>
+                    <DrinkingWindowDisplay drinkFrom={v.drinkFrom} drinkUntil={v.drinkUntil} />
                   </td>
                   <td className="py-1 pr-4 text-muted-foreground">
                     <BottleCountDisplay vintageId={v.id} />
