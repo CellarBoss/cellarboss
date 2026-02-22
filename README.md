@@ -136,7 +136,7 @@ Set `DATABASE_URL` to the appropriate connection string (or file path for SQLite
 
 ## FAQs
 
-** Has this project been 'vibe coded'?! **
+### Has this project been 'vibe coded'?!
 I ([mattdy](https://github.com/mattdy)) created this project to fufil a need in my own life, and decided to release it publically in case others find it useful.
 While I do have a background in software development, I am by no means an expert in React development.
 As such, I have made use of LLMs such as [ChatGPT](https://openai.com/chatgpt/), [Claude](https://claude.ai/) and [Copilot](https://github.com/features/copilot) to aid development.
@@ -146,13 +146,16 @@ This will possibly involve future features also being written by AI, but I am al
 
 I am very happy to enter into a discussion on the merits of these, respecting my position the current sole developer on the project.
 
-** Can I use this commercially? **
-
+### Can I use this commercially?
 It is my intention to make this software free and available for community non-profit usage, without restriction.
 That said, I may choose to investigate commercial licencing arrangements in the future, should there be any demand for such support.
 In the meantime, if you wish to use this software in a commercial setting, then please consider [giving back](https://buymeacoffee.com/mattdyson) to the project.
 
-See [license information](LICENSE)
-
-** Can you add X feature? **
+### Can you add X feature?
 Any feedback or suggestions are gratefully received via [Issues](https://github.com/CellarBoss/cellarboss/issues)
+
+### I found a bug!
+Great! As above, please raise an [Issue](https://github.com/CellarBoss/cellarboss/issues)
+
+## License
+See [license information](LICENSE)
