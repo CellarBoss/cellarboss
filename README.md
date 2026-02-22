@@ -1,4 +1,4 @@
-# Cellarboss
+# CellarBoss
 
 An open-source wine cellar inventory manager. Track your collection by country, region, grape variety, winemaker, and vintage. Manage physical storage locations and monitor bottle inventory.
 
@@ -9,12 +9,13 @@ An open-source wine cellar inventory manager. Track your collection by country, 
 - Drinking window tracking per vintage
 - User accounts with admin and standard roles
 
-## Future features
+## Roadmap
 
 - Multi-database support. Currently limited to Sqlite, with MySQL and Postgres in the works
 - Tasting notes / ratings
 - Upload images of your collection
 - Import wine details from 3rd party websites (Vivino, Wine Society, Naked Wines etc)
+- User & technical documentation
 
 ## Tech Stack
 
@@ -133,6 +134,25 @@ The backend uses Kysely with dialect switching based on the `DATABASE_TYPE` envi
 
 Set `DATABASE_URL` to the appropriate connection string (or file path for SQLite).
 
-## License
+## FAQs
 
-MIT
+** Has this project been 'vibe coded'?! **
+I ([mattdy](https://github.com/mattdy)) created this project to fufil a need in my own life, and decided to release it publically in case others find it useful.
+While I do have a background in software development, I am by no means an expert in React development.
+As such, I have made use of LLMs such as [ChatGPT](https://openai.com/chatgpt/), [Claude](https://claude.ai/) and [Copilot](https://github.com/features/copilot) to aid development.
+
+I wouldn't go as far as calling this project 'vibe-coded', but certain elements have been written by AI models, and I will likely continue to utilise these within the project.
+This will possibly involve future features also being written by AI, but I am also considering automatic PR reviews and the like.
+
+I am very happy to enter into a discussion on the merits of these, respecting my position the current sole developer on the project.
+
+** Can I use this commercially? **
+
+It is my intention to make this software free and available for community non-profit usage, without restriction.
+That said, I may choose to investigate commercial licencing arrangements in the future, should there be any demand for such support.
+In the meantime, if you wish to use this software in a commercial setting, then please consider [giving back](https://buymeacoffee.com/mattdyson) to the project.
+
+See [license information](LICENSE)
+
+** Can you add X feature? **
+Any feedback or suggestions are gratefully received via [Issues](https://github.com/CellarBoss/cellarboss/issues)
