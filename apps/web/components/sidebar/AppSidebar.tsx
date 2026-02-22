@@ -56,7 +56,12 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader><a href="/">CellarBoss</a></SidebarHeader>
+      <SidebarHeader>
+        <a href="/" className="flex items-center justify-center gap-2 px-2 py-3 font-semibold text-xl tracking-tight hover:opacity-80 transition-opacity">
+          <BottleWine className="h-5 w-5 shrink-0" />
+          <span>CellarBoss</span>
+        </a>
+      </SidebarHeader>
       <SidebarContent>
         {sections.map(({ label, items }) => (
           <SidebarGroup key={label}>
