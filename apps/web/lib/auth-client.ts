@@ -1,8 +1,10 @@
 import { createAuthClient } from "better-auth/react"
 import { adminClient } from "better-auth/client/plugins"
-import { webEnv } from "./env"
 
 export const authClient = createAuthClient({
-    baseURL: webEnv.CELLARBOSS_SERVER,
+    baseURL:
+      typeof window !== "undefined"
+        ? `${window.location.origin}/api/auth`
+        : "http://localhost:3000/api/auth",
     plugins: [adminClient()],
 })
