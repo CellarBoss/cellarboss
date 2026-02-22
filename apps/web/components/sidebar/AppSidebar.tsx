@@ -45,7 +45,11 @@ const adminItems = [
 export function AppSidebar() {
   const session = authClient.useSession();
   const user = session.data?.user;
-  const isAdmin = (user as any)?.role === "admin";
+  const isAdmin = user?.role === "admin";
+
+  const handleLogout = async () => {
+    await fetch('/logout', { method: 'POST' });
+  };
 
   const sections = [
     { label: "Wines", items: wineItems },
@@ -89,10 +93,10 @@ export function AppSidebar() {
             <UserCircle className="h-5 w-5 shrink-0 text-muted-foreground" />
             <span className="truncate text-muted-foreground">{user?.name || user?.email}</span>
           </div>
-          <a href="/logout" className="flex items-center gap-1 text-muted-foreground hover:text-foreground shrink-0 ml-2" title="Log out">
+          <button onClick={handleLogout} className="flex items-center gap-1 text-muted-foreground hover:text-foreground shrink-0 ml-2" title="Log out">
             <LogOut className="h-4 w-4" />
             <span>Logout</span>
-          </a>
+          </button>
         </div>
       </SidebarFooter>
     </Sidebar>

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   const headersList = await headers();
   const cookie = headersList.get("cookie") ?? "";
 
