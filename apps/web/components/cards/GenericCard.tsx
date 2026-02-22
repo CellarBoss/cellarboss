@@ -77,8 +77,7 @@ export function GenericCard<T extends { id: number | string }>({
         }, 1500);
       } catch (err: any) {
         console.error(err);
-        const message = JSON.parse(err.message).error;
-        setErrorMessage(message || "Something went wrong.");
+        setErrorMessage(err?.message ?? "Something went wrong.");
       } finally {
         setIsProcessing(false);
       }
