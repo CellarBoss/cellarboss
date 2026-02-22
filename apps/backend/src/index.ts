@@ -29,9 +29,8 @@ app.use(
 app.get("/", (c) => c.text("Hello World!"));
 
 // Register authentication routes
-app.all("/api/auth/*", (c) => { 
-	console.log("Auth route hit: ", c.req.url);
-	return auth.handler(c.req.raw); 
+app.all("/api/auth/*", (c) => {
+	return auth.handler(c.req.raw);
 });
 
 // Register API routes
