@@ -18,11 +18,19 @@ export function stringifyValues<T>(data: T): any {
   return String(data);
 }
 
-export function expandNamePattern(name: string): string[] {
+const MAX_EXPANSION_RESULTS = 1000;
+
+function expandNamePatternImpl(name: string, results: string[]): void {
+  // Stop if we've reached the maximum
+  if (results.length >= MAX_EXPANSION_RESULTS) return;
+
   // Regex only matches valid same-category ranges (digits, uppercase, or lowercase)
   const match = name.match(/\[(\d)-(\d)\]|\[([A-Z])-([A-Z])\]|\[([a-z])-([a-z])\]/);
 
-  if (!match) return [name];
+  if (!match) {
+    results.push(name);
+    return;
+  }
 
   const fullMatch = match[0];
   const startChar = (match[1] ?? match[3] ?? match[5])!;
@@ -31,13 +39,21 @@ export function expandNamePattern(name: string): string[] {
   const endCode   = endChar.charCodeAt(0);
 
   // Treat reverse ranges as literals (no expansion)
-  if (endCode < startCode) return [name];
+  if (endCode < startCode) {
+    results.push(name);
+    return;
+  }
 
-  const results: string[] = [];
   for (let code = startCode; code <= endCode; code++) {
+    if (results.length >= MAX_EXPANSION_RESULTS) break;
     // Replace only the first occurrence of this match, then recurse for remaining brackets
     const expanded = name.replace(fullMatch, String.fromCharCode(code));
-    results.push(...expandNamePattern(expanded));
+    expandNamePatternImpl(expanded, results);
   }
+}
+
+export function expandNamePattern(name: string): string[] {
+  const results: string[] = [];
+  expandNamePatternImpl(name, results);
   return results;
 }
