@@ -16,7 +16,7 @@ export default function UsersPage() {
   const queryClient = useQueryClient();
   const router = useRouter();
   const session = authClient.useSession();
-  const isAdmin = (session.data?.user as any)?.role === "admin";
+  const isAdmin = session.data?.user?.role === "admin";
 
   const usersQuery = useApiQuery({ queryKey: ["users"], queryFn: getUsers });
 
@@ -48,11 +48,16 @@ export default function UsersPage() {
   }
 
   async function handleBulkDelete(rows: AdminUser[]): Promise<void> {
-    for (const row of rows) {
-      const result = await deleteUser(row.id);
-      if (!result.ok) throw new Error("Error deleting user: " + result.error.message);
+    const errors: string[] = [];
+    try {
+      for (const row of rows) {
+        const result = await deleteUser(row.id);
+        if (!result.ok) errors.push(result.error.message);
+      }
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     }
-    queryClient.invalidateQueries({ queryKey: ["users"] });
+    if (errors.length) throw new Error("Error deleting user: " + errors.join(", "));
   }
 
   const columns = [

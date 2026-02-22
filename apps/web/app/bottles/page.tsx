@@ -82,11 +82,16 @@ export default function BottlesPage() {
   }
 
   async function handleBulkDelete(rows: Bottle[]): Promise<void> {
-    for (const row of rows) {
-      const result = await deleteBottle(row.id);
-      if (!result.ok) throw new Error("Error deleting bottle: " + result.error.message);
+    const errors: string[] = [];
+    try {
+      for (const row of rows) {
+        const result = await deleteBottle(row.id);
+        if (!result.ok) errors.push(result.error.message);
+      }
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ["bottles"] });
     }
-    queryClient.invalidateQueries({ queryKey: ["bottles"] });
+    if (errors.length) throw new Error("Error deleting bottle: " + errors.join(", "));
   }
 
   async function handleBulkEdit(rows: Bottle[], partial: Record<string, any>): Promise<void> {

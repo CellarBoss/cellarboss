@@ -14,7 +14,7 @@ export default function SettingsAdminPage() {
   const session = authClient.useSession();
   const settingsQuery = useSettings();
 
-  const isAdmin = (session.data?.user as any)?.role === "admin";
+  const isAdmin = session.data?.user?.role === "admin";
 
   if (settingsQuery.isLoading) {
     return <LoadingCard />;

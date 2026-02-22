@@ -40,11 +40,16 @@ export default function WinesPage() {
   }
 
   async function handleBulkDelete(rows: Wine[]): Promise<void> {
-    for (const row of rows) {
-      const result = await deleteWine(row.id);
-      if (!result.ok) throw new Error("Error deleting wine: " + result.error.message);
+    const errors: string[] = [];
+    try {
+      for (const row of rows) {
+        const result = await deleteWine(row.id);
+        if (!result.ok) errors.push(result.error.message);
+      }
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ["wines"] });
     }
-    queryClient.invalidateQueries({ queryKey: ["wines"] });
+    if (errors.length) throw new Error("Error deleting wine: " + errors.join(", "));
   }
 
   async function handleBulkEdit(rows: Wine[], partial: Record<string, any>): Promise<void> {
