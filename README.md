@@ -151,6 +151,9 @@ It is my intention to make this software free and available for community non-pr
 That said, I may choose to investigate commercial licencing arrangements in the future, should there be any demand for such support.
 In the meantime, if you wish to use this software in a commercial setting, then please consider [giving back](https://buymeacoffee.com/mattdyson) to the project.
 
+### You could use a better design/logo
+Good observation! I'm terrible at graphic design, please [get in touch](https://github.com/CellarBoss/cellarboss/issue) if you can help with the styling!
+
 ### Can you add X feature?
 Any feedback or suggestions are gratefully received via [Issues](https://github.com/CellarBoss/cellarboss/issues)
 
