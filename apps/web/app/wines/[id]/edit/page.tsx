@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import { getWineById, updateWine } from "@/lib/api/wines";
-import { getWineGrapes, createWineGrape, deleteWineGrape } from "@/lib/api/winegrapes";
+import { getWineGrapesByWineId, createWineGrape, deleteWineGrape } from "@/lib/api/winegrapes";
 import type { Wine, WineGrape } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
 import { wineFields, WineFormData } from "@/lib/fields/wines";
@@ -22,8 +22,9 @@ export default function EditWinePage() {
   });
 
   const wineGrapesQuery = useApiQuery({
-    queryKey: ['winegrapes'],
-    queryFn: getWineGrapes,
+    queryKey: ['winegrapes', wineId],
+    queryFn: () => getWineGrapesByWineId(wineId),
+    enabled: !!wineId,
   });
 
   const result = queryGate(wineQuery, wineGrapesQuery);
@@ -31,7 +32,7 @@ export default function EditWinePage() {
 
   const [wine, wineGrapesList] = result.data;
 
-  const currentWineGrapes = wineGrapesList.filter((wg: WineGrape) => wg.wineId === wineId);
+  const currentWineGrapes = wineGrapesList;
   const currentGrapeIds = currentWineGrapes.map((wg: WineGrape) => wg.grapeId);
 
   const wineFormData: WineFormData = {
