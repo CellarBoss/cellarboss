@@ -19,8 +19,11 @@ export function getDialect(): Dialect {
 
   switch (env.DATABASE_TYPE) {
     case "sqlite":
+      const sqlite = new SQLite(env.DATABASE_URL);
+      // Enable foreign key enforcement in SQLite
+      sqlite.pragma('foreign_keys = ON');
       return new SqliteDialect({
-        database: new SQLite(env.DATABASE_URL),
+        database: sqlite,
       });
 
     case "postgres":
