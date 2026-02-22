@@ -4,5 +4,6 @@ export const env = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]),
   DATABASE_URL: z.string(),
   DATABASE_TYPE: z.enum(["sqlite", "postgres", "mysql"]),
+  BETTER_AUTH_SECRET: z.string(),
   CORS: z.string().optional(),
 }).parse(process.env);

@@ -1,14 +1,11 @@
 import { betterAuth } from "better-auth";
 import { admin } from "better-auth/plugins";
 import { getDialect } from "@db";
-
-if (!process.env.BETTER_AUTH_SECRET) {
-  throw new Error("Missing BETTER_AUTH_SECRET");
-}
+import { env } from "./env.js";
 
 export const auth = betterAuth({
   basePath: "/api/auth",
-  secret: process.env.BETTER_AUTH_SECRET,
+  secret: env.BETTER_AUTH_SECRET,
   trustedOrigins: (process.env.CORS || "http://localhost:3000").split(","),
   database: {
     dialect: getDialect(),
