@@ -6,7 +6,9 @@ import { useState, Suspense, useTransition } from "react";
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const rawCallbackUrl = searchParams.get("callbackUrl") || "/";
+  // Validate that callbackUrl is a safe relative path (prevent open redirect)
+  const callbackUrl = rawCallbackUrl.startsWith('/') && !rawCallbackUrl.startsWith('//') ? rawCallbackUrl : '/';
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
