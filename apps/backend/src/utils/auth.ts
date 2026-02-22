@@ -6,7 +6,7 @@ import { env } from "./env.js";
 export const auth = betterAuth({
   basePath: "/api/auth",
   secret: env.BETTER_AUTH_SECRET,
-  trustedOrigins: (process.env.CORS || "http://localhost:3000").split(","),
+  trustedOrigins: (env.CORS || "http://localhost:3000").split(","),
   database: {
     dialect: getDialect(),
   },
