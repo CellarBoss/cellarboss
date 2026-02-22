@@ -3,6 +3,7 @@ import { zValidator } from '@hono/zod-validator';
 import * as winesController from '@controllers/wines.controller.js';
 import { createWineSchema, updateWineSchema } from '@cellarboss/validators';
 import { requireAuth } from '@middleware/auth.middleware.js';
+import { parseId } from '@utils/id.js';
 
 export function registerWineRoutes(app: Hono) {
   const wine = new Hono();
@@ -15,7 +16,8 @@ export function registerWineRoutes(app: Hono) {
   });
 
   wine.get('/:id', async (c) => {
-    const id = Number(c.req.param('id'));
+    const id = parseId(c.req.param('id'));
+    if (id === null) return c.json({ error: 'Invalid ID' }, 400);
     const data = await winesController.getById(id);
     if (!data) return c.json({ error: 'Not found' }, 404);
     return c.json(data);
@@ -28,14 +30,16 @@ export function registerWineRoutes(app: Hono) {
   });
 
   wine.put('/:id', zValidator('json', updateWineSchema), async (c) => {
-    const id = Number(c.req.param('id'));
+    const id = parseId(c.req.param('id'));
+    if (id === null) return c.json({ error: 'Invalid ID' }, 400);
     const body = c.req.valid('json');
     const data = await winesController.update(id, body);
     return c.json(data);
   });
 
   wine.delete('/:id', async (c) => {
-    const id = Number(c.req.param('id'));
+    const id = parseId(c.req.param('id'));
+    if (id === null) return c.json({ error: 'Invalid ID' }, 400);
     try {
       await winesController.remove(id);
       return c.json({ success: true });

@@ -3,6 +3,7 @@ import { zValidator } from '@hono/zod-validator';
 import * as storagesController from '@controllers/storages.controller.js';
 import { createStorageSchema, updateStorageSchema } from '@cellarboss/validators';
 import { requireAuth } from '@middleware/auth.middleware.js';
+import { parseId } from '@utils/id.js';
 
 export function registerStorageRoutes(app: Hono) {
   const storage = new Hono();
@@ -15,7 +16,8 @@ export function registerStorageRoutes(app: Hono) {
   });
 
   storage.get('/:id', async (c) => {
-    const id = Number(c.req.param('id'));
+    const id = parseId(c.req.param('id'));
+    if (id === null) return c.json({ error: 'Invalid ID' }, 400);
     const data = await storagesController.getById(id);
     if (!data) return c.json({ error: 'Not found' }, 404);
     return c.json(data);
@@ -28,14 +30,16 @@ export function registerStorageRoutes(app: Hono) {
   });
 
   storage.put('/:id', zValidator('json', updateStorageSchema), async (c) => {
-    const id = Number(c.req.param('id'));
+    const id = parseId(c.req.param('id'));
+    if (id === null) return c.json({ error: 'Invalid ID' }, 400);
     const body = c.req.valid('json');
     const data = await storagesController.update(id, body);
     return c.json(data);
   });
 
   storage.delete('/:id', async (c) => {
-    const id = Number(c.req.param('id'));
+    const id = parseId(c.req.param('id'));
+    if (id === null) return c.json({ error: 'Invalid ID' }, 400);
     await storagesController.remove(id);
     return c.json({ success: true });
   });

@@ -3,6 +3,7 @@ import { zValidator } from '@hono/zod-validator';
 import * as vintagesController from '@controllers/vintages.controller.js';
 import { createVintageSchema, updateVintageSchema } from '@cellarboss/validators';
 import { requireAuth } from '@middleware/auth.middleware.js';
+import { parseId } from '@utils/id.js';
 
 export function registerVintageRoutes(app: Hono) {
   const vintage = new Hono();
@@ -15,13 +16,15 @@ export function registerVintageRoutes(app: Hono) {
   });
 
   vintage.get('/wine/:wineId', async (c) => {
-    const wineId = Number(c.req.param('wineId'));
+    const wineId = parseId(c.req.param('wineId'));
+    if (wineId === null) return c.json({ error: 'Invalid ID' }, 400);
     const data = await vintagesController.getByWineId(wineId);
     return c.json(data);
   });
 
   vintage.get('/:id', async (c) => {
-    const id = Number(c.req.param('id'));
+    const id = parseId(c.req.param('id'));
+    if (id === null) return c.json({ error: 'Invalid ID' }, 400);
     const data = await vintagesController.getById(id);
     if (!data) return c.json({ error: 'Not found' }, 404);
     return c.json(data);
@@ -34,14 +37,16 @@ export function registerVintageRoutes(app: Hono) {
   });
 
   vintage.put('/:id', zValidator('json', updateVintageSchema), async (c) => {
-    const id = Number(c.req.param('id'));
+    const id = parseId(c.req.param('id'));
+    if (id === null) return c.json({ error: 'Invalid ID' }, 400);
     const body = c.req.valid('json');
     const data = await vintagesController.update(id, body);
     return c.json(data);
   });
 
   vintage.delete('/:id', async (c) => {
-    const id = Number(c.req.param('id'));
+    const id = parseId(c.req.param('id'));
+    if (id === null) return c.json({ error: 'Invalid ID' }, 400);
     await vintagesController.remove(id);
     return c.json({ success: true });
   });

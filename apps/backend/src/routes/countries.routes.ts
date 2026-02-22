@@ -3,6 +3,7 @@ import { zValidator } from '@hono/zod-validator';
 import * as countriesController from '@controllers/countries.controller.js';
 import { createCountrySchema, updateCountrySchema } from '@cellarboss/validators';
 import { requireAuth } from '@middleware/auth.middleware.js';
+import { parseId } from '@utils/id.js';
 
 export function registerCountryRoutes(app: Hono) {
   const country = new Hono();
@@ -15,7 +16,8 @@ export function registerCountryRoutes(app: Hono) {
   });
 
   country.get('/:id', async (c) => {
-    const id = Number(c.req.param('id'));
+    const id = parseId(c.req.param('id'));
+    if (id === null) return c.json({ error: 'Invalid ID' }, 400);
     const data = await countriesController.getById(id);
     if (!data) return c.json({ error: 'Not found' }, 404);
     return c.json(data);
@@ -28,14 +30,16 @@ export function registerCountryRoutes(app: Hono) {
   });
 
   country.put('/:id', zValidator('json', updateCountrySchema), async (c) => {
-    const id = Number(c.req.param('id'));
+    const id = parseId(c.req.param('id'));
+    if (id === null) return c.json({ error: 'Invalid ID' }, 400);
     const body = c.req.valid('json');
     const data = await countriesController.update(id, body);
     return c.json(data);
   });
 
   country.delete('/:id', async (c) => {
-    const id = Number(c.req.param('id'));
+    const id = parseId(c.req.param('id'));
+    if (id === null) return c.json({ error: 'Invalid ID' }, 400);
     await countriesController.remove(id);
     return c.json({ success: true });
   });
