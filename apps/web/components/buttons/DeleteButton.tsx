@@ -30,9 +30,9 @@ export function DeleteButton({ onDelete, itemDescription }: DeleteButtonProps) {
     try {
       await onDelete(); // wait for deletion to complete
       setOpen(false); // close dialog only on success
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.message || "Something went wrong.");
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setLoading(false);
     }

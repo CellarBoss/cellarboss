@@ -16,7 +16,7 @@ async function handleUpdate(storage: Storage): Promise<ApiResult<Storage>> {
 
   try {
     return updateStorage(storage);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Update failed:", err);
     throw err;
   }

@@ -44,8 +44,8 @@ export function MoveBottleButton({ storages, currentStorageId, onMove }: MoveBot
       const newStorageId = selectedValue ? Number(selectedValue) : null;
       await onMove(newStorageId);
       setOpen(false);
-    } catch (err: any) {
-      setError(err.message || "Something went wrong.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setLoading(false);
     }

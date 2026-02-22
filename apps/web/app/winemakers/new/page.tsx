@@ -12,7 +12,7 @@ async function handleCreate(winemaker: WineMaker): Promise<ApiResult<WineMaker>>
 
   try {
     return createWinemaker(winemaker);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Create failed:", err);
     throw err;
   }

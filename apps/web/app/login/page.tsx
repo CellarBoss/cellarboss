@@ -15,7 +15,7 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, startTransition] = useTransition();
 
-  async function handleSubmit(event: any) {
+  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
 

@@ -16,7 +16,7 @@ async function handleUpdate(winemaker: WineMaker): Promise<ApiResult<WineMaker>>
 
   try {
     return updateWinemaker(winemaker);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Update failed:", err);
     throw err;
   }

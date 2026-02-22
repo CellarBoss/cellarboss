@@ -12,7 +12,7 @@ async function handleCreate(region: Region): Promise<ApiResult<Region>> {
 
   try {
     return createRegion(region);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Create failed:", err);
     throw err;
   }

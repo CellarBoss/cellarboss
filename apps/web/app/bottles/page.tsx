@@ -94,6 +94,7 @@ export default function BottlesPage() {
     if (errors.length) throw new Error("Error deleting bottle: " + errors.join(", "));
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function handleBulkEdit(rows: Bottle[], partial: Record<string, any>): Promise<void> {
     for (const row of rows) {
       const result = await updateBottle({
@@ -148,8 +149,8 @@ export default function BottlesPage() {
       accessorKey: "purchaseDate",
       header: "Purchase Date",
       enableSorting: true,
-      sortingFn: (rowA : Row<Bottle>, rowB: Row<Bottle>, columnId : string) => {
-        return compareAsc(rowA.original.purchaseDate, rowB.original.purchaseDate); 
+      sortingFn: (rowA : Row<Bottle>, rowB: Row<Bottle>) => {
+        return compareAsc(rowA.original.purchaseDate, rowB.original.purchaseDate);
       },
       cell: ({ row }: { row: { original: Bottle } }) => (
         <span>{formatDate(row.original.purchaseDate, (dateFormat as string))}</span>

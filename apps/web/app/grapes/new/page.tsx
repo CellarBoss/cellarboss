@@ -12,7 +12,7 @@ async function handleCreate(grape: Grape): Promise<ApiResult<Grape>> {
 
   try {
     return createGrape(grape);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Create failed:", err);
     throw err;
   }

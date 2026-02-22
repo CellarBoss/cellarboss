@@ -31,9 +31,8 @@ export function GenericField({
   editable = true,
 }: FieldProps) {
   return (
-    <form.Field
-      name={name}
-      children={(field: any) => {
+    <form.Field name={name}>
+      {(field: any) => {
         const isInvalid =
           editable && field.state.meta.isTouched && !field.state.meta.isValid;
 
@@ -93,6 +92,6 @@ export function GenericField({
           </Field>
         );
       }}
-    />
+    </form.Field>
   );
 }

@@ -37,7 +37,7 @@ type BulkEditDialogProps<T> = {
   onOpenChange: (open: boolean) => void;
   selectedCount: number;
   fields: BulkEditField<T>[];
-  onSave: (partial: Record<string, any>) => Promise<void>;
+  onSave: (partial: Record<string, string | number>) => Promise<void>;
 };
 
 export function BulkEditDialog<T>({ open, onOpenChange, selectedCount, fields, onSave }: BulkEditDialogProps<T>) {
@@ -53,7 +53,7 @@ export function BulkEditDialog<T>({ open, onOpenChange, selectedCount, fields, o
     setLoading(true);
     setError(null);
     try {
-      const partial: Record<string, any> = {};
+      const partial: Record<string, string | number> = {};
       for (const field of fields) {
         const raw = values[field.key];
         if (raw === undefined || raw === "") continue;
@@ -65,8 +65,8 @@ export function BulkEditDialog<T>({ open, onOpenChange, selectedCount, fields, o
       }
       await onSave(partial);
       setValues({});
-    } catch (err: any) {
-      setError(err.message || "Something went wrong.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setLoading(false);
     }

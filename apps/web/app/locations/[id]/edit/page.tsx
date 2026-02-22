@@ -16,7 +16,7 @@ async function handleUpdate(location: Location): Promise<ApiResult<Location>> {
 
   try {
     return updateLocation(location);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Update failed:", err);
     throw err;
   }

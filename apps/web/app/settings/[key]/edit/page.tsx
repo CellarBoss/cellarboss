@@ -48,11 +48,11 @@ export default function EditSettingPage() {
       });
       queryClient.invalidateQueries({ queryKey: ["settings"] });
       return { ok: true, data };
-    } catch (error: any) {
+    } catch (error: unknown) {
       return {
         ok: false,
         error: {
-          message: error.message || "Failed to update setting",
+          message: error instanceof Error ? error.message : "Failed to update setting",
           status: 500,
         },
       };

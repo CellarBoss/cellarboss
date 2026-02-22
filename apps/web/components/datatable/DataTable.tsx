@@ -39,6 +39,7 @@ export type { BulkEditField } from "@/components/bulk/BulkEditDialog";
 // relying on a closure captured in TanStack Table's memoised column model.
 const RowSelectionContext = createContext<RowSelectionState>({});
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function SelectAllCheckbox({ table }: { table: TableInstance<any> }) {
   const rowSelection = useContext(RowSelectionContext);
   const pageRows = table.getRowModel().rows;
@@ -52,6 +53,7 @@ function SelectAllCheckbox({ table }: { table: TableInstance<any> }) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function SelectionCell({ row }: { row: Row<any> }) {
   const rowSelection = useContext(RowSelectionContext);
   return (
@@ -76,7 +78,7 @@ type DataTableProps<T> = {
   defaultExpanded?: true | Record<string, boolean>;
   onBulkDelete?: (rows: T[]) => Promise<void>;
   bulkEditFields?: BulkEditField<T>[];
-  onBulkEdit?: (rows: T[], partial: Record<string, any>) => Promise<void>;
+  onBulkEdit?: (rows: T[], partial: Record<string, string | number>) => Promise<void>;
 };
 
 export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName, defaultSortColumn, buttons, getSubRows, renderDetail, defaultExpanded, onBulkDelete, bulkEditFields, onBulkEdit }: DataTableProps<T>) {
@@ -126,6 +128,7 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
     meta: { ...(col.meta ?? {}), _hasExplicitSize: col.size !== undefined },
   }));
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns: processedColumns,
@@ -168,6 +171,7 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
     setRowSelection({});
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function handleBulkEditSave(partial: Record<string, any>) {
     await onBulkEdit!(selectedRows, partial);
     setRowSelection({});

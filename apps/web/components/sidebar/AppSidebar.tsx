@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { BottleWine, Settings, Grape, User, Refrigerator, MapPin, Earth, Flag, Barrel, UserCircle, LogOut, Users } from "lucide-react"
 import { authClient } from "@/lib/auth-client"
 
@@ -61,10 +62,10 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <a href="/" className="flex items-center justify-center gap-2 px-2 py-3 font-semibold text-xl tracking-tight hover:opacity-80 transition-opacity">
+        <Link href="/" className="flex items-center justify-center gap-2 px-2 py-3 font-semibold text-xl tracking-tight hover:opacity-80 transition-opacity">
           <BottleWine className="h-5 w-5 shrink-0" />
           <span>CellarBoss</span>
-        </a>
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         {sections.map(({ label, items }) => (

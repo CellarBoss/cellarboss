@@ -17,6 +17,7 @@ type GenericCardProps<T extends { id: number | string }> = {
   mode: "view" | "edit" | "create" | "clone";
   data?: T;
   fields: FieldConfig<T>[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   processSave?: (data: any) => Promise<ApiResult<T>>;
   redirectTo?: string;
 };
@@ -75,9 +76,9 @@ export function GenericCard<T extends { id: number | string }>({
         setTimeout(() => {
           router.push(redirectTo);
         }, 1500);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error(err);
-        setErrorMessage(err?.message ?? "Something went wrong.");
+        setErrorMessage(err instanceof Error ? err.message : "Something went wrong.");
       } finally {
         setIsProcessing(false);
       }

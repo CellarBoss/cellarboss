@@ -16,7 +16,7 @@ async function handleUpdate(grape: Grape): Promise<ApiResult<Grape>> {
 
   try {
     return updateGrape(grape);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Update failed:", err);
     throw err;
   }

@@ -12,7 +12,7 @@ async function handleCreate(location: Location): Promise<ApiResult<Location>> {
 
   try {
     return createLocation(location);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Create failed:", err);
     throw err;
   }

@@ -16,7 +16,7 @@ async function handleUpdate(country: Country): Promise<ApiResult<Country>> {
 
   try {
     return updateCountry(country);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Update failed:", err);
     throw err;
   }
