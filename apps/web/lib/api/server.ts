@@ -1,6 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
+import { webEnv } from "../env";
 import type { ApiResult, ApiError } from "./types";
 
 export async function makeServerRequest<T>(
@@ -24,7 +25,7 @@ export async function makeServerRequest<T>(
   }
 
   try {
-    const res = await fetch(`${process.env.CELLARBOSS_SERVER}/api/${path}`, {
+    const res = await fetch(`${webEnv.CELLARBOSS_SERVER}/api/${path}`, {
       method,
       headers: reqHeaders,
       body,
