@@ -1,9 +1,6 @@
 import type { GenericType } from "./generic.js";
 
-export interface WineMaker extends GenericType {
-  id: number;
-  name: string;
-}
+export interface WineMaker extends GenericType {}
 
 export type CreateWineMaker = Omit<WineMaker, 'id'>;
 
