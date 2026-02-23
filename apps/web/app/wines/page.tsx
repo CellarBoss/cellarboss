@@ -6,7 +6,7 @@ import { getCountries } from "@/lib/api/countries";
 import { getWines, deleteWine, updateWine } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { getRegions } from "@/lib/api/regions";
-import { DataTable, type BulkEditField } from "@/components/datatable/DataTable";
+import { DataTable, type BulkEditField, type FilterDef } from "@/components/datatable/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
@@ -99,6 +99,15 @@ export default function WinesPage() {
     },
   ];
 
+  const wineFilters: FilterDef<Wine>[] = [
+    {
+      columnId: "type",
+      label: "Type",
+      urlParamName: "type",
+      options: WINE_TYPES.map((t) => ({ value: t, label: formatWineType(t) })),
+    },
+  ];
+
   const columns: ColumnDef<Wine>[] = [
     {
       accessorKey: 'name',
@@ -180,6 +189,7 @@ export default function WinesPage() {
         columns={columns}
         filterColumnName="name"
         defaultSortColumn="name"
+        filters={wineFilters}
         onBulkDelete={handleBulkDelete}
         bulkEditFields={bulkEditFields}
         onBulkEdit={handleBulkEdit}

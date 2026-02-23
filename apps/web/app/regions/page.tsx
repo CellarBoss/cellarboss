@@ -3,7 +3,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { Region } from "@cellarboss/types";
 import { getRegions, deleteRegion, updateRegion } from "@/lib/api/regions";
-import { DataTable, type BulkEditField } from "@/components/datatable/DataTable";
+import { DataTable, type BulkEditField, type FilterDef } from "@/components/datatable/DataTable";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { useRouter } from 'next/navigation';
@@ -64,6 +64,15 @@ export default function RegionsPage() {
     },
   ];
 
+  const regionFilters: FilterDef<Region>[] = [
+    {
+      columnId: "countryId",
+      label: "Country",
+      urlParamName: "countryId",
+      options: countryList.map((c) => ({ value: String(c.id), label: c.name })),
+    },
+  ];
+
   const columns = [
     {
       accessorKey: 'name',
@@ -77,10 +86,12 @@ export default function RegionsPage() {
       }
     },
     {
-      accessorKey: 'country',
+      accessorKey: 'countryId',
+      id: 'countryId',
       header: 'Country',
-      enableColumnFolder: false,
+      enableColumnFilter: true,
       enableSorting: true,
+      accessorFn: (row: Region) => String(row.countryId || ''),
       cell: ({ row }: { row: { original: Region } }) => {
         const country = countryList.filter(country => country.id === row.original.countryId)[0]
         return (
@@ -118,6 +129,7 @@ export default function RegionsPage() {
         columns={columns}
         filterColumnName="name"
         defaultSortColumn="name"
+        filters={regionFilters}
         onBulkDelete={handleBulkDelete}
         bulkEditFields={bulkEditFields}
         onBulkEdit={handleBulkEdit}

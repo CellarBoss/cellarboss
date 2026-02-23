@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, Fragment, ReactNode, useState } from "react";
+import { createContext, useContext, Fragment, ReactNode, useState, useEffect, useMemo, Suspense } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -8,6 +9,8 @@ import {
   RowSelectionState,
   SortingState,
   ExpandedState,
+  FilterFn,
+  VisibilityState,
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
@@ -30,14 +33,24 @@ import DataTableFooter from "./DataTableFooter";
 import DataTableRow from "./DataTableRow";
 import DataTableDetailRow from "./DataTableDetailRow";
 import { FilterControl } from "./FilterControl";
+import { DataTableFilterBar, type FilterDef } from "./DataTableFilterBar";
 import { BulkActionBar } from "@/components/bulk/BulkActionBar";
 import { BulkDeleteDialog } from "@/components/bulk/BulkDeleteDialog";
 import { BulkEditDialog, BulkEditField } from "@/components/bulk/BulkEditDialog";
 export type { BulkEditField } from "@/components/bulk/BulkEditDialog";
+export type { FilterDef } from "./DataTableFilterBar";
 
 // Context so selection cells can read the live rowSelection state without
 // relying on a closure captured in TanStack Table's memoised column model.
 const RowSelectionContext = createContext<RowSelectionState>({});
+
+// Custom filter function for multi-select filters
+const multiSelectFilter: FilterFn<any> = (row, columnId, filterValue: string[]) => {
+  if (!filterValue || filterValue.length === 0) return true;
+  const rawValue = row.getValue(columnId);
+  return filterValue.includes(String(rawValue));
+};
+multiSelectFilter.autoRemove = (val: string[]) => !val || val.length === 0;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function SelectAllCheckbox({ table }: { table: TableInstance<any> }) {
@@ -66,6 +79,53 @@ function SelectionCell({ row }: { row: Row<any> }) {
   );
 }
 
+// Reads initial filter state from URL params and sessionStorage
+// Wrapped in Suspense due to useSearchParams
+function DataTableFilterInit({
+  filters,
+  setColumnFilters,
+}: {
+  filters?: FilterDef[];
+  setColumnFilters: (filters: ColumnFiltersState) => void;
+}) {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (!filters?.length) return;
+
+    const initial: ColumnFiltersState = [];
+
+    // 1. Check URL params first
+    for (const f of filters) {
+      const paramName = f.urlParamName ?? f.columnId;
+      const param = searchParams.get(paramName);
+      if (param) {
+        initial.push({ id: f.columnId, value: param.split(',') });
+      }
+    }
+
+    // 2. Fall back to sessionStorage if no URL params
+    if (initial.length === 0) {
+      try {
+        const saved = sessionStorage.getItem(`dtf-${pathname}`);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          initial.push(...parsed);
+        }
+      } catch {
+        // Ignore parse errors
+      }
+    }
+
+    if (initial.length > 0) {
+      setColumnFilters(initial);
+    }
+  }, []); // Mount only
+
+  return null;
+}
+
 type DataTableProps<T> = {
   data?: T[];
   columns: ColumnDef<T>[];
@@ -79,9 +139,14 @@ type DataTableProps<T> = {
   onBulkDelete?: (rows: T[]) => Promise<void>;
   bulkEditFields?: BulkEditField<T>[];
   onBulkEdit?: (rows: T[], partial: Record<string, string | number>) => Promise<void>;
+  filters?: FilterDef[];
 };
 
-export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName, defaultSortColumn, buttons, getSubRows, renderDetail, defaultExpanded, onBulkDelete, bulkEditFields, onBulkEdit }: DataTableProps<T>) {
+export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName, defaultSortColumn, buttons, getSubRows, renderDetail, defaultExpanded, onBulkDelete, bulkEditFields, onBulkEdit, filters }: DataTableProps<T>) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   if (defaultPageSize === undefined) {
     defaultPageSize = 20;
   }
@@ -106,8 +171,51 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
   )
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(() => {
+    const visibility: VisibilityState = {};
+    columns.forEach((col: any) => {
+      const colId = col.id ?? col.accessorKey;
+      if ((col.meta as any)?.hidden) {
+        visibility[colId] = false;
+      }
+    });
+    return visibility;
+  });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+
+  // Sync column filters to URL and sessionStorage
+  useEffect(() => {
+    if (!filters?.length) return;
+
+    // Update URL params
+    const params = new URLSearchParams(searchParams.toString());
+    for (const f of filters) {
+      const paramName = f.urlParamName ?? f.columnId;
+      const val = columnFilters.find(cf => cf.id === f.columnId)?.value as string[] | undefined;
+      if (val?.length) {
+        params.set(paramName, val.join(','));
+      } else {
+        params.delete(paramName);
+      }
+    }
+    const newQs = params.toString();
+    const currentQs = searchParams.toString();
+
+    // Only update URL if the query string actually changed
+    if (newQs !== currentQs) {
+      router.replace(newQs ? `${pathname}?${newQs}` : pathname, { scroll: false });
+    }
+
+    // Update sessionStorage
+    try {
+      const managedFilters = columnFilters.filter(cf => filters.some(f => f.columnId === cf.id));
+      sessionStorage.setItem(`dtf-${pathname}`, JSON.stringify(managedFilters));
+    } catch {
+      // Ignore storage errors
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [columnFilters, filters, pathname]);
 
   if (data === undefined) {
     data = [];
@@ -123,10 +231,15 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
 
   const allColumns = enableRowSelection ? [selectionColumn, ...columns] : columns;
 
-  const processedColumns: ColumnDef<T>[] = allColumns.map(col => ({
-    ...col,
-    meta: { ...(col.meta ?? {}), _hasExplicitSize: col.size !== undefined },
-  }));
+  const processedColumns: ColumnDef<T>[] = allColumns.map(col => {
+    const colId = (col as any).id ?? (col as any).accessorKey;
+    const hasFilterDef = filters?.some(f => f.columnId === colId);
+    return {
+      ...col,
+      meta: { ...(col.meta ?? {}), _hasExplicitSize: col.size !== undefined },
+      ...(hasFilterDef ? { filterFn: multiSelectFilter } : {}),
+    };
+  });
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -136,9 +249,11 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
       pagination,
       columnFilters,
       sorting,
+      columnVisibility,
       ...(getSubRows || renderDetail ? { expanded } : {}),
       ...(enableRowSelection ? { rowSelection } : {}),
     },
+    onColumnVisibilityChange: setColumnVisibility,
     ...(enableRowSelection ? {
       enableRowSelection: true,
       onRowSelectionChange: setRowSelection,
@@ -200,10 +315,15 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
   }
 
   return (
-    <RowSelectionContext.Provider value={rowSelection}>
+    <>
+      <Suspense fallback={null}>
+        <DataTableFilterInit filters={filters} setColumnFilters={setColumnFilters} />
+      </Suspense>
+      <RowSelectionContext.Provider value={rowSelection}>
       <div className="relative flex w-full items-center">
-        <div className="left-0 w-[50%]">
+        <div className="left-0 flex items-center gap-2">
           <FilterControl table={table} filterColumnName={filterColumnName} columnFilters={columnFilters} />
+          {filters?.length ? <DataTableFilterBar filters={filters} table={table} columnFilters={columnFilters} /> : null}
         </div>
         <div className="ml-auto flex items-center gap-2">
           {buttons?.map((button, index) => (
@@ -264,6 +384,7 @@ export function DataTable<T>({ data, columns, defaultPageSize, filterColumnName,
           )}
         </>
       )}
-    </RowSelectionContext.Provider>
+      </RowSelectionContext.Provider>
+    </>
   );
 }

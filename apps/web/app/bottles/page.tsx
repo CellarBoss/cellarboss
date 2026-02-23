@@ -7,7 +7,8 @@ import { getVintages } from "@/lib/api/vintages";
 import { getWines } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { getStorages } from "@/lib/api/storages";
-import { DataTable, type BulkEditField } from "@/components/datatable/DataTable";
+import { buildTree, buildHierarchicalOptions } from "@/lib/functions/tree";
+import { DataTable, type BulkEditField, type FilterDef } from "@/components/datatable/DataTable";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { MoveBottleButton } from "@/components/buttons/MoveBottleButton";
@@ -122,6 +123,33 @@ export default function BottlesPage() {
     },
   ];
 
+  // Build hierarchical storage options for the filter
+  const treeData = buildTree(storages, "parent");
+
+  const filters: FilterDef[] = [
+    {
+      columnId: "vintageId",
+      label: "Vintage",
+      urlParamName: "vintageId",
+      options: vintages.map((v) => ({
+        value: String(v.id),
+        label: getVintageName(v.id, vintageMap, wineMap, winemakerMap),
+      })),
+    },
+    {
+      columnId: "status",
+      label: "Status",
+      urlParamName: "status",
+      options: BOTTLE_STATUSES.map((s) => ({ value: s, label: formatStatus(s) })),
+    },
+    {
+      columnId: "storageId",
+      label: "Storage",
+      urlParamName: "storageId",
+      options: buildHierarchicalOptions(treeData),
+    },
+  ];
+
   const columns = [
     {
       id: "vintage",
@@ -166,10 +194,13 @@ export default function BottlesPage() {
     },
     {
       accessorKey: "storageId",
+      id: "storageId",
       header: "Storage",
       enableSorting: true,
-      accessorFn: (row: Bottle) =>
-        row.storageId ? (storageMap.get(row.storageId) ?? "Unknown") : "—",
+      enableColumnFilter: true,
+      accessorFn: (row: Bottle) => String(row.storageId || ''),
+      cell: ({ row }: { row: { original: Bottle } }) =>
+        row.original.storageId ? (storageMap.get(row.original.storageId) ?? "Unknown") : "—",
     },
     {
       accessorKey: "status",
@@ -201,6 +232,15 @@ export default function BottlesPage() {
         </div>
       ),
     },
+    {
+      // Hidden column used for filtering by vintageId, since we need vintage available for search by text
+      id: "vintageId",
+      accessorKey: "vintageId",
+      header: "",
+      enableColumnFilter: true,
+      enableSorting: false,
+      meta: { hidden: true },
+    },
   ];
 
   return (
@@ -211,6 +251,7 @@ export default function BottlesPage() {
         columns={columns}
         filterColumnName="vintage"
         defaultSortColumn="purchaseDate"
+        filters={filters}
         onBulkDelete={handleBulkDelete}
         bulkEditFields={bulkEditFields}
         onBulkEdit={handleBulkEdit}
