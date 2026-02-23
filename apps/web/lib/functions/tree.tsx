@@ -23,3 +23,21 @@ export function buildTree<T extends { id: number; }>(
 
   return roots;
 }
+
+export function buildHierarchicalOptions<T extends { id: number; name: string; subRows?: TreeNode<T>[] }>(
+  nodes: TreeNode<T>[],
+  depth = 0
+): Array<{ value: string; label: string }> {
+  const options: Array<{ value: string; label: string }> = [];
+  for (const node of nodes) {
+    const indent = '\u00A0\u00A0'.repeat(depth);
+    options.push({
+      value: String(node.id),
+      label: `${indent}${node.name}`,
+    });
+    if (node.subRows && node.subRows.length > 0) {
+      options.push(...buildHierarchicalOptions(node.subRows, depth + 1));
+    }
+  }
+  return options;
+}
