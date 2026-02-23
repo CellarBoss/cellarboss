@@ -99,7 +99,7 @@ export default function WinesPage() {
     },
   ];
 
-  const wineFilters: FilterDef<Wine>[] = [
+  const wineFilters: FilterDef[] = [
     {
       columnId: "type",
       label: "Type",

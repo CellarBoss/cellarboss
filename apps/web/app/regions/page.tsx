@@ -64,7 +64,7 @@ export default function RegionsPage() {
     },
   ];
 
-  const regionFilters: FilterDef<Region>[] = [
+  const regionFilters: FilterDef[] = [
     {
       columnId: "countryId",
       label: "Country",
