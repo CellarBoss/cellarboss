@@ -40,6 +40,37 @@ function getVintageName(
   return `${winemakerName ? winemakerName + " - " : ""}${wine.name} ${vintage.year ?? "NV"}`;
 }
 
+function buildWineGroupedOptions(wines: Wine[], winemakers: WineMaker[]): Array<{ group: string; options: Array<{ value: string; label: string }> }> {
+  const winemakerMap = new Map(winemakers.map((wm) => [wm.id, wm.name]));
+
+  // Group wines by winemaker
+  const grouped = new Map<number, Wine[]>();
+  for (const wine of wines) {
+    if (!grouped.has(wine.wineMakerId)) {
+      grouped.set(wine.wineMakerId, []);
+    }
+    grouped.get(wine.wineMakerId)!.push(wine);
+  }
+
+  // Sort winemakers by name and build the grouped options
+  const sortedWinemakers = Array.from(grouped.entries())
+    .sort(([idA], [idB]) => {
+      const nameA = winemakerMap.get(idA) || "";
+      const nameB = winemakerMap.get(idB) || "";
+      return nameA.localeCompare(nameB);
+    });
+
+  return sortedWinemakers.map(([wineMakerId, winesInGroup]) => ({
+    group: winemakerMap.get(wineMakerId) || "Unknown Winemaker",
+    options: winesInGroup
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((wine) => ({
+        value: String(wine.id),
+        label: wine.name,
+      })),
+  }));
+}
+
 export default function BottlesPage() {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -134,14 +165,17 @@ export default function BottlesPage() {
 
   const filters: FilterDef[] = [
     {
-      type: FilterType.MultiSelect,
-      columnId: "vintageId",
-      label: "Vintage",
-      urlParamName: "vintageId",
-      options: vintages.map((v) => ({
-        value: String(v.id),
-        label: getVintageName(v.id, vintageMap, wineMap, winemakerMap),
-      })),
+      type: FilterType.GroupedMultiSelect,
+      columnId: "wineId",
+      label: "Wine",
+      urlParamName: "wineId",
+      options: buildWineGroupedOptions(wines, winemakers),
+    },
+    {
+      type: FilterType.Range,
+      columnId: "year",
+      label: "Year",
+      urlParamName: "year",
     },
     {
       type: FilterType.MultiSelect,
@@ -256,13 +290,22 @@ export default function BottlesPage() {
       ),
     },
     {
-      // Hidden column used for filtering by vintageId, since we need vintage available for search by text
-      id: "vintageId",
-      accessorKey: "vintageId",
+      // Hidden column used for filtering by wine
+      id: "wineId",
       header: "",
       enableColumnFilter: true,
       enableSorting: false,
       meta: { hidden: true },
+      accessorFn: (row: Bottle) => String(vintageMap.get(row.vintageId)?.wineId ?? ''),
+    },
+    {
+      // Hidden column used for filtering by year
+      id: "year",
+      header: "",
+      enableColumnFilter: true,
+      enableSorting: false,
+      meta: { hidden: true },
+      accessorFn: (row: Bottle) => vintageMap.get(row.vintageId)?.year ?? 0,
     },
     {
       // Hidden column used for filtering by drinking status

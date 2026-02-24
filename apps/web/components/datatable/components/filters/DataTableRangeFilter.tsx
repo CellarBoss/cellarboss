@@ -7,7 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown } from "lucide-react";
-import { FilterType, type FilterUrlHandler } from "../DataTableFilterControl";
+import { type FilterUrlHandler } from "../DataTableFilterControl";
 import type { RangeFilterValue } from "../../filters/rangeFilter";
 
 export const rangeUrlHandler: FilterUrlHandler = {
@@ -36,7 +36,7 @@ export const rangeUrlHandler: FilterUrlHandler = {
 };
 
 export type RangeFilterDef = {
-  type: FilterType.Range;
+  type: "range";
   columnId: string;
   label: string;
   urlParamName?: string;

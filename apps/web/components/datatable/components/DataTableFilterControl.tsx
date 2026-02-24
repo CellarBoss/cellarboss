@@ -3,26 +3,34 @@
 import { ColumnFiltersState, Table as TableInstance } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import type { RangeFilterValue } from "../filters/rangeFilter";
-import { DataTableMultiSelectFilter, type MultiSelectFilterDef, multiSelectUrlHandler } from "./filters/DataTableMultiSelectFilter";
+import { DataTableFlatMultiSelectFilter } from "./filters/DataTableFlatMultiSelectFilter";
+import { DataTableGroupedMultiSelectFilter } from "./filters/DataTableGroupedMultiSelectFilter";
+import {
+  type FlatMultiSelectFilterDef,
+  type GroupedMultiSelectFilterDef,
+  multiSelectUrlHandler,
+} from "./filters/multiSelectFilterUtils";
 import { DataTableRangeFilter, type RangeFilterDef, rangeUrlHandler } from "./filters/DataTableRangeFilter";
 
-export enum FilterType {
-  MultiSelect = "multiselect",
-  Range = "range",
-}
+export const FilterType = {
+  MultiSelect: "multiselect",
+  GroupedMultiSelect: "grouped-multiselect",
+  Range: "range",
+} as const;
 
 export type FilterUrlHandler = {
   serialize(paramName: string, value: unknown, params: URLSearchParams): void;
   deserialize(paramName: string, searchParams: URLSearchParams): unknown | null;
 };
 
-export const filterUrlHandlers: Record<FilterType, FilterUrlHandler> = {
+export const filterUrlHandlers: Record<typeof FilterType[keyof typeof FilterType], FilterUrlHandler> = {
   [FilterType.Range]: rangeUrlHandler,
   [FilterType.MultiSelect]: multiSelectUrlHandler,
+  [FilterType.GroupedMultiSelect]: multiSelectUrlHandler,
 };
 
-export type { MultiSelectFilterDef, RangeFilterDef };
-export type FilterDef = MultiSelectFilterDef | RangeFilterDef;
+export type { FlatMultiSelectFilterDef, GroupedMultiSelectFilterDef, RangeFilterDef };
+export type FilterDef = FlatMultiSelectFilterDef | GroupedMultiSelectFilterDef | RangeFilterDef;
 
 type DataTableFilterControlProps<T> = {
   filters: FilterDef[];
@@ -44,9 +52,17 @@ function getFilterComponent<T>(
       return <DataTableRangeFilter key={filter.columnId} filter={filter} table={table} />;
     case FilterType.MultiSelect:
       return (
-        <DataTableMultiSelectFilter
+        <DataTableFlatMultiSelectFilter
           key={filter.columnId}
-          filter={filter as MultiSelectFilterDef}
+          filter={filter as FlatMultiSelectFilterDef}
+          table={table}
+        />
+      );
+    case FilterType.GroupedMultiSelect:
+      return (
+        <DataTableGroupedMultiSelectFilter
+          key={filter.columnId}
+          filter={filter as GroupedMultiSelectFilterDef}
           table={table}
         />
       );
