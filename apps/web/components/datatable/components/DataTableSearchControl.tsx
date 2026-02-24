@@ -4,13 +4,13 @@ import { Table } from "@tanstack/react-table";
 import { Input } from "@/components/ui/input"
 import { ColumnFiltersState } from "@tanstack/react-table";
 
-type FilterControlProps = {
+type DataTableSearchControlProps = {
   table: Table<any>;
   filterColumnName?: string;
   columnFilters: ColumnFiltersState;
 };
 
-export function FilterControl({ table, filterColumnName, columnFilters }: FilterControlProps) {
+export function DataTableSearchControl({ table, filterColumnName, columnFilters }: DataTableSearchControlProps) {
   return (
     <>
       {filterColumnName != null && (

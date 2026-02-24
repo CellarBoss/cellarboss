@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ColumnFiltersState } from "@tanstack/react-table";
-import type { FilterDef } from "../components/DataTableFilterBar";
+import type { FilterDef } from "../components/DataTableFilterControl";
 
 /**
  * Sync column filters to URL params and sessionStorage

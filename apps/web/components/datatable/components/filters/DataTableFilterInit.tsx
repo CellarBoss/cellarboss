@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
-import type { FilterDef } from "../DataTableFilterBar";
+import type { FilterDef } from "../DataTableFilterControl";
 import { useFilterInitialization } from "../../hooks/useFilterInitialization";
 import { ColumnFiltersState } from "@tanstack/react-table";
 

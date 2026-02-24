@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import type { FilterDef } from "../components/DataTableFilterBar";
+import type { FilterDef } from "../components/DataTableFilterControl";
 import { multiSelectFilter } from "../filters/multiSelectFilter";
 import { createSelectionColumn } from "../components/selection/selectionColumn";
 

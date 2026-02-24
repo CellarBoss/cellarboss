@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useSearchParams, usePathname } from "next/navigation";
 import { ColumnFiltersState } from "@tanstack/react-table";
-import type { FilterDef } from "../components/DataTableFilterBar";
+import type { FilterDef } from "../components/DataTableFilterControl";
 
 /**
  * Initialize column filters from URL params (priority) or sessionStorage (fallback)

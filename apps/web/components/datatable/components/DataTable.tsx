@@ -23,9 +23,9 @@ import {
 import DataTableHeader from "./DataTableHeader";
 import DataTableFooter from "./DataTableFooter";
 import DataTableRow from "./DataTableRow";
-import DataTableDetailRow from "./DataTableDetailRow";
-import { FilterControl } from "./FilterControl";
-import { DataTableFilterBar, type FilterDef } from "./DataTableFilterBar";
+import DataTableDetailRow from "./detail/DataTableDetailRow";
+import { DataTableSearchControl } from "./DataTableSearchControl";
+import { DataTableFilterControl, type FilterDef } from "./DataTableFilterControl";
 import { BulkActionBar } from "@/components/bulk/BulkActionBar";
 import { BulkDeleteDialog } from "@/components/bulk/BulkDeleteDialog";
 import { BulkEditDialog, BulkEditField } from "@/components/bulk/BulkEditDialog";
@@ -41,7 +41,7 @@ import { calculatePaginationMetrics } from "../utils/paginationCalculations";
 import { createTableStateUpdater } from "../hooks/useDataTableState";
 
 export type { BulkEditField } from "@/components/bulk/BulkEditDialog";
-export type { FilterDef } from "./DataTableFilterBar";
+export type { FilterDef } from "./DataTableFilterControl";
 
 type DataTableProps<T> = {
   data?: T[];
@@ -168,13 +168,13 @@ export function DataTable<T>({
       <RowSelectionContext.Provider value={state.rowSelection}>
         <div className="relative flex w-full items-center">
           <div className="left-0 flex items-center gap-2">
-            <FilterControl
+            <DataTableSearchControl
               table={table}
               filterColumnName={filterColumnName}
               columnFilters={state.columnFilters}
             />
             {filters?.length ? (
-              <DataTableFilterBar
+              <DataTableFilterControl
                 filters={filters}
                 table={table}
                 columnFilters={state.columnFilters}

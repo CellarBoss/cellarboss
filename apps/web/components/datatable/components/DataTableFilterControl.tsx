@@ -14,17 +14,17 @@ export type FilterDef = {
   options: Array<{ value: string; label: string }>;
 };
 
-type DataTableFilterBarProps<T> = {
+type DataTableFilterControlProps<T> = {
   filters: FilterDef[];
   table: TableInstance<T>;
   columnFilters: ColumnFiltersState;
 };
 
-export function DataTableFilterBar<T>({
+export function DataTableFilterControl<T>({
   filters,
   table,
   columnFilters,
-}: DataTableFilterBarProps<T>) {
+}: DataTableFilterControlProps<T>) {
   const hasActiveFilters = columnFilters.some(
     (f) => filters.some((d) => d.columnId === f.id) && (f.value as string[])?.length > 0
   );
