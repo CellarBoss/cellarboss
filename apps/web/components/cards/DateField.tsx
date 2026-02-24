@@ -17,7 +17,7 @@ export function DateField({ field, editable }: DateFieldProps) {
   const value: string = field.state.value ?? "";
 
   // Parse "YYYY-MM-DD" string to Date for the calendar (avoid timezone shift)
-  const dateValue = value ? new Date(value + "T00:00:00") : undefined;
+  const dateValue = value ? new Date(value + "T00:00:00Z") : undefined;
 
   const displayText = dateValue
     ? dateValue.toLocaleDateString("en-GB", {
