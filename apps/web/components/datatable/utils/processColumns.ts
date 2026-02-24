@@ -26,7 +26,7 @@ export function processColumnsWithFilters<T>(
     return {
       ...col,
       meta: { ...(col.meta ?? {}), _hasExplicitSize: col.size !== undefined },
-      ...(filterFn ? { filterFn } : {}),
+      ...(filterFn && !col.filterFn ? { filterFn } : {}),
     };
   });
 }

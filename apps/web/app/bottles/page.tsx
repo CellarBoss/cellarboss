@@ -30,9 +30,15 @@ import {
   formatDate,
   formatDrinkingStatus,
 } from "@/lib/functions/format";
-import type { Bottle, Vintage, Wine, WineMaker } from "@cellarboss/types";
+import type {
+  Bottle,
+  Storage,
+  Vintage,
+  Wine,
+  WineMaker,
+} from "@cellarboss/types";
 import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
-import { Row } from "@tanstack/react-table";
+import { FilterFn, Row } from "@tanstack/react-table";
 import { compareAsc } from "date-fns";
 import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
 import { StorageHierarchyDisplay } from "@/components/storage/StorageHierarchyDisplay";
@@ -49,6 +55,34 @@ function getVintageName(
   if (!wine) return `Unknown Wine ${vintage.year ?? "NV"}`;
   const winemakerName = winemakerMap.get(wine.wineMakerId);
   return `${winemakerName ? winemakerName + " - " : ""}${wine.name} ${vintage.year ?? "NV"}`;
+}
+
+/** Build a map from each storage ID to the set of all its descendant IDs (including itself). */
+function buildDescendantsMap(
+  storages: Storage[],
+): Map<number, Set<number>> {
+  const childrenMap = new Map<number, number[]>();
+  for (const s of storages) {
+    if (s.parent != null) {
+      if (!childrenMap.has(s.parent)) childrenMap.set(s.parent, []);
+      childrenMap.get(s.parent)!.push(s.id);
+    }
+  }
+
+  const result = new Map<number, Set<number>>();
+
+  function collect(id: number): Set<number> {
+    if (result.has(id)) return result.get(id)!;
+    const desc = new Set<number>([id]);
+    for (const childId of childrenMap.get(id) ?? []) {
+      for (const d of collect(childId)) desc.add(d);
+    }
+    result.set(id, desc);
+    return desc;
+  }
+
+  for (const s of storages) collect(s.id);
+  return result;
 }
 
 function buildWineGroupedOptions(
@@ -214,6 +248,7 @@ export default function BottlesPage() {
 
   // Build hierarchical storage options for the filter
   const treeData = buildTree(storages, "parent");
+  const descendantsMap = buildDescendantsMap(storages);
 
   const drinkingWindowOptions = [
     { value: "wait", label: "Too Young" },
@@ -345,6 +380,15 @@ export default function BottlesPage() {
       enableSorting: true,
       enableColumnFilter: true,
       accessorFn: (row: Bottle) => String(row.storageId || ""),
+      filterFn: (row: Row<Bottle>, _columnId: string, filterValue: string[]) => {
+        if (!filterValue || filterValue.length === 0) return true;
+        const storageId = row.original.storageId;
+        if (!storageId) return false;
+        // Check if this bottle's storage is a descendant of any selected filter value
+        return filterValue.some((selectedId) =>
+          descendantsMap.get(Number(selectedId))?.has(storageId),
+        );
+      },
       cell: ({ row }: { row: { original: Bottle } }) => (
         <StorageHierarchyDisplay storageId={row.original.storageId} />
       ),
