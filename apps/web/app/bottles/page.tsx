@@ -302,7 +302,11 @@ export default function BottlesPage() {
       enableSorting: true,
       enableColumnFilter: true,
       accessorFn: (row: Bottle) => String(row.storageId || ""),
-      filterFn: (row: Row<Bottle>, _columnId: string, filterValue: string[]) => {
+      filterFn: (
+        row: Row<Bottle>,
+        _columnId: string,
+        filterValue: string[],
+      ) => {
         if (!filterValue || filterValue.length === 0) return true;
         const storageId = row.original.storageId;
         if (!storageId) return false;

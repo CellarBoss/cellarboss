@@ -52,7 +52,11 @@ type Props<T> = {
   activeValue: RangeFilterValue | undefined;
 };
 
-export function RangeFilter<T>({ filter, table, activeValue: rangeVal }: Props<T>) {
+export function RangeFilter<T>({
+  filter,
+  table,
+  activeValue: rangeVal,
+}: Props<T>) {
   const activeCount =
     (rangeVal?.min !== undefined ? 1 : 0) +
     (rangeVal?.max !== undefined ? 1 : 0);

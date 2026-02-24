@@ -18,7 +18,11 @@ type Props<T> = {
   activeValues: string[] | undefined;
 };
 
-export function FlatMultiSelectFilter<T>({ filter, table, activeValues }: Props<T>) {
+export function FlatMultiSelectFilter<T>({
+  filter,
+  table,
+  activeValues,
+}: Props<T>) {
   const activeCount = activeValues?.length || 0;
 
   const handleOptionChange = (value: string, checked: boolean) => {

@@ -79,7 +79,11 @@ function getFilterComponent<T>(
           key={filter.columnId}
           filter={filter}
           table={table}
-          activeValue={getFilterValue(columnFilters, filter.columnId) as RangeFilterValue | undefined}
+          activeValue={
+            getFilterValue(columnFilters, filter.columnId) as
+              | RangeFilterValue
+              | undefined
+          }
         />
       );
     case FilterType.MultiSelect:
@@ -88,7 +92,11 @@ function getFilterComponent<T>(
           key={filter.columnId}
           filter={filter as FlatMultiSelectFilterDef}
           table={table}
-          activeValues={getFilterValue(columnFilters, filter.columnId) as string[] | undefined}
+          activeValues={
+            getFilterValue(columnFilters, filter.columnId) as
+              | string[]
+              | undefined
+          }
         />
       );
     case FilterType.GroupedMultiSelect:
@@ -97,7 +105,11 @@ function getFilterComponent<T>(
           key={filter.columnId}
           filter={filter as GroupedMultiSelectFilterDef}
           table={table}
-          activeValues={getFilterValue(columnFilters, filter.columnId) as string[] | undefined}
+          activeValues={
+            getFilterValue(columnFilters, filter.columnId) as
+              | string[]
+              | undefined
+          }
         />
       );
     default:
@@ -128,7 +140,9 @@ export function DataTableFilterControl<T>({
 
   return (
     <div className="flex items-center gap-2">
-      {filters.map((filter) => getFilterComponent(filter, table, columnFilters))}
+      {filters.map((filter) =>
+        getFilterComponent(filter, table, columnFilters),
+      )}
 
       {hasActiveFilters && (
         <Button

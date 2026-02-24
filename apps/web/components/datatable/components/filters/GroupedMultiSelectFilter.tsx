@@ -18,7 +18,11 @@ type Props<T> = {
   activeValues: string[] | undefined;
 };
 
-export function GroupedMultiSelectFilter<T>({ filter, table, activeValues }: Props<T>) {
+export function GroupedMultiSelectFilter<T>({
+  filter,
+  table,
+  activeValues,
+}: Props<T>) {
   const activeCount = activeValues?.length || 0;
 
   const handleOptionChange = (value: string, checked: boolean) => {

@@ -1,9 +1,4 @@
-import type {
-  Storage,
-  Vintage,
-  Wine,
-  WineMaker,
-} from "@cellarboss/types";
+import type { Storage, Vintage, Wine, WineMaker } from "@cellarboss/types";
 
 export function getVintageName(
   vintageId: number,
