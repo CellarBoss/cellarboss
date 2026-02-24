@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { getBottleCountsByVintageId } from "@/lib/api/bottles";
 import { formatStatus } from "@/lib/functions/format";
+import { getVintageById } from "@/lib/api/vintages";
 
 export function BottleCountDisplay({ vintageId }: { vintageId: number }) {
   const bottleCountsQuery = useApiQuery({
@@ -9,7 +10,12 @@ export function BottleCountDisplay({ vintageId }: { vintageId: number }) {
     queryFn: () => getBottleCountsByVintageId(vintageId),
   });
 
-  if (bottleCountsQuery.isLoading)
+  const vintageQuery = useApiQuery({
+    queryKey: ["vintage", vintageId],
+    queryFn: () => getVintageById(vintageId),
+  });
+
+  if (bottleCountsQuery.isLoading || vintageQuery.isLoading)
     return <span className="text-muted-foreground">...</span>;
   if (!bottleCountsQuery.data || bottleCountsQuery.data.length === 0)
     return <span className="text-muted-foreground">0</span>;
@@ -21,7 +27,7 @@ export function BottleCountDisplay({ vintageId }: { vintageId: number }) {
         .map((item, index, filtered) => (
           <span key={item.status}>
             <Link
-              href={`/bottles?vintageId=${vintageId}&status=${item.status}`}
+              href={`/bottles?wineId=${vintageQuery.data?.wineId}&yearMin=${vintageQuery.data?.year}&yearMax=${vintageQuery.data?.year}&status=${item.status}`}
               className="hover:underline"
             >
               {item.count} {formatStatus(item.status)}
