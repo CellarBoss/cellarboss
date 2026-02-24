@@ -7,6 +7,7 @@ import { getVintages } from "@/lib/api/vintages";
 import { getWines } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { getStorages } from "@/lib/api/storages";
+import { getLocations } from "@/lib/api/locations";
 import { buildTree, buildHierarchicalOptions } from "@/lib/functions/tree";
 import { DataTable, type BulkEditField, type FilterDef, FilterType } from "@/components/datatable/components/DataTable";
 import { EditButton } from "@/components/buttons/EditButton";
@@ -80,18 +81,21 @@ export default function BottlesPage() {
   const wineQuery = useApiQuery({ queryKey: ["wines"], queryFn: getWines });
   const winemakerQuery = useApiQuery({ queryKey: ["winemakers"], queryFn: getWinemakers });
   const storageQuery = useApiQuery({ queryKey: ["storages"], queryFn: getStorages });
+  const locationQuery = useApiQuery({ queryKey: ["locations"], queryFn: getLocations });
   const settingsQuery = useSettings();
 
-  const result = queryGate(bottleQuery, vintageQuery, wineQuery, winemakerQuery, storageQuery, settingsQuery);
+  const result = queryGate(bottleQuery, vintageQuery, wineQuery, winemakerQuery, storageQuery, locationQuery, settingsQuery);
   if (!result.ready) return result.gate;
 
-  const [bottles, vintages, wines, winemakers, storages, settings] = result.data;
+  const [bottles, vintages, wines, winemakers, storages, locations, settings] = result.data;
   const currency = settings.get("currency") as string | undefined;
   const dateFormat = settings.get("date") as string | undefined;
 
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w: Wine) => [w.id, w]));
   const winemakerMap = new Map(winemakers.map((wm: WineMaker) => [wm.id, wm.name]));
+  const locationMap = new Map(locations.map((l) => [l.id, l.name]));
+  const storageMap = new Map(storages.map((s) => [s.id, s]));
 
   async function handleDelete(row: Bottle): Promise<boolean> {
     const delResult = await deleteBottle(row.id);
@@ -204,6 +208,13 @@ export default function BottlesPage() {
       label: "Price",
       urlParamName: "price",
     },
+    {
+      type: FilterType.MultiSelect,
+      columnId: "locationId",
+      label: "Location",
+      urlParamName: "locationId",
+      options: locations.map((l) => ({ value: String(l.id), label: l.name })),
+    },
   ];
 
   const columns = [
@@ -258,6 +269,19 @@ export default function BottlesPage() {
       cell: ({ row }: { row: { original: Bottle } }) => (
         <StorageHierarchyDisplay storageId={row.original.storageId} />
       ),
+    },
+    {
+      accessorKey: "locationId",
+      id: "locationId",
+      header: "Location",
+      enableSorting: false,
+      enableColumnFilter: true,
+      accessorFn: (row: Bottle) => String(storageMap.get(row.storageId || 0)?.locationId || ''),
+      cell: ({ row }: { row: { original: Bottle } }) => {
+        const locationId = storageMap.get(row.original.storageId || 0)?.locationId;
+        if (!locationId) return "—";
+        return locationMap.get(locationId) || "Unknown";
+      },
     },
     {
       accessorKey: "status",
