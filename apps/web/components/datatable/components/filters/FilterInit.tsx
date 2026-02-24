@@ -5,7 +5,7 @@ import type { FilterDef } from "../DataTableFilterControl";
 import { useFilterInitialization } from "../../hooks/useFilterInitialization";
 import { ColumnFiltersState } from "@tanstack/react-table";
 
-function DataTableFilterInitContent({
+function FilterInitContent({
   filters,
   setColumnFilters,
 }: {
@@ -20,7 +20,7 @@ function DataTableFilterInitContent({
  * Reads initial filter state from URL params and sessionStorage.
  * Wrapped in Suspense due to useSearchParams.
  */
-export function DataTableFilterInit({
+export function FilterInit({
   filters,
   setColumnFilters,
 }: {
@@ -29,7 +29,7 @@ export function DataTableFilterInit({
 }) {
   return (
     <Suspense fallback={null}>
-      <DataTableFilterInitContent filters={filters} setColumnFilters={setColumnFilters} />
+      <FilterInitContent filters={filters} setColumnFilters={setColumnFilters} />
     </Suspense>
   );
 }

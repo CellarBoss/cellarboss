@@ -13,7 +13,7 @@ type Props<T> = {
   table: TableInstance<T>;
 };
 
-export function DataTableGroupedMultiSelectFilter<T>({ filter, table }: Props<T>) {
+export function GroupedMultiSelectFilter<T>({ filter, table }: Props<T>) {
   const activeValues = table
     .getColumn(filter.columnId)
     ?.getFilterValue() as string[] | undefined;

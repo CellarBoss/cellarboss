@@ -29,7 +29,7 @@ import { DataTableFilterControl, FilterType, type FilterDef } from "./DataTableF
 import { BulkActionBar } from "@/components/bulk/BulkActionBar";
 import { BulkDeleteDialog } from "@/components/bulk/BulkDeleteDialog";
 import { BulkEditDialog, BulkEditField } from "@/components/bulk/BulkEditDialog";
-import { DataTableFilterInit } from "./filters/DataTableFilterInit";
+import { FilterInit } from "./filters/FilterInit";
 import { RowSelectionContext } from "../selection/RowSelectionContext";
 import { useDataTableState } from "../hooks/useDataTableState";
 import { useFilterInitialization } from "../hooks/useFilterInitialization";
@@ -165,7 +165,7 @@ export function DataTable<T>({
 
   return (
     <>
-      <DataTableFilterInit filters={filters} setColumnFilters={state.setColumnFilters} />
+      <FilterInit filters={filters} setColumnFilters={state.setColumnFilters} />
       <RowSelectionContext.Provider value={state.rowSelection}>
         <div className="relative flex w-full items-center">
           <div className="left-0 flex items-center gap-2">

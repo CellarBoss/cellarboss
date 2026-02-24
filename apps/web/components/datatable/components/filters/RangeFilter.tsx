@@ -47,7 +47,7 @@ type Props<T> = {
   table: TableInstance<T>;
 };
 
-export function DataTableRangeFilter<T>({ filter, table }: Props<T>) {
+export function RangeFilter<T>({ filter, table }: Props<T>) {
   const rangeVal = table
     .getColumn(filter.columnId)
     ?.getFilterValue() as RangeFilterValue | undefined;

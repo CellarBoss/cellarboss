@@ -13,7 +13,7 @@ type Props<T> = {
   table: TableInstance<T>;
 };
 
-export function DataTableFlatMultiSelectFilter<T>({ filter, table }: Props<T>) {
+export function FlatMultiSelectFilter<T>({ filter, table }: Props<T>) {
   const activeValues = table
     .getColumn(filter.columnId)
     ?.getFilterValue() as string[] | undefined;

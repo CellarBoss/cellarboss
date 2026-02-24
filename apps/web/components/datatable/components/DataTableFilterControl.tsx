@@ -3,14 +3,14 @@
 import { ColumnFiltersState, Table as TableInstance } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import type { RangeFilterValue } from "../filters/rangeFilter";
-import { DataTableFlatMultiSelectFilter } from "./filters/DataTableFlatMultiSelectFilter";
-import { DataTableGroupedMultiSelectFilter } from "./filters/DataTableGroupedMultiSelectFilter";
+import { FlatMultiSelectFilter } from "./filters/FlatMultiSelectFilter";
+import { GroupedMultiSelectFilter } from "./filters/GroupedMultiSelectFilter";
 import {
   type FlatMultiSelectFilterDef,
   type GroupedMultiSelectFilterDef,
   multiSelectUrlHandler,
 } from "./filters/multiSelectFilterUtils";
-import { DataTableRangeFilter, type RangeFilterDef, rangeUrlHandler } from "./filters/DataTableRangeFilter";
+import { RangeFilter, type RangeFilterDef, rangeUrlHandler } from "./filters/RangeFilter";
 
 export const FilterType = {
   MultiSelect: "multiselect",
@@ -49,10 +49,10 @@ function getFilterComponent<T>(
 ): React.ReactNode {
   switch (filter.type) {
     case FilterType.Range:
-      return <DataTableRangeFilter key={filter.columnId} filter={filter} table={table} />;
+      return <RangeFilter key={filter.columnId} filter={filter} table={table} />;
     case FilterType.MultiSelect:
       return (
-        <DataTableFlatMultiSelectFilter
+        <FlatMultiSelectFilter
           key={filter.columnId}
           filter={filter as FlatMultiSelectFilterDef}
           table={table}
@@ -60,7 +60,7 @@ function getFilterComponent<T>(
       );
     case FilterType.GroupedMultiSelect:
       return (
-        <DataTableGroupedMultiSelectFilter
+        <GroupedMultiSelectFilter
           key={filter.columnId}
           filter={filter as GroupedMultiSelectFilterDef}
           table={table}
