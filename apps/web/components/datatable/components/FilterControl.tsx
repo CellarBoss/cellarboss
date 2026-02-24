@@ -24,7 +24,7 @@ export function FilterControl({ table, filterColumnName, columnFilters }: Filter
             onChange={(event) =>
               table.getColumn(filterColumnName)?.setFilterValue(event.target.value)
             }
-            className="max-w-sm"
+            className="max-w-sm h-10"
           />
         </div>
       )}
