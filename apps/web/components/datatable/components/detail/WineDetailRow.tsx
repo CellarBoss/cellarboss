@@ -18,8 +18,8 @@ import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { BottleButton } from "@/components/buttons/BottleButton";
-import { DrinkingWindowDisplay } from "./DrinkingWindowDisplay";
-import { BottleCountDisplay } from "./BottleCountDisplay";
+import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
+import { BottleCountDisplay } from "@/components/vintage/BottleCountDisplay";
 
 export default function WineDetailRow({ wine }: { wine: Wine }) {
   const queryClient = useQueryClient();

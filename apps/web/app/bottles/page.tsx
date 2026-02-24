@@ -24,7 +24,7 @@ import { LoadingCard } from "@/components/cards/LoadingCard";
 import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
 import { Row } from "@tanstack/react-table";
 import { compareAsc } from "date-fns";
-import { DrinkingWindowDisplay } from "@/components/datatable/components/detail/DrinkingWindowDisplay";
+import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
 
 function getVintageName(
   vintageId: number,
