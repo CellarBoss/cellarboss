@@ -51,10 +51,10 @@ export function FlatMultiSelectFilter<T>({ filter, table, activeValues }: Props<
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-56 p-4">
+      <PopoverContent className="w-56 max-h-[var(--radix-popover-content-available-height,auto)] overflow-y-auto p-4">
         <div className="space-y-3">
           <div className="text-sm font-medium">{filter.label}</div>
-          <div className="space-y-2 max-h-64 overflow-y-auto">
+          <div className="space-y-2">
             {filter.options.map((option) => (
               <div key={option.value} className="flex items-center space-x-2">
                 <Checkbox

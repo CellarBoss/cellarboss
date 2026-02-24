@@ -51,10 +51,10 @@ export function GroupedMultiSelectFilter<T>({ filter, table, activeValues }: Pro
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-56 p-4">
+      <PopoverContent className="w-56 max-h-[var(--radix-popover-content-available-height,auto)] overflow-y-auto p-4">
         <div className="space-y-3">
           <div className="text-sm font-medium">{filter.label}</div>
-          <div className="space-y-2 max-h-64 overflow-y-auto">
+          <div className="space-y-2">
             {filter.options.map((group) => (
               <div key={group.group}>
                 <div className="text-xs font-semibold text-muted-foreground py-1.5 px-1">
