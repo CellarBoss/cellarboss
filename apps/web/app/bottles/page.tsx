@@ -25,6 +25,7 @@ import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
 import { Row } from "@tanstack/react-table";
 import { compareAsc } from "date-fns";
 import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
+import { StorageHierarchyDisplay } from "@/components/storage/StorageHierarchyDisplay";
 
 function getVintageName(
   vintageId: number,
@@ -61,7 +62,6 @@ export default function BottlesPage() {
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w: Wine) => [w.id, w]));
   const winemakerMap = new Map(winemakers.map((wm: WineMaker) => [wm.id, wm.name]));
-  const storageMap = new Map(storages.map((s) => [s.id, s.name]));
 
   async function handleDelete(row: Bottle): Promise<boolean> {
     const delResult = await deleteBottle(row.id);
@@ -199,8 +199,9 @@ export default function BottlesPage() {
       enableSorting: true,
       enableColumnFilter: true,
       accessorFn: (row: Bottle) => String(row.storageId || ''),
-      cell: ({ row }: { row: { original: Bottle } }) =>
-        row.original.storageId ? (storageMap.get(row.original.storageId) ?? "Unknown") : "—",
+      cell: ({ row }: { row: { original: Bottle } }) => (
+        <StorageHierarchyDisplay storageId={row.original.storageId} />
+      ),
     },
     {
       accessorKey: "status",
