@@ -6,7 +6,7 @@ import { buildTree, TreeNode } from "@/lib/functions/tree";
 import { getStorages, deleteStorage, updateStorage } from "@/lib/api/storages";
 import { getLocations } from "@/lib/api/locations";
 import { DataTable, type BulkEditField } from "@/components/datatable/components/DataTable";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { useRouter } from 'next/navigation';
@@ -92,6 +92,13 @@ export default function StoragesPage() {
       header: 'Location',
       enableColumnFilter: false,
       enableSorting: true,
+      sortingFn: (rowA: Row<TreeNode<Storage>>, rowB: Row<TreeNode<Storage>>) => {
+        const locationA = locationList.find(l => l.id === rowA.original.locationId);
+        const locationB = locationList.find(l => l.id === rowB.original.locationId);
+        const nameA = locationA?.name ?? '';
+        const nameB = locationB?.name ?? '';
+        return nameA.localeCompare(nameB);
+      },
       cell: ({ row }) => {
         if (!row.original.locationId) return <span>-</span>;
         const location = locationList.filter(l => l.id === row.original.locationId)[0];

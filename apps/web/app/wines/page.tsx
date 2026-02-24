@@ -7,7 +7,7 @@ import { getWines, deleteWine, updateWine } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { getRegions } from "@/lib/api/regions";
 import { DataTable, type BulkEditField, type FilterDef } from "@/components/datatable/components/DataTable";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { useRouter } from 'next/navigation';
@@ -129,6 +129,13 @@ export default function WinesPage() {
       header: 'Winemaker',
       enableColumnFilter: false,
       enableSorting: true,
+      sortingFn: (rowA: Row<Wine>, rowB: Row<Wine>) => {
+        const winemakerA = winemakerList.find(w => w.id === rowA.original.wineMakerId);
+        const winemakerB = winemakerList.find(w => w.id === rowB.original.wineMakerId);
+        const nameA = winemakerA?.name ?? '';
+        const nameB = winemakerB?.name ?? '';
+        return nameA.localeCompare(nameB);
+      },
       cell: ({ row }) => {
         const winemaker = winemakerList.find(w => w.id === row.original.wineMakerId);
         if (!winemaker) return <span>-</span>;
@@ -142,6 +149,13 @@ export default function WinesPage() {
       header: 'Region',
       enableColumnFilter: false,
       enableSorting: true,
+      sortingFn: (rowA: Row<Wine>, rowB: Row<Wine>) => {
+        const regionA = regionList.find(r => r.id === rowA.original.regionId);
+        const regionB = regionList.find(r => r.id === rowB.original.regionId);
+        const nameA = regionA?.name ?? '';
+        const nameB = regionB?.name ?? '';
+        return nameA.localeCompare(nameB);
+      },
       cell: ({ row }) => {
         if (!row.original.regionId) return <span>-</span>;
         const region = regionList.find(r => r.id === row.original.regionId);
