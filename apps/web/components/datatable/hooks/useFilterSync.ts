@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ColumnFiltersState } from "@tanstack/react-table";
 import type { FilterDef } from "../components/DataTableFilterControl";
+import { filterUrlHandlers } from "../components/DataTableFilterControl";
 
 /**
  * Sync column filters to URL params and sessionStorage
@@ -23,12 +24,8 @@ export function useFilterSync(
     const params = new URLSearchParams(searchParams.toString());
     for (const f of filters) {
       const paramName = f.urlParamName ?? f.columnId;
-      const val = columnFilters.find(cf => cf.id === f.columnId)?.value as string[] | undefined;
-      if (val?.length) {
-        params.set(paramName, val.join(','));
-      } else {
-        params.delete(paramName);
-      }
+      const value = columnFilters.find(cf => cf.id === f.columnId)?.value;
+      filterUrlHandlers[f.type].serialize(paramName, value, params);
     }
     const newQs = params.toString();
     const currentQs = searchParams.toString();

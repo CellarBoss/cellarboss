@@ -1,6 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import type { FilterDef } from "../components/DataTableFilterControl";
+import { FilterType } from "../components/DataTableFilterControl";
 import { multiSelectFilter } from "../filters/multiSelectFilter";
+import { rangeFilter } from "../filters/rangeFilter";
 import { createSelectionColumn } from "../components/selection/selectionColumn";
 
 export function processColumnsWithFilters<T>(
@@ -13,11 +15,16 @@ export function processColumnsWithFilters<T>(
 
   return allColumns.map(col => {
     const colId = (col as any).id ?? (col as any).accessorKey;
-    const hasFilterDef = filters?.some(f => f.columnId === colId);
+    const filterDef = filters?.find(f => f.columnId === colId);
+    const filterFn = filterDef
+      ? filterDef.type === FilterType.Range
+        ? rangeFilter
+        : multiSelectFilter
+      : undefined;
     return {
       ...col,
       meta: { ...(col.meta ?? {}), _hasExplicitSize: col.size !== undefined },
-      ...(hasFilterDef ? { filterFn: multiSelectFilter } : {}),
+      ...(filterFn ? { filterFn } : {}),
     };
   });
 }

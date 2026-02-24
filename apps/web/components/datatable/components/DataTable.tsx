@@ -25,7 +25,7 @@ import DataTableFooter from "./DataTableFooter";
 import DataTableRow from "./DataTableRow";
 import DataTableDetailRow from "./detail/DataTableDetailRow";
 import { DataTableSearchControl } from "./DataTableSearchControl";
-import { DataTableFilterControl, type FilterDef } from "./DataTableFilterControl";
+import { DataTableFilterControl, FilterType, type FilterDef } from "./DataTableFilterControl";
 import { BulkActionBar } from "@/components/bulk/BulkActionBar";
 import { BulkDeleteDialog } from "@/components/bulk/BulkDeleteDialog";
 import { BulkEditDialog, BulkEditField } from "@/components/bulk/BulkEditDialog";
@@ -41,6 +41,7 @@ import { calculatePaginationMetrics } from "../utils/paginationCalculations";
 import { createTableStateUpdater } from "../hooks/useDataTableState";
 
 export type { BulkEditField } from "@/components/bulk/BulkEditDialog";
+export { FilterType };
 export type { FilterDef } from "./DataTableFilterControl";
 
 type DataTableProps<T> = {

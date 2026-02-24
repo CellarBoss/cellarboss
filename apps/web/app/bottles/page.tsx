@@ -8,7 +8,7 @@ import { getWines } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { getStorages } from "@/lib/api/storages";
 import { buildTree, buildHierarchicalOptions } from "@/lib/functions/tree";
-import { DataTable, type BulkEditField, type FilterDef } from "@/components/datatable/components/DataTable";
+import { DataTable, type BulkEditField, type FilterDef, FilterType } from "@/components/datatable/components/DataTable";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { MoveBottleButton } from "@/components/buttons/MoveBottleButton";
@@ -127,6 +127,7 @@ export default function BottlesPage() {
 
   const filters: FilterDef[] = [
     {
+      type: FilterType.MultiSelect,
       columnId: "vintageId",
       label: "Vintage",
       urlParamName: "vintageId",
@@ -136,16 +137,24 @@ export default function BottlesPage() {
       })),
     },
     {
+      type: FilterType.MultiSelect,
       columnId: "status",
       label: "Status",
       urlParamName: "status",
       options: BOTTLE_STATUSES.map((s) => ({ value: s, label: formatStatus(s) })),
     },
     {
+      type: FilterType.MultiSelect,
       columnId: "storageId",
       label: "Storage",
       urlParamName: "storageId",
       options: buildHierarchicalOptions(treeData),
+    },
+    {
+      type: FilterType.Range,
+      columnId: "purchasePrice",
+      label: "Price",
+      urlParamName: "price",
     },
   ];
 

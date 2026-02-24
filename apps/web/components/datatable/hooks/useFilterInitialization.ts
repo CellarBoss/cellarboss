@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useSearchParams, usePathname } from "next/navigation";
 import { ColumnFiltersState } from "@tanstack/react-table";
 import type { FilterDef } from "../components/DataTableFilterControl";
+import { filterUrlHandlers } from "../components/DataTableFilterControl";
 
 /**
  * Initialize column filters from URL params (priority) or sessionStorage (fallback)
@@ -23,9 +24,9 @@ export function useFilterInitialization(
     // 1. Check URL params first
     for (const f of filters) {
       const paramName = f.urlParamName ?? f.columnId;
-      const param = searchParams.get(paramName);
-      if (param) {
-        initial.push({ id: f.columnId, value: param.split(',') });
+      const value = filterUrlHandlers[f.type].deserialize(paramName, searchParams);
+      if (value !== null) {
+        initial.push({ id: f.columnId, value });
       }
     }
 
