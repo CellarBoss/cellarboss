@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { DataTable } from "@/components/datatable/DataTable";
+import { DataTable } from "@/components/datatable/components/DataTable";
 import type { Grape } from "@cellarboss/types";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";

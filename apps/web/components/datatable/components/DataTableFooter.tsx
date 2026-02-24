@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { PaginationControl } from "@/components/datatable/PaginationControl";
+import { PaginationControl } from "./PaginationControl";
 import { PaginationSelector } from "./PaginationSelector";
 
 type DataTableFooterProps<T> = {

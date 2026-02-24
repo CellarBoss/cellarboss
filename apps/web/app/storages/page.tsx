@@ -5,7 +5,7 @@ import type { Storage } from "@cellarboss/types";
 import { buildTree, TreeNode } from "@/lib/functions/tree";
 import { getStorages, deleteStorage, updateStorage } from "@/lib/api/storages";
 import { getLocations } from "@/lib/api/locations";
-import { DataTable, type BulkEditField } from "@/components/datatable/DataTable";
+import { DataTable, type BulkEditField } from "@/components/datatable/components/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";

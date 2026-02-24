@@ -2,7 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { getCountries, deleteCountry } from "@/lib/api/countries";
-import { DataTable } from "@/components/datatable/DataTable";
+import { DataTable } from "@/components/datatable/components/DataTable";
 import type { Country } from "@cellarboss/types";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";

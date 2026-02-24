@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { getUsers, deleteUser, type AdminUser } from "@/lib/api/users";
-import { DataTable } from "@/components/datatable/DataTable";
+import { DataTable } from "@/components/datatable/components/DataTable";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { AddButton } from "@/components/buttons/AddButton";

@@ -3,7 +3,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import type { Region } from "@cellarboss/types";
 import { getRegions, deleteRegion, updateRegion } from "@/lib/api/regions";
-import { DataTable, type BulkEditField, type FilterDef } from "@/components/datatable/DataTable";
+import { DataTable, type BulkEditField, type FilterDef } from "@/components/datatable/components/DataTable";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { useRouter } from 'next/navigation';

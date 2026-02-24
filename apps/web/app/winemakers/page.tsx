@@ -2,7 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { getWinemakers, deleteWinemaker } from "@/lib/api/winemakers";
-import { DataTable } from "@/components/datatable/DataTable";
+import { DataTable } from "@/components/datatable/components/DataTable";
 import type { WineMaker } from "@cellarboss/types";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";

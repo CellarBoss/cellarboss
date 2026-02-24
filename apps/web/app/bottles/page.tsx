@@ -8,7 +8,7 @@ import { getWines } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { getStorages } from "@/lib/api/storages";
 import { buildTree, buildHierarchicalOptions } from "@/lib/functions/tree";
-import { DataTable, type BulkEditField, type FilterDef } from "@/components/datatable/DataTable";
+import { DataTable, type BulkEditField, type FilterDef } from "@/components/datatable/components/DataTable";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { MoveBottleButton } from "@/components/buttons/MoveBottleButton";
@@ -24,7 +24,7 @@ import { LoadingCard } from "@/components/cards/LoadingCard";
 import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
 import { Row } from "@tanstack/react-table";
 import { compareAsc } from "date-fns";
-import { DrinkingWindowDisplay } from "@/components/datatable/detail/DrinkingWindowDisplay";
+import { DrinkingWindowDisplay } from "@/components/datatable/components/detail/DrinkingWindowDisplay";
 
 function getVintageName(
   vintageId: number,

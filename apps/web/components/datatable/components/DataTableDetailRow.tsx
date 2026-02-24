@@ -1,5 +1,5 @@
 import { Row } from "@tanstack/react-table";
-import { TableCell, TableRow } from "../ui/table";
+import { TableCell, TableRow } from "@/components/ui/table";
 
 interface DataTableDetailRowProps<T> {
   columnSpan: number;
