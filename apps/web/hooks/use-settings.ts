@@ -1,7 +1,8 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getSettings, getSettingByKey, updateSetting } from "@/lib/api/settings";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { getSettings, updateSetting } from "@/lib/api/settings";
 import type { Setting } from "@cellarboss/types";
 import { type SettingValueType } from "@/lib/constants/settings";
 
@@ -17,31 +18,25 @@ function parseValue(value: string): SettingValueType {
   return value;
 }
 
-export function useSettings(key?: string) {
-  return useQuery({
-    queryKey: key ? ["settings", key] : ["settings"],
+export function useSettings() {
+  return useApiQuery<Map<string, SettingValueType>>({
+    queryKey: ["settings"],
     queryFn: async () => {
-      if (key) {
-        const result = await getSettingByKey(key);
-        if (!result.ok) throw new Error(result.error.message);
-        return new Map([[result.data.key, parseValue(result.data.value)]]);
-      } else {
-        const result = await getSettings();
-        if (!result.ok) throw new Error(result.error.message);
+      const result = await getSettings();
+      if (!result.ok) return result;
 
-        const map = new Map<string, SettingValueType>();
-        result.data.forEach((setting: Setting) => {
-          map.set(setting.key, parseValue(setting.value));
-        });
-        return map;
-      }
+      const map = new Map<string, SettingValueType>();
+      result.data.forEach((setting: Setting) => {
+        map.set(setting.key, parseValue(setting.value));
+      });
+      return { ok: true, data: map };
     },
     staleTime: 1000 * 60 * 60, // 1 hour
   });
 }
 
 export function useSetting(key: string) {
-  const query = useSettings(key);
+  const query = useSettings();
 
   return {
     data: query.data?.get(key),

@@ -16,11 +16,10 @@ import { ChangeStatusButton } from "@/components/buttons/ChangeStatusButton";
 import { AddButton } from "@/components/buttons/AddButton";
 import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { useSetting } from "@/hooks/use-settings";
+import { useSettings } from "@/hooks/use-settings";
 import { queryGate } from "@/lib/functions/query-gate";
 import { formatPrice, formatStatus, formatDate } from "@/lib/functions/format";
 import type { Bottle, Vintage, Wine, WineMaker } from "@cellarboss/types";
-import { LoadingCard } from "@/components/cards/LoadingCard";
 import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
 import { Row } from "@tanstack/react-table";
 import { compareAsc } from "date-fns";
@@ -50,14 +49,14 @@ export default function BottlesPage() {
   const wineQuery = useApiQuery({ queryKey: ["wines"], queryFn: getWines });
   const winemakerQuery = useApiQuery({ queryKey: ["winemakers"], queryFn: getWinemakers });
   const storageQuery = useApiQuery({ queryKey: ["storages"], queryFn: getStorages });
-  const { data: currency, isLoading: currencyLoading } = useSetting("currency");
-  const { data: dateFormat, isLoading: dateFormatLoading } = useSetting("date");
+  const settingsQuery = useSettings();
 
-  const result = queryGate(bottleQuery, vintageQuery, wineQuery, winemakerQuery, storageQuery);
+  const result = queryGate(bottleQuery, vintageQuery, wineQuery, winemakerQuery, storageQuery, settingsQuery);
   if (!result.ready) return result.gate;
-  if (currencyLoading || dateFormatLoading) return <LoadingCard />;
 
-  const [bottles, vintages, wines, winemakers, storages] = result.data;
+  const [bottles, vintages, wines, winemakers, storages, settings] = result.data;
+  const currency = settings.get("currency") as string | undefined;
+  const dateFormat = settings.get("date") as string | undefined;
 
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w: Wine) => [w.id, w]));
