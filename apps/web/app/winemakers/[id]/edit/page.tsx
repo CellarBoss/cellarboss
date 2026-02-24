@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 import { getWinemakerById } from "@/lib/api/winemakers";
 import type { WineMaker } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
@@ -11,7 +11,9 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
 
-async function handleUpdate(winemaker: WineMaker): Promise<ApiResult<WineMaker>> {
+async function handleUpdate(
+  winemaker: WineMaker,
+): Promise<ApiResult<WineMaker>> {
   console.log("Update winemaker:", winemaker);
 
   try {

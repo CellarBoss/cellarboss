@@ -21,7 +21,7 @@ async function handleCreate(country: Country): Promise<ApiResult<Country>> {
 export default function NewCountryPage() {
   return (
     <section>
-      <PageHeader title="New Country"/>
+      <PageHeader title="New Country" />
       <GenericCard<Country>
         mode="create"
         fields={countryFields}
@@ -29,6 +29,5 @@ export default function NewCountryPage() {
         redirectTo="/countries"
       />
     </section>
-      
   );
 }

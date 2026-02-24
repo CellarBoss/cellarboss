@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 import { getGrapeById } from "@/lib/api/grapes";
 import type { Grape } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";

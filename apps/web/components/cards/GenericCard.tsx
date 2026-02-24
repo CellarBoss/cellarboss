@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from '@tanstack/react-form';
+import { useForm } from "@tanstack/react-form";
 import { Card } from "./Card";
 import { GenericField } from "./GenericField";
 import { SaveButton } from "@/components/buttons/SaveButton";
@@ -72,13 +72,15 @@ export function GenericCard<T extends { id: number | string }>({
         }
 
         setSuccessMessage("Changes saved successfully!");
-        
+
         setTimeout(() => {
           router.push(redirectTo);
         }, 1500);
       } catch (err: unknown) {
         console.error(err);
-        setErrorMessage(err instanceof Error ? err.message : "Something went wrong.");
+        setErrorMessage(
+          err instanceof Error ? err.message : "Something went wrong.",
+        );
       } finally {
         setIsProcessing(false);
       }
@@ -90,8 +92,8 @@ export function GenericCard<T extends { id: number | string }>({
       <form
         id="GenericForm"
         onSubmit={(e) => {
-          e.preventDefault()
-          form.handleSubmit()
+          e.preventDefault();
+          form.handleSubmit();
         }}
       >
         <Card>
@@ -104,9 +106,13 @@ export function GenericCard<T extends { id: number | string }>({
                 label={field.label}
                 type={field.type}
                 editable={editable && field.editable !== false}
-                selectorConfig={"selectorConfig" in field ? field.selectorConfig : undefined}
+                selectorConfig={
+                  "selectorConfig" in field ? field.selectorConfig : undefined
+                }
                 options={"options" in field ? field.options : undefined}
-                numberProps={"numberProps" in field ? field.numberProps : undefined}
+                numberProps={
+                  "numberProps" in field ? field.numberProps : undefined
+                }
               />
             ))}
           </div>
@@ -117,9 +123,7 @@ export function GenericCard<T extends { id: number | string }>({
           {mode === "edit" && (
             <ResetButton isProcessing={isProcessing} form={form} />
           )}
-          {editable && (
-            <SaveButton isProcessing={isProcessing} form={form} />
-          )}
+          {editable && <SaveButton isProcessing={isProcessing} form={form} />}
           {errorMessage && (
             <span className="mx-2 text-red-600">{errorMessage}</span>
           )}

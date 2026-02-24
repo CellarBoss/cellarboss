@@ -2,7 +2,11 @@
 
 import { Table as TableInstance } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown } from "lucide-react";
@@ -14,9 +18,9 @@ type Props<T> = {
 };
 
 export function FlatMultiSelectFilter<T>({ filter, table }: Props<T>) {
-  const activeValues = table
-    .getColumn(filter.columnId)
-    ?.getFilterValue() as string[] | undefined;
+  const activeValues = table.getColumn(filter.columnId)?.getFilterValue() as
+    | string[]
+    | undefined;
   const activeCount = activeValues?.length || 0;
 
   const handleOptionChange = (value: string, checked: boolean) => {

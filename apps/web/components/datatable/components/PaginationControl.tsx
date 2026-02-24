@@ -6,7 +6,7 @@ import {
   PaginationItem,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"
+} from "@/components/ui/pagination";
 
 import { cn } from "@/lib/utils";
 import { Table } from "@tanstack/react-table";
@@ -17,10 +17,14 @@ type PaginationControlProps = {
   pageCount: number;
 };
 
-export function PaginationControl({ table, pagination, pageCount }: PaginationControlProps) {
-  const { pageIndex } = pagination
-  const canPrevious = pageIndex > 0
-  const canNext = pageIndex + 1 < pageCount
+export function PaginationControl({
+  table,
+  pagination,
+  pageCount,
+}: PaginationControlProps) {
+  const { pageIndex } = pagination;
+  const canPrevious = pageIndex > 0;
+  const canNext = pageIndex + 1 < pageCount;
 
   return (
     <Pagination className="select-none">
@@ -30,7 +34,7 @@ export function PaginationControl({ table, pagination, pageCount }: PaginationCo
             onClick={() => table.previousPage()}
             className={cn(
               "h-9 px-3 rounded-md border cursor-pointer",
-              !canPrevious && "opacity-50 pointer-events-none"
+              !canPrevious && "opacity-50 pointer-events-none",
             )}
           />
         </PaginationItem>
@@ -46,7 +50,7 @@ export function PaginationControl({ table, pagination, pageCount }: PaginationCo
             onClick={() => table.nextPage()}
             className={cn(
               "h-9 px-3 rounded-md border cursor-pointer",
-              !canNext && "opacity-50 pointer-events-none"
+              !canNext && "opacity-50 pointer-events-none",
             )}
           />
         </PaginationItem>

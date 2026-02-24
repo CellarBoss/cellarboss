@@ -8,12 +8,19 @@ export async function getBottles(): Promise<ApiResult<Bottle[]>> {
   return makeServerRequest<Bottle[]>("bottle", "GET");
 }
 
-export async function getBottlesByVintageId(vintageId: number): Promise<ApiResult<Bottle[]>> {
+export async function getBottlesByVintageId(
+  vintageId: number,
+): Promise<ApiResult<Bottle[]>> {
   return makeServerRequest<Bottle[]>("bottle/vintage/" + vintageId, "GET");
 }
 
-export async function getBottleCountsByVintageId(vintageId: number): Promise<ApiResult<Array<{ status: string; count: number }>>> {
-  return makeServerRequest<Array<{ status: string; count: number }>>("bottle/vintage/" + vintageId + "/counts", "GET");
+export async function getBottleCountsByVintageId(
+  vintageId: number,
+): Promise<ApiResult<Array<{ status: string; count: number }>>> {
+  return makeServerRequest<Array<{ status: string; count: number }>>(
+    "bottle/vintage/" + vintageId + "/counts",
+    "GET",
+  );
 }
 
 export async function getBottleById(id: number): Promise<ApiResult<Bottle>> {
@@ -24,7 +31,9 @@ export async function deleteBottle(id: number): Promise<ApiResult<boolean>> {
   return makeServerRequest<boolean>("bottle/" + id, "DELETE");
 }
 
-export async function createBottle(bottle: CreateBottle): Promise<ApiResult<Bottle>> {
+export async function createBottle(
+  bottle: CreateBottle,
+): Promise<ApiResult<Bottle>> {
   const body = {
     purchaseDate: bottle.purchaseDate,
     purchasePrice: Number(bottle.purchasePrice),
@@ -43,5 +52,9 @@ export async function updateBottle(bottle: Bottle): Promise<ApiResult<Bottle>> {
     storageId: bottle.storageId ? Number(bottle.storageId) : null,
     status: bottle.status,
   };
-  return makeServerRequest<Bottle>("bottle/" + bottle.id, "PUT", JSON.stringify(body));
+  return makeServerRequest<Bottle>(
+    "bottle/" + bottle.id,
+    "PUT",
+    JSON.stringify(body),
+  );
 }

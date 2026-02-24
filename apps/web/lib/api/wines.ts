@@ -22,7 +22,11 @@ export async function updateWine(wine: Wine): Promise<ApiResult<Wine>> {
     wineMakerId: Number(wine.wineMakerId),
     regionId: wine.regionId ? Number(wine.regionId) : null,
   };
-  return makeServerRequest<Wine>("wine/" + wine.id, "PUT", JSON.stringify(body));
+  return makeServerRequest<Wine>(
+    "wine/" + wine.id,
+    "PUT",
+    JSON.stringify(body),
+  );
 }
 
 export async function createWine(wine: Wine): Promise<ApiResult<Wine>> {

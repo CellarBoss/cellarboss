@@ -2,7 +2,7 @@ export type ApiError = {
   message: string;
   errors?: Record<string, string>;
   status: number;
-}
+};
 
 export class ApiQueryError extends Error {
   public readonly apiError: ApiError;

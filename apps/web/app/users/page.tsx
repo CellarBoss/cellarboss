@@ -25,7 +25,8 @@ export default function UsersPage() {
       <section>
         <PageHeader title="Users" />
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
-          You do not have permission to access this page. Admin rights are required.
+          You do not have permission to access this page. Admin rights are
+          required.
         </div>
       </section>
     );
@@ -42,7 +43,8 @@ export default function UsersPage() {
 
   async function handleDelete(row: AdminUser): Promise<boolean> {
     const delResult = await deleteUser(row.id);
-    if (!delResult.ok) throw new Error("Error deleting user: " + delResult.error.message);
+    if (!delResult.ok)
+      throw new Error("Error deleting user: " + delResult.error.message);
     queryClient.invalidateQueries({ queryKey: ["users"] });
     return true;
   }
@@ -57,7 +59,8 @@ export default function UsersPage() {
     } finally {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     }
-    if (errors.length) throw new Error("Error deleting user: " + errors.join(", "));
+    if (errors.length)
+      throw new Error("Error deleting user: " + errors.join(", "));
   }
 
   const columns = [

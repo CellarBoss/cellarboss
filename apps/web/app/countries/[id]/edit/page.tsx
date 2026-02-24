@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 import { getCountryById } from "@/lib/api/countries";
 import type { Country } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";

@@ -8,17 +8,22 @@ export async function getSettings(): Promise<ApiResult<Setting[]>> {
   return makeServerRequest<Setting[]>("settings", "GET");
 }
 
-export async function getSettingByKey(key: string): Promise<ApiResult<Setting>> {
-  return makeServerRequest<Setting>(`settings/${encodeURIComponent(key)}`, "GET");
+export async function getSettingByKey(
+  key: string,
+): Promise<ApiResult<Setting>> {
+  return makeServerRequest<Setting>(
+    `settings/${encodeURIComponent(key)}`,
+    "GET",
+  );
 }
 
 export async function updateSetting(
   key: string,
-  value: string
+  value: string,
 ): Promise<ApiResult<Setting>> {
   return makeServerRequest<Setting>(
     `settings/${encodeURIComponent(key)}`,
     "PUT",
-    JSON.stringify({ value })
+    JSON.stringify({ value }),
   );
 }

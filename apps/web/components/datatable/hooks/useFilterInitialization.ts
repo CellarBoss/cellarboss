@@ -11,7 +11,7 @@ import { filterUrlHandlers } from "../components/DataTableFilterControl";
  */
 export function useFilterInitialization(
   filters: FilterDef[] | undefined,
-  setColumnFilters: (filters: ColumnFiltersState) => void
+  setColumnFilters: (filters: ColumnFiltersState) => void,
 ) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -24,7 +24,10 @@ export function useFilterInitialization(
     // 1. Check URL params first
     for (const f of filters) {
       const paramName = f.urlParamName ?? f.columnId;
-      const value = filterUrlHandlers[f.type].deserialize(paramName, searchParams);
+      const value = filterUrlHandlers[f.type].deserialize(
+        paramName,
+        searchParams,
+      );
       if (value !== null) {
         initial.push({ id: f.columnId, value });
       }

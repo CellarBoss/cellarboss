@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 import { getGrapeById } from "@/lib/api/grapes";
 import type { Grape } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
@@ -14,7 +14,7 @@ export default function ViewGrapePage() {
   const grapeId = params.id;
 
   const grapeQuery = useApiQuery({
-    queryKey: ['grape', grapeId],
+    queryKey: ["grape", grapeId],
     queryFn: () => getGrapeById(Number(grapeId)),
     enabled: !!grapeId,
   });
@@ -27,11 +27,7 @@ export default function ViewGrapePage() {
   return (
     <section>
       <PageHeader title={`View Grape - ${grape.name}`} />
-      <GenericCard<Grape>
-        mode="view"
-        data={grape}
-        fields={grapeFields}
-      />
+      <GenericCard<Grape> mode="view" data={grape} fields={grapeFields} />
     </section>
   );
 }

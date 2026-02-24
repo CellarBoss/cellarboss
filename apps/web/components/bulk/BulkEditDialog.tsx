@@ -40,7 +40,13 @@ type BulkEditDialogProps<T> = {
   onSave: (partial: Record<string, string | number>) => Promise<void>;
 };
 
-export function BulkEditDialog<T>({ open, onOpenChange, selectedCount, fields, onSave }: BulkEditDialogProps<T>) {
+export function BulkEditDialog<T>({
+  open,
+  onOpenChange,
+  selectedCount,
+  fields,
+  onSave,
+}: BulkEditDialogProps<T>) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -89,7 +95,8 @@ export function BulkEditDialog<T>({ open, onOpenChange, selectedCount, fields, o
           </DialogTitle>
         </DialogHeader>
         <p className="text-sm text-muted-foreground -mt-2">
-          Only fields you fill in will be updated. Leave blank to keep existing values.
+          Only fields you fill in will be updated. Leave blank to keep existing
+          values.
         </p>
         <div className="flex flex-col gap-4 py-2">
           {fields.map((field) => (
@@ -98,7 +105,9 @@ export function BulkEditDialog<T>({ open, onOpenChange, selectedCount, fields, o
               {field.type === "select" ? (
                 <Select
                   value={values[field.key] ?? ""}
-                  onValueChange={(val) => setValue(field.key, val === "__NOCHANGE__" ? "" : val)}
+                  onValueChange={(val) =>
+                    setValue(field.key, val === "__NOCHANGE__" ? "" : val)
+                  }
                 >
                   <SelectTrigger id={`bulk-edit-${field.key}`}>
                     <SelectValue placeholder="No change" />
@@ -115,7 +124,13 @@ export function BulkEditDialog<T>({ open, onOpenChange, selectedCount, fields, o
               ) : (
                 <Input
                   id={`bulk-edit-${field.key}`}
-                  type={field.type === "number" ? "number" : field.type === "date" ? "date" : "text"}
+                  type={
+                    field.type === "number"
+                      ? "number"
+                      : field.type === "date"
+                        ? "date"
+                        : "text"
+                  }
                   value={values[field.key] ?? ""}
                   onChange={(e) => setValue(field.key, e.target.value)}
                   placeholder="No change"
@@ -129,12 +144,22 @@ export function BulkEditDialog<T>({ open, onOpenChange, selectedCount, fields, o
         </div>
         {error && <p className="text-red-600 text-sm">{error}</p>}
         <DialogFooter>
-          <Button variant="outline" onClick={() => handleOpenChange(false)} disabled={loading}>
+          <Button
+            variant="outline"
+            onClick={() => handleOpenChange(false)}
+            disabled={loading}
+          >
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={loading} className="flex items-center gap-2">
+          <Button
+            onClick={handleSave}
+            disabled={loading}
+            className="flex items-center gap-2"
+          >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-            {loading ? "Saving..." : `Apply to ${selectedCount} ${selectedCount === 1 ? "item" : "items"}`}
+            {loading
+              ? "Saving..."
+              : `Apply to ${selectedCount} ${selectedCount === 1 ? "item" : "items"}`}
           </Button>
         </DialogFooter>
       </DialogContent>

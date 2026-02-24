@@ -9,7 +9,9 @@ import { createBottle } from "@/lib/api/bottles";
 import type { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
 
-async function handleCreate(data: BottleFormData): Promise<ApiResult<BottleFormData>> {
+async function handleCreate(
+  data: BottleFormData,
+): Promise<ApiResult<BottleFormData>> {
   const quantity = Math.max(1, Number(data.quantity) || 1);
   const bottleData: CreateBottle = {
     purchaseDate: data.purchaseDate,
@@ -22,7 +24,8 @@ async function handleCreate(data: BottleFormData): Promise<ApiResult<BottleFormD
   let lastResult: ApiResult<Bottle> | null = null;
   for (let i = 0; i < quantity; i++) {
     lastResult = await createBottle(bottleData);
-    if (!lastResult.ok) return lastResult as unknown as ApiResult<BottleFormData>;
+    if (!lastResult.ok)
+      return lastResult as unknown as ApiResult<BottleFormData>;
   }
   return lastResult as unknown as ApiResult<BottleFormData>;
 }

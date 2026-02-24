@@ -25,7 +25,9 @@ function expandNamePatternImpl(name: string, results: string[]): void {
   if (results.length >= MAX_EXPANSION_RESULTS) return;
 
   // Regex only matches valid same-category ranges (digits, uppercase, or lowercase)
-  const match = name.match(/\[(\d)-(\d)\]|\[([A-Z])-([A-Z])\]|\[([a-z])-([a-z])\]/);
+  const match = name.match(
+    /\[(\d)-(\d)\]|\[([A-Z])-([A-Z])\]|\[([a-z])-([a-z])\]/,
+  );
 
   if (!match) {
     results.push(name);
@@ -34,9 +36,9 @@ function expandNamePatternImpl(name: string, results: string[]): void {
 
   const fullMatch = match[0];
   const startChar = (match[1] ?? match[3] ?? match[5])!;
-  const endChar   = (match[2] ?? match[4] ?? match[6])!;
+  const endChar = (match[2] ?? match[4] ?? match[6])!;
   const startCode = startChar.charCodeAt(0);
-  const endCode   = endChar.charCodeAt(0);
+  const endCode = endChar.charCodeAt(0);
 
   // Treat reverse ranges as literals (no expansion)
   if (endCode < startCode) {

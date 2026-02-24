@@ -1,7 +1,7 @@
 "use client";
 
 import { Table } from "@tanstack/react-table";
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 import { ColumnFiltersState } from "@tanstack/react-table";
 
 type DataTableSearchControlProps = {
@@ -10,7 +10,11 @@ type DataTableSearchControlProps = {
   columnFilters: ColumnFiltersState;
 };
 
-export function DataTableSearchControl({ table, filterColumnName, columnFilters }: DataTableSearchControlProps) {
+export function DataTableSearchControl({
+  table,
+  filterColumnName,
+  columnFilters,
+}: DataTableSearchControlProps) {
   return (
     <>
       {filterColumnName != null && (
@@ -19,10 +23,13 @@ export function DataTableSearchControl({ table, filterColumnName, columnFilters 
             placeholder="Search..."
             type="search"
             value={
-              (columnFilters.find(f => f.id === filterColumnName)?.value as string) ?? ""
+              (columnFilters.find((f) => f.id === filterColumnName)
+                ?.value as string) ?? ""
             }
             onChange={(event) =>
-              table.getColumn(filterColumnName)?.setFilterValue(event.target.value)
+              table
+                .getColumn(filterColumnName)
+                ?.setFilterValue(event.target.value)
             }
             className="max-w-sm h-10"
           />

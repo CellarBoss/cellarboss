@@ -19,15 +19,27 @@ type DataSelectorProps = {
   editable: boolean;
 };
 
-export function DataSelector({ selectorConfig, field, editable }: DataSelectorProps) {
-  const { queryKey, queryFn, allowMultiple = false, groupBy, hierarchical = false } = selectorConfig;
+export function DataSelector({
+  selectorConfig,
+  field,
+  editable,
+}: DataSelectorProps) {
+  const {
+    queryKey,
+    queryFn,
+    allowMultiple = false,
+    groupBy,
+    hierarchical = false,
+  } = selectorConfig;
 
   const { data, isLoading } = useApiQuery<GenericType[]>({
     queryKey: [queryKey],
     queryFn: queryFn,
   });
 
-  const { data: groupData, isLoading: groupLoading } = useApiQuery<GenericType[]>({
+  const { data: groupData, isLoading: groupLoading } = useApiQuery<
+    GenericType[]
+  >({
     queryKey: [groupBy?.queryKey ?? "unused"],
     queryFn: groupBy ? groupBy.queryFn : skipToken,
   });

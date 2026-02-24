@@ -17,7 +17,11 @@ export async function getRegionById(id: number): Promise<ApiResult<Region>> {
 }
 
 export async function updateRegion(region: Region): Promise<ApiResult<Region>> {
-  return makeServerRequest<Region>("region/" + region.id, "PUT", JSON.stringify(region));
+  return makeServerRequest<Region>(
+    "region/" + region.id,
+    "PUT",
+    JSON.stringify(region),
+  );
 }
 
 export async function createRegion(region: Region): Promise<ApiResult<Region>> {

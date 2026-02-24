@@ -7,7 +7,7 @@ import { Row } from "@tanstack/react-table";
  */
 export function getContextRows<T>(
   pageRows: Row<T>[],
-  getSubRows?: (row: T) => T[] | undefined
+  getSubRows?: (row: T) => T[] | undefined,
 ): Row<T>[] {
   const contextRows: Row<T>[] = [];
 
@@ -15,7 +15,7 @@ export function getContextRows<T>(
     return contextRows;
   }
 
-  const pageRowIds = new Set(pageRows.map(r => r.id));
+  const pageRowIds = new Set(pageRows.map((r) => r.id));
   const seenContextIds = new Set<string>();
 
   for (const row of pageRows) {

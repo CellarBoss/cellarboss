@@ -17,7 +17,11 @@ export async function getGrapeById(id: number): Promise<ApiResult<Grape>> {
 }
 
 export async function updateGrape(grape: Grape): Promise<ApiResult<Grape>> {
-  return makeServerRequest<Grape>("grape/" + grape.id, "PUT", JSON.stringify(grape));
+  return makeServerRequest<Grape>(
+    "grape/" + grape.id,
+    "PUT",
+    JSON.stringify(grape),
+  );
 }
 
 export async function createGrape(grape: Grape): Promise<ApiResult<Grape>> {

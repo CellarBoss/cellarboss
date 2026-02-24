@@ -26,11 +26,7 @@ export default function ViewUserPage() {
   return (
     <section>
       <PageHeader title={`View User — ${user.name}`} />
-      <GenericCard<AdminUser>
-        mode="view"
-        data={user}
-        fields={viewUserFields}
-      />
+      <GenericCard<AdminUser> mode="view" data={user} fields={viewUserFields} />
     </section>
   );
 }

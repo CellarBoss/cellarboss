@@ -28,7 +28,12 @@ export type FieldConfig<T, K extends keyof T = keyof T> = {
 } & (
   | { type?: "text" | "textarea"; selectorConfig?: never; options?: never }
   | { type?: "password"; selectorConfig?: never; options?: never }
-  | { type: "number"; numberProps?: { min?: number; max?: number; step?: number }; selectorConfig?: never; options?: never }
+  | {
+      type: "number";
+      numberProps?: { min?: number; max?: number; step?: number };
+      selectorConfig?: never;
+      options?: never;
+    }
   | { type: "selector"; selectorConfig: SelectorConfig; options?: never }
   | { type: "date"; selectorConfig?: never; options?: never }
   | { type: "fixed-list"; options: SelectOption[]; selectorConfig?: never }

@@ -8,12 +8,20 @@ export async function getWineGrapes(): Promise<ApiResult<WineGrape[]>> {
   return makeServerRequest<WineGrape[]>("winegrape", "GET");
 }
 
-export async function getWineGrapesByWineId(wineId: number): Promise<ApiResult<WineGrape[]>> {
+export async function getWineGrapesByWineId(
+  wineId: number,
+): Promise<ApiResult<WineGrape[]>> {
   return makeServerRequest<WineGrape[]>("winegrape/wine/" + wineId, "GET");
 }
 
-export async function createWineGrape(data: CreateWineGrape): Promise<ApiResult<WineGrape>> {
-  return makeServerRequest<WineGrape>("winegrape", "POST", JSON.stringify(data));
+export async function createWineGrape(
+  data: CreateWineGrape,
+): Promise<ApiResult<WineGrape>> {
+  return makeServerRequest<WineGrape>(
+    "winegrape",
+    "POST",
+    JSON.stringify(data),
+  );
 }
 
 export async function deleteWineGrape(id: number): Promise<ApiResult<boolean>> {

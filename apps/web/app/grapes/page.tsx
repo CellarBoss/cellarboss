@@ -5,7 +5,7 @@ import { DataTable } from "@/components/datatable/components/DataTable";
 import type { Grape } from "@cellarboss/types";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
 import { deleteGrape, getGrapes } from "@/lib/api/grapes";
@@ -22,7 +22,8 @@ export default function GrapesPage() {
 
   async function handleDelete(row: Grape): Promise<boolean> {
     const delResult = await deleteGrape(row.id);
-    if (!delResult.ok) throw new Error("Error deleting grape: " + delResult.error.message);
+    if (!delResult.ok)
+      throw new Error("Error deleting grape: " + delResult.error.message);
     queryClient.invalidateQueries({ queryKey: ["grapes"] });
     return true;
   }
@@ -30,7 +31,8 @@ export default function GrapesPage() {
   async function handleBulkDelete(rows: Grape[]): Promise<void> {
     for (const row of rows) {
       const result = await deleteGrape(row.id);
-      if (!result.ok) throw new Error("Error deleting grape: " + result.error.message);
+      if (!result.ok)
+        throw new Error("Error deleting grape: " + result.error.message);
     }
     queryClient.invalidateQueries({ queryKey: ["grapes"] });
   }
@@ -44,28 +46,24 @@ export default function GrapesPage() {
 
   const columns = [
     {
-      accessorKey: 'name',
-      header: 'Grape Name',
+      accessorKey: "name",
+      header: "Grape Name",
       enableColumnFilter: true,
       enableSorting: true,
       cell: ({ row }: { row: { original: Grape } }) => {
-        return (
-          <a href={"/grapes/" + row.original.id}>{row.original.name}</a>
-        )
-      }
+        return <a href={"/grapes/" + row.original.id}>{row.original.name}</a>;
+      },
     },
     {
-      accessorKey: 'options',
-      id: 'options',
-      header: '',
+      accessorKey: "options",
+      id: "options",
+      header: "",
       size: 100,
       enableSorting: false,
       cell: ({ row }: { row: { original: Grape } }) => {
         return (
           <div className="flex gap-1 justify-center mx-5">
-            <EditButton
-              onEdit={() => handleEdit(row.original)}
-            />
+            <EditButton onEdit={() => handleEdit(row.original)} />
             <DeleteButton
               itemDescription={row.original.name}
               onDelete={() => handleDelete(row.original)}
@@ -78,7 +76,7 @@ export default function GrapesPage() {
 
   return (
     <section>
-      <PageHeader title="Grapes"/>
+      <PageHeader title="Grapes" />
       <DataTable<Grape>
         data={grapesList}
         columns={columns}
@@ -86,7 +84,11 @@ export default function GrapesPage() {
         defaultSortColumn="name"
         onBulkDelete={handleBulkDelete}
         buttons={[
-          <AddButton onClick={async () => router.push(`/grapes/new`)} subject="Grape" key="add" />
+          <AddButton
+            onClick={async () => router.push(`/grapes/new`)}
+            subject="Grape"
+            key="add"
+          />,
         ]}
       />
     </section>

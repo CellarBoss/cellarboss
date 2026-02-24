@@ -51,8 +51,9 @@ export const wineFields: FieldConfig<WineFormData>[] = [
       },
     },
     validator: z.preprocess(
-      (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-      z.number().int().positive().nullable()
+      (val) =>
+        val === "" || val === null || val === undefined ? null : Number(val),
+      z.number().int().positive().nullable(),
     ),
   },
   {
@@ -64,12 +65,9 @@ export const wineFields: FieldConfig<WineFormData>[] = [
       queryFn: getGrapes,
       allowMultiple: true,
     },
-    validator: z.preprocess(
-      (val) => {
-        if (!Array.isArray(val)) return [];
-        return val.map((v: any) => Number(v));
-      },
-      z.array(z.number().int().positive())
-    ) as any,
+    validator: z.preprocess((val) => {
+      if (!Array.isArray(val)) return [];
+      return val.map((v: any) => Number(v));
+    }, z.array(z.number().int().positive())) as any,
   },
 ];

@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 import { getStorageById } from "@/lib/api/storages";
 import type { Storage } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
@@ -14,7 +14,7 @@ export default function ViewStoragePage() {
   const storageId = params.id;
 
   const storageQuery = useApiQuery({
-    queryKey: ['storage', storageId],
+    queryKey: ["storage", storageId],
     queryFn: () => getStorageById(Number(storageId)),
     enabled: !!storageId,
   });
@@ -27,11 +27,7 @@ export default function ViewStoragePage() {
   return (
     <section>
       <PageHeader title={`View Storage - ${storage.name}`} />
-      <GenericCard<Storage>
-        mode="view"
-        data={storage}
-        fields={storageFields}
-      />
+      <GenericCard<Storage> mode="view" data={storage} fields={storageFields} />
     </section>
   );
 }

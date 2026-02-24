@@ -7,7 +7,9 @@ import { createWinemaker } from "@/lib/api/winemakers";
 import { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
 
-async function handleCreate(winemaker: WineMaker): Promise<ApiResult<WineMaker>> {
+async function handleCreate(
+  winemaker: WineMaker,
+): Promise<ApiResult<WineMaker>> {
   console.log("Create winemaker:", winemaker);
 
   try {
@@ -21,7 +23,7 @@ async function handleCreate(winemaker: WineMaker): Promise<ApiResult<WineMaker>>
 export default function NewWinemakerPage() {
   return (
     <section>
-      <PageHeader title="New Winemaker"/>
+      <PageHeader title="New Winemaker" />
       <GenericCard<WineMaker>
         mode="create"
         fields={winemakerFields}
@@ -29,6 +31,5 @@ export default function NewWinemakerPage() {
         redirectTo="/winemakers"
       />
     </section>
-
   );
 }

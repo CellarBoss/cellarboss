@@ -1,7 +1,12 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { getUserById, updateUser, type AdminUser, type UserFormData } from "@/lib/api/users";
+import {
+  getUserById,
+  updateUser,
+  type AdminUser,
+  type UserFormData,
+} from "@/lib/api/users";
 import { GenericCard } from "@/components/cards/GenericCard";
 import { PageHeader } from "@/components/page/PageHeader";
 import { editUserFields } from "@/lib/fields/users";

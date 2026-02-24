@@ -21,9 +21,13 @@ type ChangeStatusButtonProps = {
   onChangeStatus: (newStatus: BottleStatus) => Promise<void>;
 };
 
-export function ChangeStatusButton({ currentStatus, onChangeStatus }: ChangeStatusButtonProps) {
+export function ChangeStatusButton({
+  currentStatus,
+  onChangeStatus,
+}: ChangeStatusButtonProps) {
   const [open, setOpen] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState<BottleStatus>(currentStatus);
+  const [selectedStatus, setSelectedStatus] =
+    useState<BottleStatus>(currentStatus);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -61,17 +65,31 @@ export function ChangeStatusButton({ currentStatus, onChangeStatus }: ChangeStat
         </DialogHeader>
         <div className="py-2">
           <FixedListField
-            field={{ state: { value: selectedStatus }, handleChange: (v: string) => setSelectedStatus(v as BottleStatus) }}
+            field={{
+              state: { value: selectedStatus },
+              handleChange: (v: string) => setSelectedStatus(v as BottleStatus),
+            }}
             editable={true}
-            options={BOTTLE_STATUSES.map((s) => ({ value: s, label: formatStatus(s) }))}
+            options={BOTTLE_STATUSES.map((s) => ({
+              value: s,
+              label: formatStatus(s),
+            }))}
           />
         </div>
         {error && <p className="text-red-600 text-sm">{error}</p>}
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)} disabled={loading}>
+          <Button
+            variant="outline"
+            onClick={() => setOpen(false)}
+            disabled={loading}
+          >
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={loading} className="flex items-center gap-2">
+          <Button
+            onClick={handleSave}
+            disabled={loading}
+            className="flex items-center gap-2"
+          >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             {loading ? "Saving..." : "Save"}
           </Button>

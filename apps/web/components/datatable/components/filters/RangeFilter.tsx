@@ -3,7 +3,11 @@
 import { useState, useEffect } from "react";
 import { Table as TableInstance } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown } from "lucide-react";
@@ -48,15 +52,19 @@ type Props<T> = {
 };
 
 export function RangeFilter<T>({ filter, table }: Props<T>) {
-  const rangeVal = table
-    .getColumn(filter.columnId)
-    ?.getFilterValue() as RangeFilterValue | undefined;
+  const rangeVal = table.getColumn(filter.columnId)?.getFilterValue() as
+    | RangeFilterValue
+    | undefined;
   const activeCount =
     (rangeVal?.min !== undefined ? 1 : 0) +
     (rangeVal?.max !== undefined ? 1 : 0);
 
-  const [minInput, setMinInput] = useState<string>(rangeVal?.min?.toString() ?? "");
-  const [maxInput, setMaxInput] = useState<string>(rangeVal?.max?.toString() ?? "");
+  const [minInput, setMinInput] = useState<string>(
+    rangeVal?.min?.toString() ?? "",
+  );
+  const [maxInput, setMaxInput] = useState<string>(
+    rangeVal?.max?.toString() ?? "",
+  );
 
   // Sync local input state with table filter value
   useEffect(() => {
@@ -95,7 +103,7 @@ export function RangeFilter<T>({ filter, table }: Props<T>) {
                   ?.setFilterValue(
                     newVal.min === undefined && newVal.max === undefined
                       ? undefined
-                      : newVal
+                      : newVal,
                   );
               }}
               className="w-24"
@@ -114,7 +122,7 @@ export function RangeFilter<T>({ filter, table }: Props<T>) {
                   ?.setFilterValue(
                     newVal.min === undefined && newVal.max === undefined
                       ? undefined
-                      : newVal
+                      : newVal,
                   );
               }}
               className="w-24"

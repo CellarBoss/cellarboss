@@ -1,9 +1,8 @@
+export type TreeNode<T> = T & { subRows: TreeNode<T>[] };
 
-export type TreeNode<T> = T & { subRows: TreeNode<T>[]; };
-
-export function buildTree<T extends { id: number; }>(
+export function buildTree<T extends { id: number }>(
   items: T[],
-  parentKey: keyof T
+  parentKey: keyof T,
 ): TreeNode<T>[] {
   const map = new Map<number, TreeNode<T>>();
   const roots: TreeNode<T>[] = [];
@@ -24,13 +23,12 @@ export function buildTree<T extends { id: number; }>(
   return roots;
 }
 
-export function buildHierarchicalOptions<T extends { id: number; name: string; subRows?: TreeNode<T>[] }>(
-  nodes: TreeNode<T>[],
-  depth = 0
-): Array<{ value: string; label: string }> {
+export function buildHierarchicalOptions<
+  T extends { id: number; name: string; subRows?: TreeNode<T>[] },
+>(nodes: TreeNode<T>[], depth = 0): Array<{ value: string; label: string }> {
   const options: Array<{ value: string; label: string }> = [];
   for (const node of nodes) {
-    const indent = '\u00A0\u00A0'.repeat(depth);
+    const indent = "\u00A0\u00A0".repeat(depth);
     options.push({
       value: String(node.id),
       label: `${indent}${node.name}`,

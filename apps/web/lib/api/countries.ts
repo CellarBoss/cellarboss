@@ -16,10 +16,18 @@ export async function getCountryById(id: number): Promise<ApiResult<Country>> {
   return makeServerRequest<Country>("country/" + id, "GET");
 }
 
-export async function updateCountry(country: Country): Promise<ApiResult<Country>> {
-  return makeServerRequest<Country>("country/" + country.id, "PUT", JSON.stringify(country));
+export async function updateCountry(
+  country: Country,
+): Promise<ApiResult<Country>> {
+  return makeServerRequest<Country>(
+    "country/" + country.id,
+    "PUT",
+    JSON.stringify(country),
+  );
 }
 
-export async function createCountry(country: Country): Promise<ApiResult<Country>> {
+export async function createCountry(
+  country: Country,
+): Promise<ApiResult<Country>> {
   return makeServerRequest<Country>("country", "POST", JSON.stringify(country));
 }

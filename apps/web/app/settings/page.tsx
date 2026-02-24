@@ -21,7 +21,11 @@ export default function SettingsAdminPage() {
   }
 
   if (settingsQuery.isError) {
-    return <ErrorCard message={settingsQuery.error?.message || "Failed to load settings"} />;
+    return (
+      <ErrorCard
+        message={settingsQuery.error?.message || "Failed to load settings"}
+      />
+    );
   }
 
   if (!isAdmin) {
@@ -29,7 +33,8 @@ export default function SettingsAdminPage() {
       <section>
         <PageHeader title="System Settings" />
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
-          You do not have permission to access this page. Admin rights are required.
+          You do not have permission to access this page. Admin rights are
+          required.
         </div>
       </section>
     );
@@ -62,7 +67,11 @@ export default function SettingsAdminPage() {
                   )}
                 </div>
               </div>
-              <EditButton onEdit={async () => router.push(`/settings/${encodeURIComponent(key)}/edit`)} />
+              <EditButton
+                onEdit={async () =>
+                  router.push(`/settings/${encodeURIComponent(key)}/edit`)
+                }
+              />
             </div>
           ))}
         </div>

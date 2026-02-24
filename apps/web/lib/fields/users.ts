@@ -2,12 +2,25 @@ import type { FieldConfig } from "@/lib/types/field";
 import type { AdminUser, UserFormData } from "@/lib/api/users";
 import * as z from "zod";
 
-const strongPassword = z.string()
+const strongPassword = z
+  .string()
   .min(8, "Password must be at least 8 characters")
-  .refine((val) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val), "Password must contain at least one special character")
-  .refine((val) => /[A-Z]/.test(val), "Password must contain at least one uppercase letter")
-  .refine((val) => /[a-z]/.test(val), "Password must contain at least one lowercase letter")
-  .refine((val) => /[0-9]/.test(val), "Password must contain at least one number");
+  .refine(
+    (val) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val),
+    "Password must contain at least one special character",
+  )
+  .refine(
+    (val) => /[A-Z]/.test(val),
+    "Password must contain at least one uppercase letter",
+  )
+  .refine(
+    (val) => /[a-z]/.test(val),
+    "Password must contain at least one lowercase letter",
+  )
+  .refine(
+    (val) => /[0-9]/.test(val),
+    "Password must contain at least one number",
+  );
 
 const passwordValidator = z.union([z.string().length(0), strongPassword]);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 import { getStorageById } from "@/lib/api/storages";
 import type { Storage } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";

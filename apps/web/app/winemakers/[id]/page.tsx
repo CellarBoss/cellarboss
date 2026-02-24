@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 import { getWinemakerById } from "@/lib/api/winemakers";
 import type { WineMaker } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
@@ -14,7 +14,7 @@ export default function ViewWinemakerPage() {
   const winemakerId = params.id;
 
   const winemakerQuery = useApiQuery({
-    queryKey: ['winemaker', winemakerId],
+    queryKey: ["winemaker", winemakerId],
     queryFn: () => getWinemakerById(Number(winemakerId)),
     enabled: !!winemakerId,
   });

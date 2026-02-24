@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 import { getRegionById } from "@/lib/api/regions";
 import type { Region } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
@@ -14,7 +14,7 @@ export default function ViewCountryPage() {
   const regionId = params.id;
 
   const regionQuery = useApiQuery({
-    queryKey: ['region', regionId],
+    queryKey: ["region", regionId],
     queryFn: () => getRegionById(Number(regionId)),
     enabled: !!regionId,
   });
@@ -27,11 +27,7 @@ export default function ViewCountryPage() {
   return (
     <section>
       <PageHeader title={`View Region - ${region.name}`} />
-      <GenericCard<Region>
-        mode="view"
-        data={region}
-        fields={regionFields}
-      />
+      <GenericCard<Region> mode="view" data={region} fields={regionFields} />
     </section>
   );
 }

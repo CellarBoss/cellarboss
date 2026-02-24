@@ -13,22 +13,24 @@ import {
   Row,
 } from "@tanstack/react-table";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 import DataTableHeader from "./DataTableHeader";
 import DataTableFooter from "./DataTableFooter";
 import DataTableRow from "./DataTableRow";
 import DataTableDetailRow from "./detail/DataTableDetailRow";
 import { DataTableSearchControl } from "./DataTableSearchControl";
-import { DataTableFilterControl, FilterType, type FilterDef } from "./DataTableFilterControl";
+import {
+  DataTableFilterControl,
+  FilterType,
+  type FilterDef,
+} from "./DataTableFilterControl";
 import { BulkActionBar } from "@/components/bulk/BulkActionBar";
 import { BulkDeleteDialog } from "@/components/bulk/BulkDeleteDialog";
-import { BulkEditDialog, BulkEditField } from "@/components/bulk/BulkEditDialog";
+import {
+  BulkEditDialog,
+  BulkEditField,
+} from "@/components/bulk/BulkEditDialog";
 import { FilterInit } from "./filters/FilterInit";
 import { RowSelectionContext } from "../selection/RowSelectionContext";
 import { useDataTableState } from "../hooks/useDataTableState";
@@ -56,7 +58,10 @@ type DataTableProps<T> = {
   defaultExpanded?: true | Record<string, boolean>;
   onBulkDelete?: (rows: T[]) => Promise<void>;
   bulkEditFields?: BulkEditField<T>[];
-  onBulkEdit?: (rows: T[], partial: Record<string, string | number>) => Promise<void>;
+  onBulkEdit?: (
+    rows: T[],
+    partial: Record<string, string | number>,
+  ) => Promise<void>;
   filters?: FilterDef[];
 };
 
@@ -83,7 +88,7 @@ export function DataTable<T>({
     defaultPageSize,
     defaultSortColumn,
     defaultExpanded,
-    getSubRows
+    getSubRows,
   );
 
   // Sync filters with URL and sessionStorage
@@ -92,13 +97,14 @@ export function DataTable<T>({
 
   // Prepare data
   const displayData = data ?? [];
-  const enableRowSelection = onBulkDelete !== undefined || onBulkEdit !== undefined;
+  const enableRowSelection =
+    onBulkDelete !== undefined || onBulkEdit !== undefined;
 
   // Process columns with selection and filters
   const processedColumns = processColumnsWithFilters(
     columns,
     enableRowSelection,
-    filters
+    filters,
   );
 
   // Create table instance
@@ -114,11 +120,15 @@ export function DataTable<T>({
       ...(getSubRows || renderDetail ? { expanded: state.expanded } : {}),
       ...(enableRowSelection ? { rowSelection: state.rowSelection } : {}),
     },
-    onColumnVisibilityChange: createTableStateUpdater(state.setColumnVisibility),
-    ...(enableRowSelection ? {
-      enableRowSelection: true,
-      onRowSelectionChange: createTableStateUpdater(state.setRowSelection),
-    } : {}),
+    onColumnVisibilityChange: createTableStateUpdater(
+      state.setColumnVisibility,
+    ),
+    ...(enableRowSelection
+      ? {
+          enableRowSelection: true,
+          onRowSelectionChange: createTableStateUpdater(state.setRowSelection),
+        }
+      : {}),
     onPaginationChange: createTableStateUpdater(state.setPagination),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -128,16 +138,16 @@ export function DataTable<T>({
     onSortingChange: createTableStateUpdater(state.setSorting),
     ...(getSubRows
       ? {
-        getSubRows,
-        getExpandedRowModel: getExpandedRowModel(),
-        onExpandedChange: createTableStateUpdater(state.setExpanded),
-        filterFromLeafRows: true,
-      }
+          getSubRows,
+          getExpandedRowModel: getExpandedRowModel(),
+          onExpandedChange: createTableStateUpdater(state.setExpanded),
+          filterFromLeafRows: true,
+        }
       : {}),
     ...(renderDetail
       ? {
-        onExpandedChange: createTableStateUpdater(state.setExpanded),
-      }
+          onExpandedChange: createTableStateUpdater(state.setExpanded),
+        }
       : {}),
   });
 
@@ -145,7 +155,7 @@ export function DataTable<T>({
   const { pageSize, pageCount } = calculatePaginationMetrics(
     table,
     state.pagination,
-    getSubRows
+    getSubRows,
   );
 
   // Get context rows for hierarchical data
@@ -153,14 +163,16 @@ export function DataTable<T>({
   const contextRows = getContextRows(pageRows, getSubRows);
 
   // Get selected rows and bulk action handlers
-  const selectedRows = table.getSelectedRowModel().rows.map((r: Row<T>) => r.original);
+  const selectedRows = table
+    .getSelectedRowModel()
+    .rows.map((r: Row<T>) => r.original);
   const selectedCount = selectedRows.length;
   const bulkActions = useBulkActions(
     selectedRows,
     onBulkDelete,
     onBulkEdit,
     state.setRowSelection,
-    state.setEditDialogOpen
+    state.setEditDialogOpen,
   );
 
   return (
@@ -193,7 +205,10 @@ export function DataTable<T>({
           <TableBody>
             {table.getRowCount() === 0 && (
               <TableRow>
-                <TableCell colSpan={processedColumns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={processedColumns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -237,8 +252,12 @@ export function DataTable<T>({
             <BulkActionBar
               selectedCount={selectedCount}
               onClear={() => state.setRowSelection({})}
-              onDelete={onBulkDelete ? () => state.setDeleteDialogOpen(true) : undefined}
-              onEdit={onBulkEdit ? () => state.setEditDialogOpen(true) : undefined}
+              onDelete={
+                onBulkDelete ? () => state.setDeleteDialogOpen(true) : undefined
+              }
+              onEdit={
+                onBulkEdit ? () => state.setEditDialogOpen(true) : undefined
+              }
             />
             {onBulkDelete && (
               <BulkDeleteDialog

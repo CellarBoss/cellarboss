@@ -9,7 +9,12 @@ import { getWinemakers } from "@/lib/api/winemakers";
 import { getStorages } from "@/lib/api/storages";
 import { getLocations } from "@/lib/api/locations";
 import { buildTree, buildHierarchicalOptions } from "@/lib/functions/tree";
-import { DataTable, type BulkEditField, type FilterDef, FilterType } from "@/components/datatable/components/DataTable";
+import {
+  DataTable,
+  type BulkEditField,
+  type FilterDef,
+  FilterType,
+} from "@/components/datatable/components/DataTable";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { MoveBottleButton } from "@/components/buttons/MoveBottleButton";
@@ -19,7 +24,12 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useSettings } from "@/hooks/use-settings";
 import { queryGate } from "@/lib/functions/query-gate";
-import { formatPrice, formatStatus, formatDate, formatDrinkingStatus } from "@/lib/functions/format";
+import {
+  formatPrice,
+  formatStatus,
+  formatDate,
+  formatDrinkingStatus,
+} from "@/lib/functions/format";
 import type { Bottle, Vintage, Wine, WineMaker } from "@cellarboss/types";
 import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
 import { Row } from "@tanstack/react-table";
@@ -31,7 +41,7 @@ function getVintageName(
   vintageId: number,
   vintageMap: Map<number, Vintage>,
   wineMap: Map<number, Wine>,
-  winemakerMap: Map<number, string>
+  winemakerMap: Map<number, string>,
 ): string {
   const vintage = vintageMap.get(vintageId);
   if (!vintage) return "Unknown";
@@ -41,7 +51,10 @@ function getVintageName(
   return `${winemakerName ? winemakerName + " - " : ""}${wine.name} ${vintage.year ?? "NV"}`;
 }
 
-function buildWineGroupedOptions(wines: Wine[], winemakers: WineMaker[]): Array<{ group: string; options: Array<{ value: string; label: string }> }> {
+function buildWineGroupedOptions(
+  wines: Wine[],
+  winemakers: WineMaker[],
+): Array<{ group: string; options: Array<{ value: string; label: string }> }> {
   const winemakerMap = new Map(winemakers.map((wm) => [wm.id, wm.name]));
 
   // Group wines by winemaker
@@ -54,12 +67,13 @@ function buildWineGroupedOptions(wines: Wine[], winemakers: WineMaker[]): Array<
   }
 
   // Sort winemakers by name and build the grouped options
-  const sortedWinemakers = Array.from(grouped.entries())
-    .sort(([idA], [idB]) => {
+  const sortedWinemakers = Array.from(grouped.entries()).sort(
+    ([idA], [idB]) => {
       const nameA = winemakerMap.get(idA) || "";
       const nameB = winemakerMap.get(idB) || "";
       return nameA.localeCompare(nameB);
-    });
+    },
+  );
 
   return sortedWinemakers.map(([wineMakerId, winesInGroup]) => ({
     group: winemakerMap.get(wineMakerId) || "Unknown Winemaker",
@@ -76,41 +90,74 @@ export default function BottlesPage() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const bottleQuery = useApiQuery({ queryKey: ["bottles"], queryFn: getBottles });
-  const vintageQuery = useApiQuery({ queryKey: ["vintages"], queryFn: getVintages });
+  const bottleQuery = useApiQuery({
+    queryKey: ["bottles"],
+    queryFn: getBottles,
+  });
+  const vintageQuery = useApiQuery({
+    queryKey: ["vintages"],
+    queryFn: getVintages,
+  });
   const wineQuery = useApiQuery({ queryKey: ["wines"], queryFn: getWines });
-  const winemakerQuery = useApiQuery({ queryKey: ["winemakers"], queryFn: getWinemakers });
-  const storageQuery = useApiQuery({ queryKey: ["storages"], queryFn: getStorages });
-  const locationQuery = useApiQuery({ queryKey: ["locations"], queryFn: getLocations });
+  const winemakerQuery = useApiQuery({
+    queryKey: ["winemakers"],
+    queryFn: getWinemakers,
+  });
+  const storageQuery = useApiQuery({
+    queryKey: ["storages"],
+    queryFn: getStorages,
+  });
+  const locationQuery = useApiQuery({
+    queryKey: ["locations"],
+    queryFn: getLocations,
+  });
   const settingsQuery = useSettings();
 
-  const result = queryGate(bottleQuery, vintageQuery, wineQuery, winemakerQuery, storageQuery, locationQuery, settingsQuery);
+  const result = queryGate(
+    bottleQuery,
+    vintageQuery,
+    wineQuery,
+    winemakerQuery,
+    storageQuery,
+    locationQuery,
+    settingsQuery,
+  );
   if (!result.ready) return result.gate;
 
-  const [bottles, vintages, wines, winemakers, storages, locations, settings] = result.data;
+  const [bottles, vintages, wines, winemakers, storages, locations, settings] =
+    result.data;
   const currency = settings.get("currency") as string | undefined;
   const dateFormat = settings.get("date") as string | undefined;
 
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w: Wine) => [w.id, w]));
-  const winemakerMap = new Map(winemakers.map((wm: WineMaker) => [wm.id, wm.name]));
+  const winemakerMap = new Map(
+    winemakers.map((wm: WineMaker) => [wm.id, wm.name]),
+  );
   const locationMap = new Map(locations.map((l) => [l.id, l.name]));
   const storageMap = new Map(storages.map((s) => [s.id, s]));
 
   async function handleDelete(row: Bottle): Promise<boolean> {
     const delResult = await deleteBottle(row.id);
-    if (!delResult.ok) throw new Error("Error deleting bottle: " + delResult.error.message);
+    if (!delResult.ok)
+      throw new Error("Error deleting bottle: " + delResult.error.message);
     queryClient.invalidateQueries({ queryKey: ["bottles"] });
     return true;
   }
 
-  async function handleMove(bottle: Bottle, newStorageId: number | null): Promise<void> {
+  async function handleMove(
+    bottle: Bottle,
+    newStorageId: number | null,
+  ): Promise<void> {
     const result = await updateBottle({ ...bottle, storageId: newStorageId });
     if (!result.ok) throw new Error(result.error.message);
     queryClient.invalidateQueries({ queryKey: ["bottles"] });
   }
 
-  async function handleChangeStatus(bottle: Bottle, newStatus: Bottle["status"]): Promise<void> {
+  async function handleChangeStatus(
+    bottle: Bottle,
+    newStatus: Bottle["status"],
+  ): Promise<void> {
     const result = await updateBottle({ ...bottle, status: newStatus });
     if (!result.ok) throw new Error(result.error.message);
     queryClient.invalidateQueries({ queryKey: ["bottles"] });
@@ -126,18 +173,23 @@ export default function BottlesPage() {
     } finally {
       queryClient.invalidateQueries({ queryKey: ["bottles"] });
     }
-    if (errors.length) throw new Error("Error deleting bottle: " + errors.join(", "));
+    if (errors.length)
+      throw new Error("Error deleting bottle: " + errors.join(", "));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async function handleBulkEdit(rows: Bottle[], partial: Record<string, any>): Promise<void> {
+  async function handleBulkEdit(
+    rows: Bottle[],
+    partial: Record<string, any>,
+  ): Promise<void> {
     for (const row of rows) {
       const result = await updateBottle({
         ...row,
         ...(partial.status ? { status: partial.status } : {}),
         ...(partial.storageId ? { storageId: Number(partial.storageId) } : {}),
       });
-      if (!result.ok) throw new Error("Error updating bottle: " + result.error.message);
+      if (!result.ok)
+        throw new Error("Error updating bottle: " + result.error.message);
     }
     queryClient.invalidateQueries({ queryKey: ["bottles"] });
   }
@@ -147,7 +199,10 @@ export default function BottlesPage() {
       key: "status",
       label: "Status",
       type: "select",
-      options: BOTTLE_STATUSES.map((s) => ({ value: s, label: formatStatus(s) })),
+      options: BOTTLE_STATUSES.map((s) => ({
+        value: s,
+        label: formatStatus(s),
+      })),
     },
     {
       key: "storageId",
@@ -193,7 +248,10 @@ export default function BottlesPage() {
       columnId: "status",
       label: "Status",
       urlParamName: "status",
-      options: BOTTLE_STATUSES.map((s) => ({ value: s, label: formatStatus(s) })),
+      options: BOTTLE_STATUSES.map((s) => ({
+        value: s,
+        label: formatStatus(s),
+      })),
     },
     {
       type: FilterType.MultiSelect,
@@ -223,10 +281,16 @@ export default function BottlesPage() {
       header: "Wine / Vintage",
       enableSorting: true,
       enableColumnFilter: true,
-      accessorFn: (row: Bottle) => getVintageName(row.vintageId, vintageMap, wineMap, winemakerMap),
+      accessorFn: (row: Bottle) =>
+        getVintageName(row.vintageId, vintageMap, wineMap, winemakerMap),
       cell: ({ row }: { row: { original: Bottle } }) => (
         <a href={`/bottles/${row.original.id}`}>
-          {getVintageName(row.original.vintageId, vintageMap, wineMap, winemakerMap)}
+          {getVintageName(
+            row.original.vintageId,
+            vintageMap,
+            wineMap,
+            winemakerMap,
+          )}
         </a>
       ),
     },
@@ -237,18 +301,28 @@ export default function BottlesPage() {
       cell: ({ row }: { row: { original: Bottle } }) => {
         const vintage = vintageMap.get(row.original.vintageId);
         if (!vintage) return "Unknown";
-        return <DrinkingWindowDisplay drinkFrom={vintage.drinkFrom} drinkUntil={vintage.drinkUntil} />;
+        return (
+          <DrinkingWindowDisplay
+            drinkFrom={vintage.drinkFrom}
+            drinkUntil={vintage.drinkUntil}
+          />
+        );
       },
     },
     {
       accessorKey: "purchaseDate",
       header: "Purchase Date",
       enableSorting: true,
-      sortingFn: (rowA : Row<Bottle>, rowB: Row<Bottle>) => {
-        return compareAsc(rowA.original.purchaseDate, rowB.original.purchaseDate);
+      sortingFn: (rowA: Row<Bottle>, rowB: Row<Bottle>) => {
+        return compareAsc(
+          rowA.original.purchaseDate,
+          rowB.original.purchaseDate,
+        );
       },
       cell: ({ row }: { row: { original: Bottle } }) => (
-        <span>{formatDate(row.original.purchaseDate, (dateFormat as string))}</span>
+        <span>
+          {formatDate(row.original.purchaseDate, dateFormat as string)}
+        </span>
       ),
     },
     {
@@ -256,7 +330,12 @@ export default function BottlesPage() {
       header: "Price",
       enableSorting: true,
       cell: ({ row }: { row: { original: Bottle } }) => (
-        <span>{formatPrice(row.original.purchasePrice, (currency as string) || "USD")}</span>
+        <span>
+          {formatPrice(
+            row.original.purchasePrice,
+            (currency as string) || "USD",
+          )}
+        </span>
       ),
     },
     {
@@ -265,7 +344,7 @@ export default function BottlesPage() {
       header: "Storage",
       enableSorting: true,
       enableColumnFilter: true,
-      accessorFn: (row: Bottle) => String(row.storageId || ''),
+      accessorFn: (row: Bottle) => String(row.storageId || ""),
       cell: ({ row }: { row: { original: Bottle } }) => (
         <StorageHierarchyDisplay storageId={row.original.storageId} />
       ),
@@ -276,9 +355,12 @@ export default function BottlesPage() {
       header: "Location",
       enableSorting: false,
       enableColumnFilter: true,
-      accessorFn: (row: Bottle) => String(storageMap.get(row.storageId || 0)?.locationId || ''),
+      accessorFn: (row: Bottle) =>
+        String(storageMap.get(row.storageId || 0)?.locationId || ""),
       cell: ({ row }: { row: { original: Bottle } }) => {
-        const locationId = storageMap.get(row.original.storageId || 0)?.locationId;
+        const locationId = storageMap.get(
+          row.original.storageId || 0,
+        )?.locationId;
         if (!locationId) return "—";
         return locationMap.get(locationId) || "Unknown";
       },
@@ -287,7 +369,8 @@ export default function BottlesPage() {
       accessorKey: "status",
       header: "Status",
       enableSorting: true,
-      cell: ({ row }: { row: { original: Bottle } }) => (formatStatus(row.original.status)),
+      cell: ({ row }: { row: { original: Bottle } }) =>
+        formatStatus(row.original.status),
     },
     {
       id: "options",
@@ -305,9 +388,16 @@ export default function BottlesPage() {
             currentStatus={row.original.status}
             onChangeStatus={(s) => handleChangeStatus(row.original, s)}
           />
-          <EditButton onEdit={async () => router.push(`/bottles/${row.original.id}/edit`)} />
+          <EditButton
+            onEdit={async () => router.push(`/bottles/${row.original.id}/edit`)}
+          />
           <DeleteButton
-            itemDescription={getVintageName(row.original.vintageId, vintageMap, wineMap, winemakerMap)}
+            itemDescription={getVintageName(
+              row.original.vintageId,
+              vintageMap,
+              wineMap,
+              winemakerMap,
+            )}
             onDelete={() => handleDelete(row.original)}
           />
         </div>
@@ -320,7 +410,8 @@ export default function BottlesPage() {
       enableColumnFilter: true,
       enableSorting: false,
       meta: { hidden: true },
-      accessorFn: (row: Bottle) => String(vintageMap.get(row.vintageId)?.wineId ?? ''),
+      accessorFn: (row: Bottle) =>
+        String(vintageMap.get(row.vintageId)?.wineId ?? ""),
     },
     {
       // Hidden column used for filtering by year
@@ -341,7 +432,11 @@ export default function BottlesPage() {
       accessorFn: (row: Bottle) => {
         const vintage = vintageMap.get(row.vintageId);
         if (!vintage) return "unknown";
-        return formatDrinkingStatus(vintage.drinkFrom, vintage.drinkUntil, new Date().getFullYear());
+        return formatDrinkingStatus(
+          vintage.drinkFrom,
+          vintage.drinkUntil,
+          new Date().getFullYear(),
+        );
       },
     },
   ];

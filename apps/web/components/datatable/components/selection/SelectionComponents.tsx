@@ -9,7 +9,8 @@ import { RowSelectionContext } from "../../selection/RowSelectionContext";
 export function SelectAllCheckbox({ table }: { table: TableInstance<any> }) {
   const rowSelection = useContext(RowSelectionContext);
   const pageRows = table.getRowModel().rows;
-  const allSelected = pageRows.length > 0 && pageRows.every(r => !!rowSelection[r.id]);
+  const allSelected =
+    pageRows.length > 0 && pageRows.every((r) => !!rowSelection[r.id]);
   return (
     <Checkbox
       checked={allSelected}

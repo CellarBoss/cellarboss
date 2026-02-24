@@ -50,7 +50,13 @@ export function useUpdateSetting() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ key, value }: { key: string; value: SettingValueType }) => {
+    mutationFn: async ({
+      key,
+      value,
+    }: {
+      key: string;
+      value: SettingValueType;
+    }) => {
       const result = await updateSetting(key, String(value));
       if (!result.ok) throw new Error(result.error.message);
       return result.data;

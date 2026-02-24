@@ -12,14 +12,28 @@ export async function deleteWinemaker(id: number): Promise<ApiResult<boolean>> {
   return makeServerRequest<boolean>("winemaker/" + id, "DELETE");
 }
 
-export async function getWinemakerById(id: number): Promise<ApiResult<WineMaker>> {
+export async function getWinemakerById(
+  id: number,
+): Promise<ApiResult<WineMaker>> {
   return makeServerRequest<WineMaker>("winemaker/" + id, "GET");
 }
 
-export async function updateWinemaker(winemaker: WineMaker): Promise<ApiResult<WineMaker>> {
-  return makeServerRequest<WineMaker>("winemaker/" + winemaker.id, "PUT", JSON.stringify(winemaker));
+export async function updateWinemaker(
+  winemaker: WineMaker,
+): Promise<ApiResult<WineMaker>> {
+  return makeServerRequest<WineMaker>(
+    "winemaker/" + winemaker.id,
+    "PUT",
+    JSON.stringify(winemaker),
+  );
 }
 
-export async function createWinemaker(winemaker: WineMaker): Promise<ApiResult<WineMaker>> {
-  return makeServerRequest<WineMaker>("winemaker", "POST", JSON.stringify(winemaker));
+export async function createWinemaker(
+  winemaker: WineMaker,
+): Promise<ApiResult<WineMaker>> {
+  return makeServerRequest<WineMaker>(
+    "winemaker",
+    "POST",
+    JSON.stringify(winemaker),
+  );
 }

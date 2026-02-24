@@ -29,12 +29,25 @@ export const profileFields: FieldConfig<ProfileFormData>[] = [
     type: "password",
     validator: z.union([
       z.string().length(0), // Allow empty string to indicate no change
-      z.string()
+      z
+        .string()
         .min(8, "Password must be at least 8 characters")
-        .refine((val) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val), "Password must contain at least one special character")
-        .refine((val) => /[A-Z]/.test(val), "Password must contain at least one uppercase letter")
-        .refine((val) => /[a-z]/.test(val), "Password must contain at least one lowercase letter")
-        .refine((val) => /[0-9]/.test(val), "Password must contain at least one number"),
+        .refine(
+          (val) => /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val),
+          "Password must contain at least one special character",
+        )
+        .refine(
+          (val) => /[A-Z]/.test(val),
+          "Password must contain at least one uppercase letter",
+        )
+        .refine(
+          (val) => /[a-z]/.test(val),
+          "Password must contain at least one lowercase letter",
+        )
+        .refine(
+          (val) => /[0-9]/.test(val),
+          "Password must contain at least one number",
+        ),
     ]),
   },
   {

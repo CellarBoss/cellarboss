@@ -27,11 +27,7 @@ export default function ViewBottlePage() {
   return (
     <section>
       <PageHeader title={`Bottle #${bottle.id}`} />
-      <GenericCard<Bottle>
-        mode="view"
-        data={bottle}
-        fields={bottleFields}
-      />
+      <GenericCard<Bottle> mode="view" data={bottle} fields={bottleFields} />
     </section>
   );
 }

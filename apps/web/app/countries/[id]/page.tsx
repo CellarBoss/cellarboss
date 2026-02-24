@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 import { getCountryById } from "@/lib/api/countries";
 import type { Country } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
@@ -14,7 +14,7 @@ export default function ViewCountryPage() {
   const countryId = params.id;
 
   const countryQuery = useApiQuery({
-    queryKey: ['country', countryId],
+    queryKey: ["country", countryId],
     queryFn: () => getCountryById(Number(countryId)),
     enabled: !!countryId,
   });
@@ -27,11 +27,7 @@ export default function ViewCountryPage() {
   return (
     <section>
       <PageHeader title={`View Country - ${country.name}`} />
-      <GenericCard<Country>
-        mode="view"
-        data={country}
-        fields={countryFields}
-      />
+      <GenericCard<Country> mode="view" data={country} fields={countryFields} />
     </section>
   );
 }

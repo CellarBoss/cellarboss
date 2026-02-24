@@ -35,7 +35,7 @@ async function handleCreate(formData: any): Promise<ApiResult<WineFormData>> {
 export default function NewWinePage() {
   return (
     <section>
-      <PageHeader title="New Wine"/>
+      <PageHeader title="New Wine" />
       <GenericCard<WineFormData>
         mode="create"
         fields={wineFields}

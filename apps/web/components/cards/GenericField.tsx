@@ -12,7 +12,15 @@ type FieldProps = {
   name: string;
   label: string;
   editable?: boolean;
-  type?: "text" | "password" | "number" | "textarea" | "selector" | "date" | "fixed-list" | "wine-vintage";
+  type?:
+    | "text"
+    | "password"
+    | "number"
+    | "textarea"
+    | "selector"
+    | "date"
+    | "fixed-list"
+    | "wine-vintage";
   numberProps?: { min?: number; max?: number; step?: number };
   selectorConfig?: SelectorConfig;
   options?: SelectOption[];
@@ -51,7 +59,11 @@ export function GenericField({
             ) : type === "date" ? (
               <DateField field={field} editable={editable} />
             ) : type === "fixed-list" && options ? (
-              <FixedListField field={field} editable={editable} options={options} />
+              <FixedListField
+                field={field}
+                editable={editable}
+                options={options}
+              />
             ) : type === "number" ? (
               <Input
                 id={field.name}

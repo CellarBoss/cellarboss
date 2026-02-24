@@ -44,7 +44,10 @@ export async function makeServerRequest<T>(
     console.error(err);
     return {
       ok: false,
-      error: { message: err instanceof Error ? err.message : "Internal server error", status: 500 },
+      error: {
+        message: err instanceof Error ? err.message : "Internal server error",
+        status: 500,
+      },
     };
   }
 }

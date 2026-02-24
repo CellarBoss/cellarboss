@@ -20,8 +20,9 @@ export const storageFields: FieldConfig<Storage>[] = [
       queryFn: getLocations,
     },
     validator: z.preprocess(
-      (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-      z.number().int().positive().nullable()
+      (val) =>
+        val === "" || val === null || val === undefined ? null : Number(val),
+      z.number().int().positive().nullable(),
     ),
   },
   {
@@ -34,8 +35,9 @@ export const storageFields: FieldConfig<Storage>[] = [
       hierarchical: true,
     },
     validator: z.preprocess(
-      (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-      z.number().int().positive().nullable()
+      (val) =>
+        val === "" || val === null || val === undefined ? null : Number(val),
+      z.number().int().positive().nullable(),
     ),
   },
 ];

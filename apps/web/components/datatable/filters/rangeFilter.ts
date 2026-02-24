@@ -2,7 +2,11 @@ import { FilterFn } from "@tanstack/react-table";
 
 export type RangeFilterValue = { min?: number; max?: number };
 
-export const rangeFilter: FilterFn<any> = (row, columnId, filterValue: RangeFilterValue) => {
+export const rangeFilter: FilterFn<any> = (
+  row,
+  columnId,
+  filterValue: RangeFilterValue,
+) => {
   if (!filterValue) return true;
   const { min, max } = filterValue;
   if (min === undefined && max === undefined) return true;

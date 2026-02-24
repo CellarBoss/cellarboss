@@ -29,13 +29,19 @@ export function queryGate<T extends UseApiQueryResult<unknown>[]>(
 
   for (const q of queries) {
     if (q.error) {
-      return { ready: false, gate: <ErrorCard message={q.error.apiError.message} /> };
+      return {
+        ready: false,
+        gate: <ErrorCard message={q.error.apiError.message} />,
+      };
     }
   }
 
   for (const q of queries) {
     if (q.data === undefined) {
-      return { ready: false, gate: <ErrorCard message="Unexpected error: no data received" /> };
+      return {
+        ready: false,
+        gate: <ErrorCard message="Unexpected error: no data received" />,
+      };
     }
   }
 

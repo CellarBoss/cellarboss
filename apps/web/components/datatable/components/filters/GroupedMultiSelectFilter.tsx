@@ -2,7 +2,11 @@
 
 import { Table as TableInstance } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown } from "lucide-react";
@@ -14,9 +18,9 @@ type Props<T> = {
 };
 
 export function GroupedMultiSelectFilter<T>({ filter, table }: Props<T>) {
-  const activeValues = table
-    .getColumn(filter.columnId)
-    ?.getFilterValue() as string[] | undefined;
+  const activeValues = table.getColumn(filter.columnId)?.getFilterValue() as
+    | string[]
+    | undefined;
   const activeCount = activeValues?.length || 0;
 
   const handleOptionChange = (value: string, checked: boolean) => {
@@ -60,7 +64,10 @@ export function GroupedMultiSelectFilter<T>({ filter, table }: Props<T>) {
                 </div>
                 <div className="pl-3 space-y-2">
                   {group.options.map((option) => (
-                    <div key={option.value} className="flex items-center space-x-2">
+                    <div
+                      key={option.value}
+                      className="flex items-center space-x-2"
+                    >
                       <Checkbox
                         id={`${filter.columnId}-${option.value}`}
                         checked={activeValues?.includes(option.value) ?? false}

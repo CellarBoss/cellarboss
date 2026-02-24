@@ -2,7 +2,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 import {
   Command,
   CommandInput,
@@ -10,10 +10,10 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandItem,
-} from "@/components/ui/command"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/command";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import type { GenericType } from "@cellarboss/types";
 
 export default function MultiSelector<T extends GenericType>({
@@ -27,14 +27,18 @@ export default function MultiSelector<T extends GenericType>({
   editable: boolean;
   field: any;
 }) {
-  const selectedIds: string[] = Array.isArray(field.state.value) ? field.state.value : [];
+  const selectedIds: string[] = Array.isArray(field.state.value)
+    ? field.state.value
+    : [];
 
   const selectedNames = options
     .filter((o) => selectedIds.includes(o.id.toString()))
     .map((o) => o.name);
 
   function handleToggle(id: string) {
-    const current: string[] = Array.isArray(field.state.value) ? [...field.state.value] : [];
+    const current: string[] = Array.isArray(field.state.value)
+      ? [...field.state.value]
+      : [];
     const index = current.indexOf(id);
     if (index >= 0) {
       current.splice(index, 1);
@@ -49,7 +53,9 @@ export default function MultiSelector<T extends GenericType>({
       <div className="flex flex-wrap gap-1 min-h-9 items-center px-3 py-2 border rounded-md bg-muted">
         {selectedNames.length > 0 ? (
           selectedNames.map((name) => (
-            <Badge key={name} variant="secondary">{name}</Badge>
+            <Badge key={name} variant="secondary">
+              {name}
+            </Badge>
           ))
         ) : (
           <span className="text-muted-foreground text-sm">None</span>
@@ -70,7 +76,9 @@ export default function MultiSelector<T extends GenericType>({
           {selectedNames.length > 0 ? (
             <div className="flex flex-wrap gap-1">
               {selectedNames.map((name) => (
-                <Badge key={name} variant="secondary">{name}</Badge>
+                <Badge key={name} variant="secondary">
+                  {name}
+                </Badge>
               ))}
             </div>
           ) : (
@@ -78,7 +86,10 @@ export default function MultiSelector<T extends GenericType>({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="min-w-[--radix-popover-trigger-width] p-0" align="start">
+      <PopoverContent
+        className="min-w-[--radix-popover-trigger-width] p-0"
+        align="start"
+      >
         <Command>
           <CommandInput placeholder="Search..." />
           <CommandList>

@@ -9,21 +9,26 @@ export function BottleCountDisplay({ vintageId }: { vintageId: number }) {
     queryFn: () => getBottleCountsByVintageId(vintageId),
   });
 
-  if (bottleCountsQuery.isLoading) return <span className="text-muted-foreground">...</span>;
-  if (!bottleCountsQuery.data || bottleCountsQuery.data.length === 0) return <span className="text-muted-foreground">0</span>;
+  if (bottleCountsQuery.isLoading)
+    return <span className="text-muted-foreground">...</span>;
+  if (!bottleCountsQuery.data || bottleCountsQuery.data.length === 0)
+    return <span className="text-muted-foreground">0</span>;
 
   return (
     <span>
       {bottleCountsQuery.data
-        .filter((item) => !['drunk', 'gifted', 'sold'].includes(item.status))
+        .filter((item) => !["drunk", "gifted", "sold"].includes(item.status))
         .map((item, index, filtered) => (
-        <span key={item.status}>
-          <Link href={`/bottles?vintageId=${vintageId}&status=${item.status}`} className="hover:underline">
-            {item.count} {formatStatus(item.status)}
-          </Link>
-          {index < filtered.length - 1 && ', '}
-        </span>
-      ))}
+          <span key={item.status}>
+            <Link
+              href={`/bottles?vintageId=${vintageId}&status=${item.status}`}
+              className="hover:underline"
+            >
+              {item.count} {formatStatus(item.status)}
+            </Link>
+            {index < filtered.length - 1 && ", "}
+          </span>
+        ))}
     </span>
   );
 }

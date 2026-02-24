@@ -21,7 +21,7 @@ async function handleCreate(grape: Grape): Promise<ApiResult<Grape>> {
 export default function NewGrapePage() {
   return (
     <section>
-      <PageHeader title="New Grape"/>
+      <PageHeader title="New Grape" />
       <GenericCard<Grape>
         mode="create"
         fields={grapeFields}
@@ -29,6 +29,5 @@ export default function NewGrapePage() {
         redirectTo="/grapes"
       />
     </section>
-      
   );
 }

@@ -18,9 +18,15 @@ type MoveBottleButtonProps = {
   onMove: (newStorageId: number | null) => Promise<void>;
 };
 
-export function MoveBottleButton({ storages, currentStorageId, onMove }: MoveBottleButtonProps) {
+export function MoveBottleButton({
+  storages,
+  currentStorageId,
+  onMove,
+}: MoveBottleButtonProps) {
   const [open, setOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(currentStorageId?.toString() ?? "");
+  const [selectedValue, setSelectedValue] = useState(
+    currentStorageId?.toString() ?? "",
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -72,10 +78,18 @@ export function MoveBottleButton({ storages, currentStorageId, onMove }: MoveBot
         </div>
         {error && <p className="text-red-600 text-sm">{error}</p>}
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)} disabled={loading}>
+          <Button
+            variant="outline"
+            onClick={() => setOpen(false)}
+            disabled={loading}
+          >
             Cancel
           </Button>
-          <Button onClick={handleMove} disabled={loading} className="flex items-center gap-2">
+          <Button
+            onClick={handleMove}
+            disabled={loading}
+            className="flex items-center gap-2"
+          >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             {loading ? "Moving..." : "Move"}
           </Button>

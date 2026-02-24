@@ -1,6 +1,9 @@
 "use client";
 
-import { ColumnFiltersState, Table as TableInstance } from "@tanstack/react-table";
+import {
+  ColumnFiltersState,
+  Table as TableInstance,
+} from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import type { RangeFilterValue } from "../filters/rangeFilter";
 import { FlatMultiSelectFilter } from "./filters/FlatMultiSelectFilter";
@@ -10,7 +13,11 @@ import {
   type GroupedMultiSelectFilterDef,
   multiSelectUrlHandler,
 } from "./filters/multiSelectFilterUtils";
-import { RangeFilter, type RangeFilterDef, rangeUrlHandler } from "./filters/RangeFilter";
+import {
+  RangeFilter,
+  type RangeFilterDef,
+  rangeUrlHandler,
+} from "./filters/RangeFilter";
 
 export const FilterType = {
   MultiSelect: "multiselect",
@@ -23,14 +30,24 @@ export type FilterUrlHandler = {
   deserialize(paramName: string, searchParams: URLSearchParams): unknown | null;
 };
 
-export const filterUrlHandlers: Record<typeof FilterType[keyof typeof FilterType], FilterUrlHandler> = {
+export const filterUrlHandlers: Record<
+  (typeof FilterType)[keyof typeof FilterType],
+  FilterUrlHandler
+> = {
   [FilterType.Range]: rangeUrlHandler,
   [FilterType.MultiSelect]: multiSelectUrlHandler,
   [FilterType.GroupedMultiSelect]: multiSelectUrlHandler,
 };
 
-export type { FlatMultiSelectFilterDef, GroupedMultiSelectFilterDef, RangeFilterDef };
-export type FilterDef = FlatMultiSelectFilterDef | GroupedMultiSelectFilterDef | RangeFilterDef;
+export type {
+  FlatMultiSelectFilterDef,
+  GroupedMultiSelectFilterDef,
+  RangeFilterDef,
+};
+export type FilterDef =
+  | FlatMultiSelectFilterDef
+  | GroupedMultiSelectFilterDef
+  | RangeFilterDef;
 
 type DataTableFilterControlProps<T> = {
   filters: FilterDef[];
@@ -45,11 +62,13 @@ function isRangeActive(val: unknown): boolean {
 
 function getFilterComponent<T>(
   filter: FilterDef,
-  table: TableInstance<T>
+  table: TableInstance<T>,
 ): React.ReactNode {
   switch (filter.type) {
     case FilterType.Range:
-      return <RangeFilter key={filter.columnId} filter={filter} table={table} />;
+      return (
+        <RangeFilter key={filter.columnId} filter={filter} table={table} />
+      );
     case FilterType.MultiSelect:
       return (
         <FlatMultiSelectFilter

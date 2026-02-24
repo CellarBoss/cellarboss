@@ -1,10 +1,10 @@
-import { useState } from "react"
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react"
+import { useState } from "react";
+import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 import {
   Command,
   CommandInput,
@@ -12,9 +12,9 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandItem,
-} from "@/components/ui/command"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/command";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { GenericType } from "@cellarboss/types";
 import type { OptionGroup } from "./DataSelector";
 
@@ -34,9 +34,7 @@ export default function SingleSelector<T extends GenericType>({
   const [open, setOpen] = useState(false);
 
   const currentValue = field.state.value ?? "";
-  const selectedOption = options.find(
-    (o) => o.id.toString() === currentValue
-  );
+  const selectedOption = options.find((o) => o.id.toString() === currentValue);
 
   if (!editable) {
     return (
@@ -63,7 +61,7 @@ export default function SingleSelector<T extends GenericType>({
         <CheckIcon
           className={cn(
             "ml-auto size-4",
-            currentValue === id ? "opacity-100" : "opacity-0"
+            currentValue === id ? "opacity-100" : "opacity-0",
           )}
         />
       </CommandItem>
@@ -81,13 +79,14 @@ export default function SingleSelector<T extends GenericType>({
           aria-invalid={isInvalid}
           className="w-full justify-between font-normal"
         >
-          {selectedOption
-            ? selectedOption.name
-            : "Choose an option..."}
+          {selectedOption ? selectedOption.name : "Choose an option..."}
           <ChevronsUpDownIcon className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="min-w-[--radix-popover-trigger-width] p-0" align="start">
+      <PopoverContent
+        className="min-w-[--radix-popover-trigger-width] p-0"
+        align="start"
+      >
         <Command>
           <CommandInput placeholder="Search..." />
           <CommandList>
@@ -99,9 +98,7 @@ export default function SingleSelector<T extends GenericType>({
                 </CommandGroup>
               ))
             ) : (
-              <CommandGroup>
-                {options.map(renderItem)}
-              </CommandGroup>
+              <CommandGroup>{options.map(renderItem)}</CommandGroup>
             )}
           </CommandList>
         </Command>

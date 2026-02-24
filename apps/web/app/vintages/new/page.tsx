@@ -9,7 +9,9 @@ import { createVintage } from "@/lib/api/vintages";
 import { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
 
-async function handleCreate(vintage: CreateVintage): Promise<ApiResult<Vintage>> {
+async function handleCreate(
+  vintage: CreateVintage,
+): Promise<ApiResult<Vintage>> {
   return createVintage(vintage);
 }
 
@@ -18,7 +20,13 @@ function NewVintageForm() {
   const wineId = searchParams.get("wineId");
 
   const defaultData = wineId
-    ? ({ id: 0, year: null, wineId: Number(wineId), drinkFrom: null, drinkUntil: null } as Vintage)
+    ? ({
+        id: 0,
+        year: null,
+        wineId: Number(wineId),
+        drinkFrom: null,
+        drinkUntil: null,
+      } as Vintage)
     : undefined;
 
   return (

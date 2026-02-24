@@ -12,7 +12,9 @@ export const bottleFields: FieldConfig<Bottle>[] = [
     key: "purchaseDate",
     label: "Purchase Date",
     type: "date",
-    validator: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Must be a valid date (YYYY-MM-DD)"),
+    validator: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Must be a valid date (YYYY-MM-DD)"),
   },
   {
     key: "purchasePrice",
@@ -37,8 +39,9 @@ export const bottleFields: FieldConfig<Bottle>[] = [
       hierarchical: true,
     },
     validator: z.preprocess(
-      (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-      z.number().int().positive().nullable()
+      (val) =>
+        val === "" || val === null || val === undefined ? null : Number(val),
+      z.number().int().positive().nullable(),
     ),
   },
   {

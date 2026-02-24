@@ -24,13 +24,15 @@ type TreeNode = {
 };
 
 function getParent(item: GenericType): number | null {
-  return (item as unknown as Record<string, unknown>)["parent"] as number | null;
+  return (item as unknown as Record<string, unknown>)["parent"] as
+    | number
+    | null;
 }
 
 function buildFlatTree(
   options: GenericType[],
   parentId: number | null = null,
-  depth = 0
+  depth = 0,
 ): TreeNode[] {
   const result: TreeNode[] = [];
   for (const option of options) {
@@ -162,7 +164,7 @@ export default function HierarchicalSingleSelector({
                   <CheckIcon
                     className={cn(
                       "ml-auto size-4",
-                      currentValue === id ? "opacity-100" : "opacity-0"
+                      currentValue === id ? "opacity-100" : "opacity-0",
                     )}
                   />
                 </CommandItem>

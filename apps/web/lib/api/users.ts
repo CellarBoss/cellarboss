@@ -34,7 +34,9 @@ export async function getUserById(id: string): Promise<ApiResult<AdminUser>> {
   return makeServerRequest<AdminUser>(`user/${id}`, "GET");
 }
 
-export async function createUser(data: UserFormData): Promise<ApiResult<AdminUser>> {
+export async function createUser(
+  data: UserFormData,
+): Promise<ApiResult<AdminUser>> {
   const body: Record<string, string> = {
     name: data.name,
     email: data.email,
@@ -50,7 +52,9 @@ export async function createUser(data: UserFormData): Promise<ApiResult<AdminUse
   );
 }
 
-export async function updateUser(data: UserFormData): Promise<ApiResult<AdminUser>> {
+export async function updateUser(
+  data: UserFormData,
+): Promise<ApiResult<AdminUser>> {
   // Update name/email via custom route
   const updateResult = await makeServerRequest<AdminUser>(
     `user/${data.id}`,

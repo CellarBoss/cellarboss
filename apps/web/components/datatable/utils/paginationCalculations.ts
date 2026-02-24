@@ -10,7 +10,7 @@ export interface PaginationMetrics {
 export function calculatePaginationMetrics<T>(
   table: TableInstance<T>,
   pagination: PaginationState,
-  getSubRows?: (row: T) => T[] | undefined
+  getSubRows?: (row: T) => T[] | undefined,
 ): PaginationMetrics {
   const pageSize = table.getState().pagination.pageSize;
   const paginationRowCount = getSubRows

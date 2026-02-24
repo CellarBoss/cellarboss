@@ -1,4 +1,9 @@
-import { useQuery, UseQueryOptions, UseQueryResult, skipToken } from "@tanstack/react-query";
+import {
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
+  skipToken,
+} from "@tanstack/react-query";
 import { ApiResult, ApiQueryError } from "@/lib/api/types";
 
 type UseApiQueryOptions<T> = Omit<
@@ -11,7 +16,7 @@ type UseApiQueryOptions<T> = Omit<
 export type UseApiQueryResult<T> = UseQueryResult<T, ApiQueryError>;
 
 export function useApiQuery<T>(
-  options: UseApiQueryOptions<T>
+  options: UseApiQueryOptions<T>,
 ): UseApiQueryResult<T> {
   const { queryFn, ...rest } = options;
 

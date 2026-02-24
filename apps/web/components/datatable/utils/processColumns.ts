@@ -8,14 +8,16 @@ import { createSelectionColumn } from "../components/selection/selectionColumn";
 export function processColumnsWithFilters<T>(
   columns: ColumnDef<T>[],
   enableRowSelection: boolean,
-  filters?: FilterDef[]
+  filters?: FilterDef[],
 ): ColumnDef<T>[] {
-  const selectionColumn = enableRowSelection ? [createSelectionColumn<T>()] : [];
+  const selectionColumn = enableRowSelection
+    ? [createSelectionColumn<T>()]
+    : [];
   const allColumns = [...selectionColumn, ...columns];
 
-  return allColumns.map(col => {
+  return allColumns.map((col) => {
     const colId = (col as any).id ?? (col as any).accessorKey;
-    const filterDef = filters?.find(f => f.columnId === colId);
+    const filterDef = filters?.find((f) => f.columnId === colId);
     const filterFn = filterDef
       ? filterDef.type === FilterType.Range
         ? rangeFilter

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -9,15 +8,20 @@ type BackButtonProps = {
   label?: string;
 };
 
-export function BackButton({
-  label = "Back",
-}: BackButtonProps) {
+export function BackButton({ label = "Back" }: BackButtonProps) {
   const router = useRouter();
 
   return (
-    <Button size="lg" variant="outline" onClick={(e) => { e.preventDefault(); router.back()}} className="cursor-pointer">
+    <Button
+      size="lg"
+      variant="outline"
+      onClick={(e) => {
+        e.preventDefault();
+        router.back();
+      }}
+      className="cursor-pointer"
+    >
       <ArrowLeft /> {label}
     </Button>
   );
-
 }

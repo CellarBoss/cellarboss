@@ -15,8 +15,10 @@ export function StorageHierarchyDisplay({
   });
 
   if (!storageId) return <span className="text-muted-foreground">—</span>;
-  if (storageQuery.isLoading) return <span className="text-muted-foreground">...</span>;
-  if (!storageQuery.data) return <span className="text-muted-foreground">Unknown</span>;
+  if (storageQuery.isLoading)
+    return <span className="text-muted-foreground">...</span>;
+  if (!storageQuery.data)
+    return <span className="text-muted-foreground">Unknown</span>;
 
   const storages = storageQuery.data;
   const nameMap = new Map(storages.map((s) => [s.id, s.name]));

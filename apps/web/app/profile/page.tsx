@@ -6,7 +6,9 @@ import { GenericCard } from "@/components/cards/GenericCard";
 import { profileFields, type ProfileFormData } from "@/lib/fields/profile";
 import { ApiResult } from "@/lib/api/types";
 
-async function handleSave(formData: ProfileFormData): Promise<ApiResult<ProfileFormData>> {
+async function handleSave(
+  formData: ProfileFormData,
+): Promise<ApiResult<ProfileFormData>> {
   // Validate password confirmation if password is being changed
   if (formData.password && formData.password !== formData.confirmPassword) {
     return {

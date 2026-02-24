@@ -16,16 +16,24 @@ export async function getStorageById(id: number): Promise<ApiResult<Storage>> {
   return makeServerRequest<Storage>("storage/" + id, "GET");
 }
 
-export async function updateStorage(storage: Storage): Promise<ApiResult<Storage>> {
+export async function updateStorage(
+  storage: Storage,
+): Promise<ApiResult<Storage>> {
   const body = {
     ...storage,
     locationId: storage.locationId ? Number(storage.locationId) : null,
     parent: storage.parent ? Number(storage.parent) : null,
   };
-  return makeServerRequest<Storage>("storage/" + storage.id, "PUT", JSON.stringify(body));
+  return makeServerRequest<Storage>(
+    "storage/" + storage.id,
+    "PUT",
+    JSON.stringify(body),
+  );
 }
 
-export async function createStorage(storage: Storage): Promise<ApiResult<Storage>> {
+export async function createStorage(
+  storage: Storage,
+): Promise<ApiResult<Storage>> {
   const body = {
     ...storage,
     locationId: storage.locationId ? Number(storage.locationId) : null,

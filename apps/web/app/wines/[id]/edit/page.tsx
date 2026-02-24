@@ -1,8 +1,12 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 import { getWineById, updateWine } from "@/lib/api/wines";
-import { getWineGrapesByWineId, createWineGrape, deleteWineGrape } from "@/lib/api/winegrapes";
+import {
+  getWineGrapesByWineId,
+  createWineGrape,
+  deleteWineGrape,
+} from "@/lib/api/winegrapes";
 import type { Wine, WineGrape } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
 import { wineFields, WineFormData } from "@/lib/fields/wines";
@@ -22,7 +26,7 @@ export default function EditWinePage() {
   });
 
   const wineGrapesQuery = useApiQuery({
-    queryKey: ['winegrapes', wineId],
+    queryKey: ["winegrapes", wineId],
     queryFn: () => getWineGrapesByWineId(wineId),
     enabled: !!wineId,
   });

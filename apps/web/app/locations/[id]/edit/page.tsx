@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 import { getLocationById } from "@/lib/api/locations";
 import type { Location } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";

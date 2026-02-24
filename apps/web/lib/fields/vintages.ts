@@ -6,8 +6,9 @@ import { getWinemakers } from "@/lib/api/winemakers";
 
 function nullableInt(min: number, max: number) {
   return z.preprocess(
-    (val) => (val === "" || val === null || val === undefined ? null : Number(val)),
-    z.number().int().min(min).max(max).nullable()
+    (val) =>
+      val === "" || val === null || val === undefined ? null : Number(val),
+    z.number().int().min(min).max(max).nullable(),
   );
 }
 

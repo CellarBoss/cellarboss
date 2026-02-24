@@ -24,7 +24,11 @@ export default function EditSettingPage() {
   }
 
   if (settingsQuery.isError) {
-    return <ErrorCard message={settingsQuery.error?.message || "Failed to load settings"} />;
+    return (
+      <ErrorCard
+        message={settingsQuery.error?.message || "Failed to load settings"}
+      />
+    );
   }
 
   const settings = settingsQuery.data as ParsedSettingsMap;
@@ -40,7 +44,9 @@ export default function EditSettingPage() {
     value: String(settingValue ?? ""),
   };
 
-  async function handleUpdate(data: SettingFormData): Promise<ApiResult<SettingFormData>> {
+  async function handleUpdate(
+    data: SettingFormData,
+  ): Promise<ApiResult<SettingFormData>> {
     try {
       await updateMutation.mutateAsync({
         key: data.key,
@@ -52,7 +58,8 @@ export default function EditSettingPage() {
       return {
         ok: false,
         error: {
-          message: error instanceof Error ? error.message : "Failed to update setting",
+          message:
+            error instanceof Error ? error.message : "Failed to update setting",
           status: 500,
         },
       };

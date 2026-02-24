@@ -8,7 +8,9 @@ export async function getVintages(): Promise<ApiResult<Vintage[]>> {
   return makeServerRequest<Vintage[]>("vintage", "GET");
 }
 
-export async function getVintagesByWineId(wineId: number): Promise<ApiResult<Vintage[]>> {
+export async function getVintagesByWineId(
+  wineId: number,
+): Promise<ApiResult<Vintage[]>> {
   return makeServerRequest<Vintage[]>("vintage/wine/" + wineId, "GET");
 }
 
@@ -20,17 +22,25 @@ export async function getVintageById(id: number): Promise<ApiResult<Vintage>> {
   return makeServerRequest<Vintage>("vintage/" + id, "GET");
 }
 
-export async function updateVintage(vintage: Vintage): Promise<ApiResult<Vintage>> {
+export async function updateVintage(
+  vintage: Vintage,
+): Promise<ApiResult<Vintage>> {
   const body = {
     year: vintage.year ? Number(vintage.year) : null,
     wineId: Number(vintage.wineId),
     drinkFrom: vintage.drinkFrom ? Number(vintage.drinkFrom) : null,
     drinkUntil: vintage.drinkUntil ? Number(vintage.drinkUntil) : null,
   };
-  return makeServerRequest<Vintage>("vintage/" + vintage.id, "PUT", JSON.stringify(body));
+  return makeServerRequest<Vintage>(
+    "vintage/" + vintage.id,
+    "PUT",
+    JSON.stringify(body),
+  );
 }
 
-export async function createVintage(vintage: CreateVintage): Promise<ApiResult<Vintage>> {
+export async function createVintage(
+  vintage: CreateVintage,
+): Promise<ApiResult<Vintage>> {
   const body = {
     year: vintage.year ? Number(vintage.year) : null,
     wineId: Number(vintage.wineId),

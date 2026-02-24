@@ -1,8 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { BottleWine, Settings, Grape, User, Refrigerator, MapPin, Earth, Flag, Barrel, UserCircle, LogOut, Users } from "lucide-react"
-import { authClient } from "@/lib/auth-client"
+import {
+  BottleWine,
+  Settings,
+  Grape,
+  User,
+  Refrigerator,
+  MapPin,
+  Earth,
+  Flag,
+  Barrel,
+  UserCircle,
+  LogOut,
+  Users,
+} from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 import {
   Sidebar,
@@ -15,7 +28,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 const wineItems = [
   { title: "Bottles", url: "/bottles", icon: BottleWine },
@@ -39,9 +52,7 @@ const settingsItems = [
   { title: "Application Settings", url: "/settings", icon: Settings },
 ];
 
-const adminItems = [
-  { title: "Users", url: "/users", icon: Users },
-];
+const adminItems = [{ title: "Users", url: "/users", icon: Users }];
 
 export function AppSidebar() {
   const session = authClient.useSession();
@@ -49,20 +60,26 @@ export function AppSidebar() {
   const isAdmin = user?.role === "admin";
 
   const handleLogout = async () => {
-    await fetch('/logout', { method: 'POST' });
+    await fetch("/logout", { method: "POST" });
   };
 
   const sections = [
     { label: "Wines", items: wineItems },
     { label: "Storage", items: storageItems },
     { label: "Geography", items: geographyItems },
-    { label: "Settings", items: isAdmin ? [...settingsItems, ...adminItems] : settingsItems },
+    {
+      label: "Settings",
+      items: isAdmin ? [...settingsItems, ...adminItems] : settingsItems,
+    },
   ];
 
   return (
     <Sidebar>
       <SidebarHeader>
-        <Link href="/" className="flex items-center justify-center gap-2 px-2 py-3 font-semibold text-xl tracking-tight hover:opacity-80 transition-opacity">
+        <Link
+          href="/"
+          className="flex items-center justify-center gap-2 px-2 py-3 font-semibold text-xl tracking-tight hover:opacity-80 transition-opacity"
+        >
           <BottleWine className="h-5 w-5 shrink-0" />
           <span>CellarBoss</span>
         </Link>
@@ -92,14 +109,20 @@ export function AppSidebar() {
         <div className="flex items-center justify-between px-2 py-2 text-sm">
           <div className="flex items-center gap-2 min-w-0">
             <UserCircle className="h-5 w-5 shrink-0 text-muted-foreground" />
-            <span className="truncate text-muted-foreground">{user?.name || user?.email}</span>
+            <span className="truncate text-muted-foreground">
+              {user?.name || user?.email}
+            </span>
           </div>
-          <button onClick={handleLogout} className="flex items-center gap-1 text-muted-foreground hover:text-foreground shrink-0 ml-2" title="Log out">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-1 text-muted-foreground hover:text-foreground shrink-0 ml-2"
+            title="Log out"
+          >
             <LogOut className="h-4 w-4" />
             <span>Logout</span>
           </button>
         </div>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

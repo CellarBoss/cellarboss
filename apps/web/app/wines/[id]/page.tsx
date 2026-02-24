@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import { useParams } from "next/navigation";
 import { getWineById } from "@/lib/api/wines";
 import { getWineGrapes } from "@/lib/api/winegrapes";
 import { GenericCard } from "@/components/cards/GenericCard";
@@ -14,13 +14,13 @@ export default function ViewWinePage() {
   const wineId = Number(params.id);
 
   const wineQuery = useApiQuery({
-    queryKey: ['wine', wineId],
+    queryKey: ["wine", wineId],
     queryFn: () => getWineById(wineId),
     enabled: !!wineId,
   });
 
   const wineGrapesQuery = useApiQuery({
-    queryKey: ['winegrapes'],
+    queryKey: ["winegrapes"],
     queryFn: getWineGrapes,
   });
 

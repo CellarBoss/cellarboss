@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,14 +9,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Trash, Loader2} from "lucide-react"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/alert-dialog";
+import { Trash, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type DeleteButtonProps = {
   onDelete: () => Promise<boolean>;
   itemDescription: string | undefined;
-}
+};
 
 export function DeleteButton({ onDelete, itemDescription }: DeleteButtonProps) {
   const [loading, setLoading] = useState(false);
@@ -51,7 +51,10 @@ export function DeleteButton({ onDelete, itemDescription }: DeleteButtonProps) {
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete
-            { itemDescription!=undefined && <strong>&nbsp;{itemDescription}</strong> }.
+            {itemDescription != undefined && (
+              <strong>&nbsp;{itemDescription}</strong>
+            )}
+            .
           </AlertDialogDescription>
           {error && <p className="text-red-600 mt-2">{error}</p>}
         </AlertDialogHeader>

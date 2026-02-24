@@ -21,7 +21,7 @@ async function handleCreate(region: Region): Promise<ApiResult<Region>> {
 export default function NewRegionPage() {
   return (
     <section>
-      <PageHeader title="New Region"/>
+      <PageHeader title="New Region" />
       <GenericCard<Region>
         mode="create"
         fields={regionFields}

@@ -27,11 +27,7 @@ export default function ViewVintagePage() {
   return (
     <section>
       <PageHeader title={`View Vintage - ${vintage.year ?? "NV"}`} />
-      <GenericCard<Vintage>
-        mode="view"
-        data={vintage}
-        fields={vintageFields}
-      />
+      <GenericCard<Vintage> mode="view" data={vintage} fields={vintageFields} />
     </section>
   );
 }

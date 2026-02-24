@@ -29,7 +29,10 @@ export function FilterInit({
 }) {
   return (
     <Suspense fallback={null}>
-      <FilterInitContent filters={filters} setColumnFilters={setColumnFilters} />
+      <FilterInitContent
+        filters={filters}
+        setColumnFilters={setColumnFilters}
+      />
     </Suspense>
   );
 }

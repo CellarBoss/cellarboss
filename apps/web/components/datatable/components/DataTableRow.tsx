@@ -1,14 +1,8 @@
 "use client";
 
-import {
-  flexRender,
-  Row
-} from "@tanstack/react-table";
+import { flexRender, Row } from "@tanstack/react-table";
 
-import {
-  TableCell,
-  TableRow,
-} from "@/components/ui/table"
+import { TableCell, TableRow } from "@/components/ui/table";
 
 import { cn } from "@/lib/utils";
 import { ChevronRight, ChevronDown } from "lucide-react";
@@ -20,16 +14,27 @@ type DataTableRowProps<T> = {
   isContext?: boolean;
 };
 
-export default function DataTableRow<T>({ row, isExpanded, canExpand, isContext }: DataTableRowProps<T>) {
+export default function DataTableRow<T>({
+  row,
+  isExpanded,
+  canExpand,
+  isContext,
+}: DataTableRowProps<T>) {
   const cells = row.getVisibleCells();
-  const firstDataCellIndex = cells.findIndex(c => c.column.id !== "select");
+  const firstDataCellIndex = cells.findIndex((c) => c.column.id !== "select");
 
   return (
-    <TableRow key={row.id} className={cn("group border-b border-default", isContext && "opacity-60")}>
+    <TableRow
+      key={row.id}
+      className={cn("group border-b border-default", isContext && "opacity-60")}
+    >
       {cells.map((cell, cellIndex) => (
         <TableCell
           key={cell.id}
-          className={cn("border p-2 bg-table-row", !isContext && "group-hover:bg-table-row-hover")}
+          className={cn(
+            "border p-2 bg-table-row",
+            !isContext && "group-hover:bg-table-row-hover",
+          )}
           style={
             cellIndex === firstDataCellIndex && (canExpand || row.depth > 0)
               ? { paddingLeft: `${row.depth * 24 + 8}px` }

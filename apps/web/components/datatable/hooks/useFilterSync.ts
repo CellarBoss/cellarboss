@@ -12,7 +12,7 @@ import { filterUrlHandlers } from "../components/DataTableFilterControl";
 export function useFilterSync(
   columnFilters: ColumnFiltersState,
   filters: FilterDef[] | undefined,
-  pathname: string
+  pathname: string,
 ) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -24,7 +24,7 @@ export function useFilterSync(
     const params = new URLSearchParams(searchParams.toString());
     for (const f of filters) {
       const paramName = f.urlParamName ?? f.columnId;
-      const value = columnFilters.find(cf => cf.id === f.columnId)?.value;
+      const value = columnFilters.find((cf) => cf.id === f.columnId)?.value;
       filterUrlHandlers[f.type].serialize(paramName, value, params);
     }
     const newQs = params.toString();
@@ -32,12 +32,16 @@ export function useFilterSync(
 
     // Only update URL if the query string actually changed
     if (newQs !== currentQs) {
-      router.replace(newQs ? `${pathname}?${newQs}` : pathname, { scroll: false });
+      router.replace(newQs ? `${pathname}?${newQs}` : pathname, {
+        scroll: false,
+      });
     }
 
     // Update sessionStorage
     try {
-      const managedFilters = columnFilters.filter(cf => filters.some(f => f.columnId === cf.id));
+      const managedFilters = columnFilters.filter((cf) =>
+        filters.some((f) => f.columnId === cf.id),
+      );
       sessionStorage.setItem(`dtf-${pathname}`, JSON.stringify(managedFilters));
     } catch {
       // Ignore storage errors

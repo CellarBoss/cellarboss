@@ -9,9 +9,28 @@ on:
       - main
 
 jobs:
+  prettier:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+          persist-credentials: false
+
+      - name: Prettify code
+        uses: creyD/prettier_action@v4.6
+        with:
+          prettier_options: --write **/*.{ts,tsx,md}
+          only_changed: True
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
   build-and-test:
     name: Build & Test
     runs-on: ubuntu-latest
+    needs: prettier
 
     steps:
       - name: Checkout

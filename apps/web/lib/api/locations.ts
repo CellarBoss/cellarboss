@@ -12,14 +12,28 @@ export async function deleteLocation(id: number): Promise<ApiResult<boolean>> {
   return makeServerRequest<boolean>("location/" + id, "DELETE");
 }
 
-export async function getLocationById(id: number): Promise<ApiResult<Location>> {
+export async function getLocationById(
+  id: number,
+): Promise<ApiResult<Location>> {
   return makeServerRequest<Location>("location/" + id, "GET");
 }
 
-export async function updateLocation(location: Location): Promise<ApiResult<Location>> {
-  return makeServerRequest<Location>("location/" + location.id, "PUT", JSON.stringify(location));
+export async function updateLocation(
+  location: Location,
+): Promise<ApiResult<Location>> {
+  return makeServerRequest<Location>(
+    "location/" + location.id,
+    "PUT",
+    JSON.stringify(location),
+  );
 }
 
-export async function createLocation(location: Location): Promise<ApiResult<Location>> {
-  return makeServerRequest<Location>("location", "POST", JSON.stringify(location));
+export async function createLocation(
+  location: Location,
+): Promise<ApiResult<Location>> {
+  return makeServerRequest<Location>(
+    "location",
+    "POST",
+    JSON.stringify(location),
+  );
 }

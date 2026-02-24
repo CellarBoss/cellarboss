@@ -10,9 +10,11 @@ export interface BulkActionHandlers {
 export function useBulkActions<T>(
   selectedRows: T[],
   onBulkDelete: ((rows: T[]) => Promise<void>) | undefined,
-  onBulkEdit: ((rows: T[], partial: Record<string, string | number>) => Promise<void>) | undefined,
+  onBulkEdit:
+    | ((rows: T[], partial: Record<string, string | number>) => Promise<void>)
+    | undefined,
   setRowSelection: (selection: RowSelectionState) => void,
-  setEditDialogOpen: (open: boolean) => void
+  setEditDialogOpen: (open: boolean) => void,
 ): BulkActionHandlers {
   async function handleBulkDeleteConfirm() {
     if (!onBulkDelete) return;

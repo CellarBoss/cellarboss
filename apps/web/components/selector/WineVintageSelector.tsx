@@ -28,21 +28,28 @@ type WineVintageSelectorProps = {
   editable: boolean;
 };
 
-export function WineVintageSelector({ field, editable }: WineVintageSelectorProps) {
+export function WineVintageSelector({
+  field,
+  editable,
+}: WineVintageSelectorProps) {
   const currentVintageId = field.state.value ?? "";
 
   const { data: wines, isLoading: winesLoading } = useApiQuery<Wine[]>({
     queryKey: ["wines"],
     queryFn: getWines,
   });
-  const { data: winemakers, isLoading: winemakersLoading } = useApiQuery<WineMaker[]>({
+  const { data: winemakers, isLoading: winemakersLoading } = useApiQuery<
+    WineMaker[]
+  >({
     queryKey: ["winemakers"],
     queryFn: getWinemakers,
   });
-  const { data: vintages, isLoading: vintagesLoading } = useApiQuery<Vintage[]>({
-    queryKey: ["vintages"],
-    queryFn: getVintages,
-  });
+  const { data: vintages, isLoading: vintagesLoading } = useApiQuery<Vintage[]>(
+    {
+      queryKey: ["vintages"],
+      queryFn: getVintages,
+    },
+  );
 
   const [selectedWineId, setSelectedWineId] = useState<number | null>(null);
   const [wineOpen, setWineOpen] = useState(false);
@@ -51,7 +58,9 @@ export function WineVintageSelector({ field, editable }: WineVintageSelectorProp
   // Pre-populate wine from existing vintageId (edit mode)
   useEffect(() => {
     if (currentVintageId && vintages && selectedWineId === null) {
-      const vintage = vintages.find((v) => v.id.toString() === currentVintageId);
+      const vintage = vintages.find(
+        (v) => v.id.toString() === currentVintageId,
+      );
       if (vintage) setSelectedWineId(vintage.wineId);
     }
   }, [vintages, currentVintageId, selectedWineId]);
@@ -65,7 +74,9 @@ export function WineVintageSelector({ field, editable }: WineVintageSelectorProp
   }
 
   const selectedWine = wines.find((w) => w.id === selectedWineId);
-  const selectedVintage = vintages.find((v) => v.id.toString() === currentVintageId);
+  const selectedVintage = vintages.find(
+    (v) => v.id.toString() === currentVintageId,
+  );
   const filteredVintages = selectedWineId
     ? vintages.filter((v) => v.wineId === selectedWineId)
     : [];
@@ -88,7 +99,7 @@ export function WineVintageSelector({ field, editable }: WineVintageSelectorProp
 
   // Build winemaker groups for the wine selector
   const winemakersWithWines = winemakers.filter((wm) =>
-    wines.some((w) => w.wineMakerId === wm.id)
+    wines.some((w) => w.wineMakerId === wm.id),
   );
 
   function handleWineSelect(wineId: number) {
@@ -145,7 +156,9 @@ export function WineVintageSelector({ field, editable }: WineVintageSelectorProp
                         <CheckIcon
                           className={cn(
                             "ml-auto size-4",
-                            selectedWineId === wine.id ? "opacity-100" : "opacity-0"
+                            selectedWineId === wine.id
+                              ? "opacity-100"
+                              : "opacity-0",
                           )}
                         />
                       </CommandItem>
@@ -170,7 +183,7 @@ export function WineVintageSelector({ field, editable }: WineVintageSelectorProp
               className="w-full justify-between font-normal"
             >
               {selectedVintage
-                ? selectedVintage.year?.toString() ?? "NV"
+                ? (selectedVintage.year?.toString() ?? "NV")
                 : "Choose a vintage year..."}
               <ChevronsUpDownIcon className="ml-2 size-4 shrink-0 opacity-50" />
             </Button>
@@ -199,7 +212,9 @@ export function WineVintageSelector({ field, editable }: WineVintageSelectorProp
                           <CheckIcon
                             className={cn(
                               "ml-auto size-4",
-                              currentVintageId === id ? "opacity-100" : "opacity-0"
+                              currentVintageId === id
+                                ? "opacity-100"
+                                : "opacity-0",
                             )}
                           />
                         </CommandItem>

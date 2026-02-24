@@ -46,8 +46,11 @@ async function handler(request: NextRequest) {
     });
   } catch (error) {
     return NextResponse.json(
-      { error: "Auth proxy error", details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+      {
+        error: "Auth proxy error",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 },
     );
   }
 }

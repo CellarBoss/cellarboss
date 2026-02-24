@@ -20,5 +20,5 @@ export const regionFields: FieldConfig<Region>[] = [
     },
     // Coercion needed because GenericCard stringifies all form values
     validator: z.coerce.number().int().positive(),
-  }
+  },
 ];

@@ -21,7 +21,7 @@ async function handleCreate(location: Location): Promise<ApiResult<Location>> {
 export default function NewLocationPage() {
   return (
     <section>
-      <PageHeader title="New Location"/>
+      <PageHeader title="New Location" />
       <GenericCard<Location>
         mode="create"
         fields={locationFields}
@@ -29,6 +29,5 @@ export default function NewLocationPage() {
         redirectTo="/locations"
       />
     </section>
-
   );
 }

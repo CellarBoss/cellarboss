@@ -5,7 +5,10 @@ type PaginationSelectorProps = {
   pageSize: number;
 };
 
-export function PaginationSelector({ table, pageSize }: PaginationSelectorProps) {
+export function PaginationSelector({
+  table,
+  pageSize,
+}: PaginationSelectorProps) {
   return (
     <>
       <span>Rows per page</span>
