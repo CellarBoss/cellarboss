@@ -1,40 +1,40 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { ColumnFiltersState } from "@tanstack/react-table";
 import type { FilterDef } from "../components/DataTableFilterControl";
 import { filterUrlHandlers } from "../components/DataTableFilterControl";
 
 /**
- * Sync column filters to URL params and sessionStorage
+ * Sync column filters to URL params and sessionStorage.
+ * Uses window.history.replaceState to update the URL without triggering
+ * a Next.js navigation (which would fetch RSC payloads from the server
+ * and can break behind reverse proxies).
  */
 export function useFilterSync(
   columnFilters: ColumnFiltersState,
   filters: FilterDef[] | undefined,
   pathname: string,
 ) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
   useEffect(() => {
     if (!filters?.length) return;
 
-    // Update URL params
-    const params = new URLSearchParams(searchParams.toString());
+    // Build new URL params from current filter state
+    const currentQs = window.location.search.replace(/^\?/, "");
+    const params = new URLSearchParams(currentQs);
     for (const f of filters) {
       const paramName = f.urlParamName ?? f.columnId;
       const value = columnFilters.find((cf) => cf.id === f.columnId)?.value;
       filterUrlHandlers[f.type].serialize(paramName, value, params);
     }
     const newQs = params.toString();
-    const currentQs = searchParams.toString();
 
     // Only update URL if the query string actually changed
     if (newQs !== currentQs) {
-      router.replace(newQs ? `${pathname}?${newQs}` : pathname, {
-        scroll: false,
-      });
+      const newUrl = newQs
+        ? `${window.location.pathname}?${newQs}`
+        : window.location.pathname;
+      window.history.replaceState(window.history.state, "", newUrl);
     }
 
     // Update sessionStorage
@@ -46,6 +46,5 @@ export function useFilterSync(
     } catch {
       // Ignore storage errors
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [columnFilters, filters, pathname]);
 }

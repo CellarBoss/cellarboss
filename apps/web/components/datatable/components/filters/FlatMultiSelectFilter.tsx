@@ -15,12 +15,10 @@ import { type FlatMultiSelectFilterDef } from "./multiSelectFilterUtils";
 type Props<T> = {
   filter: FlatMultiSelectFilterDef;
   table: TableInstance<T>;
+  activeValues: string[] | undefined;
 };
 
-export function FlatMultiSelectFilter<T>({ filter, table }: Props<T>) {
-  const activeValues = table.getColumn(filter.columnId)?.getFilterValue() as
-    | string[]
-    | undefined;
+export function FlatMultiSelectFilter<T>({ filter, table, activeValues }: Props<T>) {
   const activeCount = activeValues?.length || 0;
 
   const handleOptionChange = (value: string, checked: boolean) => {

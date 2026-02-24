@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Table as TableInstance } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import {
@@ -49,28 +49,23 @@ export type RangeFilterDef = {
 type Props<T> = {
   filter: RangeFilterDef;
   table: TableInstance<T>;
+  activeValue: RangeFilterValue | undefined;
 };
 
-export function RangeFilter<T>({ filter, table }: Props<T>) {
-  const rangeVal = table.getColumn(filter.columnId)?.getFilterValue() as
-    | RangeFilterValue
-    | undefined;
+export function RangeFilter<T>({ filter, table, activeValue: rangeVal }: Props<T>) {
   const activeCount =
     (rangeVal?.min !== undefined ? 1 : 0) +
     (rangeVal?.max !== undefined ? 1 : 0);
 
-  const [minInput, setMinInput] = useState<string>(
-    rangeVal?.min?.toString() ?? "",
-  );
-  const [maxInput, setMaxInput] = useState<string>(
-    rangeVal?.max?.toString() ?? "",
-  );
+  const minFromProp = rangeVal?.min?.toString() ?? "";
+  const maxFromProp = rangeVal?.max?.toString() ?? "";
 
-  // Sync local input state with table filter value
-  useEffect(() => {
-    setMinInput(rangeVal?.min?.toString() ?? "");
-    setMaxInput(rangeVal?.max?.toString() ?? "");
-  }, [rangeVal]);
+  const [minInput, setMinInput] = useState(minFromProp);
+  const [maxInput, setMaxInput] = useState(maxFromProp);
+
+  // Sync local input state when prop changes (e.g. clear all, URL restore)
+  if (minInput !== minFromProp && minFromProp === "") setMinInput("");
+  if (maxInput !== maxFromProp && maxFromProp === "") setMaxInput("");
 
   return (
     <Popover>

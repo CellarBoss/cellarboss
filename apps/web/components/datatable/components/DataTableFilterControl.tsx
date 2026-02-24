@@ -60,14 +60,27 @@ function isRangeActive(val: unknown): boolean {
   return r?.min !== undefined || r?.max !== undefined;
 }
 
+function getFilterValue(
+  columnFilters: ColumnFiltersState,
+  columnId: string,
+): unknown {
+  return columnFilters.find((cf) => cf.id === columnId)?.value;
+}
+
 function getFilterComponent<T>(
   filter: FilterDef,
   table: TableInstance<T>,
+  columnFilters: ColumnFiltersState,
 ): React.ReactNode {
   switch (filter.type) {
     case FilterType.Range:
       return (
-        <RangeFilter key={filter.columnId} filter={filter} table={table} />
+        <RangeFilter
+          key={filter.columnId}
+          filter={filter}
+          table={table}
+          activeValue={getFilterValue(columnFilters, filter.columnId) as RangeFilterValue | undefined}
+        />
       );
     case FilterType.MultiSelect:
       return (
@@ -75,6 +88,7 @@ function getFilterComponent<T>(
           key={filter.columnId}
           filter={filter as FlatMultiSelectFilterDef}
           table={table}
+          activeValues={getFilterValue(columnFilters, filter.columnId) as string[] | undefined}
         />
       );
     case FilterType.GroupedMultiSelect:
@@ -83,6 +97,7 @@ function getFilterComponent<T>(
           key={filter.columnId}
           filter={filter as GroupedMultiSelectFilterDef}
           table={table}
+          activeValues={getFilterValue(columnFilters, filter.columnId) as string[] | undefined}
         />
       );
     default:
@@ -113,7 +128,7 @@ export function DataTableFilterControl<T>({
 
   return (
     <div className="flex items-center gap-2">
-      {filters.map((filter) => getFilterComponent(filter, table))}
+      {filters.map((filter) => getFilterComponent(filter, table, columnFilters))}
 
       {hasActiveFilters && (
         <Button
