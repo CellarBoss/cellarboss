@@ -1,11 +1,16 @@
-import { Hono } from 'hono';
-import { Kysely, Migrator, type Migration, type MigrationProvider } from 'kysely';
-import { vi } from 'vitest';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { fileURLToPath, pathToFileURL } from 'url';
-import type { Database } from '@schema/database.js';
-import { auth } from '@utils/auth.js';
+import { Hono } from "hono";
+import {
+  Kysely,
+  Migrator,
+  type Migration,
+  type MigrationProvider,
+} from "kysely";
+import { vi } from "vitest";
+import { promises as fs } from "fs";
+import path from "path";
+import { fileURLToPath, pathToFileURL } from "url";
+import type { Database } from "@schema/database.js";
+import { auth } from "@utils/auth.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,8 +24,8 @@ class CustomMigrationProvider implements MigrationProvider {
     const files = await fs.readdir(this.migrationFolder);
 
     for (const fileName of files) {
-      if (fileName.endsWith('.ts') || fileName.endsWith('.js')) {
-        const migrationName = fileName.replace(/\.(ts|js)$/, '');
+      if (fileName.endsWith(".ts") || fileName.endsWith(".js")) {
+        const migrationName = fileName.replace(/\.(ts|js)$/, "");
         const filePath = path.join(this.migrationFolder, fileName);
         const fileUrl = pathToFileURL(filePath).href;
         const migration = await import(fileUrl);
@@ -34,7 +39,7 @@ class CustomMigrationProvider implements MigrationProvider {
 
 // Run migrations on a test database
 export async function runMigrations(db: Kysely<Database>): Promise<void> {
-  const migrationFolder = path.resolve(__dirname, '../migrations');
+  const migrationFolder = path.resolve(__dirname, "../migrations");
 
   const migrator = new Migrator({
     db,
@@ -44,7 +49,7 @@ export async function runMigrations(db: Kysely<Database>): Promise<void> {
   const { error } = await migrator.migrateToLatest();
 
   if (error) {
-    console.error('Failed to run test migrations:', error);
+    console.error("Failed to run test migrations:", error);
     throw error;
   }
 }
@@ -55,7 +60,10 @@ export function createTestApp() {
 }
 
 // Create mock session data
-export function createMockSession(userId: string = 'test-user-1', email: string = 'test@example.com') {
+export function createMockSession(
+  userId: string = "test-user-1",
+  email: string = "test@example.com",
+) {
   return {
     session: {
       id: `session-${userId}`,
@@ -69,74 +77,139 @@ export function createMockSession(userId: string = 'test-user-1', email: string 
       id: userId,
       email,
       emailVerified: true,
-      name: 'Test User',
+      name: "Test User",
       createdAt: new Date(),
       updatedAt: new Date(),
-      role: 'admin' as const,
+      role: "admin" as const,
     },
   };
 }
 
 // Create authenticated test app (mocks auth.api.getSession)
-export function createTestAppWithAuth(userId: string = 'test-user-1', email: string = 'test@example.com') {
+export function createTestAppWithAuth(
+  userId: string = "test-user-1",
+  email: string = "test@example.com",
+) {
   const app = new Hono();
 
   // Mock the auth.api.getSession method to return our mock session
   const mockSession = createMockSession(userId, email);
-  vi.spyOn(auth.api, 'getSession').mockResolvedValue(mockSession);
+  vi.spyOn(auth.api, "getSession").mockResolvedValue(mockSession);
 
   return app;
 }
 
 // Test fixture helpers - Create prerequisite records for testing
-export async function createTestCountry(db: Kysely<Database>, name: string = 'Test Country') {
-  await db.insertInto('country').values({ name }).onConflict((oc) => oc.column('name').doNothing()).execute();
-  return await db.selectFrom('country').select('id').where('name', '=', name).executeTakeFirstOrThrow();
-}
-
-export async function createTestLocation(db: Kysely<Database>, name: string = 'Test Location') {
-  await db.insertInto('location').values({ name }).onConflict((oc) => oc.column('name').doNothing()).execute();
-  return await db.selectFrom('location').select('id').where('name', '=', name).executeTakeFirstOrThrow();
-}
-
-export async function createTestGrape(db: Kysely<Database>, name: string = 'Test Grape') {
-  await db.insertInto('grape').values({ name }).onConflict((oc) => oc.column('name').doNothing()).execute();
-  return await db.selectFrom('grape').select('id').where('name', '=', name).executeTakeFirstOrThrow();
-}
-
-export async function createTestWineMaker(db: Kysely<Database>, name: string = 'Test WineMaker') {
-  return await db
-    .insertInto('winemaker')
+export async function createTestCountry(
+  db: Kysely<Database>,
+  name: string = "Test Country",
+) {
+  await db
+    .insertInto("country")
     .values({ name })
-    .returning('id')
+    .onConflict((oc) => oc.column("name").doNothing())
+    .execute();
+  return await db
+    .selectFrom("country")
+    .select("id")
+    .where("name", "=", name)
     .executeTakeFirstOrThrow();
 }
 
-export async function createTestRegion(db: Kysely<Database>, countryId: number, name: string = 'Test Region') {
-  await db.insertInto('region').values({ name, countryId }).onConflict((oc) => oc.columns(['name', 'countryId']).doNothing()).execute();
-  return await db.selectFrom('region').select('id').where('name', '=', name).where('countryId', '=', countryId).executeTakeFirstOrThrow();
+export async function createTestLocation(
+  db: Kysely<Database>,
+  name: string = "Test Location",
+) {
+  await db
+    .insertInto("location")
+    .values({ name })
+    .onConflict((oc) => oc.column("name").doNothing())
+    .execute();
+  return await db
+    .selectFrom("location")
+    .select("id")
+    .where("name", "=", name)
+    .executeTakeFirstOrThrow();
 }
 
-export async function createTestStorage(db: Kysely<Database>, locationId: number | null = null, name: string = 'Test Storage') {
+export async function createTestGrape(
+  db: Kysely<Database>,
+  name: string = "Test Grape",
+) {
+  await db
+    .insertInto("grape")
+    .values({ name })
+    .onConflict((oc) => oc.column("name").doNothing())
+    .execute();
   return await db
-    .insertInto('storage')
+    .selectFrom("grape")
+    .select("id")
+    .where("name", "=", name)
+    .executeTakeFirstOrThrow();
+}
+
+export async function createTestWineMaker(
+  db: Kysely<Database>,
+  name: string = "Test WineMaker",
+) {
+  return await db
+    .insertInto("winemaker")
+    .values({ name })
+    .returning("id")
+    .executeTakeFirstOrThrow();
+}
+
+export async function createTestRegion(
+  db: Kysely<Database>,
+  countryId: number,
+  name: string = "Test Region",
+) {
+  await db
+    .insertInto("region")
+    .values({ name, countryId })
+    .onConflict((oc) => oc.columns(["name", "countryId"]).doNothing())
+    .execute();
+  return await db
+    .selectFrom("region")
+    .select("id")
+    .where("name", "=", name)
+    .where("countryId", "=", countryId)
+    .executeTakeFirstOrThrow();
+}
+
+export async function createTestStorage(
+  db: Kysely<Database>,
+  locationId: number | null = null,
+  name: string = "Test Storage",
+) {
+  return await db
+    .insertInto("storage")
     .values({ name, locationId, parent: null })
-    .returning('id')
+    .returning("id")
     .executeTakeFirstOrThrow();
 }
 
-export async function createTestWine(db: Kysely<Database>, wineMakerId: number, regionId: number | null = null, name: string = 'Test Wine') {
+export async function createTestWine(
+  db: Kysely<Database>,
+  wineMakerId: number,
+  regionId: number | null = null,
+  name: string = "Test Wine",
+) {
   return await db
-    .insertInto('wine')
-    .values({ name, wineMakerId, regionId, type: 'red' })
-    .returning('id')
+    .insertInto("wine")
+    .values({ name, wineMakerId, regionId, type: "red" })
+    .returning("id")
     .executeTakeFirstOrThrow();
 }
 
-export async function createTestVintage(db: Kysely<Database>, wineId: number, year: number | null = 2020) {
+export async function createTestVintage(
+  db: Kysely<Database>,
+  wineId: number,
+  year: number | null = 2020,
+) {
   return await db
-    .insertInto('vintage')
+    .insertInto("vintage")
     .values({ wineId, year, drinkFrom: null, drinkUntil: null })
-    .returning('id')
+    .returning("id")
     .executeTakeFirstOrThrow();
 }

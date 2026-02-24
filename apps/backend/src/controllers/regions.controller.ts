@@ -1,21 +1,21 @@
-import { db } from '@utils/database.js';
-import type { CreateRegion, UpdateRegion } from '@cellarboss/types';
+import { db } from "@utils/database.js";
+import type { CreateRegion, UpdateRegion } from "@cellarboss/types";
 
 export async function list() {
-  return await db.selectFrom('region').selectAll().execute();
+  return await db.selectFrom("region").selectAll().execute();
 }
 
 export async function getById(id: number) {
   return await db
-    .selectFrom('region')
+    .selectFrom("region")
     .selectAll()
-    .where('id', '=', id)
+    .where("id", "=", id)
     .executeTakeFirst();
 }
 
 export async function create(data: CreateRegion) {
   return await db
-    .insertInto('region')
+    .insertInto("region")
     .values(data)
     .returningAll()
     .executeTakeFirstOrThrow();
@@ -23,16 +23,16 @@ export async function create(data: CreateRegion) {
 
 export async function update(id: number, data: UpdateRegion) {
   return await db
-    .updateTable('region')
+    .updateTable("region")
     .set(data)
-    .where('id', '=', id)
+    .where("id", "=", id)
     .returningAll()
     .executeTakeFirstOrThrow();
 }
 
 export async function remove(id: number) {
   return await db
-    .deleteFrom('region')
-    .where('id', '=', id)
+    .deleteFrom("region")
+    .where("id", "=", id)
     .executeTakeFirstOrThrow();
 }

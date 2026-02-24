@@ -1,21 +1,21 @@
-import { db } from '@utils/database.js';
-import type { CreateLocation, UpdateLocation } from '@cellarboss/types';
+import { db } from "@utils/database.js";
+import type { CreateLocation, UpdateLocation } from "@cellarboss/types";
 
 export async function list() {
-  return await db.selectFrom('location').selectAll().execute();
+  return await db.selectFrom("location").selectAll().execute();
 }
 
 export async function getById(id: number) {
   return await db
-    .selectFrom('location')
+    .selectFrom("location")
     .selectAll()
-    .where('id', '=', id)
+    .where("id", "=", id)
     .executeTakeFirst();
 }
 
 export async function create(data: CreateLocation) {
   return await db
-    .insertInto('location')
+    .insertInto("location")
     .values(data)
     .returningAll()
     .executeTakeFirstOrThrow();
@@ -23,16 +23,16 @@ export async function create(data: CreateLocation) {
 
 export async function update(id: number, data: UpdateLocation) {
   return await db
-    .updateTable('location')
+    .updateTable("location")
     .set(data)
-    .where('id', '=', id)
+    .where("id", "=", id)
     .returningAll()
     .executeTakeFirstOrThrow();
 }
 
 export async function remove(id: number) {
   return await db
-    .deleteFrom('location')
-    .where('id', '=', id)
+    .deleteFrom("location")
+    .where("id", "=", id)
     .executeTakeFirstOrThrow();
 }

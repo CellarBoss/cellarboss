@@ -1,21 +1,21 @@
-import { db } from '@utils/database.js';
-import type { CreateWineMaker, UpdateWineMaker } from '@cellarboss/types';
+import { db } from "@utils/database.js";
+import type { CreateWineMaker, UpdateWineMaker } from "@cellarboss/types";
 
 export async function list() {
-  return await db.selectFrom('winemaker').selectAll().execute();
+  return await db.selectFrom("winemaker").selectAll().execute();
 }
 
 export async function getById(id: number) {
   return await db
-    .selectFrom('winemaker')
+    .selectFrom("winemaker")
     .selectAll()
-    .where('id', '=', id)
+    .where("id", "=", id)
     .executeTakeFirst();
 }
 
 export async function create(data: CreateWineMaker) {
   return await db
-    .insertInto('winemaker')
+    .insertInto("winemaker")
     .values(data)
     .returningAll()
     .executeTakeFirstOrThrow();
@@ -23,16 +23,16 @@ export async function create(data: CreateWineMaker) {
 
 export async function update(id: number, data: UpdateWineMaker) {
   return await db
-    .updateTable('winemaker')
+    .updateTable("winemaker")
     .set(data)
-    .where('id', '=', id)
+    .where("id", "=", id)
     .returningAll()
     .executeTakeFirstOrThrow();
 }
 
 export async function remove(id: number) {
   return await db
-    .deleteFrom('winemaker')
-    .where('id', '=', id)
+    .deleteFrom("winemaker")
+    .where("id", "=", id)
     .executeTakeFirstOrThrow();
 }

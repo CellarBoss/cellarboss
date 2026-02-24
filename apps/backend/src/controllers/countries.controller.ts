@@ -1,21 +1,21 @@
-import { db } from '@utils/database.js';
-import type { CreateCountry, UpdateCountry } from '@cellarboss/types';
+import { db } from "@utils/database.js";
+import type { CreateCountry, UpdateCountry } from "@cellarboss/types";
 
 export async function list() {
-  return await db.selectFrom('country').selectAll().execute();
+  return await db.selectFrom("country").selectAll().execute();
 }
 
 export async function getById(id: number) {
   return await db
-    .selectFrom('country')
+    .selectFrom("country")
     .selectAll()
-    .where('id', '=', id)
+    .where("id", "=", id)
     .executeTakeFirst();
 }
 
 export async function create(data: CreateCountry) {
   return await db
-    .insertInto('country')
+    .insertInto("country")
     .values(data)
     .returningAll()
     .executeTakeFirstOrThrow();
@@ -23,16 +23,16 @@ export async function create(data: CreateCountry) {
 
 export async function update(id: number, data: UpdateCountry) {
   return await db
-    .updateTable('country')
+    .updateTable("country")
     .set(data)
-    .where('id', '=', id)
+    .where("id", "=", id)
     .returningAll()
     .executeTakeFirstOrThrow();
 }
 
 export async function remove(id: number) {
   return await db
-    .deleteFrom('country')
-    .where('id', '=', id)
+    .deleteFrom("country")
+    .where("id", "=", id)
     .executeTakeFirstOrThrow();
 }

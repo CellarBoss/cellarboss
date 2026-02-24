@@ -1,21 +1,21 @@
-import { db } from '@utils/database.js';
-import type { CreateWine, UpdateWine } from '@cellarboss/types';
+import { db } from "@utils/database.js";
+import type { CreateWine, UpdateWine } from "@cellarboss/types";
 
 export async function list() {
-  return await db.selectFrom('wine').selectAll().execute();
+  return await db.selectFrom("wine").selectAll().execute();
 }
 
 export async function getById(id: number) {
   return await db
-    .selectFrom('wine')
+    .selectFrom("wine")
     .selectAll()
-    .where('id', '=', id)
+    .where("id", "=", id)
     .executeTakeFirst();
 }
 
 export async function create(data: CreateWine) {
   return await db
-    .insertInto('wine')
+    .insertInto("wine")
     .values(data)
     .returningAll()
     .executeTakeFirstOrThrow();
@@ -23,9 +23,9 @@ export async function create(data: CreateWine) {
 
 export async function update(id: number, data: UpdateWine) {
   return await db
-    .updateTable('wine')
+    .updateTable("wine")
     .set(data)
-    .where('id', '=', id)
+    .where("id", "=", id)
     .returningAll()
     .executeTakeFirstOrThrow();
 }
@@ -33,23 +33,20 @@ export async function update(id: number, data: UpdateWine) {
 export async function remove(id: number) {
   return await db.transaction().execute(async (trx) => {
     const vintages = await trx
-      .selectFrom('vintage')
-      .where('wineId', '=', id)
-      .select('id')
+      .selectFrom("vintage")
+      .where("wineId", "=", id)
+      .select("id")
       .execute();
 
     if (vintages.length > 0) {
-      throw new Error('Cannot delete wine: it still has vintages associated');
+      throw new Error("Cannot delete wine: it still has vintages associated");
     }
 
-    await trx
-      .deleteFrom('winegrape')
-      .where('wineId', '=', id)
-      .execute();
+    await trx.deleteFrom("winegrape").where("wineId", "=", id).execute();
 
     return await trx
-      .deleteFrom('wine')
-      .where('id', '=', id)
+      .deleteFrom("wine")
+      .where("id", "=", id)
       .executeTakeFirstOrThrow();
   });
 }

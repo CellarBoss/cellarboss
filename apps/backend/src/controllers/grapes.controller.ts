@@ -1,21 +1,21 @@
-import { db } from '@utils/database.js';
-import type { CreateGrape, UpdateGrape } from '@cellarboss/types';
+import { db } from "@utils/database.js";
+import type { CreateGrape, UpdateGrape } from "@cellarboss/types";
 
 export async function list() {
-  return await db.selectFrom('grape').selectAll().execute();
+  return await db.selectFrom("grape").selectAll().execute();
 }
 
 export async function getById(id: number) {
   return await db
-    .selectFrom('grape')
+    .selectFrom("grape")
     .selectAll()
-    .where('id', '=', id)
+    .where("id", "=", id)
     .executeTakeFirst();
 }
 
 export async function create(data: CreateGrape) {
   return await db
-    .insertInto('grape')
+    .insertInto("grape")
     .values(data)
     .returningAll()
     .executeTakeFirstOrThrow();
@@ -23,16 +23,16 @@ export async function create(data: CreateGrape) {
 
 export async function update(id: number, data: UpdateGrape) {
   return await db
-    .updateTable('grape')
+    .updateTable("grape")
     .set(data)
-    .where('id', '=', id)
+    .where("id", "=", id)
     .returningAll()
     .executeTakeFirstOrThrow();
 }
 
 export async function remove(id: number) {
   return await db
-    .deleteFrom('grape')
-    .where('id', '=', id)
+    .deleteFrom("grape")
+    .where("id", "=", id)
     .executeTakeFirstOrThrow();
 }
