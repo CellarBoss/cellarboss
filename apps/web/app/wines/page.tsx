@@ -107,6 +107,20 @@ export default function WinesPage() {
       urlParamName: "type",
       options: WINE_TYPES.map((t) => ({ value: t, label: formatWineType(t) })),
     },
+    {
+      type: FilterType.MultiSelect,
+      columnId: "winemaker",
+      label: "Winemaker",
+      urlParamName: "winemaker",
+      options: winemakerList.map((w) => ({ value: String(w.id), label: w.name })),
+    },
+    {
+      type: FilterType.MultiSelect,
+      columnId: "country",
+      label: "Country",
+      urlParamName: "country",
+      options: countryList.map((c) => ({ value: String(c.id), label: c.name })),
+    },
   ];
 
   const columns: ColumnDef<Wine>[] = [
@@ -172,6 +186,17 @@ export default function WinesPage() {
           </span>
         );
       }
+    },
+    {
+      id: 'country',
+      accessorFn: (row) => {
+        const region = regionList.find(r => r.id === row.regionId);
+        return region ? String(region.countryId) : null;
+      },
+      header: 'Country',
+      enableColumnFilter: false,
+      enableSorting: false,
+      meta: { hidden: true },
     },
     {
       accessorKey: 'options',
