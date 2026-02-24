@@ -18,7 +18,7 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useSettings } from "@/hooks/use-settings";
 import { queryGate } from "@/lib/functions/query-gate";
-import { formatPrice, formatStatus, formatDate } from "@/lib/functions/format";
+import { formatPrice, formatStatus, formatDate, formatDrinkingStatus } from "@/lib/functions/format";
 import type { Bottle, Vintage, Wine, WineMaker } from "@cellarboss/types";
 import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
 import { Row } from "@tanstack/react-table";
@@ -125,6 +125,13 @@ export default function BottlesPage() {
   // Build hierarchical storage options for the filter
   const treeData = buildTree(storages, "parent");
 
+  const drinkingWindowOptions = [
+    { value: "wait", label: "Too Young" },
+    { value: "drinkable", label: "Ready to Drink" },
+    { value: "past", label: "Past Prime" },
+    { value: "unknown", label: "Unknown Window" },
+  ];
+
   const filters: FilterDef[] = [
     {
       type: FilterType.MultiSelect,
@@ -135,6 +142,13 @@ export default function BottlesPage() {
         value: String(v.id),
         label: getVintageName(v.id, vintageMap, wineMap, winemakerMap),
       })),
+    },
+    {
+      type: FilterType.MultiSelect,
+      columnId: "drinkingStatus",
+      label: "Drinking Window",
+      urlParamName: "drinkingWindow",
+      options: drinkingWindowOptions,
     },
     {
       type: FilterType.MultiSelect,
@@ -249,6 +263,19 @@ export default function BottlesPage() {
       enableColumnFilter: true,
       enableSorting: false,
       meta: { hidden: true },
+    },
+    {
+      // Hidden column used for filtering by drinking status
+      id: "drinkingStatus",
+      header: "",
+      enableColumnFilter: true,
+      enableSorting: false,
+      meta: { hidden: true },
+      accessorFn: (row: Bottle) => {
+        const vintage = vintageMap.get(row.vintageId);
+        if (!vintage) return "unknown";
+        return formatDrinkingStatus(vintage.drinkFrom, vintage.drinkUntil, new Date().getFullYear());
+      },
     },
   ];
 
