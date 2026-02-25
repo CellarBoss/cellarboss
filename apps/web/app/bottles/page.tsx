@@ -41,6 +41,7 @@ import { Row } from "@tanstack/react-table";
 import { compareAsc } from "date-fns";
 import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
 import { StorageHierarchyDisplay } from "@/components/storage/StorageHierarchyDisplay";
+import { VintageDisplay } from "@/components/wine/VintageDisplay";
 
 export default function BottlesPage() {
   const queryClient = useQueryClient();
@@ -235,21 +236,14 @@ export default function BottlesPage() {
   const columns = [
     {
       id: "vintage",
-      header: "Wine / Vintage",
+      header: "Wine",
       enableSorting: true,
       enableColumnFilter: true,
       accessorFn: (row: Bottle) =>
         getVintageName(row.vintageId, vintageMap, wineMap, winemakerMap),
-      cell: ({ row }: { row: { original: Bottle } }) => (
-        <a href={`/bottles/${row.original.id}`}>
-          {getVintageName(
-            row.original.vintageId,
-            vintageMap,
-            wineMap,
-            winemakerMap,
-          )}
-        </a>
-      ),
+      cell: ({ row }: { row: { original: Bottle } }) => {
+        return <VintageDisplay vintageId={row.original.vintageId} />;
+      },
     },
     {
       accessorKey: "drinkingWindow",
