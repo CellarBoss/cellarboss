@@ -47,6 +47,8 @@ import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDispla
 import { StorageHierarchyDisplay } from "@/components/storage/StorageHierarchyDisplay";
 import { VintageDisplay } from "@/components/wine/VintageDisplay";
 import { ViewButton } from "@/components/buttons/ViewButton";
+import { getRegions } from "@/lib/api/regions";
+import { getCountries } from "@/lib/api/countries";
 
 export default function BottlesPage() {
   const queryClient = useQueryClient();
@@ -73,6 +75,14 @@ export default function BottlesPage() {
     queryKey: ["locations"],
     queryFn: getLocations,
   });
+  const regionQuery = useApiQuery({
+    queryKey: ["regions"],
+    queryFn: getRegions,
+  });
+  const countryQuery = useApiQuery({
+    queryKey: ["countries"],
+    queryFn: getCountries,
+  });
   const settingsQuery = useSettings();
 
   const result = queryGate(
@@ -83,10 +93,12 @@ export default function BottlesPage() {
     storageQuery,
     locationQuery,
     settingsQuery,
+    regionQuery,
+    countryQuery,
   );
   if (!result.ready) return result.gate;
 
-  const [bottles, vintages, wines, winemakers, storages, locations, settings] =
+  const [bottles, vintages, wines, winemakers, storages, locations, settings, regions, countries] =
     result.data;
   const currency = settings.get("currency") as string | undefined;
   const dateFormat = settings.get("date") as string | undefined;
@@ -236,6 +248,13 @@ export default function BottlesPage() {
       label: "Location",
       urlParamName: "locationId",
       options: locations.map((l) => ({ value: String(l.id), label: l.name })),
+    },
+    {
+      type: FilterType.MultiSelect,
+      columnId: "countryId",
+      label: "Country",
+      urlParamName: "countryId",
+      options: countries.map((c) => ({ value: String(c.id), label: c.name })),
     },
   ];
 
@@ -410,6 +429,24 @@ export default function BottlesPage() {
           vintage.drinkUntil,
           new Date().getFullYear(),
         );
+      },
+    },
+    {
+      // Hidden column used for filtering by country
+      id: "countryId",
+      header: "",
+      enableColumnFilter: true,
+      enableSorting: false,
+      meta: { hidden: true },
+      accessorFn: (row: Bottle) => {
+        const vintage = vintageMap.get(row.vintageId);
+        if (!vintage) return "";
+        const wine = wineMap.get(vintage.wineId);
+        if (!wine) return "";
+        const region = regions.find(r => r.id === wine.regionId);
+        if (!region) return "";
+        const country = countries.find(c => c.id === region.countryId);
+        return country ? String(country.id) : "";
       },
     },
   ];
