@@ -8,7 +8,11 @@ import { getWines } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { getStorages } from "@/lib/api/storages";
 import { getLocations } from "@/lib/api/locations";
-import { buildTree, buildHierarchicalOptions, sortHierarchicalOptions } from "@/lib/functions/tree";
+import {
+  buildTree,
+  buildHierarchicalOptions,
+  sortHierarchicalOptions,
+} from "@/lib/functions/tree";
 import {
   getVintageName,
   buildDescendantsMap,

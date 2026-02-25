@@ -28,9 +28,18 @@ export function VintageDisplay({ vintageId }: { vintageId: number }) {
 
   return (
     <span>
-      <Link href={`/wines/${wineQuery.data?.id}`}>{wineQuery.data?.name}</Link>&nbsp;
-      <Link href={`/vintages/${vintageQuery.data?.id}`}>{vintageQuery.data?.year}</Link><br />
-      <Link href={`/winemakers/${wineMakerQuery.data?.id}`} className="text-muted-foreground">{wineMakerQuery.data?.name}</Link>
+      <Link href={`/wines/${wineQuery.data?.id}`}>{wineQuery.data?.name}</Link>
+      &nbsp;
+      <Link href={`/vintages/${vintageQuery.data?.id}`}>
+        {vintageQuery.data?.year}
+      </Link>
+      <br />
+      <Link
+        href={`/winemakers/${wineMakerQuery.data?.id}`}
+        className="text-muted-foreground"
+      >
+        {wineMakerQuery.data?.name}
+      </Link>
     </span>
   );
 }

@@ -42,8 +42,15 @@ export function buildHierarchicalOptions<
   return options;
 }
 
-export function sortHierarchicalOptions(options: Array<{ value: string; label: string }>): Array<{ value: string; label: string }> {
-  type ParsedOption = { value: string; label: string; depth: number; name: string };
+export function sortHierarchicalOptions(
+  options: Array<{ value: string; label: string }>,
+): Array<{ value: string; label: string }> {
+  type ParsedOption = {
+    value: string;
+    label: string;
+    depth: number;
+    name: string;
+  };
 
   // Parse depth and name for each option
   const parsed: ParsedOption[] = options.map((opt) => {
@@ -56,7 +63,10 @@ export function sortHierarchicalOptions(options: Array<{ value: string; label: s
   });
 
   // Recursively sort items at each depth level while preserving hierarchy
-  function sortByLevel(items: ParsedOption[], targetDepth: number = 0): ParsedOption[] {
+  function sortByLevel(
+    items: ParsedOption[],
+    targetDepth: number = 0,
+  ): ParsedOption[] {
     // Get all items at targetDepth
     const itemsAtLevel = items.filter((item) => item.depth === targetDepth);
     const sorted = itemsAtLevel.sort((a, b) => a.name.localeCompare(b.name));
@@ -67,9 +77,10 @@ export function sortHierarchicalOptions(options: Array<{ value: string; label: s
       // Find all children of this item and recursively sort them
       const itemIndex = items.indexOf(item);
       const nextItemIndex = items.findIndex(
-        (other, idx) => idx > itemIndex && other.depth <= targetDepth
+        (other, idx) => idx > itemIndex && other.depth <= targetDepth,
       );
-      const childrenEndIndex = nextItemIndex === -1 ? items.length : nextItemIndex;
+      const childrenEndIndex =
+        nextItemIndex === -1 ? items.length : nextItemIndex;
       const children = items.slice(itemIndex + 1, childrenEndIndex);
 
       if (children.length > 0 && children[0].depth > targetDepth) {

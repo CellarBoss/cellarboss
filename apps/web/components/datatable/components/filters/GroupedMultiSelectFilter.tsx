@@ -69,26 +69,30 @@ export function GroupedMultiSelectFilter<T>({
                   {group.group}
                 </div>
                 <div className="pl-3 space-y-2">
-                  {group.options.sort((a, b) => a.label.localeCompare(b.label)).map((option) => (
-                    <div
-                      key={option.value}
-                      className="flex items-center space-x-2"
-                    >
-                      <Checkbox
-                        id={`${filter.columnId}-${option.value}`}
-                        checked={activeValues?.includes(option.value) ?? false}
-                        onCheckedChange={(checked) =>
-                          handleOptionChange(option.value, checked as boolean)
-                        }
-                      />
-                      <label
-                        htmlFor={`${filter.columnId}-${option.value}`}
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                  {group.options
+                    .sort((a, b) => a.label.localeCompare(b.label))
+                    .map((option) => (
+                      <div
+                        key={option.value}
+                        className="flex items-center space-x-2"
                       >
-                        {option.label}
-                      </label>
-                    </div>
-                  ))}
+                        <Checkbox
+                          id={`${filter.columnId}-${option.value}`}
+                          checked={
+                            activeValues?.includes(option.value) ?? false
+                          }
+                          onCheckedChange={(checked) =>
+                            handleOptionChange(option.value, checked as boolean)
+                          }
+                        />
+                        <label
+                          htmlFor={`${filter.columnId}-${option.value}`}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                        >
+                          {option.label}
+                        </label>
+                      </div>
+                    ))}
                 </div>
               </div>
             ))}
