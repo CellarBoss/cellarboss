@@ -111,6 +111,10 @@ export default function BottlesPage() {
   const locationMap = new Map(locations.map((l) => [l.id, l.name]));
   const storageMap = new Map(storages.map((s) => [s.id, s]));
 
+  // Build hierarchical storage options for filters and bulk edit
+  const treeData = buildTree(storages, "parent");
+  const descendantsMap = buildDescendantsMap(storages);
+
   async function handleDelete(row: Bottle): Promise<boolean> {
     const delResult = await deleteBottle(row.id);
     if (!delResult.ok)
@@ -182,13 +186,9 @@ export default function BottlesPage() {
       key: "storageId",
       label: "Storage",
       type: "select",
-      options: storages.map((s) => ({ value: String(s.id), label: s.name })),
+      options: sortHierarchicalOptions(buildHierarchicalOptions(treeData)),
     },
   ];
-
-  // Build hierarchical storage options for the filter
-  const treeData = buildTree(storages, "parent");
-  const descendantsMap = buildDescendantsMap(storages);
 
   const drinkingWindowOptions = [
     { value: "wait", label: "Too Young" },
