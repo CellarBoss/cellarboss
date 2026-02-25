@@ -11,6 +11,7 @@ export function EditButton({ onEdit }: EditButtonProps) {
       variant="outline"
       onClick={onEdit}
       className="cursor-pointer"
+      title="Delete"
     >
       <Pencil />
     </Button>

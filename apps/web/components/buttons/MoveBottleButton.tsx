@@ -60,7 +60,12 @@ export function MoveBottleButton({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="outline" className="cursor-pointer">
+        <Button
+          size="sm"
+          variant="outline"
+          className="cursor-pointer"
+          title="Move bottle to another storage"
+        >
           <MoveRight />
         </Button>
       </DialogTrigger>
