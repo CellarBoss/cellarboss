@@ -68,8 +68,8 @@ export function RangeFilter<T>({
   const [maxInput, setMaxInput] = useState(maxFromProp);
 
   // Sync local input state when prop changes (e.g. clear all, URL restore)
-  if (minInput !== minFromProp && minFromProp === "") setMinInput("");
-  if (maxInput !== maxFromProp && maxFromProp === "") setMaxInput("");
+  if (minInput !== minFromProp) setMinInput(minFromProp);
+  if (maxInput !== maxFromProp) setMaxInput(maxFromProp);
 
   return (
     <Popover>
