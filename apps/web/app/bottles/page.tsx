@@ -42,6 +42,7 @@ import { compareAsc } from "date-fns";
 import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
 import { StorageHierarchyDisplay } from "@/components/storage/StorageHierarchyDisplay";
 import { VintageDisplay } from "@/components/wine/VintageDisplay";
+import { ViewButton } from "@/components/buttons/ViewButton";
 
 export default function BottlesPage() {
   const queryClient = useQueryClient();
@@ -344,6 +345,9 @@ export default function BottlesPage() {
       enableSorting: false,
       cell: ({ row }: { row: { original: Bottle } }) => (
         <div className="flex gap-1 justify-center mx-5">
+          <ViewButton
+            onClick={async () => router.push(`/bottles/${row.original.id}`)}
+          />
           <MoveBottleButton
             storages={storages}
             currentStorageId={row.original.storageId}
