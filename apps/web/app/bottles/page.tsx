@@ -8,7 +8,7 @@ import { getWines } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { getStorages } from "@/lib/api/storages";
 import { getLocations } from "@/lib/api/locations";
-import { buildTree, buildHierarchicalOptions } from "@/lib/functions/tree";
+import { buildTree, buildHierarchicalOptions, sortHierarchicalOptions } from "@/lib/functions/tree";
 import {
   getVintageName,
   buildDescendantsMap,
@@ -217,6 +217,7 @@ export default function BottlesPage() {
       label: "Storage",
       urlParamName: "storageId",
       options: buildHierarchicalOptions(treeData),
+      sort: sortHierarchicalOptions,
     },
     {
       type: FilterType.Range,

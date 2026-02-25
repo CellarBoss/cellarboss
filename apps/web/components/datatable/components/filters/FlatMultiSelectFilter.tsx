@@ -42,6 +42,10 @@ export function FlatMultiSelectFilter<T>({
       ?.setFilterValue(newValues.length > 0 ? newValues : undefined);
   };
 
+  const sortedOptions = filter.sort
+    ? filter.sort(filter.options)
+    : filter.options.sort((a, b) => a.label.localeCompare(b.label));
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -59,7 +63,7 @@ export function FlatMultiSelectFilter<T>({
         <div className="space-y-3">
           <div className="text-sm font-medium">{filter.label}</div>
           <div className="space-y-2">
-            {filter.options.map((option) => (
+            {sortedOptions.map((option) => (
               <div key={option.value} className="flex items-center space-x-2">
                 <Checkbox
                   id={`${filter.columnId}-${option.value}`}

@@ -27,6 +27,7 @@ export type FlatMultiSelectFilterDef = {
   label: string;
   urlParamName?: string;
   options: MultiSelectOption[];
+  sort?: (options: MultiSelectOption[]) => MultiSelectOption[];
 };
 
 export type GroupedMultiSelectFilterDef = {
@@ -35,6 +36,7 @@ export type GroupedMultiSelectFilterDef = {
   label: string;
   urlParamName?: string;
   options: MultiSelectOptionGroup[];
+  sort?: (options: MultiSelectOptionGroup[]) => MultiSelectOptionGroup[];
 };
 
 export type MultiSelectFilterDef =

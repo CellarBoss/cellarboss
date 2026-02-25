@@ -42,6 +42,10 @@ export function GroupedMultiSelectFilter<T>({
       ?.setFilterValue(newValues.length > 0 ? newValues : undefined);
   };
 
+  const sortedGroups = filter.sort
+    ? filter.sort(filter.options)
+    : filter.options.sort((a, b) => a.group.localeCompare(b.group));
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -59,13 +63,13 @@ export function GroupedMultiSelectFilter<T>({
         <div className="space-y-3">
           <div className="text-sm font-medium">{filter.label}</div>
           <div className="space-y-2">
-            {filter.options.map((group) => (
+            {sortedGroups.map((group) => (
               <div key={group.group}>
                 <div className="text-xs font-semibold text-muted-foreground py-1.5 px-1">
                   {group.group}
                 </div>
                 <div className="pl-3 space-y-2">
-                  {group.options.map((option) => (
+                  {group.options.sort((a, b) => a.label.localeCompare(b.label)).map((option) => (
                     <div
                       key={option.value}
                       className="flex items-center space-x-2"
