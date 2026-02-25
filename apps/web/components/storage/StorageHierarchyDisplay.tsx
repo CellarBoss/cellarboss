@@ -3,6 +3,7 @@
 import { ChevronRight } from "lucide-react";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { getStorages } from "@/lib/api/storages";
+import Link from "next/link";
 
 export function StorageHierarchyDisplay({
   storageId,
@@ -24,12 +25,12 @@ export function StorageHierarchyDisplay({
   const nameMap = new Map(storages.map((s) => [s.id, s.name]));
   const parentMap = new Map(storages.map((s) => [s.id, s.parent]));
 
-  const segments: string[] = [];
+  const segments: { id: number; name: string }[] = [];
   let current: number | null = storageId;
   while (current !== null) {
     const name = nameMap.get(current);
     if (!name) break;
-    segments.unshift(name);
+    segments.unshift({ id: current, name });
     current = parentMap.get(current) ?? null;
   }
 
@@ -39,17 +40,18 @@ export function StorageHierarchyDisplay({
   return (
     <span className="flex items-center gap-1 flex-wrap">
       {segments.map((seg, i) => (
-        <span key={i} className="flex items-center gap-1">
+        <span key={seg.id} className="flex items-center gap-1">
           {i > 0 && (
             <ChevronRight className="h-3 w-3 text-muted-foreground shrink-0" />
           )}
-          <span
+          <Link
+            href={`/storages/${seg.id}`}
             className={
               i < segments.length - 1 ? "text-muted-foreground" : undefined
             }
           >
-            {seg}
-          </span>
+            {seg.name}
+          </Link>
         </span>
       ))}
     </span>
