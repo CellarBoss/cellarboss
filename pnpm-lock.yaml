@@ -37,6 +37,9 @@ importers:
       kysely:
         specifier: ^0.28.10
         version: 0.28.11
+      kysely-ctl:
+        specifier: ^0.20.0
+        version: 0.20.0(kysely@0.28.11)(typescript@5.9.3)
       mysql2:
         specifier: ^3.16.1
         version: 3.16.3
@@ -59,9 +62,6 @@ importers:
       '@vitest/ui':
         specifier: ^2.0.0
         version: 2.1.9(vitest@2.1.9)
-      kysely-ctl:
-        specifier: ^0.20.0
-        version: 0.20.0(kysely@0.28.11)(typescript@5.9.3)
       prettier:
         specifier: ^3.8.1
         version: 3.8.1

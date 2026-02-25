@@ -28,20 +28,15 @@ FROM node:20-alpine AS runner
 
 ENV NODE_ENV=production
 
-RUN corepack enable
-
 WORKDIR /app
 
-# Copy the pnpm virtual store and workspace node_modules together so the
-# relative symlinks inside apps/web/node_modules resolve correctly.
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/web/node_modules ./apps/web/node_modules
-COPY --from=builder /app/apps/web/.next ./apps/web/.next
+# standalone/ contains a minimal node_modules with only runtime dependencies.
+# Static assets and public files must be copied in alongside it.
+COPY --from=builder /app/apps/web/.next/standalone ./
+COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder /app/apps/web/public ./apps/web/public
-COPY --from=builder /app/apps/web/package.json ./apps/web/package.json
-
-WORKDIR /app/apps/web
 
 EXPOSE 3000
+ENV HOSTNAME=0.0.0.0
 
-CMD ["pnpm", "start"]
+CMD ["node", "apps/web/server.js"]

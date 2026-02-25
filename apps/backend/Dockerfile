@@ -24,6 +24,16 @@ RUN pnpm install --frozen-lockfile
 
 RUN pnpm --filter backend build
 
+FROM base AS deploy
+WORKDIR /app
+
+COPY --from=builder /app ./
+
+# Create a self-contained deployment directory with only production dependencies.
+# pnpm deploy dereferences symlinks and excludes devDependencies, eliminating
+# the pnpm virtual store from the final image.
+RUN pnpm deploy --filter backend --prod /deployment
+
 FROM node:20-alpine AS runner
 
 ENV NODE_ENV=production
@@ -32,21 +42,12 @@ RUN corepack enable
 
 WORKDIR /app
 
-# Copy the pnpm virtual store and workspace node_modules together so the
-# relative symlinks inside apps/backend/node_modules resolve correctly.
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/backend/node_modules ./apps/backend/node_modules
-COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
-COPY --from=builder /app/apps/backend/package.json ./apps/backend/package.json
-COPY --from=builder /app/apps/backend/kysely.config.js ./apps/backend/kysely.config.js
+# Production node_modules (flat, no pnpm virtual store) and config files.
+COPY --from=deploy /deployment ./
 
-COPY apps/backend/docker-entrypoint.sh ./apps/backend/docker-entrypoint.sh
-RUN chmod +x ./apps/backend/docker-entrypoint.sh
-
-# Set workdir to the workspace root so that dist/, node_modules/, and pnpm
-# script paths in startup.js all resolve relative to apps/backend.
-WORKDIR /app/apps/backend
+# dist/ is gitignored so pnpm deploy omits it; copy it explicitly from the builder.
+COPY --from=builder /app/apps/backend/dist ./dist
 
 EXPOSE 5000
 
-ENTRYPOINT ["/app/apps/backend/docker-entrypoint.sh"]
+CMD ["node", "dist/src/utils/startup.js"]

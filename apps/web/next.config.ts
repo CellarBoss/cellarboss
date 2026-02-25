@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: "standalone",
+  // Trace files from the monorepo root so workspace packages (packages/*)
+  // are included in the standalone bundle.
+  outputFileTracingRoot: path.resolve(__dirname, "../../"),
   reactCompiler: true,
   transpilePackages: ["@cellarboss/types", "@cellarboss/validators"],
   async headers() {
