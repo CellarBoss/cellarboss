@@ -4,13 +4,13 @@ export function getVintageName(
   vintageId: number,
   vintageMap: Map<number, Vintage>,
   wineMap: Map<number, Wine>,
-  winemakerMap: Map<number, string>,
+  winemakerMap: Map<number, WineMaker>,
 ): string {
   const vintage = vintageMap.get(vintageId);
   if (!vintage) return "Unknown";
   const wine = wineMap.get(vintage.wineId);
   if (!wine) return `Unknown Wine ${vintage.year ?? "NV"}`;
-  const winemakerName = winemakerMap.get(wine.wineMakerId);
+  const winemakerName = winemakerMap.get(wine.wineMakerId)?.name;
   return `${winemakerName ? winemakerName + " - " : ""}${wine.name} ${vintage.year ?? "NV"}`;
 }
 

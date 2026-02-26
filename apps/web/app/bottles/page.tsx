@@ -98,16 +98,23 @@ export default function BottlesPage() {
   );
   if (!result.ready) return result.gate;
 
-  const [bottles, vintages, wines, winemakers, storages, locations, settings, regions, countries] =
-    result.data;
+  const [
+    bottles,
+    vintages,
+    wines,
+    winemakers,
+    storages,
+    locations,
+    settings,
+    regions,
+    countries,
+  ] = result.data;
   const currency = settings.get("currency") as string | undefined;
   const dateFormat = settings.get("date") as string | undefined;
 
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w: Wine) => [w.id, w]));
-  const winemakerMap = new Map(
-    winemakers.map((wm: WineMaker) => [wm.id, wm.name]),
-  );
+  const winemakerMap = new Map(winemakers.map((wm: WineMaker) => [wm.id, wm]));
   const locationMap = new Map(locations.map((l) => [l.id, l.name]));
   const storageMap = new Map(storages.map((s) => [s.id, s]));
 
@@ -267,7 +274,12 @@ export default function BottlesPage() {
       accessorFn: (row: Bottle) =>
         getVintageName(row.vintageId, vintageMap, wineMap, winemakerMap),
       cell: ({ row }: { row: { original: Bottle } }) => {
-        return <VintageDisplay vintageId={row.original.vintageId} />;
+        const vintage = vintageMap.get(row.original.vintageId);
+        const wine = vintage ? wineMap.get(vintage.wineId) : undefined;
+        const winemaker = wine ? winemakerMap.get(wine.wineMakerId) : undefined;
+        return (
+          <VintageDisplay vintage={vintage} wine={wine} winemaker={winemaker} />
+        );
       },
     },
     {
@@ -443,9 +455,9 @@ export default function BottlesPage() {
         if (!vintage) return "";
         const wine = wineMap.get(vintage.wineId);
         if (!wine) return "";
-        const region = regions.find(r => r.id === wine.regionId);
+        const region = regions.find((r) => r.id === wine.regionId);
         if (!region) return "";
-        const country = countries.find(c => c.id === region.countryId);
+        const country = countries.find((c) => c.id === region.countryId);
         return country ? String(country.id) : "";
       },
     },
