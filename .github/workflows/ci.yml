@@ -8,29 +8,42 @@ on:
     branches:
       - main
 
-permissions:
-  contents: write
 
 jobs:
   prettier:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          ref: ${{ github.head_ref }}
-          persist-credentials: false
+          ref: ${{ github.head_ref || github.ref_name }}
 
-      - name: Prettify code
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting
+        if: github.event_name == 'pull_request'
+        run: pnpm prettier --check **/*.{ts,tsx,md}
+
+      - name: Fix formatting
+        if: github.event_name == 'push'
         uses: creyD/prettier_action@v4.6
         with:
           prettier_options: --write **/*.{ts,tsx,md}
-          only_changed: True
           commit_message: 'chore: Prettify code'
           github_token: ${{ github.token }}
-          git_identity: author
 
   build-and-test:
     name: Build & Test
