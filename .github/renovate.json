@@ -10,20 +10,20 @@
 
   "prHourlyLimit": 2,
 
-  "draftPR": true,
+  "draftPR": false,
 
   "dependencyDashboard": true,
-
-  "automerge": true,
-  "automergeType": "pr",
 
   "packageRules": [
     {
       "matchUpdateTypes": ["patch", "minor"],
-      "automerge": true
+      "minimumReleaseAge": "3 days",
+      "automerge": true,
+      "automergeType": "pr"
     },
     {
       "matchUpdateTypes": ["major"],
+      "minimumReleaseAge": "1 day",
       "automerge": false
     }
   ]
