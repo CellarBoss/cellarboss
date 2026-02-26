@@ -114,9 +114,7 @@ export default function BottlesPage() {
 
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w: Wine) => [w.id, w]));
-  const winemakerMap = new Map(
-    winemakers.map((wm: WineMaker) => [wm.id, wm.name]),
-  );
+  const winemakerMap = new Map(winemakers.map((wm: WineMaker) => [wm.id, wm]));
   const locationMap = new Map(locations.map((l) => [l.id, l.name]));
   const storageMap = new Map(storages.map((s) => [s.id, s]));
 
@@ -276,7 +274,12 @@ export default function BottlesPage() {
       accessorFn: (row: Bottle) =>
         getVintageName(row.vintageId, vintageMap, wineMap, winemakerMap),
       cell: ({ row }: { row: { original: Bottle } }) => {
-        return <VintageDisplay vintageId={row.original.vintageId} />;
+        const vintage = vintageMap.get(row.original.vintageId);
+        const wine = vintage ? wineMap.get(vintage.wineId) : undefined;
+        const winemaker = wine ? winemakerMap.get(wine.wineMakerId) : undefined;
+        return (
+          <VintageDisplay vintage={vintage} wine={wine} winemaker={winemaker} />
+        );
       },
     },
     {
