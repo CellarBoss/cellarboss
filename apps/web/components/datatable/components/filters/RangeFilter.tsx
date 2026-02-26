@@ -11,33 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown } from "lucide-react";
-import { type FilterUrlHandler } from "../DataTableFilterControl";
 import type { RangeFilterValue } from "../../filters/rangeFilter";
-
-export const rangeUrlHandler: FilterUrlHandler = {
-  serialize(paramName, value, params) {
-    const val = value as RangeFilterValue | undefined;
-    if (val?.min !== undefined) {
-      params.set(`${paramName}Min`, String(val.min));
-    } else {
-      params.delete(`${paramName}Min`);
-    }
-    if (val?.max !== undefined) {
-      params.set(`${paramName}Max`, String(val.max));
-    } else {
-      params.delete(`${paramName}Max`);
-    }
-  },
-  deserialize(paramName, searchParams) {
-    const minVal = searchParams.get(`${paramName}Min`);
-    const maxVal = searchParams.get(`${paramName}Max`);
-    if (!minVal && !maxVal) return null;
-    const rv: RangeFilterValue = {};
-    if (minVal) rv.min = Number(minVal);
-    if (maxVal) rv.max = Number(maxVal);
-    return rv;
-  },
-};
 
 export type RangeFilterDef = {
   type: "range";

@@ -1,6 +1,7 @@
 "use client";
 
-import { ColumnDef, Table } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
+import type { PaginationState } from "@tanstack/react-table";
 
 import { TableCell, TableFooter, TableRow } from "@/components/ui/table";
 
@@ -9,13 +10,12 @@ import { PaginationSelector } from "./PaginationSelector";
 
 type DataTableFooterProps<T> = {
   columns: ColumnDef<T>[];
-  pagination: {
-    pageIndex: number;
-    pageSize: number;
-  };
+  pagination: PaginationState;
   pageCount: number;
   pageSize: number;
-  table: Table<T>;
+  setPagination: (
+    newPag: PaginationState | ((prev: PaginationState) => PaginationState),
+  ) => void;
 };
 
 export default function DataTableFooter<T>({
@@ -23,7 +23,7 @@ export default function DataTableFooter<T>({
   pagination,
   pageCount,
   pageSize,
-  table,
+  setPagination,
 }: DataTableFooterProps<T>) {
   return (
     <TableFooter>
@@ -32,14 +32,33 @@ export default function DataTableFooter<T>({
           <div className="relative flex w-full items-center">
             <div className="absolute left-1/2 -translate-x-1/2">
               <PaginationControl
-                table={table}
                 pagination={pagination}
                 pageCount={pageCount}
+                onPrevious={() =>
+                  setPagination((p) => ({
+                    ...p,
+                    pageIndex: p.pageIndex - 1,
+                  }))
+                }
+                onNext={() =>
+                  setPagination((p) => ({
+                    ...p,
+                    pageIndex: p.pageIndex + 1,
+                  }))
+                }
               />
             </div>
-
             <div className="ml-auto flex items-center gap-2">
-              <PaginationSelector table={table} pageSize={pageSize} />
+              <PaginationSelector
+                pageSize={pageSize}
+                onPageSizeChange={(size) =>
+                  setPagination((p) => ({
+                    ...p,
+                    pageIndex: 0,
+                    pageSize: size,
+                  }))
+                }
+              />
             </div>
           </div>
         </TableCell>

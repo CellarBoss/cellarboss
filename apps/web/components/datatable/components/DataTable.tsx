@@ -1,7 +1,6 @@
 "use client";
 
 import { Fragment, ReactNode } from "react";
-import { usePathname } from "next/navigation";
 import {
   ColumnDef,
   getCoreRowModel,
@@ -31,11 +30,9 @@ import {
   BulkEditDialog,
   BulkEditField,
 } from "@/components/bulk/BulkEditDialog";
-import { FilterInit } from "./filters/FilterInit";
 import { RowSelectionContext } from "../selection/RowSelectionContext";
 import { useDataTableState } from "../hooks/useDataTableState";
-import { useFilterInitialization } from "../hooks/useFilterInitialization";
-import { useFilterSync } from "../hooks/useFilterSync";
+import { useDataTableUrlState } from "../hooks/useDataTableUrlState";
 import { useBulkActions } from "../hooks/useBulkActions";
 import { processColumnsWithFilters } from "../utils/processColumns";
 import { getContextRows } from "../utils/contextRowCalculations";
@@ -80,20 +77,17 @@ export function DataTable<T>({
   onBulkEdit,
   filters,
 }: DataTableProps<T>) {
-  const pathname = usePathname();
+  // URL-backed state: column filters (including search), pagination
+  const { columnFilters, setColumnFilters, pagination, setPagination } =
+    useDataTableUrlState({ filters, filterColumnName, defaultPageSize });
 
-  // Initialize state
+  // React state: sorting, expanded, row selection, visibility, dialogs
   const state = useDataTableState(
     columns,
-    defaultPageSize,
     defaultSortColumn,
     defaultExpanded,
     getSubRows,
   );
-
-  // Sync filters with URL and sessionStorage
-  useFilterInitialization(filters, state.setColumnFilters);
-  useFilterSync(state.columnFilters, filters, pathname);
 
   // Prepare data
   const displayData = data ?? [];
@@ -113,8 +107,8 @@ export function DataTable<T>({
     data: displayData,
     columns: processedColumns,
     state: {
-      pagination: state.pagination,
-      columnFilters: state.columnFilters,
+      pagination,
+      columnFilters,
       sorting: state.sorting,
       columnVisibility: state.columnVisibility,
       ...(getSubRows || renderDetail ? { expanded: state.expanded } : {}),
@@ -129,12 +123,11 @@ export function DataTable<T>({
           onRowSelectionChange: createTableStateUpdater(state.setRowSelection),
         }
       : {}),
-    onPaginationChange: createTableStateUpdater(state.setPagination),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    onColumnFiltersChange: createTableStateUpdater(state.setColumnFilters),
+    onColumnFiltersChange: createTableStateUpdater(setColumnFilters),
     onSortingChange: createTableStateUpdater(state.setSorting),
     ...(getSubRows
       ? {
@@ -154,7 +147,7 @@ export function DataTable<T>({
   // Get pagination metrics
   const { pageSize, pageCount } = calculatePaginationMetrics(
     table,
-    state.pagination,
+    pagination,
     getSubRows,
   );
 
@@ -176,109 +169,106 @@ export function DataTable<T>({
   );
 
   return (
-    <>
-      <FilterInit filters={filters} setColumnFilters={state.setColumnFilters} />
-      <RowSelectionContext.Provider value={state.rowSelection}>
-        <div className="relative flex w-full items-center">
-          <div className="left-0 flex items-center gap-2">
-            <DataTableSearchControl
-              table={table}
-              filterColumnName={filterColumnName}
-              columnFilters={state.columnFilters}
-            />
-            {filters?.length ? (
-              <DataTableFilterControl
-                filters={filters}
-                table={table}
-                columnFilters={state.columnFilters}
-              />
-            ) : null}
-          </div>
-          <div className="ml-auto flex items-center gap-2">
-            {buttons?.map((button, index) => (
-              <Fragment key={index}>{button}</Fragment>
-            ))}
-          </div>
-        </div>
-        <Table>
-          <DataTableHeader table={table} sorting={state.sorting} />
-          <TableBody>
-            {table.getRowCount() === 0 && (
-              <TableRow>
-                <TableCell
-                  colSpan={processedColumns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-            {contextRows.map((row) => (
-              <DataTableRow
-                key={`context-${row.id}`}
-                row={row}
-                isExpanded={false}
-                canExpand={false}
-                isContext={true}
-              />
-            ))}
-            {pageRows.map((row) => (
-              <Fragment key={row.id}>
-                <DataTableRow
-                  row={row}
-                  isExpanded={row.getIsExpanded()}
-                  canExpand={row.getCanExpand() || !!renderDetail}
-                />
-                {renderDetail && row.getIsExpanded() && (
-                  <DataTableDetailRow
-                    row={row}
-                    columnSpan={processedColumns.length}
-                    renderDetail={renderDetail}
-                  />
-                )}
-              </Fragment>
-            ))}
-          </TableBody>
-          <DataTableFooter
-            columns={processedColumns}
-            pagination={state.pagination}
-            pageCount={pageCount}
-            pageSize={pageSize}
+    <RowSelectionContext.Provider value={state.rowSelection}>
+      <div className="relative flex w-full items-center">
+        <div className="left-0 flex items-center gap-2">
+          <DataTableSearchControl
             table={table}
+            filterColumnName={filterColumnName}
+            columnFilters={columnFilters}
           />
-        </Table>
-        {enableRowSelection && (
-          <>
-            <BulkActionBar
-              selectedCount={selectedCount}
-              onClear={() => state.setRowSelection({})}
-              onDelete={
-                onBulkDelete ? () => state.setDeleteDialogOpen(true) : undefined
-              }
-              onEdit={
-                onBulkEdit ? () => state.setEditDialogOpen(true) : undefined
-              }
+          {filters?.length ? (
+            <DataTableFilterControl
+              filters={filters}
+              table={table}
+              columnFilters={columnFilters}
             />
-            {onBulkDelete && (
-              <BulkDeleteDialog
-                open={state.deleteDialogOpen}
-                onOpenChange={state.setDeleteDialogOpen}
-                selectedCount={selectedCount}
-                onConfirm={bulkActions.handleBulkDeleteConfirm}
+          ) : null}
+        </div>
+        <div className="ml-auto flex items-center gap-2">
+          {buttons?.map((button, index) => (
+            <Fragment key={index}>{button}</Fragment>
+          ))}
+        </div>
+      </div>
+      <Table>
+        <DataTableHeader table={table} sorting={state.sorting} />
+        <TableBody>
+          {table.getRowCount() === 0 && (
+            <TableRow>
+              <TableCell
+                colSpan={processedColumns.length}
+                className="h-24 text-center"
+              >
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
+          {contextRows.map((row) => (
+            <DataTableRow
+              key={`context-${row.id}`}
+              row={row}
+              isExpanded={false}
+              canExpand={false}
+              isContext={true}
+            />
+          ))}
+          {pageRows.map((row) => (
+            <Fragment key={row.id}>
+              <DataTableRow
+                row={row}
+                isExpanded={row.getIsExpanded()}
+                canExpand={row.getCanExpand() || !!renderDetail}
               />
-            )}
-            {bulkEditFields && onBulkEdit && (
-              <BulkEditDialog<T>
-                open={state.editDialogOpen}
-                onOpenChange={state.setEditDialogOpen}
-                selectedCount={selectedCount}
-                fields={bulkEditFields}
-                onSave={bulkActions.handleBulkEditSave}
-              />
-            )}
-          </>
-        )}
-      </RowSelectionContext.Provider>
-    </>
+              {renderDetail && row.getIsExpanded() && (
+                <DataTableDetailRow
+                  row={row}
+                  columnSpan={processedColumns.length}
+                  renderDetail={renderDetail}
+                />
+              )}
+            </Fragment>
+          ))}
+        </TableBody>
+        <DataTableFooter
+          columns={processedColumns}
+          pagination={pagination}
+          pageCount={pageCount}
+          pageSize={pageSize}
+          setPagination={setPagination}
+        />
+      </Table>
+      {enableRowSelection && (
+        <>
+          <BulkActionBar
+            selectedCount={selectedCount}
+            onClear={() => state.setRowSelection({})}
+            onDelete={
+              onBulkDelete ? () => state.setDeleteDialogOpen(true) : undefined
+            }
+            onEdit={
+              onBulkEdit ? () => state.setEditDialogOpen(true) : undefined
+            }
+          />
+          {onBulkDelete && (
+            <BulkDeleteDialog
+              open={state.deleteDialogOpen}
+              onOpenChange={state.setDeleteDialogOpen}
+              selectedCount={selectedCount}
+              onConfirm={bulkActions.handleBulkDeleteConfirm}
+            />
+          )}
+          {bulkEditFields && onBulkEdit && (
+            <BulkEditDialog<T>
+              open={state.editDialogOpen}
+              onOpenChange={state.setEditDialogOpen}
+              selectedCount={selectedCount}
+              fields={bulkEditFields}
+              onSave={bulkActions.handleBulkEditSave}
+            />
+          )}
+        </>
+      )}
+    </RowSelectionContext.Provider>
   );
 }

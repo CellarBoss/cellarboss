@@ -3,12 +3,10 @@
 import { useState } from "react";
 import {
   ColumnDef,
-  ColumnFiltersState,
   SortingState,
   ExpandedState,
   VisibilityState,
   RowSelectionState,
-  PaginationState,
   Updater,
 } from "@tanstack/react-table";
 
@@ -23,8 +21,6 @@ export function createTableStateUpdater<T>(
 }
 
 export interface DataTableState {
-  pagination: PaginationState;
-  columnFilters: ColumnFiltersState;
   sorting: SortingState;
   expanded: ExpandedState;
   rowSelection: RowSelectionState;
@@ -34,14 +30,6 @@ export interface DataTableState {
 }
 
 export interface DataTableStateSetters {
-  setPagination: (
-    pagination: PaginationState | ((prev: PaginationState) => PaginationState),
-  ) => void;
-  setColumnFilters: (
-    filters:
-      | ColumnFiltersState
-      | ((prev: ColumnFiltersState) => ColumnFiltersState),
-  ) => void;
   setSorting: (
     sorting: SortingState | ((prev: SortingState) => SortingState),
   ) => void;
@@ -62,18 +50,10 @@ export interface DataTableStateSetters {
 
 export function useDataTableState<T>(
   columns: ColumnDef<T>[],
-  defaultPageSize?: number,
   defaultSortColumn?: string,
   defaultExpanded?: true | Record<string, boolean>,
   getSubRows?: (row: T) => T[] | undefined,
 ): DataTableState & DataTableStateSetters {
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: defaultPageSize ?? 20,
-  });
-
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
   const [sorting, setSorting] = useState<SortingState>(
     defaultSortColumn ? [{ id: defaultSortColumn, desc: false }] : [],
   );
@@ -102,16 +82,12 @@ export function useDataTableState<T>(
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   return {
-    pagination,
-    columnFilters,
     sorting,
     expanded,
     rowSelection,
     columnVisibility,
     deleteDialogOpen,
     editDialogOpen,
-    setPagination,
-    setColumnFilters,
     setSorting,
     setExpanded,
     setRowSelection,
