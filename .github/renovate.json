@@ -1,0 +1,31 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
+  // Use Renovate best-practices preset which includes grouping, pinning
+  "extends": [
+    "config:best-practices"
+  ],
+
+  "prConcurrentLimit": 5,
+
+  "prHourlyLimit": 2,
+
+  "draftPR": true,
+
+  "dependencyDashboard": true,
+
+  "automerge": true,
+  "automergeType": "pr",
+
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    }
+  ]
+
+}
