@@ -28,8 +28,9 @@ jobs:
         with:
           prettier_options: --write **/*.{ts,tsx,md}
           only_changed: True
+          commit_message: 'chore: Prettify code'
           github_token: ${{ github.token }}
-          same_commit: True
+          git_identity: author
 
   build-and-test:
     name: Build & Test
