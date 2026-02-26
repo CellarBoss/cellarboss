@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
-import type { Server } from "http";
+import type { ServerType } from "@hono/node-server";
 import { registerAuthRoutes } from "./routes/auth";
 import { registerWineRoutes } from "./routes/wines";
 import { registerBottleRoutes } from "./routes/bottles";
@@ -45,14 +45,14 @@ export type MockState = {
   users: any[];
 };
 
-let server: Server | null = null;
+let server: ServerType | null = null;
 let state: MockState;
 
 export function getMockState(): MockState {
   return state;
 }
 
-export async function startMockServer(port: number): Promise<Server> {
+export async function startMockServer(port: number): Promise<ServerType> {
   state = JSON.parse(JSON.stringify(defaultState));
 
   const app = new Hono();
