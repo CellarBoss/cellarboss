@@ -1,0 +1,41 @@
+autolabeler:
+  - label: feature
+    title:
+      - '/^feat(\(.+\))?:/i'
+  - label: bug
+    title:
+      - '/^fix(\(.+\))?:/i'
+  - label: dependencies
+    title:
+      - '/^deps(\(.+\))?:/i'
+  - label: refactor
+    title:
+      - '/^refactor(\(.+\))?:/i'
+  - label: chore
+    title:
+      - '/^chore(\(.+\))?:/i'
+  - label: documentation
+    title:
+      - '/^docs(\(.+\))?:/i'
+
+name-template: 'Release $RESOLVED_VERSION'
+template: |
+  $CHANGES
+
+categories:
+  - title: New Features
+    labels:
+      - feature
+  - title: Bug Fixes
+    labels:
+      - bug
+  - title: Dependencies
+    labels:
+      - dependencies
+  - title: Maintenance
+    labels:
+      - refactor
+      - chore
+      - documentation
+exclude-labels:
+  - skip-changelog

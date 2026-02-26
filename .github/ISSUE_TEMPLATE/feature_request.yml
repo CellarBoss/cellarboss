@@ -1,0 +1,45 @@
+name: Feature Request
+description: Suggest a new feature or improvement
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea to improve Cellarboss? Describe it below.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the application would this affect?
+      options:
+        - Frontend (web UI)
+        - Backend (API)
+        - Both
+        - Docker / deployment
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / Motivation
+      description: What problem does this solve, or what use case does it enable?
+      placeholder: "As a user, I want to... so that..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the feature you'd like to see.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Mockups, screenshots, links to similar features elsewhere, etc.
