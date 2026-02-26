@@ -3,7 +3,8 @@
 
   // Use Renovate best-practices preset which includes grouping, pinning
   "extends": [
-    "config:best-practices"
+    "config:best-practices",
+    ":semanticCommitType(chore)"
   ],
 
   "prConcurrentLimit": 5,
