@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@cellarboss/types": "workspace:*",
-    "typescript": "^5.8.3",
-    "vitest": "^2.0.0"
+    "typescript": "5.9.3",
+    "vitest": "2.1.9"
   }
 }
