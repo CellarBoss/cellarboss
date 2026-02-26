@@ -19,7 +19,8 @@
       "matchUpdateTypes": ["patch", "minor"],
       "minimumReleaseAge": "3 days",
       "automerge": true,
-      "automergeType": "pr"
+      "automergeType": "pr",
+      "schedule": ["before 6am"]
     },
     {
       "matchUpdateTypes": ["major"],
