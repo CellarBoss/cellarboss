@@ -134,6 +134,7 @@ pnpm test
 cd apps/web
 pnpm test
 ```
+
 ### Web UI - end-to-end testing
 
 `playwright` end-to-end tests for user activities, with a mock backend API
