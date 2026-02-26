@@ -11,33 +11,14 @@ import { GroupedMultiSelectFilter } from "./filters/GroupedMultiSelectFilter";
 import {
   type FlatMultiSelectFilterDef,
   type GroupedMultiSelectFilterDef,
-  multiSelectUrlHandler,
 } from "./filters/multiSelectFilterUtils";
-import {
-  RangeFilter,
-  type RangeFilterDef,
-  rangeUrlHandler,
-} from "./filters/RangeFilter";
+import { RangeFilter, type RangeFilterDef } from "./filters/RangeFilter";
 
 export const FilterType = {
   MultiSelect: "multiselect",
   GroupedMultiSelect: "grouped-multiselect",
   Range: "range",
 } as const;
-
-export type FilterUrlHandler = {
-  serialize(paramName: string, value: unknown, params: URLSearchParams): void;
-  deserialize(paramName: string, searchParams: URLSearchParams): unknown | null;
-};
-
-export const filterUrlHandlers: Record<
-  (typeof FilterType)[keyof typeof FilterType],
-  FilterUrlHandler
-> = {
-  [FilterType.Range]: rangeUrlHandler,
-  [FilterType.MultiSelect]: multiSelectUrlHandler,
-  [FilterType.GroupedMultiSelect]: multiSelectUrlHandler,
-};
 
 export type {
   FlatMultiSelectFilterDef,
@@ -133,9 +114,7 @@ export function DataTableFilterControl<T>({
   });
 
   const handleClearAll = () => {
-    for (const filter of filters) {
-      table.getColumn(filter.columnId)?.setFilterValue(undefined);
-    }
+    table.setColumnFilters([]);
   };
 
   return (
