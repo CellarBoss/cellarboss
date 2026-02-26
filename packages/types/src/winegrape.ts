@@ -4,6 +4,6 @@ export interface WineGrape {
   grapeId: number;
 }
 
-export type CreateWineGrape = Omit<WineGrape, 'id'>;
+export type CreateWineGrape = Omit<WineGrape, "id">;
 
-export type UpdateWineGrape = Partial<Omit<WineGrape, 'id'>>;
+export type UpdateWineGrape = Partial<Omit<WineGrape, "id">>;

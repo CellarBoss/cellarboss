@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { BOTTLE_STATUSES } from './constants.js';
+import { z } from "zod";
+import { BOTTLE_STATUSES } from "./constants.js";
 
 export const createBottleSchema = z.object({
   purchaseDate: z.iso.date(),
@@ -9,7 +9,8 @@ export const createBottleSchema = z.object({
   status: z.enum(BOTTLE_STATUSES),
 });
 
-export const updateBottleSchema = createBottleSchema.partial().refine(
-  (data) => Object.keys(data).length > 0,
-  { message: 'At least one field must be provided' }
-);
+export const updateBottleSchema = createBottleSchema
+  .partial()
+  .refine((data) => Object.keys(data).length > 0, {
+    message: "At least one field must be provided",
+  });
