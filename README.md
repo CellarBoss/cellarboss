@@ -106,11 +106,41 @@ This starts PostgreSQL on port 5432, the backend on port 5000, and the frontend 
 
 ## Testing
 
-Tests are in the backend only (frontend has no test suite yet). They run against an in-memory SQLite database.
+There are separate test suites for individual parts of the project. Currently, all of these are automatically run whenever a PR is raised for a merge into the main branch.
+
+### Backend
+
+`vitest` for all API routes
 
 ```bash
 cd apps/backend
 pnpm test
+```
+
+### Validators
+
+`vitest` for all validation rules
+
+```bash
+cd packages/validators
+pnpm test
+```
+
+### Web UI - functional tests
+
+`vitest` for helper functions
+
+```bash
+cd apps/web
+pnpm test
+```
+### Web UI - end-to-end testing
+
+`playwright` end-to-end tests for user activities, with a mock backend API
+
+```bash
+cd apps/web
+pnpm test:e2e
 ```
 
 ## Building
