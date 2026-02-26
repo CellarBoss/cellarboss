@@ -41,8 +41,8 @@ export function PaginationControl({
         </PaginationItem>
         <PaginationItem>
           <span className="flex items-center gap-1 rounded-md border bg-muted px-3 py-1 text-sm">
-            Page <span className="font-medium">{pagination.pageIndex + 1}</span>
-            <span className="text-muted-foreground">of</span>
+            Page <span className="font-medium">{pagination.pageIndex + 1}</span>{" "}
+            <span className="text-muted-foreground">of</span>{" "}
             <span className="font-medium">{pageCount}</span>
           </span>
         </PaginationItem>
