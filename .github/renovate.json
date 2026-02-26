@@ -4,7 +4,8 @@
   // Use Renovate best-practices preset which includes grouping, pinning
   "extends": [
     "config:best-practices",
-    ":semanticCommitType(deps)"
+    ":semanticCommitType(deps)",
+    ":semanticCommitScopeDisabled"
   ],
 
   "prConcurrentLimit": 5,
