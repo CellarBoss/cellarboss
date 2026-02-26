@@ -31,8 +31,20 @@ export const defaultState: MockState = {
     { id: 2, name: "Chardonnay" },
   ],
   wines: [
-    { id: 1, name: "Château Margaux 2015", type: "red", wineMakerId: 1, regionId: 1 },
-    { id: 2, name: "Meursault Premier Cru", type: "white", wineMakerId: 2, regionId: 2 },
+    {
+      id: 1,
+      name: "Château Margaux 2015",
+      type: "red",
+      wineMakerId: 1,
+      regionId: 1,
+    },
+    {
+      id: 2,
+      name: "Meursault Premier Cru",
+      type: "white",
+      wineMakerId: 2,
+      regionId: 2,
+    },
   ],
   vintages: [
     { id: 1, wineId: 1, year: 2015, drinkFrom: 2022, drinkUntil: 2035 },

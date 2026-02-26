@@ -30,9 +30,7 @@ test.describe("Admin access control", () => {
     await expect(
       page.getByText("You do not have permission to access this page"),
     ).toBeVisible();
-    await expect(
-      page.getByText("Admin rights are required"),
-    ).toBeVisible();
+    await expect(page.getByText("Admin rights are required")).toBeVisible();
   });
 
   test("non-admin visiting /settings sees permission denied", async ({

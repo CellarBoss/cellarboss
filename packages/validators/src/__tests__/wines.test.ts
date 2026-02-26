@@ -23,7 +23,15 @@ describe("createWineSchema", () => {
   });
 
   it("accepts all wine types", () => {
-    const types = ["red", "white", "rose", "orange", "sparkling", "fortified", "dessert"] as const;
+    const types = [
+      "red",
+      "white",
+      "rose",
+      "orange",
+      "sparkling",
+      "fortified",
+      "dessert",
+    ] as const;
     for (const type of types) {
       const result = createWineSchema.safeParse({
         name: "Test Wine",

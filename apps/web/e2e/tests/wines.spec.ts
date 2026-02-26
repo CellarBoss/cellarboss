@@ -55,9 +55,7 @@ test.describe("Wines page", () => {
     const page = await adminContext.newPage();
     await page.goto("/wines");
 
-    await expect(
-      page.getByRole("heading", { name: "Wines" }),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Wines" })).toBeVisible();
   });
 
   test("search filters wines and updates URL", async ({ adminContext }) => {

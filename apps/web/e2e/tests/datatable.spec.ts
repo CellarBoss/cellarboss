@@ -70,7 +70,9 @@ test.describe("DataTable interactions", () => {
     // Default sort is ascending — "Wine 01" should be first
     await expect(page.getByRole("row").nth(1)).toContainText("Wine 01");
 
-    const wineNameHeader = page.getByRole("columnheader", { name: /wine name/i });
+    const wineNameHeader = page.getByRole("columnheader", {
+      name: /wine name/i,
+    });
     await wineNameHeader.click();
 
     // After clicking, sort toggles to descending — "Wine 25" should now be first
@@ -81,15 +83,14 @@ test.describe("DataTable interactions", () => {
     const page = await adminContext.newPage();
     await page.goto("/wines");
 
-    const firstRowCheckbox = page
-      .getByRole("row")
-      .nth(1)
-      .getByRole("checkbox");
+    const firstRowCheckbox = page.getByRole("row").nth(1).getByRole("checkbox");
     await firstRowCheckbox.click();
 
     // Bulk action bar should appear when a row is selected
     await expect(
-      page.getByText(/selected/i).or(page.getByRole("button", { name: /delete selected/i })),
+      page
+        .getByText(/selected/i)
+        .or(page.getByRole("button", { name: /delete selected/i })),
     ).toBeVisible();
   });
 });

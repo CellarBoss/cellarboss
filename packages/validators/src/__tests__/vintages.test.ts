@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { createVintageSchema, updateVintageSchema } from "../vintages.validator";
+import {
+  createVintageSchema,
+  updateVintageSchema,
+} from "../vintages.validator";
 
 describe("createVintageSchema", () => {
   it("accepts a valid vintage", () => {

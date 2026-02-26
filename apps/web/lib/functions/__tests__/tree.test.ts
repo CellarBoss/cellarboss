@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { buildTree, buildHierarchicalOptions, sortHierarchicalOptions } from "../tree";
+import {
+  buildTree,
+  buildHierarchicalOptions,
+  sortHierarchicalOptions,
+} from "../tree";
 
 describe("buildTree", () => {
   it("builds a simple flat list with no parent", () => {

@@ -21,7 +21,16 @@ describe("getVintageName", () => {
   ]);
 
   const wineMap = new Map<number, Wine>([
-    [10, { id: 10, name: "Château Margaux", wineMakerId: 100, regionId: 1, type: "red" }],
+    [
+      10,
+      {
+        id: 10,
+        name: "Château Margaux",
+        wineMakerId: 100,
+        regionId: 1,
+        type: "red",
+      },
+    ],
   ]);
 
   const winemakerMap = new Map<number, WineMaker>([
@@ -91,7 +100,13 @@ describe("buildDescendantsMap", () => {
 describe("buildWineGroupedOptions", () => {
   const wines: Wine[] = [
     { id: 1, name: "Alpha Red", wineMakerId: 1, regionId: null, type: "red" },
-    { id: 2, name: "Alpha White", wineMakerId: 1, regionId: null, type: "white" },
+    {
+      id: 2,
+      name: "Alpha White",
+      wineMakerId: 1,
+      regionId: null,
+      type: "white",
+    },
     { id: 3, name: "Beta Red", wineMakerId: 2, regionId: null, type: "red" },
   ];
 

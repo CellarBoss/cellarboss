@@ -5,7 +5,13 @@ const BOTTLE_SEED = {
   countries: [{ id: 1, name: "France" }],
   regions: [{ id: 1, name: "Bordeaux", countryId: 1 }],
   wines: [
-    { id: 1, name: "Château Margaux 2015", type: "red", wineMakerId: 1, regionId: 1 },
+    {
+      id: 1,
+      name: "Château Margaux 2015",
+      type: "red",
+      wineMakerId: 1,
+      regionId: 1,
+    },
   ],
   vintages: [
     { id: 1, wineId: 1, year: 2015, drinkFrom: 2022, drinkUntil: 2035 },
@@ -61,9 +67,7 @@ test.describe("Bottles page", () => {
     await page.goto("/bottles");
 
     // Bottles page shows the vintage/wine name
-    await expect(
-      page.getByText("Château Margaux").first(),
-    ).toBeVisible();
+    await expect(page.getByText("Château Margaux").first()).toBeVisible();
   });
 
   test("Add Bottle button navigates to new bottle page", async ({

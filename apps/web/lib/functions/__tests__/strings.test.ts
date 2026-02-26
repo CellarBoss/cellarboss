@@ -45,11 +45,7 @@ describe("expandNamePattern", () => {
   });
 
   it("expands digit ranges", () => {
-    expect(expandNamePattern("Row [1-3]")).toEqual([
-      "Row 1",
-      "Row 2",
-      "Row 3",
-    ]);
+    expect(expandNamePattern("Row [1-3]")).toEqual(["Row 1", "Row 2", "Row 3"]);
   });
 
   it("expands uppercase letter ranges", () => {
@@ -61,11 +57,7 @@ describe("expandNamePattern", () => {
   });
 
   it("expands lowercase letter ranges", () => {
-    expect(expandNamePattern("Bin [a-c]")).toEqual([
-      "Bin a",
-      "Bin b",
-      "Bin c",
-    ]);
+    expect(expandNamePattern("Bin [a-c]")).toEqual(["Bin a", "Bin b", "Bin c"]);
   });
 
   it("expands multiple ranges", () => {
