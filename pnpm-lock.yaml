@@ -164,7 +164,7 @@ importers:
     devDependencies:
       '@hono/node-server':
         specifier: 1.19.9
-        version: 1.19.9(hono@4.11.8)
+        version: 1.19.9(hono@4.12.2)
       '@playwright/test':
         specifier: 1.58.2
         version: 1.58.2
@@ -193,8 +193,8 @@ importers:
         specifier: 16.0.10
         version: 16.0.10(@typescript-eslint/parser@8.55.0(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
       hono:
-        specifier: 4.11.8
-        version: 4.11.8
+        specifier: 4.12.2
+        version: 4.12.2
       prettier:
         specifier: 3.8.1
         version: 3.8.1
@@ -2649,6 +2649,10 @@ packages:
     resolution: {integrity: sha512-eVkB/CYCCei7K2WElZW9yYQFWssG0DhaDhVvr7wy5jJ22K+ck8fWW0EsLpB0sITUTvPnc97+rrbQqIr5iqiy9Q==}
     engines: {node: '>=16.9.0'}
 
+  hono@4.12.2:
+    resolution: {integrity: sha512-gJnaDHXKDayjt8ue0n8Gs0A007yKXj4Xzb8+cNjZeYsSzzwKc0Lr+OZgYwVfB0pHfUs17EPoLvrOsEaJ9mj+Tg==}
+    engines: {node: '>=16.9.0'}
+
   iconv-lite@0.7.2:
     resolution: {integrity: sha512-im9DjEDQ55s9fL4EYzOAv0yMqmMBSZp6G0VvFyTMPKWxiSBHUj9NW/qqLmXUwXrrM7AvqSlTCfvqRb0cM8yYqw==}
     engines: {node: '>=0.10.0'}
@@ -4319,6 +4323,10 @@ snapshots:
   '@hono/node-server@1.19.9(hono@4.11.8)':
     dependencies:
       hono: 4.11.8
+
+  '@hono/node-server@1.19.9(hono@4.12.2)':
+    dependencies:
+      hono: 4.12.2
 
   '@hono/zod-validator@0.7.6(hono@4.11.8)(zod@4.3.6)':
     dependencies:
@@ -6323,6 +6331,8 @@ snapshots:
       hermes-estree: 0.25.1
 
   hono@4.11.8: {}
+
+  hono@4.12.2: {}
 
   iconv-lite@0.7.2:
     dependencies:
