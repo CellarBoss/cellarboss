@@ -98,8 +98,17 @@ export default function BottlesPage() {
   );
   if (!result.ready) return result.gate;
 
-  const [bottles, vintages, wines, winemakers, storages, locations, settings, regions, countries] =
-    result.data;
+  const [
+    bottles,
+    vintages,
+    wines,
+    winemakers,
+    storages,
+    locations,
+    settings,
+    regions,
+    countries,
+  ] = result.data;
   const currency = settings.get("currency") as string | undefined;
   const dateFormat = settings.get("date") as string | undefined;
 
@@ -443,9 +452,9 @@ export default function BottlesPage() {
         if (!vintage) return "";
         const wine = wineMap.get(vintage.wineId);
         if (!wine) return "";
-        const region = regions.find(r => r.id === wine.regionId);
+        const region = regions.find((r) => r.id === wine.regionId);
         if (!region) return "";
-        const country = countries.find(c => c.id === region.countryId);
+        const country = countries.find((c) => c.id === region.countryId);
         return country ? String(country.id) : "";
       },
     },

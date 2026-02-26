@@ -4,9 +4,9 @@ export interface Bottle {
   purchasePrice: number;
   vintageId: number;
   storageId: number | null;
-  status: 'ordered' | 'stored' | 'in-primeur' | 'drunk' | 'sold' | 'gifted';
+  status: "ordered" | "stored" | "in-primeur" | "drunk" | "sold" | "gifted";
 }
 
-export type CreateBottle = Omit<Bottle, 'id'>;
+export type CreateBottle = Omit<Bottle, "id">;
 
-export type UpdateBottle = Partial<Omit<Bottle, 'id'>>;
+export type UpdateBottle = Partial<Omit<Bottle, "id">>;

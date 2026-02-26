@@ -6,6 +6,6 @@ export interface Vintage {
   drinkUntil: number | null;
 }
 
-export type CreateVintage = Omit<Vintage, 'id'>;
+export type CreateVintage = Omit<Vintage, "id">;
 
-export type UpdateVintage = Partial<Omit<Vintage, 'id'>>;
+export type UpdateVintage = Partial<Omit<Vintage, "id">>;

@@ -3,5 +3,4 @@ export interface Setting {
   value: string;
 }
 
-export type UpdateSetting = Omit<Setting, 'key'>;
-
+export type UpdateSetting = Omit<Setting, "key">;
