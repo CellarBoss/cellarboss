@@ -1,34 +1,42 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-
   // Use Renovate best-practices preset which includes grouping, pinning
   "extends": [
     "config:best-practices",
     ":semanticCommitType(deps)",
     ":semanticCommitScopeDisabled"
   ],
-
   "prConcurrentLimit": 5,
-
   "prHourlyLimit": 2,
-
   "draftPR": false,
-
   "dependencyDashboard": true,
-
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true,
+    "automergeType": "pr",
+    "schedule": [
+      "before 6am"
+    ]
+  },
   "packageRules": [
     {
-      "matchUpdateTypes": ["patch", "minor"],
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ],
       "minimumReleaseAge": "3 days",
       "automerge": true,
       "automergeType": "pr",
-      "schedule": ["before 6am"]
+      "schedule": [
+        "before 6am"
+      ]
     },
     {
-      "matchUpdateTypes": ["major"],
+      "matchUpdateTypes": [
+        "major"
+      ],
       "minimumReleaseAge": "1 day",
       "automerge": false
     }
   ]
-
 }
