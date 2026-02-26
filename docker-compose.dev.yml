@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   db:
-    image: postgres:16@sha256:23af655ba1ddf74eaa002e3deaf5fce022ab8791672336a7c1fb0ef2d57efb7f
+    image: postgres:18@sha256:a688ae5c99f86c1424e046ace0de890608cc0ddb5ec8ef72a6ff8305fdc8f4d2
     environment:
       POSTGRES_USER: cbuser
       POSTGRES_PASSWORD: secret
