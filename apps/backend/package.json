@@ -3,15 +3,15 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsup",
+    "build": "pnpm dlx tsup",
     "start": "node dist/src/index.js",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
+    "test": "pnpm dlx vitest",
+    "test:ui": "pnpm dlx vitest --ui",
     "auth:migrate": "pnpm dlx @better-auth/cli@latest migrate --yes --config ./dist/src/utils/auth.js",
-    "migrate": "node node_modules/kysely-ctl/dist/bin.mjs migrate latest",
-    "migrate:down": "node node_modules/kysely-ctl/dist/bin.mjs migrate down",
-    "seed": "node node_modules/kysely-ctl/dist/bin.mjs seed run",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "migrate": "pnpm dlx kysely-ctl migrate latest",
+    "migrate:down": "pnpm dlx kysely-ctl migrate down",
+    "seed": "pnpm dlx kysely-ctl seed run",
+    "format": "pnpm dlx prettier --write \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
     "@cellarboss/types": "workspace:*",
