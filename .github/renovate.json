@@ -1,11 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  // Use Renovate best-practices preset which includes grouping, pinning
   "extends": [
-    "config:best-practices",
-    ":semanticCommitType(deps)",
-    ":semanticCommitScopeDisabled"
+    "config:best-practices"
   ],
+  "semanticCommits": "enabled",
+  "semanticCommitType": "deps",
+  "semanticCommitScope": "",
   "prConcurrentLimit": 5,
   "prHourlyLimit": 2,
   "draftPR": false,
