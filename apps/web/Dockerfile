@@ -1,42 +1,29 @@
-FROM node:24-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS base
+FROM node:24-alpine AS builder
 WORKDIR /app
 
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@10.30.3 --activate
 
-FROM base AS deps
-
-COPY package.json pnpm-lock.yaml* package-lock.json* yarn.lock* turbo.json* ./
-COPY apps/web/package.json apps/web/package.json
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/web ./apps/web
 COPY packages ./packages
 
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile --store-dir /pnpm/store
 
-FROM base AS builder
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN pnpm --filter @cellarboss/web build
+
+FROM node:24-alpine AS runner
 WORKDIR /app
-
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-
-# Run install again with full source present so pnpm creates workspace-local
-# node_modules symlinks (e.g. apps/web/node_modules). The .pnpm virtual
-# store is already in node_modules so no packages are re-downloaded.
-RUN pnpm install --frozen-lockfile
-
-RUN pnpm --filter web build
-
-FROM node:24-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS runner
 
 ENV NODE_ENV=production
 
-WORKDIR /app
-
-# standalone/ contains a minimal node_modules with only runtime dependencies.
-# Static assets and public files must be copied in alongside it.
+# standalone/ is a self-contained server with a minimal node_modules.
+# Static assets and public files must be copied alongside it.
 COPY --from=builder /app/apps/web/.next/standalone ./
 COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder /app/apps/web/public ./apps/web/public
 
 EXPOSE 3000
 ENV HOSTNAME=0.0.0.0
-
 CMD ["node", "apps/web/server.js"]
