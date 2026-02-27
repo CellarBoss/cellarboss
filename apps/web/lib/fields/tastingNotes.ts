@@ -12,10 +12,9 @@ export const tastingNoteCreateFields: FieldConfig<TastingNote>[] = [
   },
   {
     key: "score",
-    label: "Score (0–10)",
-    type: "number",
-    numberProps: { min: 0, max: 10, step: 0.1 },
-    validator: z.coerce.number().min(0).max(10),
+    label: "Score",
+    type: "wine-rating",
+    validator: z.coerce.number().int().min(0).max(10),
   },
   {
     key: "notes",
@@ -29,10 +28,9 @@ export const tastingNoteCreateFields: FieldConfig<TastingNote>[] = [
 export const tastingNoteEditFields: FieldConfig<TastingNote>[] = [
   {
     key: "score",
-    label: "Score (0–10)",
-    type: "number",
-    numberProps: { min: 0, max: 10, step: 0.1 },
-    validator: z.coerce.number().min(0).max(10),
+    label: "Score",
+    type: "wine-rating",
+    validator: z.coerce.number().int().min(0).max(10),
   },
   {
     key: "notes",

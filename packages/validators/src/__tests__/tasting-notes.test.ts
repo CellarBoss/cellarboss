@@ -8,7 +8,7 @@ describe("createTastingNoteSchema", () => {
   it("accepts a valid tasting note", () => {
     const result = createTastingNoteSchema.safeParse({
       vintageId: 1,
-      score: 8.5,
+      score: 8,
       notes: "Excellent bouquet with a smooth, lingering finish.",
     });
     expect(result.success).toBe(true);
@@ -32,13 +32,13 @@ describe("createTastingNoteSchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("accepts a decimal score", () => {
+  it("rejects a decimal score", () => {
     const result = createTastingNoteSchema.safeParse({
       vintageId: 1,
       score: 7.3,
       notes: "Very good.",
     });
-    expect(result.success).toBe(true);
+    expect(result.success).toBe(false);
   });
 
   it("accepts empty notes string", () => {
@@ -99,10 +99,15 @@ describe("updateTastingNoteSchema", () => {
 
   it("accepts updating both score and notes", () => {
     const result = updateTastingNoteSchema.safeParse({
-      score: 7.5,
+      score: 7,
       notes: "Revised after second tasting.",
     });
     expect(result.success).toBe(true);
+  });
+
+  it("rejects decimal score on update", () => {
+    const result = updateTastingNoteSchema.safeParse({ score: 7.5 });
+    expect(result.success).toBe(false);
   });
 
   it("rejects an empty object", () => {

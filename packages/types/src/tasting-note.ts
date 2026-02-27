@@ -3,7 +3,7 @@ export interface TastingNote {
   vintageId: number;
   date: string; // ISO 8601 datetime string, set server-side
   author: string; // set from session user server-side
-  score: number; // 0–10, decimals allowed
+  score: number; // integer 0–10
   notes: string;
 }
 
