@@ -8,7 +8,7 @@ import { PostgresDialect } from "kysely";
 import pg from "pg";
 
 import { MysqlDialect } from "kysely";
-import mysql from "mysql2";
+import mysql from "mysql2/promise";
 
 import { env } from "@utils/env.js";
 import type { Database } from "@schema/database.js";
@@ -33,7 +33,7 @@ export function getDialect(): Dialect {
 
     case "mysql":
       return new MysqlDialect({
-        pool: mysql.createPool(env.DATABASE_URL),
+        pool: mysql.createPool({ uri: env.DATABASE_URL }),
       });
 
     default:
