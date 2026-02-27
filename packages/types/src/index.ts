@@ -18,3 +18,8 @@ export type {
   UpdateWineMaker,
 } from "./winemaker.js";
 export type { Setting, UpdateSetting } from "./setting.js";
+export type {
+  TastingNote,
+  CreateTastingNote,
+  UpdateTastingNote,
+} from "./tasting-note.js";

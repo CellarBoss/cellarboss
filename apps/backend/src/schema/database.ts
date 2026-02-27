@@ -6,6 +6,7 @@ import type {
   Location,
   Region,
   Storage,
+  TastingNote,
   Vintage,
   Wine,
   WineGrape,
@@ -54,6 +55,10 @@ export interface WineMakerTable extends Omit<WineMaker, "id"> {
   id: Generated<number>;
 }
 
+export interface TastingNoteTable extends Omit<TastingNote, "id"> {
+  id: Generated<number>;
+}
+
 export interface SettingTable extends Setting {}
 
 // Database interface for Kysely
@@ -68,5 +73,6 @@ export interface Database {
   wine: WineTable;
   winegrape: WineGrapeTable;
   winemaker: WineMakerTable;
+  tastingNote: TastingNoteTable;
   setting: SettingTable;
 }
