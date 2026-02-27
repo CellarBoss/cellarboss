@@ -8,8 +8,8 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "auth:migrate": "better-auth migrate --yes --config ./dist/src/utils/auth.js",
-    "migrate": "tsx src/migrate.ts latest",
-    "migrate:down": "tsx src/migrate.ts down",
+    "migrate": "tsx src/utils/migrate.ts latest",
+    "migrate:down": "tsx src/utils/migrate.ts down",
     "seed": "kysely seed run",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
