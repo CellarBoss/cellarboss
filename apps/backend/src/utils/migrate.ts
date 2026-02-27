@@ -11,7 +11,7 @@ import {
 import { getDialect } from "./database.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const migrationsDir = path.resolve(__dirname, "migrations");
+const migrationsDir = path.resolve(__dirname, "../migrations");
 
 // Custom provider that uses pathToFileURL to fix Windows ESM absolute path issue.
 // Node.js ESM requires file:// URLs; bare Windows paths (C:\...) are rejected.
