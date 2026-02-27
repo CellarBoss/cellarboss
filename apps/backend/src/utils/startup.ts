@@ -41,7 +41,7 @@ async function checkAndSeed(db: Kysely<Database>) {
 
     if (count === 0) {
       console.log("Database empty. Running seeders...");
-      execSync("pnpm seed", { stdio: "inherit" });
+      execSync("kysely seed run", { stdio: "inherit" });
     } else {
       console.log("Database already seeded.");
     }
@@ -54,11 +54,14 @@ async function checkAndSeed(db: Kysely<Database>) {
 async function runMigrations() {
   try {
     console.log("Running Kysely migrations...");
-    execSync("pnpm migrate", { stdio: "inherit" });
+    execSync("kysely migrate latest", { stdio: "inherit" });
 
     console.log("Running better-auth migrations...");
     try {
-      execSync("pnpm auth:migrate", { stdio: "inherit" });
+      execSync(
+        "better-auth migrate --yes --config ./dist/src/utils/auth.js",
+        { stdio: "inherit" },
+      );
     } catch {
       console.warn(
         "better-auth migrations may have nothing to do, skipping...",

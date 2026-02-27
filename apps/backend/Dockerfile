@@ -20,12 +20,12 @@ FROM node:24-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV PATH="/app/node_modules/.bin:$PATH"
 
-# pnpm is required at runtime: startup.js calls execSync("pnpm migrate/seed").
-RUN corepack enable && corepack prepare pnpm@10.30.3 --activate
-
-# Production package.json + node_modules from pnpm deploy.
-COPY --from=builder /deployment ./
+# Only copy what the runtime actually needs from the deployment.
+COPY --from=builder /deployment/node_modules ./node_modules
+COPY --from=builder /deployment/package.json ./
+COPY --from=builder /deployment/kysely.config.js ./
 
 # dist/ is gitignored so pnpm deploy omits it; copy explicitly from the builder.
 COPY --from=builder /app/apps/backend/dist ./dist
