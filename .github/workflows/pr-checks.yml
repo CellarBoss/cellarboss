@@ -67,36 +67,6 @@ jobs:
               - 'pnpm-lock.yaml'
               - '.github/workflows/**'
 
-  install:
-    name: Install Dependencies
-    runs-on: ubuntu-latest
-    needs: changes
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6
-        with:
-          node-version: '24'
-          cache: 'pnpm'
-
-      - name: Install
-        run: pnpm install --frozen-lockfile
-
-      - name: Upload node_modules
-        uses: actions/upload-artifact@v4
-        with:
-          name: node-modules
-          path: |
-            node_modules
-            apps/**/node_modules
-            packages/**/node_modules
-          retention-days: 1
-
   prettier:
     name: Check Formatting
     runs-on: ubuntu-latest
@@ -118,12 +88,12 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Check formatting
-        run: pnpm prettier --check **/*.{ts,tsx,md}
+        run: pnpm dlx prettier --check **/*.{ts,tsx,md}
 
   test-web-functions:
     name: Test WebUI Functions
     runs-on: ubuntu-latest
-    needs: [install, changes]
+    needs: changes
     if: needs.changes.outputs.web == 'true' || needs.changes.outputs.common == 'true'
     steps:
       - name: Checkout
@@ -138,9 +108,8 @@ jobs:
           node-version: '24'
           cache: 'pnpm'
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: node-modules
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Build frontend
         run: pnpm --filter @cellarboss/web build
@@ -156,7 +125,7 @@ jobs:
   test-validators:
     name: Test Validators
     runs-on: ubuntu-latest
-    needs: [install, changes]
+    needs: changes
     if: needs.changes.outputs.validators == 'true' || needs.changes.outputs.common == 'true'
     steps:
       - name: Checkout
@@ -171,9 +140,8 @@ jobs:
           node-version: '24'
           cache: 'pnpm'
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: node-modules
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Run validators unit tests
         run: pnpm --filter @cellarboss/validators test
@@ -181,7 +149,7 @@ jobs:
   test-backend:
     name: Test Backend
     runs-on: ubuntu-latest
-    needs: [install, changes]
+    needs: changes
     if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.common == 'true'
     steps:
       - name: Checkout
@@ -196,9 +164,8 @@ jobs:
           node-version: '24'
           cache: 'pnpm'
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: node-modules
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Build backend
         run: pnpm --filter backend build
@@ -215,7 +182,7 @@ jobs:
   test-web-e2e:
     name: Test WebUI E2E
     runs-on: ubuntu-latest
-    needs: [install, changes]
+    needs: changes
     if: needs.changes.outputs.web == 'true' || needs.changes.outputs.common == 'true'
     steps:
       - name: Checkout
@@ -230,9 +197,8 @@ jobs:
           node-version: '24'
           cache: 'pnpm'
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: node-modules
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Cache Playwright browsers
         uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5

@@ -1,53 +1,34 @@
-FROM node:24-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS base
+FROM node:24-alpine AS builder
 WORKDIR /app
 
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@10.30.3 --activate
 
-FROM base AS deps
-
-COPY package.json pnpm-lock.yaml* package-lock.json* yarn.lock* turbo.json* ./
-COPY apps/backend/package.json apps/backend/package.json
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/backend ./apps/backend
 COPY packages ./packages
 
-RUN pnpm install --frozen-lockfile
-
-FROM base AS builder
-WORKDIR /app
-
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-
-# Run install again with full source present so pnpm creates workspace-local
-# node_modules symlinks (e.g. apps/backend/node_modules). The .pnpm virtual
-# store is already in node_modules so no packages are re-downloaded.
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile --store-dir /pnpm/store
 
 RUN pnpm --filter backend build
 
-FROM base AS deploy
+# pnpm deploy must run in the same stage as pnpm install so the virtual store
+# is live and the dependency graph can be resolved.
+RUN pnpm --filter backend deploy --legacy /deployment
+
+FROM node:24-alpine AS runner
 WORKDIR /app
-
-COPY --from=builder /app ./
-
-# Create a self-contained deployment directory with only production dependencies.
-# pnpm deploy dereferences symlinks and excludes devDependencies, eliminating
-# the pnpm virtual store from the final image.
-RUN pnpm deploy --filter backend --prod /deployment
-
-FROM node:24-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS runner
 
 ENV NODE_ENV=production
+ENV PATH="/app/node_modules/.bin:$PATH"
 
-RUN corepack enable
+# Only copy what the runtime actually needs from the deployment.
+COPY --from=builder /deployment/node_modules ./node_modules
+COPY --from=builder /deployment/package.json ./
+COPY --from=builder /deployment/kysely.config.js ./
 
-WORKDIR /app
-
-# Production node_modules (flat, no pnpm virtual store) and config files.
-COPY --from=deploy /deployment ./
-
-# dist/ is gitignored so pnpm deploy omits it; copy it explicitly from the builder.
+# dist/ is gitignored so pnpm deploy omits it; copy explicitly from the builder.
 COPY --from=builder /app/apps/backend/dist ./dist
 
 EXPOSE 5000
-
 CMD ["node", "dist/src/utils/startup.js"]
