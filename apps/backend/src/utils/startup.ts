@@ -58,10 +58,9 @@ async function runMigrations() {
 
     console.log("Running better-auth migrations...");
     try {
-      execSync(
-        "better-auth migrate --yes --config ./dist/src/utils/auth.js",
-        { stdio: "inherit" },
-      );
+      execSync("better-auth migrate --yes --config ./dist/src/utils/auth.js", {
+        stdio: "inherit",
+      });
     } catch {
       console.warn(
         "better-auth migrations may have nothing to do, skipping...",
