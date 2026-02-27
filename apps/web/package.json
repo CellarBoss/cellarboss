@@ -3,16 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "pnpm dlx next dev",
-    "build": "pnpm dlx next build",
-    "start": "pnpm dlx next start",
-    "lint": "pnpm dlx eslint",
-    "format": "pnpm dlx prettier --write \"**/*.{ts,tsx,md}\"",
-    "test": "pnpm dlx vitest run",
-    "test:watch": "pnpm dlx vitest",
-    "test:e2e": "pnpm dlx playwright test",
-    "test:e2e:ui": "pnpm dlx playwright test --ui",
-    "test:e2e:headed": "pnpm dlx playwright test --headed"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed"
   },
   "dependencies": {
     "@cellarboss/types": "workspace:*",

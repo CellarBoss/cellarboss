@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "pnpm dlx vitest run",
-    "test:watch": "pnpm dlx vitest"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "exports": {
     ".": {
