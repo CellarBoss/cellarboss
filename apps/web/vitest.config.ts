@@ -6,6 +6,17 @@ export default defineConfig({
     globals: true,
     environment: "node",
     include: ["lib/**/*.test.ts", "lib/**/*.test.tsx", "hooks/**/*.test.ts"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json-summary", "json"],
+      include: ["lib/**/*.ts", "lib/**/*.tsx", "hooks/**/*.ts"],
+      exclude: [
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/*.d.ts",
+        "lib/api/**",
+      ],
+    },
   },
   esbuild: {
     jsx: "automatic",

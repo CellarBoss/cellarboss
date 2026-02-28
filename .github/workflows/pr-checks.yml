@@ -11,7 +11,7 @@ on:
       - reopened
 
 permissions:
-  pull-requests: read
+  pull-requests: write
   statuses: write
 
 jobs:
@@ -119,8 +119,15 @@ jobs:
           BETTER_AUTH_SECRET: ci-build-placeholder
           BETTER_AUTH_URL: http://localhost:5000
 
-      - name: Run web unit tests
-        run: pnpm --filter @cellarboss/web test
+      - name: Run web unit tests with coverage
+        run: pnpm --filter @cellarboss/web test:coverage
+
+      - name: Coverage report
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@2500dafcee7dd64f85ab689c0b83798a8359770e # v2
+        with:
+          name: Web
+          working-directory: apps/web
   
   test-validators:
     name: Test Validators
@@ -143,8 +150,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run validators unit tests
-        run: pnpm --filter @cellarboss/validators test
+      - name: Run validators unit tests with coverage
+        run: pnpm --filter @cellarboss/validators test:coverage
+
+      - name: Coverage report
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@2500dafcee7dd64f85ab689c0b83798a8359770e # v2
+        with:
+          name: Validators
+          working-directory: packages/validators
 
   test-backend:
     name: Test Backend
@@ -170,14 +184,21 @@ jobs:
       - name: Build backend
         run: pnpm --filter backend build
 
-      - name: Run backend tests
-        run: pnpm --filter backend test
+      - name: Run backend tests with coverage
+        run: pnpm --filter backend test:coverage
         env:
           DATABASE_TYPE: sqlite
           DATABASE_URL: ':memory:'
           NODE_ENV: test
           BETTER_AUTH_URL: http://localhost:3000
           BETTER_AUTH_SECRET: ci-test-placeholder
+
+      - name: Coverage report
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@2500dafcee7dd64f85ab689c0b83798a8359770e # v2
+        with:
+          name: Backend
+          working-directory: apps/backend
 
   test-web-e2e:
     name: Test WebUI E2E

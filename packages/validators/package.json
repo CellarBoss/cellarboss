@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:watch": "vitest"
   },
   "exports": {
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@cellarboss/types": "workspace:*",
+    "@vitest/coverage-v8": "^4.0.18",
     "typescript": "5.9.3",
     "vitest": "4.0.18"
   }
