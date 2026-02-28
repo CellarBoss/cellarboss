@@ -16,9 +16,7 @@ describe("Admin middleware", () => {
     await db
       .insertInto("setting")
       .values({ key: "admin-test", value: "original" })
-      .onConflict((oc) =>
-        oc.column("key").doUpdateSet({ value: "original" }),
-      )
+      .onConflict((oc) => oc.column("key").doUpdateSet({ value: "original" }))
       .execute();
   });
 

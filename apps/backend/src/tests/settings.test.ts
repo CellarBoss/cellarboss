@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeEach, beforeAll } from "vitest";
 import type { Hono } from "hono";
-import { createTestApp, createTestAppWithAuth, runMigrations } from "./setup.js";
+import {
+  createTestApp,
+  createTestAppWithAuth,
+  runMigrations,
+} from "./setup.js";
 import { registerSettingsRoutes } from "@routes/settings.routes.js";
 import { db } from "@utils/database.js";
 
