@@ -14,21 +14,17 @@ import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useSetting } from "@/hooks/use-settings";
+import { formatDateTime } from "@/lib/functions/format";
 
 type TastingNotesSectionProps =
   | { vintageId: number; wineId?: never; vintages?: never }
   | { wineId: number; vintages: Vintage[]; vintageId?: never };
 
-function formatDate(isoString: string): string {
-  return new Date(isoString).toLocaleString(undefined, {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
-}
-
 export function TastingNotesSection(props: TastingNotesSectionProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const datetimeFormat = useSetting("datetime").data as string | undefined;
 
   const isVintageMode = props.vintageId !== undefined;
 
@@ -113,7 +109,9 @@ export function TastingNotesSection(props: TastingNotesSectionProps) {
                     </td>
                   )}
                   <td className="py-2 pr-4 text-muted-foreground whitespace-nowrap">
-                    {formatDate(note.date)}
+                    {datetimeFormat
+                      ? formatDateTime(note.date, datetimeFormat)
+                      : note.date}
                   </td>
                   <td className="py-2 pr-4">{note.author}</td>
                   <td className="py-2 pr-4 font-medium">{note.score}</td>

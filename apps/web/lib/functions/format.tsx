@@ -19,6 +19,13 @@ export function formatDate(dateStr: string, dateFormat: string): string {
   return format(dateStr, dateFormat);
 }
 
+export function formatDateTime(
+  isoString: string,
+  datetimeFormat: string,
+): string {
+  return format(isoString, datetimeFormat);
+}
+
 export function formatStatus(status: string): string {
   return status
     .split("-")

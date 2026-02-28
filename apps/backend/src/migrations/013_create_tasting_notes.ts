@@ -18,8 +18,14 @@ export async function up(db: Kysely<any>): Promise<void> {
     .on("tastingNote")
     .column("vintageId")
     .execute();
+
+  await db
+    .insertInto("setting")
+    .values({ key: "datetime", value: "dd/MM/yyyy HH:mm" })
+    .execute();
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable("tastingNote").execute();
+  await db.deleteFrom("setting").where("key", "=", "datetime").execute();
 }

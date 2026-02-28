@@ -68,6 +68,7 @@ export const defaultState: MockState = {
   settings: [
     { key: "currency", value: "USD" },
     { key: "date", value: "yyyy-MM-dd" },
+    { key: "datetime", value: "yyyy-MM-dd HH:mm" },
   ],
   users: [
     {
