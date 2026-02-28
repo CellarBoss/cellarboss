@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import type { TastingNote, Vintage } from "@cellarboss/types";
@@ -10,18 +9,10 @@ import {
   getTastingNotesByWineId,
   deleteTastingNote,
 } from "@/lib/api/tastingNotes";
-import { EditButton } from "@/components/buttons/EditButton";
-import { DeleteButton } from "@/components/buttons/DeleteButton";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useSetting } from "@/hooks/use-settings";
-import { formatDateTime } from "@/lib/functions/format";
-
-function scoreColor(score: number): string {
-  const hue = (score / 10) * 120;
-  return `hsl(${hue}, 70%, 35%)`;
-}
+import { TastingNoteCard } from "./TastingNoteCard";
 
 type TastingNotesSectionProps =
   | { vintageId: number; wineId?: never; vintages?: never }
@@ -53,6 +44,14 @@ export function TastingNotesSection(props: TastingNotesSectionProps) {
         ? String(vintage.year)
         : "NV"
       : String(vintageId);
+  }
+
+  function invalidateNotes() {
+    queryClient.invalidateQueries({
+      queryKey: isVintageMode
+        ? ["tastingNotes", "vintage", props.vintageId]
+        : ["tastingNotes", "wine", props.wineId],
+    });
   }
 
   return (
@@ -87,63 +86,27 @@ export function TastingNotesSection(props: TastingNotesSectionProps) {
               (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
             )
             .map((note) => (
-              <div
+              <TastingNoteCard
                 key={note.id}
-                className="rounded-md border border-border overflow-hidden"
-              >
-                <div className="flex items-center gap-2 px-3 py-2 bg-muted/50 border-b border-border text-sm">
-                  <span className="font-semibold">{note.author}</span>
-                  <span className="text-muted-foreground">·</span>
-                  <span className="text-muted-foreground text-xs">
-                    {datetimeFormat
-                      ? formatDateTime(note.date, datetimeFormat)
-                      : note.date}
-                  </span>
-                  <span className="text-muted-foreground">·</span>
-                  <Badge
-                    style={{
-                      backgroundColor: scoreColor(note.score),
-                      color: "white",
-                    }}
-                  >
-                    {note.score}/10
-                  </Badge>
-                  {!isVintageMode && (
-                    <>
-                      <span className="text-muted-foreground">·</span>
-                      <Badge variant="outline" asChild>
-                        <Link href={`/vintages/${note.vintageId}`}>
-                          <Calendar />
-                          {getVintageLabel(note.vintageId)}
-                        </Link>
-                      </Badge>
-                    </>
-                  )}
-                  <span className="ml-auto inline-flex items-center gap-1">
-                    <EditButton
-                      onEdit={async () =>
-                        router.push(`/tasting-notes/${note.id}/edit`)
+                note={note}
+                datetimeFormat={datetimeFormat}
+                vintageContext={
+                  !isVintageMode
+                    ? {
+                        label: getVintageLabel(note.vintageId),
+                        vintageId: note.vintageId,
                       }
-                    />
-                    <DeleteButton
-                      itemDescription={`tasting note by ${note.author}`}
-                      onDelete={async () => {
-                        const result = await deleteTastingNote(note.id);
-                        if (!result.ok) throw new Error(result.error.message);
-                        queryClient.invalidateQueries({
-                          queryKey: isVintageMode
-                            ? ["tastingNotes", "vintage", props.vintageId]
-                            : ["tastingNotes", "wine", props.wineId],
-                        });
-                        return true;
-                      }}
-                    />
-                  </span>
-                </div>
-                <div className="px-4 py-3 text-sm whitespace-pre-wrap">
-                  {note.notes}
-                </div>
-              </div>
+                    : undefined
+                }
+                onEdit={async () => { router.push(`/tasting-notes/${note.id}/edit`); }}
+                onDelete={async () => {
+                  const result = await deleteTastingNote(note.id);
+                  if (!result.ok) throw new Error(result.error.message);
+                  invalidateNotes();
+                  return true;
+                }}
+                deleteDescription={`tasting note by ${note.author}`}
+              />
             ))}
         </div>
       )}
