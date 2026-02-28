@@ -1,8 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  createRegionSchema,
-  updateRegionSchema,
-} from "../regions.validator";
+import { createRegionSchema, updateRegionSchema } from "../regions.validator";
 
 describe("createRegionSchema", () => {
   it("accepts a valid region", () => {
