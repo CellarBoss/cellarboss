@@ -37,6 +37,14 @@
       ],
       "minimumReleaseAge": "1 day",
       "automerge": false
+    },
+    {
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "labels": ["skip-changelog"]
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "labels": ["skip-changelog"]
     }
   ]
 }
