@@ -54,6 +54,10 @@ export async function updateTastingNote(
   );
 }
 
+export async function getAllTastingNotes(): Promise<ApiResult<TastingNote[]>> {
+  return makeServerRequest<TastingNote[]>("tasting-note", "GET");
+}
+
 export async function deleteTastingNote(
   id: number,
 ): Promise<ApiResult<boolean>> {
