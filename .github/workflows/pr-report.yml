@@ -1,4 +1,4 @@
-name: PR Test Coverage Report
+name: PR Test Reports
 
 on:
   workflow_run:
@@ -11,7 +11,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  report:
+  coverage:
     name: Post Coverage Comment
     runs-on: ubuntu-latest
     if: github.event.workflow_run.event == 'pull_request'
@@ -66,3 +66,26 @@ jobs:
         with:
           name: Backend
           working-directory: apps/backend
+
+  playwright:
+    name: Post Playwright Report
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.event == 'pull_request'
+    steps:
+      - name: Download Playwright results
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
+        continue-on-error: true
+        id: download
+        with:
+          name: playwright-results
+          path: playwright/
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Playwright report summary
+        if: steps.download.outcome == 'success'
+        uses: daun/playwright-report-summary@be9e270edd5ad86038604d3caa84a819a6ff6fed # v3
+        with:
+          report-file: playwright/playwright-results.json
+          comment-title: Playwright E2E Results
+          job-summary: true

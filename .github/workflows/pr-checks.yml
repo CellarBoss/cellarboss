@@ -258,6 +258,14 @@ jobs:
           path: apps/web/playwright-report/
           retention-days: 7
 
+      - name: Upload Playwright results JSON
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        if: always()
+        with:
+          name: playwright-results
+          path: apps/web/playwright-results.json
+          retention-days: 1
+
       - name: Upload failure screenshots
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         if: failure()
