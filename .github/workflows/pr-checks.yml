@@ -11,7 +11,7 @@ on:
       - reopened
 
 permissions:
-  pull-requests: write
+  pull-requests: read
   statuses: write
 
 jobs:
@@ -122,12 +122,13 @@ jobs:
       - name: Run web unit tests with coverage
         run: pnpm --filter @cellarboss/web test:coverage
 
-      - name: Coverage report
+      - name: Upload coverage
         if: always()
-        uses: davelosert/vitest-coverage-report-action@2500dafcee7dd64f85ab689c0b83798a8359770e # v2
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
-          name: Web
-          working-directory: apps/web
+          name: coverage-web
+          path: apps/web/coverage/
+          retention-days: 1
   
   test-validators:
     name: Test Validators
@@ -153,12 +154,13 @@ jobs:
       - name: Run validators unit tests with coverage
         run: pnpm --filter @cellarboss/validators test:coverage
 
-      - name: Coverage report
+      - name: Upload coverage
         if: always()
-        uses: davelosert/vitest-coverage-report-action@2500dafcee7dd64f85ab689c0b83798a8359770e # v2
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
-          name: Validators
-          working-directory: packages/validators
+          name: coverage-validators
+          path: packages/validators/coverage/
+          retention-days: 1
 
   test-backend:
     name: Test Backend
@@ -193,12 +195,13 @@ jobs:
           BETTER_AUTH_URL: http://localhost:3000
           BETTER_AUTH_SECRET: ci-test-placeholder
 
-      - name: Coverage report
+      - name: Upload coverage
         if: always()
-        uses: davelosert/vitest-coverage-report-action@2500dafcee7dd64f85ab689c0b83798a8359770e # v2
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
-          name: Backend
-          working-directory: apps/backend
+          name: coverage-backend
+          path: apps/backend/coverage/
+          retention-days: 1
 
   test-web-e2e:
     name: Test WebUI E2E
