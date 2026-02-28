@@ -123,7 +123,7 @@ jobs:
         run: pnpm --filter @cellarboss/web test:coverage
 
       - name: Upload coverage
-        if: always()
+        if: needs.changes.outputs.web == 'true'
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: coverage-web
@@ -155,7 +155,7 @@ jobs:
         run: pnpm --filter @cellarboss/validators test:coverage
 
       - name: Upload coverage
-        if: always()
+        if: needs.changes.outputs.validators == 'true'
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: coverage-validators
@@ -196,7 +196,7 @@ jobs:
           BETTER_AUTH_SECRET: ci-test-placeholder
 
       - name: Upload coverage
-        if: always()
+        if: needs.changes.outputs.backend == 'true'
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: coverage-backend
