@@ -15,7 +15,7 @@
     "automerge": true,
     "automergeType": "pr",
     "schedule": [
-      "before 6am"
+      "before 8am"
     ]
   },
   "packageRules": [
@@ -28,7 +28,7 @@
       "automerge": true,
       "automergeType": "pr",
       "schedule": [
-        "before 6am"
+        "before 8am"
       ]
     },
     {
@@ -37,6 +37,22 @@
       ],
       "minimumReleaseAge": "1 day",
       "automerge": false
+    },
+    {
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "labels": ["skip-changelog"]
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "labels": ["skip-changelog"]
+    },
+    {
+      "matchUpdateTypes": ["digest"],
+      "labels": ["skip-changelog"]
+    },
+    {
+      "matchUpdateTypes": ["pin"],
+      "labels": ["skip-changelog"]
     }
   ]
 }

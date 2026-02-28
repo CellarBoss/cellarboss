@@ -63,6 +63,7 @@ export function createTestApp() {
 export function createMockSession(
   userId: string = "test-user-1",
   email: string = "test@example.com",
+  role: string = "admin",
 ) {
   return {
     session: {
@@ -80,7 +81,9 @@ export function createMockSession(
       name: "Test User",
       createdAt: new Date(),
       updatedAt: new Date(),
-      role: "admin" as const,
+      role,
+      banned: null,
+      banReason: null,
     },
   };
 }
@@ -94,6 +97,19 @@ export function createTestAppWithAuth(
 
   // Mock the auth.api.getSession method to return our mock session
   const mockSession = createMockSession(userId, email);
+  vi.spyOn(auth.api, "getSession").mockResolvedValue(mockSession);
+
+  return app;
+}
+
+// Create authenticated test app with a non-admin user
+export function createTestAppWithNonAdmin(
+  userId: string = "test-user-2",
+  email: string = "user@example.com",
+) {
+  const app = new Hono();
+
+  const mockSession = createMockSession(userId, email, "user");
   vi.spyOn(auth.api, "getSession").mockResolvedValue(mockSession);
 
   return app;

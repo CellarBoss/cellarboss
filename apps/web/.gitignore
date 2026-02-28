@@ -10,4 +10,5 @@ next-env.d.ts
 
 # playwright
 playwright-report/
+playwright-results.json
 test-results/
