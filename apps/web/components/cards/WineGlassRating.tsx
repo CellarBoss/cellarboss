@@ -11,14 +11,12 @@ export function WineGlassRating({ field, editable }: WineGlassRatingProps) {
   const currentValue = Number(field.state.value) || 0;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
-  const displayValue = editable && hoverIndex !== null ? hoverIndex + 1 : currentValue;
+  const displayValue =
+    editable && hoverIndex !== null ? hoverIndex + 1 : currentValue;
 
   return (
     <div className="flex items-center gap-2 px-3 py-2 border rounded-md">
-      <div
-        className="flex gap-0.5"
-        onMouseLeave={() => setHoverIndex(null)}
-      >
+      <div className="flex gap-0.5" onMouseLeave={() => setHoverIndex(null)}>
         {Array.from({ length: 10 }, (_, i) => {
           const active = i < displayValue;
           return (
