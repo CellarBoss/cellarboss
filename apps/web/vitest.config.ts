@@ -10,12 +10,7 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json-summary", "json"],
       include: ["lib/**/*.ts", "lib/**/*.tsx", "hooks/**/*.ts"],
-      exclude: [
-        "**/*.test.ts",
-        "**/*.test.tsx",
-        "**/*.d.ts",
-        "lib/api/**",
-      ],
+      exclude: ["**/*.test.ts", "**/*.test.tsx", "**/*.d.ts", "lib/api/**"],
     },
   },
   esbuild: {
