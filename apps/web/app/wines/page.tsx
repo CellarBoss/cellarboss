@@ -27,6 +27,7 @@ import {
 } from "@/lib/constants/wine-colouring";
 import { VintageButton } from "@/components/buttons/VintageButton";
 import { WINE_TYPES } from "@cellarboss/validators/constants";
+import { WineTastingNotesButton } from "@/components/buttons/TastingNotesButton";
 
 function formatWineType(type: string): string {
   return type.charAt(0).toUpperCase() + type.slice(1);
@@ -265,6 +266,7 @@ export default function WinesPage() {
                 router.push(`/vintages/new?wineId=${row.original.id}`)
               }
             />
+            <WineTastingNotesButton wineId={row.original.id} />
             <EditButton onEdit={() => handleEdit(row.original)} />
             <DeleteButton
               itemDescription={row.original.name}
