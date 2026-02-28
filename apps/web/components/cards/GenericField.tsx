@@ -4,6 +4,7 @@ import { DataSelector } from "../selector/DataSelector";
 import { WineVintageSelector } from "../selector/WineVintageSelector";
 import { Field, FieldLabel, FieldError } from "../ui/field";
 import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 import { DateField } from "./DateField";
 import { FixedListField } from "./FixedListField";
 import { WineGlassRating } from "./WineGlassRating";
@@ -67,6 +68,17 @@ export function GenericField({
                 field={field}
                 editable={editable}
                 options={options}
+              />
+            ) : type === "textarea" ? (
+              <Textarea
+                id={field.name}
+                name={field.name}
+                value={field.state.value ?? ""}
+                disabled={!editable}
+                onChange={(e) => field.handleChange(e.target.value)}
+                aria-invalid={isInvalid}
+                autoComplete="off"
+                rows={4}
               />
             ) : type === "number" ? (
               <Input
