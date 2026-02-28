@@ -15,7 +15,7 @@
     "automerge": true,
     "automergeType": "pr",
     "schedule": [
-      "before 6am"
+      "before 8am"
     ]
   },
   "packageRules": [
@@ -28,7 +28,7 @@
       "automerge": true,
       "automergeType": "pr",
       "schedule": [
-        "before 6am"
+        "before 8am"
       ]
     },
     {
@@ -44,6 +44,14 @@
     },
     {
       "matchDepTypes": ["devDependencies"],
+      "labels": ["skip-changelog"]
+    },
+    {
+      "matchUpdateTypes": ["digest"],
+      "labels": ["skip-changelog"]
+    },
+    {
+      "matchUpdateTypes": ["pin"],
       "labels": ["skip-changelog"]
     }
   ]
