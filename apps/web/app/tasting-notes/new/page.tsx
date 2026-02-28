@@ -23,6 +23,7 @@ async function handleCreate(
 function NewTastingNoteForm() {
   const searchParams = useSearchParams();
   const vintageId = searchParams.get("vintageId");
+  const wineId = searchParams.get("wineId");
 
   const defaultData: TastingNote = {
     id: 0,
@@ -33,7 +34,11 @@ function NewTastingNoteForm() {
     notes: "",
   };
 
-  const redirectTo = vintageId ? `/vintages/${vintageId}` : "/";
+  const redirectTo = vintageId
+    ? `/vintages/${vintageId}`
+    : wineId
+      ? `/wines/${wineId}`
+      : "/";
 
   return (
     <GenericCard<TastingNote>
