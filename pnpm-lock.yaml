@@ -170,7 +170,7 @@ importers:
     devDependencies:
       '@hono/node-server':
         specifier: 1.19.9
-        version: 1.19.9(hono@4.12.2)
+        version: 1.19.9(hono@4.12.3)
       '@playwright/test':
         specifier: 1.58.2
         version: 1.58.2
@@ -202,8 +202,8 @@ importers:
         specifier: 16.1.6
         version: 16.1.6(@typescript-eslint/parser@8.56.1(eslint@10.0.2(jiti@2.6.1))(typescript@5.9.3))(eslint@10.0.2(jiti@2.6.1))(typescript@5.9.3)
       hono:
-        specifier: 4.12.2
-        version: 4.12.2
+        specifier: 4.12.3
+        version: 4.12.3
       prettier:
         specifier: 3.8.1
         version: 3.8.1
@@ -2794,8 +2794,8 @@ packages:
     resolution: {integrity: sha512-kyWP5PAiMooEvGrA9jcD3IXF7ATu8+o7B3KCbPXid5se52NPqnOpM/r9qeW2heMnOekF4kqR1fXJqCYeCLKrZg==}
     engines: {node: '>=16.9.0'}
 
-  hono@4.12.2:
-    resolution: {integrity: sha512-gJnaDHXKDayjt8ue0n8Gs0A007yKXj4Xzb8+cNjZeYsSzzwKc0Lr+OZgYwVfB0pHfUs17EPoLvrOsEaJ9mj+Tg==}
+  hono@4.12.3:
+    resolution: {integrity: sha512-SFsVSjp8sj5UumXOOFlkZOG6XS9SJDKw0TbwFeV+AJ8xlST8kxK5Z/5EYa111UY8732lK2S/xB653ceuaoGwpg==}
     engines: {node: '>=16.9.0'}
 
   html-escaper@2.0.2:
@@ -4672,9 +4672,9 @@ snapshots:
     dependencies:
       hono: 4.11.10
 
-  '@hono/node-server@1.19.9(hono@4.12.2)':
+  '@hono/node-server@1.19.9(hono@4.12.3)':
     dependencies:
-      hono: 4.12.2
+      hono: 4.12.3
 
   '@hono/zod-validator@0.7.6(hono@4.11.10)(zod@4.3.6)':
     dependencies:
@@ -6285,7 +6285,7 @@ snapshots:
       eslint: 10.0.2(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.56.1(eslint@10.0.2(jiti@2.6.1))(typescript@5.9.3))(eslint@10.0.2(jiti@2.6.1)))(eslint@10.0.2(jiti@2.6.1))
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.56.1(eslint@10.0.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.56.1(eslint@10.0.2(jiti@2.6.1))(typescript@5.9.3))(eslint@10.0.2(jiti@2.6.1)))(eslint@10.0.2(jiti@2.6.1)))(eslint@10.0.2(jiti@2.6.1))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.56.1(eslint@10.0.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@10.0.2(jiti@2.6.1))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@10.0.2(jiti@2.6.1))
       eslint-plugin-react: 7.37.5(eslint@10.0.2(jiti@2.6.1))
       eslint-plugin-react-hooks: 7.0.1(eslint@10.0.2(jiti@2.6.1))
@@ -6318,7 +6318,7 @@ snapshots:
       tinyglobby: 0.2.15
       unrs-resolver: 1.11.1
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.56.1(eslint@10.0.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.56.1(eslint@10.0.2(jiti@2.6.1))(typescript@5.9.3))(eslint@10.0.2(jiti@2.6.1)))(eslint@10.0.2(jiti@2.6.1)))(eslint@10.0.2(jiti@2.6.1))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.56.1(eslint@10.0.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@10.0.2(jiti@2.6.1))
     transitivePeerDependencies:
       - supports-color
 
@@ -6333,7 +6333,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.56.1(eslint@10.0.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.56.1(eslint@10.0.2(jiti@2.6.1))(typescript@5.9.3))(eslint@10.0.2(jiti@2.6.1)))(eslint@10.0.2(jiti@2.6.1)))(eslint@10.0.2(jiti@2.6.1)):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.56.1(eslint@10.0.2(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@10.0.2(jiti@2.6.1)):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -6665,7 +6665,7 @@ snapshots:
 
   hono@4.11.10: {}
 
-  hono@4.12.2: {}
+  hono@4.12.3: {}
 
   html-escaper@2.0.2: {}
 
