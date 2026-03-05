@@ -45,7 +45,7 @@
     "zod": "^4.3.4"
   },
   "devDependencies": {
-    "@hono/node-server": "1.19.9",
+    "@hono/node-server": "1.19.10",
     "@playwright/test": "1.58.2",
     "@tailwindcss/postcss": "4.2.1",
     "@types/node": "24.10.14",
