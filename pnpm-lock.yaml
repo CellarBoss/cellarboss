@@ -170,7 +170,7 @@ importers:
     devDependencies:
       '@hono/node-server':
         specifier: 1.19.10
-        version: 1.19.10(hono@4.12.4)
+        version: 1.19.10(hono@4.12.5)
       '@playwright/test':
         specifier: 1.58.2
         version: 1.58.2
@@ -202,8 +202,8 @@ importers:
         specifier: 16.1.6
         version: 16.1.6(@typescript-eslint/parser@8.56.1(eslint@10.0.2(jiti@2.6.1))(typescript@5.9.3))(eslint@10.0.2(jiti@2.6.1))(typescript@5.9.3)
       hono:
-        specifier: 4.12.4
-        version: 4.12.4
+        specifier: 4.12.5
+        version: 4.12.5
       prettier:
         specifier: 3.8.1
         version: 3.8.1
@@ -2960,6 +2960,10 @@ packages:
     resolution: {integrity: sha512-ooiZW1Xy8rQ4oELQ++otI2T9DsKpV0M6c6cO6JGx4RTfav9poFFLlet9UMXHZnoM1yG0HWGlQLswBGX3RZmHtg==}
     engines: {node: '>=16.9.0'}
 
+  hono@4.12.5:
+    resolution: {integrity: sha512-3qq+FUBtlTHhtYxbxheZgY8NIFnkkC/MR8u5TTsr7YZ3wixryQ3cCwn3iZbg8p8B88iDBBAYSfZDS75t8MN7Vg==}
+    engines: {node: '>=16.9.0'}
+
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
 
@@ -4996,6 +5000,10 @@ snapshots:
   '@hono/node-server@1.19.10(hono@4.12.4)':
     dependencies:
       hono: 4.12.4
+
+  '@hono/node-server@1.19.10(hono@4.12.5)':
+    dependencies:
+      hono: 4.12.5
 
   '@hono/node-server@1.19.9(hono@4.11.4)':
     dependencies:
@@ -7159,6 +7167,8 @@ snapshots:
     optional: true
 
   hono@4.12.4: {}
+
+  hono@4.12.5: {}
 
   html-escaper@2.0.2: {}
 
