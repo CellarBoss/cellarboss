@@ -6,30 +6,26 @@
   "semanticCommits": "enabled",
   "semanticCommitType": "deps",
   "semanticCommitScope": "",
-  "prConcurrentLimit": 5,
+  "prConcurrentLimit": 8,
   "prHourlyLimit": 2,
   "draftPR": false,
   "dependencyDashboard": true,
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
-    "automergeType": "pr",
-    "schedule": [
-      "before 8am"
-    ]
+    "automergeType": "pr"
   },
   "packageRules": [
     {
       "matchUpdateTypes": [
         "patch",
-        "minor"
+        "minor",
+        "digest"
       ],
       "minimumReleaseAge": "3 days",
       "automerge": true,
       "automergeType": "pr",
-      "schedule": [
-        "before 8am"
-      ]
+      "labels": ["skip-changelog"]
     },
     {
       "matchUpdateTypes": [
@@ -39,19 +35,19 @@
       "automerge": false
     },
     {
-      "matchUpdateTypes": ["lockFileMaintenance"],
+      "matchUpdateTypes": [
+        "lockFileMaintenance",
+        "pin"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
       "labels": ["skip-changelog"]
     },
     {
       "matchDepTypes": ["devDependencies"],
-      "labels": ["skip-changelog"]
-    },
-    {
-      "matchUpdateTypes": ["digest"],
-      "labels": ["skip-changelog"]
-    },
-    {
-      "matchUpdateTypes": ["pin"],
+      "minimumReleaseAge": "3 days",
+      "automerge": true,
+      "automergeType": "pr",
       "labels": ["skip-changelog"]
     }
   ]
