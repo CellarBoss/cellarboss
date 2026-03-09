@@ -11,6 +11,7 @@
   "prHourlyLimit": 2,
   "draftPR": false,
   "dependencyDashboard": true,
+  "postUpdateOptions": ["pnpmDedupe"],
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
