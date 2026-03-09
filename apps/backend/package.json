@@ -15,20 +15,20 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
-    "@better-auth/cli": "^1.4.19",
+    "@better-auth/cli": "1.4.21",
     "@cellarboss/types": "workspace:*",
     "@cellarboss/validators": "workspace:*",
     "@hono/node-server": "^1.19.9",
-    "@hono/zod-validator": "^0.7.6",
-    "better-auth": "^1.4.17",
-    "better-sqlite3": "^12.6.2",
-    "dotenv": "^17.2.4",
+    "@hono/zod-validator": "0.7.6",
+    "better-auth": "1.4.17",
+    "better-sqlite3": "12.6.2",
+    "dotenv": "17.2.4",
     "hono": "^4.11.5",
-    "kysely": "^0.28.10",
-    "kysely-ctl": "^0.20.0",
-    "mysql2": "^3.16.1",
-    "pg": "^8.17.2",
-    "zod": "^4.3.6"
+    "kysely": "0.28.10",
+    "kysely-ctl": "0.20.0",
+    "mysql2": "3.16.1",
+    "pg": "8.17.2",
+    "zod": "4.3.6"
   },
   "devDependencies": {
     "@types/better-sqlite3": "7.6.13",
