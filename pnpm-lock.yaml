@@ -21,10 +21,10 @@ importers:
         version: link:../../packages/validators
       '@hono/node-server':
         specifier: 1.19.11
-        version: 1.19.11(hono@4.12.4)
+        version: 1.19.11(hono@4.12.5)
       '@hono/zod-validator':
         specifier: 0.7.6
-        version: 0.7.6(hono@4.12.4)(zod@4.3.6)
+        version: 0.7.6(hono@4.12.5)(zod@4.3.6)
       better-auth:
         specifier: 1.5.4
         version: 1.5.4(bb13f28345950b13806dfea8564c450f)
@@ -35,8 +35,8 @@ importers:
         specifier: 17.3.1
         version: 17.3.1
       hono:
-        specifier: 4.12.4
-        version: 4.12.4
+        specifier: 4.12.5
+        version: 4.12.5
       kysely:
         specifier: 0.28.11
         version: 0.28.11
@@ -3031,10 +3031,6 @@ packages:
     resolution: {integrity: sha512-U7tt8JsyrxSRKspfhtLET79pU8K+tInj5QZXs1jSugO1Vq5dFj3kmZsRldo29mTBfcjDRVRXrEZ6LS63Cog9ZA==}
     engines: {node: '>=16.9.0'}
 
-  hono@4.12.4:
-    resolution: {integrity: sha512-ooiZW1Xy8rQ4oELQ++otI2T9DsKpV0M6c6cO6JGx4RTfav9poFFLlet9UMXHZnoM1yG0HWGlQLswBGX3RZmHtg==}
-    engines: {node: '>=16.9.0'}
-
   hono@4.12.5:
     resolution: {integrity: sha512-3qq+FUBtlTHhtYxbxheZgY8NIFnkkC/MR8u5TTsr7YZ3wixryQ3cCwn3iZbg8p8B88iDBBAYSfZDS75t8MN7Vg==}
     engines: {node: '>=16.9.0'}
@@ -5085,10 +5081,6 @@ snapshots:
 
   '@floating-ui/utils@0.2.11': {}
 
-  '@hono/node-server@1.19.11(hono@4.12.4)':
-    dependencies:
-      hono: 4.12.4
-
   '@hono/node-server@1.19.11(hono@4.12.5)':
     dependencies:
       hono: 4.12.5
@@ -5097,9 +5089,9 @@ snapshots:
     dependencies:
       hono: 4.11.4
 
-  '@hono/zod-validator@0.7.6(hono@4.12.4)(zod@4.3.6)':
+  '@hono/zod-validator@0.7.6(hono@4.12.5)(zod@4.3.6)':
     dependencies:
-      hono: 4.12.4
+      hono: 4.12.5
       zod: 4.3.6
 
   '@humanfs/core@0.19.1': {}
@@ -7252,8 +7244,6 @@ snapshots:
       hermes-estree: 0.25.1
 
   hono@4.11.4: {}
-
-  hono@4.12.4: {}
 
   hono@4.12.5: {}
 
