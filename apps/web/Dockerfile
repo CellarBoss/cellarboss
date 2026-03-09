@@ -1,4 +1,4 @@
-FROM node:24-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS builder
+FROM node:24.14.0-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS builder
 WORKDIR /app
 
 RUN corepack enable && corepack prepare pnpm@10.30.3 --activate
@@ -13,7 +13,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm --filter @cellarboss/web build
 
-FROM node:24-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS runner
+FROM node:24.14.0-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
