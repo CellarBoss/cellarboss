@@ -17,6 +17,7 @@
   "dependencies": {
     "@better-auth/cli": "1.4.21",
     "@cellarboss/types": "workspace:*",
+    "@cellarboss/utils": "workspace:*",
     "@cellarboss/validators": "workspace:*",
     "@hono/node-server": "1.19.11",
     "@hono/zod-validator": "0.7.6",
