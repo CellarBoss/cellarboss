@@ -1,5 +1,6 @@
 import "dotenv/config";
-import { Hono } from "hono";
+import { OpenAPIHono } from "@hono/zod-openapi";
+import { Scalar } from "@scalar/hono-api-reference";
 import { serve } from "@hono/node-server";
 import { cors } from "hono/cors";
 import { auth } from "@utils/auth.js";
@@ -7,13 +8,12 @@ import { env } from "@utils/env.js";
 import { registerRoutes } from "@routes/index.js";
 import { errorHandler } from "@middleware/error.middleware.js";
 
-const app = new Hono();
+const app = new OpenAPIHono();
 
 app.onError(errorHandler);
 
 // CORS
 app.use(
-  "*",
   cors({
     origin:
       env.CORS ||
@@ -35,8 +35,28 @@ app.all("/api/auth/*", (c) => {
 });
 
 // Register API routes
-const api = new Hono();
+const api = new OpenAPIHono();
 registerRoutes(api);
+
+// OpenAPI spec endpoint
+api.doc("/openapi.json", {
+  openapi: "3.1.0",
+  info: {
+    title: "Cellarboss API",
+    version: "1.0.0",
+    description: "Wine cellar management API",
+  },
+});
+
+// Scalar API reference UI
+api.get(
+  "/docs",
+  Scalar({
+    url: "/api/openapi.json",
+    theme: "kepler",
+  }),
+);
+
 app.route("/api", api);
 
 serve(
