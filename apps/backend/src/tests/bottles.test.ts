@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, beforeAll } from "vitest";
-import type { Hono } from "hono";
+import type { OpenAPIHono } from "@hono/zod-openapi";
 import {
   createTestApp,
   createTestAppWithAuth,
@@ -19,7 +19,7 @@ describe("Bottle API", () => {
   });
 
   describe("without auth", () => {
-    let app: Hono;
+    let app: OpenAPIHono;
 
     beforeEach(() => {
       app = createTestApp();
@@ -53,7 +53,7 @@ describe("Bottle API", () => {
   });
 
   describe("Authenticated operations", () => {
-    let app: Hono;
+    let app: OpenAPIHono;
 
     beforeEach(async () => {
       // Create prerequisite data
