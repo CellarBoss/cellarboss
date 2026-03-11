@@ -18,7 +18,7 @@
   "dependencies": {
     "@better-auth/cli": "1.4.21",
     "@cellarboss/types": "workspace:*",
-    "@cellarboss/utils": "workspace:*",
+
     "@cellarboss/validators": "workspace:*",
     "@hono/node-server": "1.19.11",
     "@hono/zod-openapi": "^1.2.2",
@@ -27,7 +27,7 @@
     "better-auth": "1.5.4",
     "better-sqlite3": "12.6.2",
     "dotenv": "17.3.1",
-    "hono": "4.12.5",
+    "hono": "4.12.7",
     "kysely": "0.28.11",
     "kysely-ctl": "0.20.0",
     "mysql2": "3.19.0",
