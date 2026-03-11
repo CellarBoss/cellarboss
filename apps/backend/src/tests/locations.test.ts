@@ -108,6 +108,33 @@ describe("Location API", () => {
       });
     });
 
+    describe("invalid ID handling", () => {
+      it("GET /location/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/location/abc");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("PUT /location/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/location/abc", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: "Test" }),
+        });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("DELETE /location/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/location/abc", { method: "DELETE" });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+    });
+
     describe("PUT /location/:id", () => {
       it("updates a location", async () => {
         const createRes = await app.request("/location", {

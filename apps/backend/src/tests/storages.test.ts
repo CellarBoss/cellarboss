@@ -124,6 +124,33 @@ describe("Storage API", () => {
       });
     });
 
+    describe("invalid ID handling", () => {
+      it("GET /storage/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/storage/abc");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("PUT /storage/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/storage/abc", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: "Test" }),
+        });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("DELETE /storage/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/storage/abc", { method: "DELETE" });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+    });
+
     describe("PUT /storage/:id", () => {
       it("updates a storage", async () => {
         const createRes = await app.request("/storage", {

@@ -108,6 +108,33 @@ describe("WineMaker API", () => {
       });
     });
 
+    describe("invalid ID handling", () => {
+      it("GET /winemaker/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/winemaker/abc");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("PUT /winemaker/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/winemaker/abc", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: "Test" }),
+        });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("DELETE /winemaker/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/winemaker/abc", { method: "DELETE" });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+    });
+
     describe("PUT /winemaker/:id", () => {
       it("updates a winemaker", async () => {
         const createRes = await app.request("/winemaker", {

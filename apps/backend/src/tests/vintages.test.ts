@@ -138,6 +138,68 @@ describe("Vintage API", () => {
       });
     });
 
+    describe("invalid ID handling", () => {
+      it("GET /vintage/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/vintage/abc");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("PUT /vintage/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/vintage/abc", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ drinkUntil: 2040 }),
+        });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("DELETE /vintage/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/vintage/abc", { method: "DELETE" });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+    });
+
+    describe("GET /vintage/wine/:wineId", () => {
+      it("returns 400 for non-numeric wineId", async () => {
+        const res = await app.request("/vintage/wine/abc");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("returns empty array for wine with no vintages", async () => {
+        const res = await app.request(`/vintage/wine/${testWineId}`);
+        expect(res.status).toBe(200);
+        const data = await res.json();
+        expect(Array.isArray(data)).toBe(true);
+      });
+
+      it("returns vintages for a wine", async () => {
+        await app.request("/vintage", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            year: 2016,
+            wineId: testWineId,
+            drinkFrom: null,
+            drinkUntil: null,
+          }),
+        });
+
+        const res = await app.request(`/vintage/wine/${testWineId}`);
+        expect(res.status).toBe(200);
+        const data = await res.json();
+        expect(data.length).toBeGreaterThan(0);
+        expect(data[0].wineId).toBe(testWineId);
+      });
+    });
+
     describe("PUT /vintage/:id", () => {
       it("updates a vintage", async () => {
         const createRes = await app.request("/vintage", {

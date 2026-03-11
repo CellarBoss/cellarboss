@@ -135,6 +135,33 @@ describe("Wine API", () => {
       });
     });
 
+    describe("invalid ID handling", () => {
+      it("GET /wine/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/wine/abc");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("PUT /wine/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/wine/abc", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: "Test" }),
+        });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("DELETE /wine/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/wine/abc", { method: "DELETE" });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+    });
+
     describe("PUT /wine/:id", () => {
       it("updates a wine", async () => {
         const createRes = await app.request("/wine", {

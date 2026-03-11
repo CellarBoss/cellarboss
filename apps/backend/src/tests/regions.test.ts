@@ -117,6 +117,33 @@ describe("Region API", () => {
       });
     });
 
+    describe("invalid ID handling", () => {
+      it("GET /region/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/region/abc");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("PUT /region/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/region/abc", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: "Test" }),
+        });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("DELETE /region/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/region/abc", { method: "DELETE" });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+    });
+
     describe("PUT /region/:id", () => {
       it("updates a region", async () => {
         const createRes = await app.request("/region", {

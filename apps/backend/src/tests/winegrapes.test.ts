@@ -124,6 +124,40 @@ describe("WineGrape API", () => {
       });
     });
 
+    describe("invalid ID handling", () => {
+      it("GET /winegrape/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/winegrape/abc");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("GET /winegrape/wine/:wineId returns 400 for non-numeric id", async () => {
+        const res = await app.request("/winegrape/wine/abc");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("PUT /winegrape/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/winegrape/abc", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ grapeId: testGrapeId }),
+        });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("DELETE /winegrape/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/winegrape/abc", { method: "DELETE" });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+    });
+
     describe("GET /winegrape/wine/:id", () => {
       it("returns empty for non-existent wine", async () => {
         const res = await app.request("/winegrape/wine/999");

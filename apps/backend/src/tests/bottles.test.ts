@@ -137,6 +137,87 @@ describe("Bottle API", () => {
       });
     });
 
+    describe("invalid ID handling", () => {
+      it("GET /bottle/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/bottle/abc");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("PUT /bottle/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/bottle/abc", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ purchasePrice: 50 }),
+        });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("DELETE /bottle/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/bottle/abc", { method: "DELETE" });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+    });
+
+    describe("GET /bottle/vintage/:vintageId", () => {
+      it("returns 400 for non-numeric vintageId", async () => {
+        const res = await app.request("/bottle/vintage/abc");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("returns empty array for vintage with no bottles", async () => {
+        const res = await app.request(`/bottle/vintage/${testVintageId}`);
+        expect(res.status).toBe(200);
+        const data = await res.json();
+        expect(Array.isArray(data)).toBe(true);
+      });
+
+      it("returns bottles for a vintage", async () => {
+        await app.request("/bottle", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            purchaseDate: "2024-01-01",
+            purchasePrice: 50.0,
+            vintageId: testVintageId,
+            storageId: null,
+            status: "stored",
+          }),
+        });
+
+        const res = await app.request(`/bottle/vintage/${testVintageId}`);
+        expect(res.status).toBe(200);
+        const data = await res.json();
+        expect(data.length).toBeGreaterThan(0);
+        expect(data[0].vintageId).toBe(testVintageId);
+      });
+    });
+
+    describe("GET /bottle/vintage/:vintageId/counts", () => {
+      it("returns 400 for non-numeric vintageId", async () => {
+        const res = await app.request("/bottle/vintage/abc/counts");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("returns counts for a vintage", async () => {
+        const res = await app.request(
+          `/bottle/vintage/${testVintageId}/counts`,
+        );
+        expect(res.status).toBe(200);
+        const data = await res.json();
+        expect(Array.isArray(data)).toBe(true);
+      });
+    });
+
     describe("PUT /bottle/:id", () => {
       it("updates a bottle", async () => {
         const createRes = await app.request("/bottle", {
