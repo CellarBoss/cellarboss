@@ -1,9 +1,19 @@
 import { z } from "zod";
 
 export const createStorageSchema = z.object({
-  name: z.string().min(1).max(255).trim(),
-  locationId: z.number().int().positive().nullable(),
-  parent: z.number().int().positive().nullable(),
+  name: z.string().min(1).max(255).trim().describe("Name of the storage unit"),
+  locationId: z
+    .number()
+    .int()
+    .positive()
+    .nullable()
+    .describe("ID of the location, or null if not assigned"),
+  parent: z
+    .number()
+    .int()
+    .positive()
+    .nullable()
+    .describe("ID of the parent storage, or null if top-level"),
 });
 
 export const updateStorageSchema = createStorageSchema
