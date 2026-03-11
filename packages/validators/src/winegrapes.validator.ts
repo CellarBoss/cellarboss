@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const createWineGrapeSchema = z.object({
-  wineId: z.number().int().positive(),
-  grapeId: z.number().int().positive(),
+  wineId: z.number().int().positive().describe("ID of the wine"),
+  grapeId: z.number().int().positive().describe("ID of the grape variety"),
 });
 
 export const updateWineGrapeSchema = createWineGrapeSchema

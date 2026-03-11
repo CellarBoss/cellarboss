@@ -2,10 +2,15 @@ import { z } from "zod";
 import { WINE_TYPES } from "./constants";
 
 export const createWineSchema = z.object({
-  name: z.string().min(1).max(255).trim(),
-  wineMakerId: z.number().int().positive(),
-  regionId: z.number().int().positive().nullable(),
-  type: z.enum(WINE_TYPES),
+  name: z.string().min(1).max(255).trim().describe("Name of the wine"),
+  wineMakerId: z.number().int().positive().describe("ID of the wine maker"),
+  regionId: z
+    .number()
+    .int()
+    .positive()
+    .nullable()
+    .describe("ID of the region, or null"),
+  type: z.enum(WINE_TYPES).describe("Type of wine"),
 });
 
 export const updateWineSchema = createWineSchema

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, beforeAll } from "vitest";
-import type { Hono } from "hono";
+import type { OpenAPIHono } from "@hono/zod-openapi";
 import {
   createTestApp,
   createTestAppWithAuth,
@@ -14,7 +14,7 @@ describe("Settings API", () => {
   });
 
   describe("public access (no auth)", () => {
-    let app: Hono;
+    let app: OpenAPIHono;
 
     beforeEach(async () => {
       app = createTestApp();
@@ -60,7 +60,7 @@ describe("Settings API", () => {
   });
 
   describe("Authenticated operations (admin)", () => {
-    let app: Hono;
+    let app: OpenAPIHono;
 
     beforeEach(async () => {
       app = createTestAppWithAuth();

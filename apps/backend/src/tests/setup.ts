@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { OpenAPIHono } from "@hono/zod-openapi";
 import {
   Kysely,
   Migrator,
@@ -56,7 +56,7 @@ export async function runMigrations(db: Kysely<Database>): Promise<void> {
 
 // Create test app instance (unauthenticated)
 export function createTestApp() {
-  return new Hono();
+  return new OpenAPIHono();
 }
 
 // Create mock session data
@@ -93,7 +93,7 @@ export function createTestAppWithAuth(
   userId: string = "test-user-1",
   email: string = "test@example.com",
 ) {
-  const app = new Hono();
+  const app = new OpenAPIHono();
 
   // Mock the auth.api.getSession method to return our mock session
   const mockSession = createMockSession(userId, email);
@@ -107,7 +107,7 @@ export function createTestAppWithNonAdmin(
   userId: string = "test-user-2",
   email: string = "user@example.com",
 ) {
-  const app = new Hono();
+  const app = new OpenAPIHono();
 
   const mockSession = createMockSession(userId, email, "user");
   vi.spyOn(auth.api, "getSession").mockResolvedValue(mockSession);
