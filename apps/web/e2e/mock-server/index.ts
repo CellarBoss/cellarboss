@@ -43,6 +43,7 @@ export type MockState = {
   locations: any[];
   settings: any[];
   users: any[];
+  wineGrapes: any[];
 };
 
 let server: ServerType | null = null;
@@ -83,6 +84,9 @@ export async function startMockServer(port: number): Promise<ServerType> {
   });
 
   // Register all domain routes
+  // User routes must be registered before auth routes because auth has a
+  // catch-all /api/auth/* that would intercept /api/auth/admin/* endpoints
+  registerUserRoutes(app, state);
   registerAuthRoutes(app, state);
   registerWineRoutes(app, state);
   registerBottleRoutes(app, state);
@@ -94,7 +98,6 @@ export async function startMockServer(port: number): Promise<ServerType> {
   registerStorageRoutes(app, state);
   registerLocationRoutes(app, state);
   registerSettingsRoutes(app, state);
-  registerUserRoutes(app, state);
   registerWinegrapeRoutes(app, state);
 
   return new Promise((resolve) => {
