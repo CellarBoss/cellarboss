@@ -18,7 +18,6 @@ process.env.BETTER_AUTH_SECRET = "docs-generation-dummy-secret";
 
 const { OpenAPIHono } = await import("@hono/zod-openapi");
 const { registerRoutes } = await import("../src/routes/index.js");
-const { getVersion } = await import("@cellarboss/utils/version");
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outDir = resolve(__dirname, "../docs");
@@ -31,7 +30,7 @@ const spec = api.getOpenAPI31Document({
   openapi: "3.1.0",
   info: {
     title: "Cellarboss API",
-    version: getVersion(),
+    version: process.env.APP_VERSION || "development",
     description: "Wine cellar management API",
   },
   servers: [
