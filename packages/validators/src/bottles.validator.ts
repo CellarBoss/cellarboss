@@ -2,11 +2,22 @@ import { z } from "zod";
 import { BOTTLE_STATUSES } from "./constants.js";
 
 export const createBottleSchema = z.object({
-  purchaseDate: z.iso.date(),
-  purchasePrice: z.number().nonnegative(),
-  vintageId: z.number().int().positive(),
-  storageId: z.number().int().positive().nullable(),
-  status: z.enum(BOTTLE_STATUSES),
+  purchaseDate: z.iso
+    .date()
+    .describe("Date the bottle was purchased (ISO date)"),
+  purchasePrice: z.number().nonnegative().describe("Price paid for the bottle"),
+  vintageId: z
+    .number()
+    .int()
+    .positive()
+    .describe("ID of the vintage this bottle belongs to"),
+  storageId: z
+    .number()
+    .int()
+    .positive()
+    .nullable()
+    .describe("ID of the storage location, or null if not stored"),
+  status: z.enum(BOTTLE_STATUSES).describe("Current status of the bottle"),
 });
 
 export const updateBottleSchema = createBottleSchema

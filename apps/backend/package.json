@@ -12,7 +12,8 @@
     "migrate": "tsx src/utils/migrate.ts latest",
     "migrate:down": "tsx src/utils/migrate.ts down",
     "seed": "kysely seed run",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "generate:docs": "tsx scripts/generate-docs.ts"
   },
   "dependencies": {
     "@better-auth/cli": "1.4.21",
@@ -20,7 +21,9 @@
 
     "@cellarboss/validators": "workspace:*",
     "@hono/node-server": "1.19.11",
+    "@hono/zod-openapi": "^1.2.2",
     "@hono/zod-validator": "0.7.6",
+    "@scalar/hono-api-reference": "^0.10.1",
     "better-auth": "1.5.4",
     "better-sqlite3": "12.6.2",
     "dotenv": "17.3.1",

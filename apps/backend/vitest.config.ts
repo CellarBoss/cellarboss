@@ -20,6 +20,7 @@ export default defineConfig({
       "@utils": path.resolve(__dirname, "./src/utils"),
       "@routes": path.resolve(__dirname, "./src/routes"),
       "@schema": path.resolve(__dirname, "./src/schema"),
+      "@openapi": path.resolve(__dirname, "./src/openapi"),
       "@db": path.resolve(__dirname, "./src/utils/database.ts"),
       "@cellarboss/types": path.resolve(
         __dirname,
