@@ -43,6 +43,62 @@ const spec = api.getOpenAPI31Document({
   ],
 });
 
+// Add tag descriptions
+spec.tags = [
+  {
+    name: "Bottles",
+    description:
+      "Individual bottles of wine in the cellar. Each bottle belongs to a vintage and can be assigned to a storage location.",
+  },
+  {
+    name: "Countries",
+    description: "Countries where wine-producing regions are located.",
+  },
+  {
+    name: "Grapes",
+    description:
+      "Grape varieties used in winemaking. Linked to wines via wine-grape associations.",
+  },
+  {
+    name: "Locations",
+    description:
+      "Physical locations (e.g. a house or warehouse) that contain storage units.",
+  },
+  {
+    name: "Regions",
+    description:
+      "Wine-producing regions within a country (e.g. Bordeaux, Barossa Valley).",
+  },
+  {
+    name: "Settings",
+    description: "Application-wide configuration settings.",
+  },
+  {
+    name: "Storages",
+    description:
+      "Storage units (e.g. racks, fridges, shelves) that hold bottles. Can be nested with a parent-child hierarchy.",
+  },
+  {
+    name: "Vintages",
+    description:
+      "A specific vintage (year) of a wine. Bottles are stored against a vintage rather than directly against a wine.",
+  },
+  {
+    name: "Wine Grapes",
+    description:
+      "Associations between wines and grape varieties, representing the blend composition of a wine.",
+  },
+  {
+    name: "Winemakers",
+    description: "Wine producers and estates.",
+  },
+  {
+    name: "Wines",
+    description:
+      "Wine records representing a distinct wine label from a winemaker, independent of vintage.",
+  },
+];
+
 // Write JSON spec
 mkdirSync(outDir, { recursive: true });
 const specPath = resolve(outDir, "openapi.json");
