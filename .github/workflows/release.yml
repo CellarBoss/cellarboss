@@ -200,6 +200,8 @@ jobs:
 
       - name: Generate API docs
         run: pnpm --filter backend generate:docs
+        env:
+          APP_VERSION: ${{ github.ref_name }}
 
       - name: Setup Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
