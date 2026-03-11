@@ -39,7 +39,7 @@ const spec = api.getOpenAPI31Document({
     },
     {
       url: "http://localhost:5000/api",
-    }
+    },
   ],
 });
 

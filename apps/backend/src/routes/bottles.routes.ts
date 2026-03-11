@@ -20,9 +20,7 @@ const crudRoutes = createCrudRoutes({
 });
 
 const vintageIdParamSchema = z.object({
-  vintageId: z
-    .string()
-    .openapi({ description: "Vintage ID", example: "1" }),
+  vintageId: z.string().openapi({ description: "Vintage ID", example: "1" }),
 });
 
 const getByVintageRoute = createRoute({
@@ -33,7 +31,10 @@ const getByVintageRoute = createRoute({
   summary: "Get bottles by vintage ID",
   request: { params: vintageIdParamSchema },
   responses: {
-    200: jsonContent(bottleResponseSchema.array(), "List of bottles for the vintage"),
+    200: jsonContent(
+      bottleResponseSchema.array(),
+      "List of bottles for the vintage",
+    ),
     400: jsonContent(errorSchema, "Invalid ID"),
     401: jsonContent(errorSchema, "Unauthorized"),
   },
@@ -47,7 +48,10 @@ const getCountsByVintageRoute = createRoute({
   summary: "Get bottle counts by status for a vintage",
   request: { params: vintageIdParamSchema },
   responses: {
-    200: jsonContent(bottleCountsResponseSchema.array(), "Bottle counts grouped by status"),
+    200: jsonContent(
+      bottleCountsResponseSchema.array(),
+      "Bottle counts grouped by status",
+    ),
     400: jsonContent(errorSchema, "Invalid ID"),
     401: jsonContent(errorSchema, "Unauthorized"),
   },

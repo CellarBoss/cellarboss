@@ -30,7 +30,10 @@ const getByWineRoute = createRoute({
   summary: "Get grape associations by wine ID",
   request: { params: wineIdParamSchema },
   responses: {
-    200: jsonContent(wineGrapeResponseSchema.array(), "List of wine-grape associations"),
+    200: jsonContent(
+      wineGrapeResponseSchema.array(),
+      "List of wine-grape associations",
+    ),
     400: jsonContent(errorSchema, "Invalid ID"),
     401: jsonContent(errorSchema, "Unauthorized"),
   },
