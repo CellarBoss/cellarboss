@@ -8,6 +8,21 @@ export function registerBottleRoutes(app: Hono, state: MockState) {
     return c.json(state.bottles);
   });
 
+  app.get("/api/bottle/vintage/:vintageId/counts", (c) => {
+    const vintageId = Number(c.req.param("vintageId"));
+    const bottles = state.bottles.filter((b) => b.vintageId === vintageId);
+    const counts = new Map<string, number>();
+    for (const b of bottles) {
+      counts.set(b.status, (counts.get(b.status) || 0) + 1);
+    }
+    return c.json(
+      Array.from(counts.entries()).map(([status, count]) => ({
+        status,
+        count,
+      })),
+    );
+  });
+
   app.get("/api/bottle/:id", (c) => {
     const id = Number(c.req.param("id"));
     const bottle = state.bottles.find((b) => b.id === id);
