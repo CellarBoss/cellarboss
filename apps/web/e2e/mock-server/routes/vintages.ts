@@ -8,6 +8,12 @@ export function registerVintageRoutes(app: Hono, state: MockState) {
     return c.json(state.vintages);
   });
 
+  app.get("/api/vintage/wine/:wineId", (c) => {
+    const wineId = Number(c.req.param("wineId"));
+    const vintages = state.vintages.filter((v) => v.wineId === wineId);
+    return c.json(vintages);
+  });
+
   app.get("/api/vintage/:id", (c) => {
     const id = Number(c.req.param("id"));
     const vintage = state.vintages.find((v) => v.id === id);
