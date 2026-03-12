@@ -189,9 +189,9 @@ async function main() {
 
     console.log(`\n✅ Screenshots saved to ${OUTPUT_DIR}`);
   } finally {
-    // Kill Next.js dev server
-    nextProcess.kill("SIGTERM");
     await stopMockServer();
+    nextProcess.kill();
+    process.exit(0);
   }
 }
 
