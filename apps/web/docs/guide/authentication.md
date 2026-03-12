@@ -8,6 +8,10 @@ Navigate to your CellarBoss instance URL. If you are not already logged in, you 
 
 Enter your email address and password, then click **Sign In**.
 
+::: info
+For a fresh installation of CellarBoss, an administrator account will be automatically created with the username `admin@cellarboss.org` and password `adminpassword`
+:::
+
 ![Login page](/screenshots/login.png)
 
 ## Logging Out
