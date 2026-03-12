@@ -8,15 +8,20 @@ Locations represent physical places where wine is stored — such as a home cell
 
 ### Columns
 
-| Column | Description       |
-| ------ | ----------------- |
-| Name   | The location name |
+| Column  | Description                                                                           |
+| ------- | ------------------------------------------------------------------------------------- |
+| Name    | The location name                                                                     |
+| Actions | Shortcut buttons for common actions. Hover over the icon to see what each button does |
 
 ## Creating a Location
 
-Click **Create** to add a new location.
+Click **Create new Location** to add a new location.
 
 ![Create location](/screenshots/locations-create.png)
+
+::: info
+Location names must be unique
+:::
 
 ### Fields
 
@@ -26,15 +31,17 @@ Click **Create** to add a new location.
 
 ## Viewing a Location
 
-Click any row to view the location's details and its associated storages.
+Click the name of the location to view the location's details.
 
 ![Location detail](/screenshots/locations-detail.png)
 
 ## Editing a Location
 
-From the detail view, click **Edit** to modify the location name.
+Click the **Edit** button to modify the location name.
 
 ## Deleting a Location
+
+Click the **Delete** button to remove the location. You will be asked to confirm before deletion.
 
 ::: warning
 A location cannot be deleted if it has associated storages. Remove the storages first.

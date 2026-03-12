@@ -1,6 +1,9 @@
 # Bottles
 
-Bottles represent individual physical bottles in your cellar. Each bottle is linked to a specific [vintage](/resources/vintages) and stored in a [storage location](/resources/storages).
+Bottles represent individual physical bottles in your cellar.
+
+Before adding bottles, you must first create the associated [wine](/resources/wines) and [vintage](/resources/vintages).
+Optionally, you can also create a [storage location](/resources/storages) to track where the bottle is located.
 
 ## List View
 
@@ -10,14 +13,16 @@ The bottles page shows all bottles in a searchable, filterable data table.
 
 ### Columns
 
-| Column         | Description                                     |
-| -------------- | ----------------------------------------------- |
-| Wine           | The name of the wine this bottle belongs to     |
-| Vintage        | The year of the vintage                         |
-| Storage        | The current storage location                    |
-| Purchase Date  | When the bottle was purchased                   |
-| Purchase Price | The price paid for the bottle                   |
-| Status         | Current status (stored, consumed, gifted, etc.) |
+| Column          | Description                                                                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Wine            | Shows the [wine](/resources/wines), [vintage](/resources/vintages) and [winemaker](/resources/winemakers)                                         |
+| Drinking Window | Whether or not the [wine](/resources/wines) is within it's defined drinkable window (current date is after _drink from_ and before _drink until_) |
+| Purchase Date   | When the bottle was purchased                                                                                                                     |
+| Price           | The price paid for the bottle                                                                                                                     |
+| Storage         | The current [storage](/resources/storages) location                                                                                               |
+| Location        | The [location](/resources/locations) in which this bottle is stored                                                                               |
+| Status          | Current status (stored, consumed, gifted, etc.)                                                                                                   |
+| Actions         | Shortcut buttons for common actions. Hover over the icon to see what each button does                                                             |
 
 ### Filtering
 
@@ -27,34 +32,36 @@ Use the filter controls above the table to narrow results by status, wine type, 
 
 ## Creating a Bottle
 
-Click the **Create** button to add a new bottle to your cellar.
+Click the **Create new Bottle** button to add a new bottle to your cellar.
 
 ![Create bottle](/screenshots/bottles-create.png)
 
 ### Fields
 
-| Field          | Required | Description                                    |
-| -------------- | -------- | ---------------------------------------------- |
-| Vintage        | Yes      | Select the wine vintage this bottle belongs to |
-| Storage        | Yes      | Where the bottle is stored                     |
-| Purchase Date  | No       | When the bottle was purchased                  |
-| Purchase Price | No       | Price paid for the bottle                      |
+| Field          | Required | Description                                                                             |
+| -------------- | -------- | --------------------------------------------------------------------------------------- |
+| Vintage        | Yes      | Select the wine vintage this bottle belongs to                                          |
+| Storage        | Yes      | Where the bottle is stored                                                              |
+| Status         | Yes      | The current status of the bottle (_ordered_, _drunk_ etc)                               |
+| Purchase Date  | No       | When the bottle was purchased                                                           |
+| Purchase Price | No       | Price paid for the bottle                                                               |
+| Quantity       | Yes      | Create _n_ identical bottles with these details. Useful when an entire case is ordered! |
 
 ## Viewing a Bottle
 
-Click any row in the table to view the bottle's full details.
+Click the **View** button to view the bottle's full details.
 
 ![Bottle detail](/screenshots/bottles-detail.png)
 
 ## Editing a Bottle
 
-From the detail view, click **Edit** to modify the bottle's information.
+Click the **Edit** button to modify the bottle's information.
 
 ![Edit bottle](/screenshots/bottles-edit.png)
 
 ## Deleting a Bottle
 
-From the detail or edit view, click **Delete** to remove the bottle. You will be asked to confirm before deletion.
+Click the **Delete** button to remove the bottle. You will be asked to confirm before deletion.
 
 ::: warning
 Deleting a bottle is permanent and cannot be undone.

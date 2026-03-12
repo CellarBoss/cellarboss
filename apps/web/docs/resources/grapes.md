@@ -8,15 +8,20 @@ Grapes represent grape varieties used in winemaking. Wines can be associated wit
 
 ### Columns
 
-| Column | Description            |
-| ------ | ---------------------- |
-| Name   | The grape variety name |
+| Column  | Description                                                                           |
+| ------- | ------------------------------------------------------------------------------------- |
+| Name    | The grape variety name                                                                |
+| Actions | Shortcut buttons for common actions. Hover over the icon to see what each button does |
 
 ## Creating a Grape
 
-Click **Create** to add a new grape variety.
+Click **Create new Grape** to add a new grape variety.
 
 ![Create grape](/screenshots/grapes-create.png)
+
+::: info
+Grape names must be unique
+:::
 
 ### Fields
 
@@ -26,15 +31,17 @@ Click **Create** to add a new grape variety.
 
 ## Viewing a Grape
 
-Click any row to view the grape's details and associated wines.
+Click the name of the grape to view the grape's details.
 
 ![Grape detail](/screenshots/grapes-detail.png)
 
 ## Editing a Grape
 
-From the detail view, click **Edit** to modify the grape variety name.
+Click the **Edit** button to modify the grape variety name.
 
 ## Deleting a Grape
+
+Click the **Delete** button to remove the grape. You will be asked to confirm before deletion.
 
 ::: warning
 A grape variety cannot be deleted if it is associated with wines. Remove the associations first.

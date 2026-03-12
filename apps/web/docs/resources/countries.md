@@ -8,15 +8,20 @@ Countries represent wine-producing nations. Each country can contain multiple [r
 
 ### Columns
 
-| Column | Description      |
-| ------ | ---------------- |
-| Name   | The country name |
+| Column  | Description                                                                           |
+| ------- | ------------------------------------------------------------------------------------- |
+| Name    | The country name                                                                      |
+| Actions | Shortcut buttons for common actions. Hover over the icon to see what each button does |
 
 ## Creating a Country
 
-Click **Create** to add a new country.
+Click **Create new Country** to add a new country.
 
 ![Create country](/screenshots/countries-create.png)
+
+::: info
+Country names must be unique
+:::
 
 ### Fields
 
@@ -26,13 +31,13 @@ Click **Create** to add a new country.
 
 ## Viewing a Country
 
-Click any row to view the country's details and its associated regions.
+Click the name of a country to view the country's details.
 
 ![Country detail](/screenshots/countries-detail.png)
 
 ## Editing a Country
 
-From the detail view, click **Edit** to modify the country name.
+Click the **Edit** button to modify the country name.
 
 ## Deleting a Country
 

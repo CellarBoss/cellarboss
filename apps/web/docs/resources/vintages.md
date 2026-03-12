@@ -23,15 +23,17 @@ Navigate to the create vintage page, or click **Create Vintage** from a wine's d
 
 ## Viewing a Vintage
 
-Click any row to view the vintage's details and associated bottles.
+Click the name of the vintage to view the vintage's details.
 
 ![Vintage detail](/screenshots/vintages-detail.png)
 
 ## Editing a Vintage
 
-From the detail view, click **Edit** to modify the vintage's information.
+Click the **Edit** button to modify the vintage's information.
 
 ## Deleting a Vintage
+
+Click the **Delete** button to remove the vintage. You will be asked to confirm before deletion.
 
 ::: warning
 Deleting a vintage will also remove all associated bottles. This action cannot be undone.

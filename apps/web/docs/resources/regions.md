@@ -19,6 +19,10 @@ Click **Create** to add a new region.
 
 ![Create region](/screenshots/regions-create.png)
 
+::: info
+Region names must be unique within their [country](/resources/countries)
+:::
+
 ### Fields
 
 | Field   | Required | Description                        |
@@ -28,15 +32,17 @@ Click **Create** to add a new region.
 
 ## Viewing a Region
 
-Click any row to view the region's details and associated wines.
+Click the name of the region to view the region's details and associated wines.
 
 ![Region detail](/screenshots/regions-detail.png)
 
 ## Editing a Region
 
-From the detail view, click **Edit** to modify the region's information.
+Click the **Edit** button to modify the region's information.
 
 ## Deleting a Region
+
+Click the **Delete** button to remove the region. You will be asked to confirm before deletion.
 
 ::: warning
 A region cannot be deleted if it has associated wines. Remove or reassign the wines first.

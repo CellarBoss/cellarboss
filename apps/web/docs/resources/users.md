@@ -8,16 +8,17 @@ The users page is available to administrators and allows managing who has access
 
 ### Columns
 
-| Column  | Description                  |
-| ------- | ---------------------------- |
-| Name    | The user's display name      |
-| Email   | The user's email address     |
-| Role    | Admin or user                |
-| Created | When the account was created |
+| Column  | Description                                                                           |
+| ------- | ------------------------------------------------------------------------------------- |
+| Name    | The user's display name                                                               |
+| Email   | The user's email address                                                              |
+| Role    | Admin or user                                                                         |
+| Created | When the account was created                                                          |
+| Actions | Shortcut buttons for common actions. Hover over the icon to see what each button does |
 
 ## Creating a User
 
-Click **Create** to add a new user account.
+Click **Create new User** to add a new user account.
 
 ![Create user](/screenshots/users-create.png)
 
@@ -32,13 +33,13 @@ Click **Create** to add a new user account.
 
 ## Viewing a User
 
-Click any row to view the user's account details.
+Click the name of the user to view the user's account details.
 
 ![User detail](/screenshots/users-detail.png)
 
 ## Editing a User
 
-From the detail view, click **Edit** to modify the user's information.
+Click the **Edit** button to modify the user's information.
 
 ## Banning a User
 
