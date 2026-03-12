@@ -16,6 +16,15 @@ Wines are the core entity in CellarBoss. Each wine has a name, type, and is asso
 | Region                  | The wine-growing region                                                               |
 | Actions                 | Shortcut buttons for common actions. Hover over the icon to see what each button does |
 
+### Detail view
+
+Click on the _>_ (chevron) icon next to a wine name to show more details of that wine.
+
+![Wine detail row](/screenshots/wines-detailrow.png)
+
+From this detail view, you can add and edit [vintages](/resources/vintages) associated with the wine.
+It also contains shortcuts to the [bottles](/resources/bottles) view.
+
 ### Filtering
 
 Filter wines by type, winemaker, or region using the multi-select filters above the table.
