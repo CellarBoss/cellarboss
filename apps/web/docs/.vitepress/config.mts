@@ -1,4 +1,27 @@
-import { defineConfig } from "vitepress";
+import fs from "node:fs";
+import path from "node:path";
+import { defineConfig, type Plugin } from "vitepress";
+
+function screenshotPlaceholder(): Plugin {
+  const docsDir = path.resolve(__dirname, "..");
+  return {
+    name: "screenshot-placeholder",
+    resolveId(source) {
+      if (source.startsWith("/screenshots/")) {
+        const filePath = path.join(docsDir, "public", source);
+        if (!fs.existsSync(filePath)) {
+          return `\0placeholder:${source}`;
+        }
+      }
+    },
+    load(id) {
+      if (id.startsWith("\0placeholder:")) {
+        // 1x1 transparent PNG as data URI
+        return `export default "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQI12NgAAIABQABNjN9GQAAAAlwSFlzAAAWJQAAFiUBSVIk8AAAAA0lEQVQI12P4z8BQDwAEgAF/QualzQAAAABJRU5ErkJggg=="`;
+      }
+    },
+  };
+}
 
 export default defineConfig({
   title: "CellarBoss",
@@ -6,11 +29,7 @@ export default defineConfig({
   base: "/web/",
   ignoreDeadLinks: true,
   vite: {
-    build: {
-      rollupOptions: {
-        external: [/\/screenshots\/.*/],
-      },
-    },
+    plugins: [screenshotPlaceholder()],
   },
   themeConfig: {
     nav: [
