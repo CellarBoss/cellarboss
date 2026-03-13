@@ -8,6 +8,7 @@ The settings page allows administrators to configure application-wide preference
 
 | Setting     | Description                                                          |
 | ----------- | -------------------------------------------------------------------- |
+| Language    | The language used throughout the application (i18n coming soon)      |
 | Currency    | The currency symbol used for displaying prices (e.g., USD, EUR, GBP) |
 | Date Format | The format used for displaying dates throughout the application      |
 
