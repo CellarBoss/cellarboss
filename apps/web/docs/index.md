@@ -2,15 +2,14 @@
 layout: home
 hero:
   name: CellarBoss
-  text: Wine Cellar Management
-  tagline: Track your wine collection from purchase to consumption
+  tagline: Your open source wine cellar inventory manager
   actions:
     - theme: brand
       text: Get Started
       link: /guide/
     - theme: alt
       text: API Reference
-      link: /cellarboss/api/
+      link: https://docs.cellarboss.org/api
 features:
   - title: Track Your Collection
     details: Record purchases, storage locations, drinking windows, and tasting notes for every bottle

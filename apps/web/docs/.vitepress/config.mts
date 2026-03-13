@@ -3,12 +3,12 @@ import { defineConfig } from "vitepress";
 export default defineConfig({
   title: "CellarBoss",
   description: "User documentation for the CellarBoss wine cellar management application",
-  base: "/cellarboss/guide/",
+  base: "/web/",
   ignoreDeadLinks: true,
   themeConfig: {
     nav: [
       { text: "User Guide", link: "/guide/" },
-      { text: "API Reference", link: "/cellarboss/api/", target: "_self" },
+      { text: "API Reference", link: "https://docs.cellarboss.org/api/", target: "_self" },
     ],
     sidebar: [
       {

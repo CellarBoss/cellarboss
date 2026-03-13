@@ -293,10 +293,10 @@ jobs:
           <head>
             <meta charset="utf-8">
             <title>Cellarboss Documentation</title>
-            <meta http-equiv="refresh" content="0; url=guide/">
+            <meta http-equiv="refresh" content="0; url=web/">
           </head>
           <body>
-            <a href="guide/">User Guide</a> | <a href="api/">API Reference</a>
+            <a href="web/">Web UI User Guide</a> | <a href="api/">API Reference</a>
           </body>
           </html>
           LANDING
