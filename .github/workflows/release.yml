@@ -283,7 +283,7 @@ jobs:
         uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4
         with:
           name: webui-user-docs
-          path: _site/guide
+          path: _site/web
 
       - name: Create landing page
         run: |
