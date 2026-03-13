@@ -36,20 +36,22 @@ Click **Create new Storage** to add a new storage unit.
 You can use _name expansion_ to create multiple storages at once, with either sequential letters or numbers.
 
 For example, entering `Shelf [A-C]` would create 3 separate storages:
- * Shelf A
- * Shelf B
- * Shelf C
+
+- Shelf A
+- Shelf B
+- Shelf C
 
 Entering `Fridge [A-C][1-3]` would create 9 separate storages:
- * Fridge A1
- * Fridge B1
- * Fridge C1
- * Fridge A2
- * Fridge B2
- * Fridge C2
- * Fridge A3
- * Fridge B3
- * Fridge C3
+
+- Fridge A1
+- Fridge B1
+- Fridge C1
+- Fridge A2
+- Fridge B2
+- Fridge C2
+- Fridge A3
+- Fridge B3
+- Fridge C3
 
 ## Viewing a Storage
 

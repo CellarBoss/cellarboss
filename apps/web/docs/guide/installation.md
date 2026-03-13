@@ -2,8 +2,8 @@
 
 There are currently two components to a CellarBoss installation:
 
- 1) **CellarBoss backend** - The backend API server which interacts with your chosen database
- 2) **CellarBoss web** - The web interface through which you can access all features
+1.  **CellarBoss backend** - The backend API server which interacts with your chosen database
+2.  **CellarBoss web** - The web interface through which you can access all features
 
 In future, there are plans for mobile & tablet user interfaces as well.
 
