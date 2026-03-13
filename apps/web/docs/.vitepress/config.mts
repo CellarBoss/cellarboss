@@ -5,6 +5,13 @@ export default defineConfig({
   description: "User documentation for the CellarBoss wine cellar management application",
   base: "/web/",
   ignoreDeadLinks: true,
+  vite: {
+    build: {
+      rollupOptions: {
+        external: [/\/screenshots\/.*/],
+      },
+    },
+  },
   themeConfig: {
     nav: [
       { text: "User Guide", link: "/guide/" },
