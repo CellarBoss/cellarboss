@@ -109,6 +109,7 @@ async function captureScreenshot(page: Page, path: string, name: string) {
 
 import { capture as captureBottles } from "./flows/bottles";
 import { capture as captureCountries } from "./flows/countries";
+import { capture as captureDatatable } from "./flows/datatable";
 import { capture as captureGrapes } from "./flows/grapes";
 import { capture as captureLocations } from "./flows/locations";
 import { capture as capturePages } from "./flows/pages";
@@ -129,6 +130,7 @@ type FlowFn = (
 const flows: Array<{ name: string; capture: FlowFn }> = [
   { name: "bottles", capture: captureBottles },
   { name: "countries", capture: captureCountries },
+  { name: "datatable", capture: captureDatatable },
   { name: "grapes", capture: captureGrapes },
   { name: "locations", capture: captureLocations },
   { name: "pages", capture: capturePages },

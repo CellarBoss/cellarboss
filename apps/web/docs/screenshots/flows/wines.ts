@@ -16,6 +16,19 @@ export async function capture(
   await page.waitForSelector("table");
   await captureScreenshot(page, outputDir, "wines-list");
 
+  // Filtered view — open a filter popover and select an option
+  await page.goto("http://localhost:3000/wines");
+  await page.waitForSelector("table");
+  const filterButton = page.locator("button", { hasText: "Type" });
+  await filterButton.click();
+  await page.waitForSelector("[data-slot='popover-content']");
+  const filterCheckbox = page.locator("[data-slot='popover-content'] button[role='checkbox']").first();
+  await filterCheckbox.click();
+  // Close popover by pressing Escape
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(300);
+  await captureScreenshot(page, outputDir, "wines-filter");
+
   // Detail row
   await page.goto("http://localhost:3000/wines");
   await page.waitForSelector("table");

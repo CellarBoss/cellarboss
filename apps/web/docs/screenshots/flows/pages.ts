@@ -14,13 +14,26 @@ export async function capture(
   outputDir: string,
   captureScreenshot: CaptureScreenshot,
 ) {
+  // Login page (clear cookies to show unauthenticated view)
+  const cookies = await page.context().cookies();
+  await page.context().clearCookies();
+  await page.goto("http://localhost:3000/login");
+  await captureScreenshot(page, outputDir, "login");
+  // Restore cookies for remaining captures
+  await page.context().addCookies(cookies);
+
   // Dashboard
   await page.goto("http://localhost:3000/");
   await captureScreenshot(page, outputDir, "dashboard");
 
-  // Settings
+  // Settings list
   await page.goto("http://localhost:3000/settings");
   await captureScreenshot(page, outputDir, "settings");
+
+  // Settings edit form
+  await page.goto("http://localhost:3000/settings/currency/edit");
+  await page.waitForSelector("form");
+  await captureScreenshot(page, outputDir, "settings-edit");
 
   // Profile
   await page.goto("http://localhost:3000/profile");
