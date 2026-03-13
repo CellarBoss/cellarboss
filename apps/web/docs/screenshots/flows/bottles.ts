@@ -24,7 +24,9 @@ export async function capture(
   await filterButton.click();
   await page.waitForSelector("[data-slot='popover-content']");
   // Select the first checkbox option in the popover
-  const filterCheckbox = page.locator("[data-slot='popover-content'] button[role='checkbox']").first();
+  const filterCheckbox = page
+    .locator("[data-slot='popover-content'] button[role='checkbox']")
+    .first();
   await filterCheckbox.click();
   // Close popover by pressing Escape
   await page.keyboard.press("Escape");

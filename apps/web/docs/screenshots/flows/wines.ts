@@ -22,7 +22,9 @@ export async function capture(
   const filterButton = page.locator("button", { hasText: "Type" });
   await filterButton.click();
   await page.waitForSelector("[data-slot='popover-content']");
-  const filterCheckbox = page.locator("[data-slot='popover-content'] button[role='checkbox']").first();
+  const filterCheckbox = page
+    .locator("[data-slot='popover-content'] button[role='checkbox']")
+    .first();
   await filterCheckbox.click();
   // Close popover by pressing Escape
   await page.keyboard.press("Escape");
