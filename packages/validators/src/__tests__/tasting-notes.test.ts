@@ -93,7 +93,9 @@ describe("updateTastingNoteSchema", () => {
   });
 
   it("accepts updating notes only", () => {
-    const result = updateTastingNoteSchema.safeParse({ notes: "Updated notes." });
+    const result = updateTastingNoteSchema.safeParse({
+      notes: "Updated notes.",
+    });
     expect(result.success).toBe(true);
   });
 
