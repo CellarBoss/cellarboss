@@ -29,6 +29,7 @@ const BOTTLE_SEED = {
       purchasePrice: 150.0,
       storageId: 2,
       status: "stored",
+      size: "standard",
     },
     {
       id: 2,
@@ -37,6 +38,7 @@ const BOTTLE_SEED = {
       purchasePrice: 155.0,
       storageId: 1,
       status: "stored",
+      size: "magnum",
     },
   ],
   settings: [
@@ -94,5 +96,13 @@ test.describe("Bottles page", () => {
     await page.goto("/bottles");
 
     await expect(page.getByText("Stored").first()).toBeVisible();
+  });
+
+  test("shows bottle size", async ({ adminContext }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/bottles");
+
+    await expect(page.getByText("Standard (750ml)")).toBeVisible();
+    await expect(page.getByText("Magnum (1.5L)")).toBeVisible();
   });
 });

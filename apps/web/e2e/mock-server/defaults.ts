@@ -63,6 +63,7 @@ export const defaultState: MockState = {
       purchasePrice: 150.0,
       storageId: 2,
       status: "stored",
+      size: "standard",
     },
   ],
   settings: [
