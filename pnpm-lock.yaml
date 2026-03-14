@@ -6,7 +6,11 @@ settings:
 
 importers:
 
-  .: {}
+  .:
+    devDependencies:
+      prettier:
+        specifier: 3.8.1
+        version: 3.8.1
 
   apps/backend:
     dependencies:
@@ -74,9 +78,6 @@ importers:
       '@vitest/ui':
         specifier: 4.0.18
         version: 4.0.18(vitest@4.0.18)
-      prettier:
-        specifier: 3.8.1
-        version: 3.8.1
       tsup:
         specifier: 8.5.1
         version: 8.5.1(jiti@2.6.1)(postcss@8.5.8)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
@@ -210,9 +211,6 @@ importers:
       hono:
         specifier: 4.12.7
         version: 4.12.7
-      prettier:
-        specifier: 3.8.1
-        version: 3.8.1
       tailwindcss:
         specifier: 4.2.1
         version: 4.2.1
@@ -234,9 +232,6 @@ importers:
 
   packages/types:
     devDependencies:
-      prettier:
-        specifier: 3.8.1
-        version: 3.8.1
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -253,9 +248,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: 4.0.18
         version: 4.0.18(vitest@4.0.18)
-      prettier:
-        specifier: 3.8.1
-        version: 3.8.1
       typescript:
         specifier: 5.9.3
         version: 5.9.3
