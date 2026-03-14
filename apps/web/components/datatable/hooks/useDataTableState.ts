@@ -4,7 +4,6 @@ import { useState } from "react";
 import {
   ColumnDef,
   SortingState,
-  ExpandedState,
   VisibilityState,
   RowSelectionState,
   Updater,
@@ -22,7 +21,6 @@ export function createTableStateUpdater<T>(
 
 export interface DataTableState {
   sorting: SortingState;
-  expanded: ExpandedState;
   rowSelection: RowSelectionState;
   columnVisibility: VisibilityState;
   deleteDialogOpen: boolean;
@@ -32,9 +30,6 @@ export interface DataTableState {
 export interface DataTableStateSetters {
   setSorting: (
     sorting: SortingState | ((prev: SortingState) => SortingState),
-  ) => void;
-  setExpanded: (
-    expanded: ExpandedState | ((prev: ExpandedState) => ExpandedState),
   ) => void;
   setRowSelection: (
     selection:
@@ -51,15 +46,9 @@ export interface DataTableStateSetters {
 export function useDataTableState<T>(
   columns: ColumnDef<T>[],
   defaultSortColumn?: string,
-  defaultExpanded?: true | Record<string, boolean>,
-  getSubRows?: (row: T) => T[] | undefined,
 ): DataTableState & DataTableStateSetters {
   const [sorting, setSorting] = useState<SortingState>(
     defaultSortColumn ? [{ id: defaultSortColumn, desc: false }] : [],
-  );
-
-  const [expanded, setExpanded] = useState<ExpandedState>(
-    defaultExpanded ?? (getSubRows ? true : {}),
   );
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -83,13 +72,11 @@ export function useDataTableState<T>(
 
   return {
     sorting,
-    expanded,
     rowSelection,
     columnVisibility,
     deleteDialogOpen,
     editDialogOpen,
     setSorting,
-    setExpanded,
     setRowSelection,
     setColumnVisibility,
     setDeleteDialogOpen,
