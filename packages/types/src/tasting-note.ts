@@ -9,7 +9,10 @@ export interface TastingNote {
 }
 
 // Frontend only sends vintageId, score, notes — authorId and date set server-side
-export type CreateTastingNote = Pick<TastingNote, "vintageId" | "score" | "notes">;
+export type CreateTastingNote = Pick<
+  TastingNote,
+  "vintageId" | "score" | "notes"
+>;
 
 // Only score and notes are editable after creation
 export type UpdateTastingNote = Partial<Pick<TastingNote, "score" | "notes">>;
