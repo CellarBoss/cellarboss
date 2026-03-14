@@ -50,3 +50,6 @@ Thumbs.db
 
 # turbo
 .turbo/
+
+# generated docs
+apps/backend/docs/

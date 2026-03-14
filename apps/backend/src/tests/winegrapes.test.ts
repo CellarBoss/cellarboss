@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, beforeAll } from "vitest";
-import type { Hono } from "hono";
+import type { OpenAPIHono } from "@hono/zod-openapi";
 import {
   createTestApp,
   createTestAppWithAuth,
@@ -20,7 +20,7 @@ describe("WineGrape API", () => {
   });
 
   describe("without auth", () => {
-    let app: Hono;
+    let app: OpenAPIHono;
 
     beforeEach(() => {
       app = createTestApp();
@@ -54,7 +54,7 @@ describe("WineGrape API", () => {
   });
 
   describe("Authenticated operations", () => {
-    let app: Hono;
+    let app: OpenAPIHono;
 
     beforeEach(async () => {
       // Create prerequisite data
@@ -121,6 +121,40 @@ describe("WineGrape API", () => {
         const data = await res.json();
         expect(data.id).toBe(created.id);
         expect(data.wineId).toBe(testWineId);
+      });
+    });
+
+    describe("invalid ID handling", () => {
+      it("GET /winegrape/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/winegrape/abc");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("GET /winegrape/wine/:wineId returns 400 for non-numeric id", async () => {
+        const res = await app.request("/winegrape/wine/abc");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("PUT /winegrape/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/winegrape/abc", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ grapeId: testGrapeId }),
+        });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("DELETE /winegrape/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/winegrape/abc", { method: "DELETE" });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
       });
     });
 

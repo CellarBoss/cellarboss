@@ -81,4 +81,8 @@ export const defaultState: MockState = {
       banReason: null,
     },
   ],
+  wineGrapes: [
+    { wineId: 1, grapeId: 1 },
+    { wineId: 2, grapeId: 2 },
+  ],
 };

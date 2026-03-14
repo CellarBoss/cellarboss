@@ -1,8 +1,12 @@
 import { z } from "zod";
 
 export const createRegionSchema = z.object({
-  name: z.string().min(1).max(255).trim(),
-  countryId: z.coerce.number().int().positive(),
+  name: z.string().min(1).max(255).trim().describe("Name of the region"),
+  countryId: z.coerce
+    .number()
+    .int()
+    .positive()
+    .describe("ID of the country this region belongs to"),
 });
 
 export const updateRegionSchema = createRegionSchema

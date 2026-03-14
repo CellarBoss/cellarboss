@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, beforeAll } from "vitest";
-import type { Hono } from "hono";
+import type { OpenAPIHono } from "@hono/zod-openapi";
 import {
   createTestApp,
   createTestAppWithAuth,
@@ -17,7 +17,7 @@ describe("Region API", () => {
   });
 
   describe("without auth", () => {
-    let app: Hono;
+    let app: OpenAPIHono;
 
     beforeEach(() => {
       app = createTestApp();
@@ -51,7 +51,7 @@ describe("Region API", () => {
   });
 
   describe("Authenticated operations", () => {
-    let app: Hono;
+    let app: OpenAPIHono;
 
     beforeEach(async () => {
       // Create prerequisite data
@@ -114,6 +114,33 @@ describe("Region API", () => {
         const data = await res.json();
         expect(data.id).toBe(created.id);
         expect(data.name).toBe("Burgundy");
+      });
+    });
+
+    describe("invalid ID handling", () => {
+      it("GET /region/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/region/abc");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("PUT /region/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/region/abc", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: "Test" }),
+        });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("DELETE /region/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/region/abc", { method: "DELETE" });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
       });
     });
 

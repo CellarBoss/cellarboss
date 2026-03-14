@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const createWineMakerSchema = z.object({
-  name: z.string().min(1).max(255).trim(),
+  name: z.string().min(1).max(255).trim().describe("Name of the wine maker"),
 });
 
 export const updateWineMakerSchema = createWineMakerSchema

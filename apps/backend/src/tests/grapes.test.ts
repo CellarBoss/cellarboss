@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, beforeAll } from "vitest";
-import type { Hono } from "hono";
+import type { OpenAPIHono } from "@hono/zod-openapi";
 import {
   createTestApp,
   createTestAppWithAuth,
@@ -13,7 +13,7 @@ describe("Grape API", () => {
     await runMigrations(db);
   });
   describe("without auth", () => {
-    let app: Hono;
+    let app: OpenAPIHono;
 
     beforeEach(() => {
       app = createTestApp();
@@ -47,7 +47,7 @@ describe("Grape API", () => {
   });
 
   describe("Authenticated operations", () => {
-    let app: Hono;
+    let app: OpenAPIHono;
 
     beforeEach(() => {
       app = createTestAppWithAuth();
@@ -105,6 +105,33 @@ describe("Grape API", () => {
         const data = await res.json();
         expect(data.id).toBe(created.id);
         expect(data.name).toBe("Merlot");
+      });
+    });
+
+    describe("invalid ID handling", () => {
+      it("GET /grape/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/grape/abc");
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("PUT /grape/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/grape/abc", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: "Test" }),
+        });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
+      });
+
+      it("DELETE /grape/:id returns 400 for non-numeric id", async () => {
+        const res = await app.request("/grape/abc", { method: "DELETE" });
+        expect(res.status).toBe(400);
+        const data = await res.json();
+        expect(data.error).toBe("Invalid ID");
       });
     });
 

@@ -1,4 +1,4 @@
-import type { Hono } from "hono";
+import type { OpenAPIHono } from "@hono/zod-openapi";
 import { registerBottleRoutes } from "./bottles.routes.js";
 import { registerCountryRoutes } from "./countries.routes.js";
 import { registerGrapeRoutes } from "./grapes.routes.js";
@@ -13,7 +13,7 @@ import { registerSettingsRoutes } from "./settings.routes.js";
 import { registerTastingNoteRoutes } from "./tasting-notes.routes.js";
 import { registerUserRoutes } from "./users.routes.js";
 
-export function registerRoutes(app: Hono) {
+export function registerRoutes(app: OpenAPIHono) {
   registerBottleRoutes(app);
   registerCountryRoutes(app);
   registerGrapeRoutes(app);

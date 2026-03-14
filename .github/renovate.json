@@ -1,58 +1,69 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:best-practices"
+    "config:best-practices",
+    ":pinAllExceptPeerDependencies"
   ],
   "semanticCommits": "enabled",
   "semanticCommitType": "deps",
   "semanticCommitScope": "",
-  "prConcurrentLimit": 5,
+  "prConcurrentLimit": 8,
   "prHourlyLimit": 2,
   "draftPR": false,
   "dependencyDashboard": true,
+  "postUpdateOptions": ["pnpmDedupe"],
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
     "automergeType": "pr",
-    "schedule": [
-      "before 8am"
-    ]
+    "semanticCommitType": "chore"
   },
   "packageRules": [
     {
       "matchUpdateTypes": [
         "patch",
+        "digest"
+      ],
+      "minimumReleaseAge": "3 days",
+      "automerge": true,
+      "automergeType": "pr",
+      "labels": ["skip-changelog"],
+      "semanticCommitType": "deps"
+    },
+    {
+      "matchUpdateTypes": [
         "minor"
       ],
       "minimumReleaseAge": "3 days",
       "automerge": true,
       "automergeType": "pr",
-      "schedule": [
-        "before 8am"
-      ]
+      "semanticCommitType": "deps"
     },
     {
       "matchUpdateTypes": [
         "major"
       ],
-      "minimumReleaseAge": "1 day",
-      "automerge": false
+      "minimumReleaseAge": "7 days",
+      "automerge": false,
+      "semanticCommitType": "deps"
     },
     {
-      "matchUpdateTypes": ["lockFileMaintenance"],
-      "labels": ["skip-changelog"]
+      "matchUpdateTypes": [
+        "lockFileMaintenance",
+        "pin"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "labels": ["skip-changelog"],
+      "semanticCommitType": "chore"
     },
     {
       "matchDepTypes": ["devDependencies"],
-      "labels": ["skip-changelog"]
-    },
-    {
-      "matchUpdateTypes": ["digest"],
-      "labels": ["skip-changelog"]
-    },
-    {
-      "matchUpdateTypes": ["pin"],
-      "labels": ["skip-changelog"]
+      "minimumReleaseAge": "3 days",
+      "automerge": true,
+      "automergeType": "pr",
+      "labels": ["skip-changelog"],
+      "semanticCommitType": "deps"
     }
   ]
 }

@@ -12,3 +12,10 @@ next-env.d.ts
 playwright-report/
 playwright-results.json
 test-results/
+
+# generated documentation screenshots
+docs/public/screenshots/
+
+# vitepress
+docs/.vitepress/dist/
+docs/.vitepress/cache/
