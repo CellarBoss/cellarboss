@@ -3,6 +3,7 @@
 import Link from "next/link";
 import {
   BottleWine,
+  ClipboardList,
   Settings,
   Grape,
   User,
@@ -33,6 +34,7 @@ import {
 const wineItems = [
   { title: "Bottles", url: "/bottles", icon: BottleWine },
   { title: "Wines", url: "/wines", icon: Barrel },
+  { title: "Tasting Notes", url: "/tasting-notes", icon: ClipboardList },
   { title: "Grapes", url: "/grapes", icon: Grape },
   { title: "Winemakers", url: "/winemakers", icon: User },
 ];

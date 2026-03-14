@@ -3,11 +3,13 @@
 import { useParams } from "next/navigation";
 import { getWineById } from "@/lib/api/wines";
 import { getWineGrapes } from "@/lib/api/winegrapes";
+import { getVintagesByWineId } from "@/lib/api/vintages";
 import { GenericCard } from "@/components/cards/GenericCard";
 import { wineFields, WineFormData } from "@/lib/fields/wines";
 import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
+import { TastingNotesSection } from "@/components/tasting-notes/TastingNotesSection";
 
 export default function ViewWinePage() {
   const params = useParams();
@@ -24,10 +26,16 @@ export default function ViewWinePage() {
     queryFn: getWineGrapes,
   });
 
-  const result = queryGate(wineQuery, wineGrapesQuery);
+  const vintagesQuery = useApiQuery({
+    queryKey: ["vintages", wineId],
+    queryFn: () => getVintagesByWineId(wineId),
+    enabled: !!wineId,
+  });
+
+  const result = queryGate(wineQuery, wineGrapesQuery, vintagesQuery);
   if (!result.ready) return result.gate;
 
-  const [wine, wineGrapesList] = result.data;
+  const [wine, wineGrapesList, vintages] = result.data;
 
   const grapeIds = wineGrapesList
     .filter((wg) => wg.wineId === wineId)
@@ -46,6 +54,7 @@ export default function ViewWinePage() {
         data={wineFormData}
         fields={wineFields}
       />
+      <TastingNotesSection wineId={wineId} vintages={vintages} />
     </section>
   );
 }

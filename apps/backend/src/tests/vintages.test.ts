@@ -8,6 +8,7 @@ import {
   createTestWineMaker,
   createTestRegion,
   createTestCountry,
+  createTestUser,
 } from "./setup.js";
 import { registerVintageRoutes } from "@routes/vintages.routes.js";
 import { db } from "@utils/database.js";
@@ -57,6 +58,9 @@ describe("Vintage API", () => {
     let app: OpenAPIHono;
 
     beforeEach(async () => {
+      // Create the user table (needed for tastingNote FK constraints)
+      await createTestUser(db);
+
       // Create prerequisite data
       const wineMaker = await createTestWineMaker(db, "Château Latour");
       const country = await createTestCountry(db, "France");

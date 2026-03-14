@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import {
   formatPrice,
   formatStatus,
+  formatDate,
+  formatDateTime,
   formatDrinkingWindow,
   formatDrinkingStatus,
 } from "../format";
@@ -43,6 +45,40 @@ describe("formatStatus", () => {
     expect(formatStatus("drunk")).toBe("Drunk");
     expect(formatStatus("sold")).toBe("Sold");
     expect(formatStatus("gifted")).toBe("Gifted");
+  });
+});
+
+describe("formatDate", () => {
+  it("formats date with dd/MM/yyyy format", () => {
+    expect(formatDate("2024-06-15", "dd/MM/yyyy")).toBe("15/06/2024");
+  });
+
+  it("formats date with yyyy-MM-dd format", () => {
+    expect(formatDate("2024-06-15", "yyyy-MM-dd")).toBe("2024-06-15");
+  });
+
+  it("formats date with MM/dd/yyyy format", () => {
+    expect(formatDate("2024-06-15", "MM/dd/yyyy")).toBe("06/15/2024");
+  });
+});
+
+describe("formatDateTime", () => {
+  it("formats datetime with dd/MM/yyyy HH:mm format", () => {
+    expect(formatDateTime("2024-06-15 14:30:00", "dd/MM/yyyy HH:mm")).toBe(
+      "15/06/2024 14:30",
+    );
+  });
+
+  it("formats datetime with yyyy-MM-dd HH:mm format", () => {
+    expect(formatDateTime("2024-06-15 14:30:00", "yyyy-MM-dd HH:mm")).toBe(
+      "2024-06-15 14:30",
+    );
+  });
+
+  it("formats datetime with dd/MM/yyyy HH:mm:ss format", () => {
+    expect(formatDateTime("2024-06-15 14:30:45", "dd/MM/yyyy HH:mm:ss")).toBe(
+      "15/06/2024 14:30:45",
+    );
   });
 });
 

@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { BottleButton } from "@/components/buttons/BottleButton";
 import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
 import { BottleCountDisplay } from "@/components/vintage/BottleCountDisplay";
+import { VintageTastingNotesButton } from "@/components/buttons/TastingNotesButton";
 
 export default function WineDetailRow({ wine }: { wine: Wine }) {
   const queryClient = useQueryClient();
@@ -169,6 +170,7 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
                               router.push(`/bottles/new?vintageId=${v.id}`)
                             }
                           />
+                          <VintageTastingNotesButton vintageId={v.id} />
                           <EditButton
                             onEdit={async () =>
                               router.push(`/vintages/${v.id}/edit`)

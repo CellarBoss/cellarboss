@@ -11,3 +11,4 @@ export * from "./winegrapes.validator.js";
 export * from "./winemakers.validator.js";
 export * from "./wines.validator.js";
 export * from "./settings.validator.js";
+export * from "./tasting-notes.validator.js";

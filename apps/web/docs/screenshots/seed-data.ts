@@ -244,9 +244,52 @@ export const docsSeedData: Omit<MockState, "session"> = {
       status: "stored",
     },
   ],
+  tastingNotes: [
+    {
+      id: 1,
+      vintageId: 1,
+      date: "2025-11-15T19:30:00.000Z",
+      authorId: "admin-1",
+      author: "Admin User",
+      score: 9,
+      notes:
+        "Exceptional depth and complexity. Dark fruit aromas with hints of cedar and tobacco. Silky tannins with a very long finish.",
+    },
+    {
+      id: 2,
+      vintageId: 3,
+      date: "2025-10-20T12:00:00.000Z",
+      authorId: "user-2",
+      author: "Jane Smith",
+      score: 8,
+      notes:
+        "Elegant and well-balanced. Citrus and stone fruit on the nose. Crisp acidity with a buttery mouthfeel.",
+    },
+    {
+      id: 3,
+      vintageId: 5,
+      date: "2025-09-05T18:00:00.000Z",
+      authorId: "admin-1",
+      author: "Admin User",
+      score: 7,
+      notes:
+        "Bold and structured. Cherry and leather notes. Needs more time to fully integrate.",
+    },
+    {
+      id: 4,
+      vintageId: 9,
+      date: "2025-12-01T20:15:00.000Z",
+      authorId: "user-3",
+      author: "Bob Wilson",
+      score: 10,
+      notes:
+        "Absolutely stunning. Layers of dark fruit, spice, and oak. Perfect balance and an unforgettable finish.",
+    },
+  ],
   settings: [
     { key: "currency", value: "USD" },
     { key: "date", value: "yyyy-MM-dd" },
+    { key: "datetime", value: "yyyy-MM-dd HH:mm" },
   ],
   wineGrapes: [
     { wineId: 1, grapeId: 1 },

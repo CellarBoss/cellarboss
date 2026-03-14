@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import {
   Popover,
@@ -32,6 +33,10 @@ export function WineVintageSelector({
   field,
   editable,
 }: WineVintageSelectorProps) {
+  // Ideally we have an existing vintageId to pre-populate the form in edit mode
+  // If not we can also accept an initial wineId from the URL search params (e.g. when creating a new vintage from a wine page)
+  const searchParams = useSearchParams();
+  const initialWineId = searchParams.get("wineId");
   const currentVintageId = field.state.value ?? "";
 
   const { data: wines, isLoading: winesLoading } = useApiQuery<Wine[]>({
@@ -55,15 +60,18 @@ export function WineVintageSelector({
   const [wineOpen, setWineOpen] = useState(false);
   const [vintageOpen, setVintageOpen] = useState(false);
 
-  // Pre-populate wine from existing vintageId (edit mode)
+  // Pre-populate wine from existing vintageId (edit mode) or initialWineId
   useEffect(() => {
-    if (currentVintageId && vintages && selectedWineId === null) {
+    if (selectedWineId !== null) return;
+    if (currentVintageId && vintages) {
       const vintage = vintages.find(
         (v) => v.id.toString() === currentVintageId,
       );
       if (vintage) setSelectedWineId(vintage.wineId);
+    } else if (initialWineId) {
+      setSelectedWineId(Number(initialWineId));
     }
-  }, [vintages, currentVintageId, selectedWineId]);
+  }, [vintages, currentVintageId, selectedWineId, initialWineId]);
 
   if (winesLoading || winemakersLoading || vintagesLoading) {
     return <span className="text-sm text-muted-foreground">Loading...</span>;

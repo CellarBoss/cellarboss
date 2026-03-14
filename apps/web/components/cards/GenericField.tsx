@@ -4,8 +4,10 @@ import { DataSelector } from "../selector/DataSelector";
 import { WineVintageSelector } from "../selector/WineVintageSelector";
 import { Field, FieldLabel, FieldError } from "../ui/field";
 import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 import { DateField } from "./DateField";
 import { FixedListField } from "./FixedListField";
+import { WineGlassRating } from "./WineGlassRating";
 import type { SelectorConfig, SelectOption } from "@/lib/types/field";
 
 type FieldProps = {
@@ -20,7 +22,8 @@ type FieldProps = {
     | "selector"
     | "date"
     | "fixed-list"
-    | "wine-vintage";
+    | "wine-vintage"
+    | "wine-rating";
   numberProps?: { min?: number; max?: number; step?: number };
   selectorConfig?: SelectorConfig;
   options?: SelectOption[];
@@ -56,6 +59,8 @@ export function GenericField({
               />
             ) : type === "wine-vintage" ? (
               <WineVintageSelector field={field} editable={editable} />
+            ) : type === "wine-rating" ? (
+              <WineGlassRating field={field} editable={editable} />
             ) : type === "date" ? (
               <DateField field={field} editable={editable} />
             ) : type === "fixed-list" && options ? (
@@ -63,6 +68,17 @@ export function GenericField({
                 field={field}
                 editable={editable}
                 options={options}
+              />
+            ) : type === "textarea" ? (
+              <Textarea
+                id={field.name}
+                name={field.name}
+                value={field.state.value ?? ""}
+                disabled={!editable}
+                onChange={(e) => field.handleChange(e.target.value)}
+                aria-invalid={isInvalid}
+                autoComplete="off"
+                rows={4}
               />
             ) : type === "number" ? (
               <Input

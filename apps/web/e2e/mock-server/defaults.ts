@@ -68,6 +68,7 @@ export const defaultState: MockState = {
   settings: [
     { key: "currency", value: "USD" },
     { key: "date", value: "yyyy-MM-dd" },
+    { key: "datetime", value: "yyyy-MM-dd HH:mm" },
   ],
   users: [
     {
@@ -83,5 +84,17 @@ export const defaultState: MockState = {
   wineGrapes: [
     { wineId: 1, grapeId: 1 },
     { wineId: 2, grapeId: 2 },
+  ],
+  tastingNotes: [
+    {
+      id: 1,
+      vintageId: 1,
+      date: "2025-12-01T18:30:00.000Z",
+      authorId: "admin-1",
+      author: "Test Admin",
+      score: 9,
+      notes:
+        "Exceptional depth and complexity. Dark fruit aromas with hints of cedar.",
+    },
   ],
 };
