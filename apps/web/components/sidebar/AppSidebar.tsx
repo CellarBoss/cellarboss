@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   BottleWine,
@@ -57,12 +58,14 @@ const settingsItems = [
 const adminItems = [{ title: "Users", url: "/users", icon: Users }];
 
 export function AppSidebar() {
+  const router = useRouter();
   const session = authClient.useSession();
   const user = session.data?.user;
   const isAdmin = user?.role === "admin";
 
   const handleLogout = async () => {
     await fetch("/logout", { method: "POST" });
+    router.push("/login");
   };
 
   const sections = [
