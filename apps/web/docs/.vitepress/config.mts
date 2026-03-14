@@ -53,6 +53,7 @@ export default defineConfig({
           { text: "Wines", link: "/resources/wines" },
           { text: "Winemakers", link: "/resources/winemakers" },
           { text: "Vintages", link: "/resources/vintages" },
+          { text: "Tasting Notes", link: "/resources/tasting-notes" },
           { text: "Countries", link: "/resources/countries" },
           { text: "Regions", link: "/resources/regions" },
           { text: "Grapes", link: "/resources/grapes" },

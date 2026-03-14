@@ -7,6 +7,7 @@ import {
   createLocationSchema,
   createRegionSchema,
   createStorageSchema,
+  createTastingNoteSchema,
   createVintageSchema,
   createWineGrapeSchema,
   createWineMakerSchema,
@@ -71,6 +72,13 @@ export const bottleCountsResponseSchema = z.object({
 
 export const wineGrapeResponseSchema = createWineGrapeSchema.extend({
   id: z.number().describe("Unique identifier"),
+});
+
+export const tastingNoteResponseSchema = createTastingNoteSchema.extend({
+  id: z.number().describe("Unique identifier"),
+  date: z.string().describe("ISO 8601 date when the note was created"),
+  authorId: z.string().describe("ID of the note author"),
+  author: z.string().describe("Display name of the note author"),
 });
 
 // No matching create schema in validators — defined manually

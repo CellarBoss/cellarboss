@@ -69,14 +69,18 @@ export default function TastingNotesPage() {
       vintageMap={vintageMap}
       wineMap={wineMap}
       winemakerMap={winemakerMap}
-      onEdit={async (noteId) => { router.push(`/tasting-notes/${noteId}/edit`); }}
+      onEdit={async (noteId) => {
+        router.push(`/tasting-notes/${noteId}/edit`);
+      }}
       onDelete={async (noteId) => {
         const result = await deleteTastingNote(noteId);
         if (!result.ok) throw new Error(result.error.message);
         queryClient.invalidateQueries({ queryKey: ["tastingNotes", "all"] });
         return true;
       }}
-      onAdd={async () => { router.push("/tasting-notes/new"); }}
+      onAdd={async () => {
+        router.push("/tasting-notes/new");
+      }}
     />
   );
 }
@@ -141,7 +145,9 @@ function TastingNotesPageContent({
               note={note}
               datetimeFormat={datetimeFormat}
               wineContext={getWineContext(note)}
-              onEdit={async () => { await onEdit(note.id); }}
+              onEdit={async () => {
+                await onEdit(note.id);
+              }}
               onDelete={() => onDelete(note.id)}
               deleteDescription={`tasting note by ${note.author}`}
             />

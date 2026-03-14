@@ -2,6 +2,7 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import {
   Kysely,
   Migrator,
+  sql,
   type Migration,
   type MigrationProvider,
 } from "kysely";
@@ -228,4 +229,42 @@ export async function createTestVintage(
     .values({ wineId, year, drinkFrom: null, drinkUntil: null })
     .returning("id")
     .executeTakeFirstOrThrow();
+}
+
+/** Create the Better Auth user table (not managed by app migrations) and seed a test user */
+export async function createTestUser(
+  db: Kysely<Database>,
+  id: string = "test-user-1",
+  name: string = "Test User",
+  email: string = "test@example.com",
+) {
+  await sql`
+    CREATE TABLE IF NOT EXISTS "user" (
+      "id" TEXT PRIMARY KEY,
+      "name" TEXT NOT NULL,
+      "email" TEXT NOT NULL UNIQUE,
+      "emailVerified" INTEGER NOT NULL DEFAULT 0,
+      "image" TEXT,
+      "createdAt" TEXT NOT NULL,
+      "updatedAt" TEXT NOT NULL,
+      "role" TEXT DEFAULT 'user',
+      "banned" INTEGER,
+      "banReason" TEXT,
+      "banExpires" TEXT
+    )
+  `.execute(db);
+
+  await (db as Kysely<any>)
+    .insertInto("user")
+    .values({
+      id,
+      name,
+      email,
+      emailVerified: 1,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      role: "admin",
+    })
+    .onConflict((oc) => oc.column("id").doNothing())
+    .execute();
 }

@@ -118,6 +118,7 @@ import { capture as captureStorages } from "./flows/storages";
 import { capture as captureUsers } from "./flows/users";
 import { capture as captureVintages } from "./flows/vintages";
 import { capture as captureWinemakers } from "./flows/winemakers";
+import { capture as captureTastingNotes } from "./flows/tasting-notes";
 import { capture as captureWines } from "./flows/wines";
 
 type CaptureScreenshot = typeof captureScreenshot;
@@ -136,6 +137,7 @@ const flows: Array<{ name: string; capture: FlowFn }> = [
   { name: "pages", capture: capturePages },
   { name: "regions", capture: captureRegions },
   { name: "storages", capture: captureStorages },
+  { name: "tasting-notes", capture: captureTastingNotes },
   { name: "users", capture: captureUsers },
   { name: "vintages", capture: captureVintages },
   { name: "winemakers", capture: captureWinemakers },

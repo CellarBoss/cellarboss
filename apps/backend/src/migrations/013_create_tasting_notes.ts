@@ -8,7 +8,9 @@ export async function up(db: Kysely<any>): Promise<void> {
       col.notNull().references("vintage.id").onDelete("cascade"),
     )
     .addColumn("date", "text", (col) => col.notNull())
-    .addColumn("author", "text", (col) => col.notNull())
+    .addColumn("authorId", "text", (col) =>
+      col.notNull().references("user.id").onDelete("cascade"),
+    )
     .addColumn("score", "integer", (col) => col.notNull())
     .addColumn("notes", "text", (col) => col.notNull())
     .execute();

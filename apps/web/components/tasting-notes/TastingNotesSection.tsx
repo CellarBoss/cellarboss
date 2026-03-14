@@ -98,7 +98,9 @@ export function TastingNotesSection(props: TastingNotesSectionProps) {
                       }
                     : undefined
                 }
-                onEdit={async () => { router.push(`/tasting-notes/${note.id}/edit`); }}
+                onEdit={async () => {
+                  router.push(`/tasting-notes/${note.id}/edit`);
+                }}
                 onDelete={async () => {
                   const result = await deleteTastingNote(note.id);
                   if (!result.ok) throw new Error(result.error.message);

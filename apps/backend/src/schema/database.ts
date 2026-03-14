@@ -55,11 +55,18 @@ export interface WineMakerTable extends Omit<WineMaker, "id"> {
   id: Generated<number>;
 }
 
-export interface TastingNoteTable extends Omit<TastingNote, "id"> {
+export interface TastingNoteTable extends Omit<TastingNote, "id" | "author"> {
   id: Generated<number>;
 }
 
 export interface SettingTable extends Setting {}
+
+// Better Auth managed table - only fields needed for joins
+export interface UserTable {
+  id: string;
+  name: string;
+  email: string;
+}
 
 // Database interface for Kysely
 export interface Database {
@@ -75,4 +82,5 @@ export interface Database {
   winemaker: WineMakerTable;
   tastingNote: TastingNoteTable;
   setting: SettingTable;
+  user: UserTable;
 }

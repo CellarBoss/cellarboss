@@ -75,7 +75,9 @@ export function TastingNoteCard({
             {onEdit && <EditButton onEdit={onEdit} />}
             {onDelete && (
               <DeleteButton
-                itemDescription={deleteDescription ?? `tasting note by ${note.author}`}
+                itemDescription={
+                  deleteDescription ?? `tasting note by ${note.author}`
+                }
                 onDelete={onDelete}
               />
             )}

@@ -1,52 +1,65 @@
 import { db } from "@utils/database.js";
 import type { CreateTastingNote, UpdateTastingNote } from "@cellarboss/types";
 
+/** Base query that joins user table to resolve author name */
+function baseQuery() {
+  return db
+    .selectFrom("tastingNote")
+    .innerJoin("user", "user.id", "tastingNote.authorId")
+    .select([
+      "tastingNote.id",
+      "tastingNote.vintageId",
+      "tastingNote.date",
+      "tastingNote.authorId",
+      "tastingNote.score",
+      "tastingNote.notes",
+      "user.name as author",
+    ]);
+}
+
 export async function list() {
-  return await db.selectFrom("tastingNote").selectAll().execute();
+  return await baseQuery().execute();
 }
 
 export async function getByVintageId(vintageId: number) {
-  return await db
-    .selectFrom("tastingNote")
-    .selectAll()
-    .where("vintageId", "=", vintageId)
+  return await baseQuery()
+    .where("tastingNote.vintageId", "=", vintageId)
     .execute();
 }
 
 export async function getByWineId(wineId: number) {
-  return await db
-    .selectFrom("tastingNote")
+  return await baseQuery()
     .innerJoin("vintage", "vintage.id", "tastingNote.vintageId")
     .where("vintage.wineId", "=", wineId)
-    .selectAll("tastingNote")
     .execute();
 }
 
 export async function getById(id: number) {
-  return await db
-    .selectFrom("tastingNote")
-    .selectAll()
-    .where("id", "=", id)
-    .executeTakeFirst();
+  return await baseQuery().where("tastingNote.id", "=", id).executeTakeFirst();
 }
 
 export async function create(
-  data: CreateTastingNote & { author: string; date: string },
+  data: CreateTastingNote & { authorId: string; date: string },
 ) {
-  return await db
+  const inserted = await db
     .insertInto("tastingNote")
     .values(data)
     .returningAll()
     .executeTakeFirstOrThrow();
+  return (await getById(inserted.id)) as NonNullable<
+    Awaited<ReturnType<typeof getById>>
+  >;
 }
 
 export async function update(id: number, data: UpdateTastingNote) {
-  return await db
+  await db
     .updateTable("tastingNote")
     .set(data)
     .where("id", "=", id)
-    .returningAll()
     .executeTakeFirstOrThrow();
+  return (await getById(id)) as NonNullable<
+    Awaited<ReturnType<typeof getById>>
+  >;
 }
 
 export async function remove(id: number) {
