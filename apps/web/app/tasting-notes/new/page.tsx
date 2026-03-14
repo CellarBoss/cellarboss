@@ -39,7 +39,7 @@ function NewTastingNoteForm() {
     ? `/vintages/${vintageId}`
     : wineId
       ? `/wines/${wineId}`
-      : "/";
+      : "/tasting-notes";
 
   return (
     <GenericCard<TastingNote>
