@@ -36,6 +36,7 @@ import { queryGate } from "@/lib/functions/query-gate";
 import {
   formatPrice,
   formatStatus,
+  formatBottleSize,
   formatDate,
   formatDrinkingStatus,
 } from "@/lib/functions/format";
@@ -365,6 +366,13 @@ export default function BottlesPage() {
         if (!locationId) return "—";
         return locationMap.get(locationId) || "Unknown";
       },
+    },
+    {
+      accessorKey: "size",
+      header: "Size",
+      enableSorting: true,
+      cell: ({ row }: { row: { original: Bottle } }) =>
+        formatBottleSize(row.original.size),
     },
     {
       accessorKey: "status",
