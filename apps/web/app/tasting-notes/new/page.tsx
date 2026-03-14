@@ -29,6 +29,7 @@ function NewTastingNoteForm() {
     id: 0,
     vintageId: vintageId ? Number(vintageId) : 0,
     date: "",
+    authorId: "",
     author: "",
     score: 0,
     notes: "",
