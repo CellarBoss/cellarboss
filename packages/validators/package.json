@@ -6,8 +6,7 @@
   "scripts": {
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:watch": "vitest",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "test:watch": "vitest"
   },
   "exports": {
     ".": {
@@ -26,7 +25,6 @@
     "@cellarboss/types": "workspace:*",
     "@vitest/coverage-v8": "4.0.18",
     "typescript": "5.9.3",
-    "vitest": "4.0.18",
-    "prettier": "3.8.1"
+    "vitest": "4.0.18"
   }
 }
