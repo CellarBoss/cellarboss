@@ -91,7 +91,9 @@ test.describe("Tasting Notes page", () => {
     const page = await adminContext.newPage();
     await page.goto("/tasting-notes");
 
-    await page.getByRole("button", { name: /create new tasting note/i }).click();
+    await page
+      .getByRole("button", { name: /create new tasting note/i })
+      .click();
     await expect(page).toHaveURL("/tasting-notes/new");
   });
 
