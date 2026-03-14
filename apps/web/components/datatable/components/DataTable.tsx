@@ -77,17 +77,26 @@ export function DataTable<T>({
   onBulkEdit,
   filters,
 }: DataTableProps<T>) {
-  // URL-backed state: column filters (including search), pagination
-  const { columnFilters, setColumnFilters, pagination, setPagination } =
-    useDataTableUrlState({ filters, filterColumnName, defaultPageSize });
+  const hasExpansion = !!(getSubRows || renderDetail);
 
-  // React state: sorting, expanded, row selection, visibility, dialogs
-  const state = useDataTableState(
-    columns,
-    defaultSortColumn,
-    defaultExpanded,
-    getSubRows,
-  );
+  // URL-backed state: column filters (including search), pagination, expansion
+  const {
+    columnFilters,
+    setColumnFilters,
+    pagination,
+    setPagination,
+    expanded,
+    setExpanded,
+  } = useDataTableUrlState({
+    filters,
+    filterColumnName,
+    defaultPageSize,
+    hasExpansion,
+    defaultExpanded: defaultExpanded ?? (getSubRows ? true : {}),
+  });
+
+  // React state: sorting, row selection, visibility, dialogs
+  const state = useDataTableState(columns, defaultSortColumn);
 
   // Prepare data
   const displayData = data ?? [];
@@ -106,12 +115,13 @@ export function DataTable<T>({
   const table = useReactTable({
     data: displayData,
     columns: processedColumns,
+    getRowId: (row) => String((row as Record<string, unknown>).id),
     state: {
       pagination,
       columnFilters,
       sorting: state.sorting,
       columnVisibility: state.columnVisibility,
-      ...(getSubRows || renderDetail ? { expanded: state.expanded } : {}),
+      ...(hasExpansion ? { expanded } : {}),
       ...(enableRowSelection ? { rowSelection: state.rowSelection } : {}),
     },
     onColumnVisibilityChange: createTableStateUpdater(
@@ -133,13 +143,13 @@ export function DataTable<T>({
       ? {
           getSubRows,
           getExpandedRowModel: getExpandedRowModel(),
-          onExpandedChange: createTableStateUpdater(state.setExpanded),
+          onExpandedChange: createTableStateUpdater(setExpanded),
           filterFromLeafRows: true,
         }
       : {}),
     ...(renderDetail
       ? {
-          onExpandedChange: createTableStateUpdater(state.setExpanded),
+          onExpandedChange: createTableStateUpdater(setExpanded),
         }
       : {}),
   });
