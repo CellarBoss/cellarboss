@@ -41,7 +41,10 @@ import {
   formatDrinkingStatus,
 } from "@/lib/functions/format";
 import type { Bottle, Wine, WineMaker } from "@cellarboss/types";
-import { BOTTLE_STATUSES, BOTTLE_SIZES } from "@cellarboss/validators/constants";
+import {
+  BOTTLE_STATUSES,
+  BOTTLE_SIZES,
+} from "@cellarboss/validators/constants";
 import { Row } from "@tanstack/react-table";
 import { compareAsc } from "date-fns";
 import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";

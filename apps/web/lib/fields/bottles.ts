@@ -2,7 +2,10 @@ import * as z from "zod";
 import type { Bottle } from "@cellarboss/types";
 import type { FieldConfig } from "@/lib/types/field";
 import { getStorages } from "@/lib/api/storages";
-import { BOTTLE_STATUSES, BOTTLE_SIZES } from "@cellarboss/validators/constants";
+import {
+  BOTTLE_STATUSES,
+  BOTTLE_SIZES,
+} from "@cellarboss/validators/constants";
 import { formatStatus, formatBottleSize } from "@/lib/functions/format";
 
 export type BottleFormData = Bottle & { quantity: number };
@@ -55,7 +58,10 @@ export const bottleFields: FieldConfig<Bottle>[] = [
     key: "size",
     label: "Size",
     type: "fixed-list",
-    options: BOTTLE_SIZES.map((s) => ({ value: s, label: formatBottleSize(s) })),
+    options: BOTTLE_SIZES.map((s) => ({
+      value: s,
+      label: formatBottleSize(s),
+    })),
     validator: z.enum(BOTTLE_SIZES),
   },
 ];
