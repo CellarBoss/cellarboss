@@ -14,7 +14,13 @@ test.describe("DataTable row expansion URL state", () => {
       countries: [{ id: 1, name: "France" }],
       wines: [
         { id: 1, name: "Wine Alpha", type: "red", wineMakerId: 1, regionId: 1 },
-        { id: 2, name: "Wine Beta", type: "white", wineMakerId: 2, regionId: 2 },
+        {
+          id: 2,
+          name: "Wine Beta",
+          type: "white",
+          wineMakerId: 2,
+          regionId: 2,
+        },
         { id: 3, name: "Wine Gamma", type: "red", wineMakerId: 1, regionId: 1 },
       ],
       vintages: [],
@@ -120,8 +126,8 @@ test.describe("DataTable row expansion URL state", () => {
     ).toHaveCount(1);
 
     // The other rows should still have expand buttons
-    await expect(
-      page.getByRole("button", { name: "Expand row" }),
-    ).toHaveCount(2);
+    await expect(page.getByRole("button", { name: "Expand row" })).toHaveCount(
+      2,
+    );
   });
 });
