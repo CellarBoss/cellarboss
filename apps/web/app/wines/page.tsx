@@ -180,7 +180,16 @@ export default function WinesPage() {
       ),
     },
     {
-      accessorKey: "winemaker",
+      id: "type",
+      accessorFn: (row) => row.type,
+      header: "Type",
+      enableColumnFilter: false,
+      enableSorting: false,
+      meta: { hidden: true },
+    },
+    {
+      id: "winemaker",
+      accessorFn: (row) => String(row.wineMakerId),
       header: "Winemaker",
       enableColumnFilter: false,
       enableSorting: true,
