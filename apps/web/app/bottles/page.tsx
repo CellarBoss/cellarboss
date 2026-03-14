@@ -41,7 +41,7 @@ import {
   formatDrinkingStatus,
 } from "@/lib/functions/format";
 import type { Bottle, Wine, WineMaker } from "@cellarboss/types";
-import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
+import { BOTTLE_STATUSES, BOTTLE_SIZES } from "@cellarboss/validators/constants";
 import { Row } from "@tanstack/react-table";
 import { compareAsc } from "date-fns";
 import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
@@ -238,6 +238,17 @@ export default function BottlesPage() {
     },
     {
       type: FilterType.MultiSelect,
+      columnId: "size",
+      label: "Size",
+      urlParamName: "size",
+      options: BOTTLE_SIZES.map((s) => ({
+        value: s,
+        label: formatBottleSize(s),
+      })),
+      sort: (opts) => opts, // Display in natural order defined by BOTTLE_SIZES, not alphabetical
+    },
+    {
+      type: FilterType.MultiSelect,
       columnId: "storageId",
       label: "Storage",
       urlParamName: "storageId",
@@ -371,6 +382,7 @@ export default function BottlesPage() {
       accessorKey: "size",
       header: "Size",
       enableSorting: true,
+      enableColumnFilter: true,
       cell: ({ row }: { row: { original: Bottle } }) =>
         formatBottleSize(row.original.size),
     },
