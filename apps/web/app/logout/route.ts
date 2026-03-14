@@ -14,5 +14,7 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  return NextResponse.redirect(new URL("/login", request.url));
+  const response = NextResponse.json({ success: true });
+  response.cookies.delete("better-auth.session_token");
+  return response;
 }

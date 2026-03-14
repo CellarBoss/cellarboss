@@ -12,6 +12,7 @@ export function registerAuthRoutes(app: Hono, state: MockState) {
 
   // Called by /logout route handler
   app.post("/api/auth/sign-out", (c) => {
+    state.session = null;
     return c.json({ success: true });
   });
 
