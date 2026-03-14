@@ -40,6 +40,7 @@ export async function createBottle(
     vintageId: Number(bottle.vintageId),
     storageId: bottle.storageId ? Number(bottle.storageId) : null,
     status: bottle.status,
+    size: bottle.size,
   };
   return makeServerRequest<Bottle>("bottle", "POST", JSON.stringify(body));
 }
@@ -51,6 +52,7 @@ export async function updateBottle(bottle: Bottle): Promise<ApiResult<Bottle>> {
     vintageId: Number(bottle.vintageId),
     storageId: bottle.storageId ? Number(bottle.storageId) : null,
     status: bottle.status,
+    size: bottle.size,
   };
   return makeServerRequest<Bottle>(
     "bottle/" + bottle.id,
