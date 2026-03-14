@@ -234,9 +234,7 @@ export function useDataTableUrlState({
   }
 
   const setExpanded = useCallback(
-    (
-      newExpanded: ExpandedState | ((prev: ExpandedState) => ExpandedState),
-    ) => {
+    (newExpanded: ExpandedState | ((prev: ExpandedState) => ExpandedState)) => {
       const resolved =
         typeof newExpanded === "function" ? newExpanded(expanded) : newExpanded;
       void setStrState((prev) => ({
