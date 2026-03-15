@@ -154,6 +154,7 @@ export const docsSeedData: Omit<MockState, "session"> = {
       purchasePrice: 450.0,
       storageId: 5,
       status: "stored",
+      size: "standard",
     },
     {
       id: 2,
@@ -162,6 +163,7 @@ export const docsSeedData: Omit<MockState, "session"> = {
       purchasePrice: 450.0,
       storageId: 5,
       status: "stored",
+      size: "standard",
     },
     {
       id: 3,
@@ -170,6 +172,7 @@ export const docsSeedData: Omit<MockState, "session"> = {
       purchasePrice: 520.0,
       storageId: 6,
       status: "stored",
+      size: "magnum",
     },
     {
       id: 4,
@@ -178,6 +181,7 @@ export const docsSeedData: Omit<MockState, "session"> = {
       purchasePrice: 85.0,
       storageId: 7,
       status: "stored",
+      size: "standard",
     },
     {
       id: 5,
@@ -186,6 +190,7 @@ export const docsSeedData: Omit<MockState, "session"> = {
       purchasePrice: 280.0,
       storageId: 8,
       status: "consumed",
+      size: "standard",
     },
     {
       id: 6,
@@ -194,6 +199,7 @@ export const docsSeedData: Omit<MockState, "session"> = {
       purchasePrice: 95.0,
       storageId: 5,
       status: "stored",
+      size: "standard",
     },
     {
       id: 7,
@@ -202,6 +208,7 @@ export const docsSeedData: Omit<MockState, "session"> = {
       purchasePrice: 350.0,
       storageId: 9,
       status: "stored",
+      size: "magnum",
     },
     {
       id: 8,
@@ -210,6 +217,7 @@ export const docsSeedData: Omit<MockState, "session"> = {
       purchasePrice: 55.0,
       storageId: 6,
       status: "stored",
+      size: "half",
     },
     {
       id: 9,
@@ -218,6 +226,7 @@ export const docsSeedData: Omit<MockState, "session"> = {
       purchasePrice: 42.0,
       storageId: 7,
       status: "stored",
+      size: "standard",
     },
     {
       id: 10,
@@ -226,6 +235,7 @@ export const docsSeedData: Omit<MockState, "session"> = {
       purchasePrice: 380.0,
       storageId: 9,
       status: "stored",
+      size: "jeroboam",
     },
     {
       id: 11,
@@ -234,6 +244,7 @@ export const docsSeedData: Omit<MockState, "session"> = {
       purchasePrice: 320.0,
       storageId: 5,
       status: "consumed",
+      size: "standard",
     },
     {
       id: 12,
@@ -242,6 +253,7 @@ export const docsSeedData: Omit<MockState, "session"> = {
       purchasePrice: 90.0,
       storageId: 8,
       status: "stored",
+      size: "standard",
     },
   ],
   tastingNotes: [
