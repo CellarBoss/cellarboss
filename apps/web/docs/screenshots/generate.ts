@@ -198,6 +198,7 @@ async function main() {
   } finally {
     await stopMockServer();
     nextProcess.kill();
+    process.exit();
   }
 }
 
