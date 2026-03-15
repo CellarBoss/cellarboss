@@ -2,26 +2,32 @@
 
 An open-source wine cellar inventory manager. Track your collection by country, region, grape variety, winemaker, and vintage. Manage physical storage locations and monitor bottle inventory.
 
+![Image of CellarBoss application showing a list of wines](https://docs.cellarboss.org/web/screenshots/wines-list.png)
+
 ## Features
 
 - Wine database with detailed attributes (country, region, grape, winemaker, vintage)
 - Bottle inventory with per-bottle storage location tracking
 - Drinking window tracking per vintage
-- User accounts with admin and standard roles
 
-## Roadmap
+## Quick Start
 
-- Multi-database support. Currently limited to Sqlite, with MySQL and Postgres in the works
-- Tasting notes / ratings
-- Upload images of your collection
-- Import wine details from 3rd party websites (Vivino, Wine Society, Naked Wines etc)
-- User & technical documentation
+See the [installation](https://docs.cellarboss.org/web/guide/installation.html) documentation for how to get CellarBoss up and running.
 
-## Tech Stack
+Alternatively, for a development setup:
 
-**Frontend** — Next.js 16, React 19, Tailwind CSS 4, TanStack Query v5, TanStack Form, Radix UI, Better Auth
+```bash
+pnpm install
 
-**Backend** — Node.js 20, Hono, Kysely, Better Auth, Zod, Vitest
+# Configure .env files (see developer notes)
+
+cd apps/backend
+pnpm auth:migrate && pnpm migrate && pnpm seed
+
+# In separate terminals:
+pnpm --filter backend dev    # port 5000
+pnpm --filter web dev        # port 3000
+```
 
 ## Project Structure
 
@@ -30,142 +36,36 @@ cellarboss/
 ├── apps/
 │   ├── backend/      # Hono API server
 │   └── web/          # Next.js frontend
-├── assets/           # Coming soon...
-├── docs/             # Coming soon...
+├── docs/             # Developer documentation
 └── packages/
     ├── types/        # Shared type definitions
     └── validators/   # Shared Zod validators
 ```
 
-## Getting Started
+## User Documentation
 
-### Prerequisites
+Documentation is built and deployed automatically on every release:
 
-- Node.js 20
-- pnpm 9
+- [Backend API reference](https://docs.cellarboss.org/api/)
+- [Web UI user guide](https://docs.cellarboss.org/web/guide/)
 
-### Install dependencies
+## Developer Notes
 
-```bash
-pnpm install
-```
+| Document                            | Description                                        |
+| ----------------------------------- | -------------------------------------------------- |
+| [Backend](docs/backend.md)          | API server architecture, database support, testing |
+| [Web Frontend](docs/web.md)         | Frontend architecture, unit tests, E2E tests       |
+| [Shared Packages](docs/packages.md) | `@cellarboss/types` and `@cellarboss/validators`   |
+| [CI/CD](docs/ci.md)                 | GitHub Actions workflows, PR checks, releases      |
 
-### Configure environment
+## Roadmap
 
-**Backend** (`apps/backend/.env`):
-
-```
-BETTER_AUTH_SECRET=<random-secret>
-BETTER_AUTH_URL=http://localhost:3000
-DATABASE_TYPE=sqlite
-DATABASE_URL=database.sqlite
-NODE_ENV=development
-```
-
-**Frontend** (`apps/web/.env`):
-
-```
-CELLARBOSS_SERVER=http://localhost:5000
-BETTER_AUTH_SECRET=<same-secret-as-backend>
-NODE_ENV=development
-```
-
-### Run migrations
-
-```bash
-cd apps/backend
-pnpm auth:migrate
-pnpm migrate
-```
-
-Optionally seed some initial data:
-
-```bash
-pnpm seed
-```
-
-### Start the dev servers
-
-```bash
-# Backend (port 5000)
-pnpm --filter backend dev
-
-# Frontend (port 3000)
-pnpm --filter web dev
-```
-
-### Docker Compose
-
-A `docker-compose.dev.yml` is provided for running the full stack locally with PostgreSQL:
-
-```bash
-docker-compose -f docker-compose.dev.yml up
-```
-
-This starts PostgreSQL on port 5432, the backend on port 5000, and the frontend on port 3000.
-
-## Testing
-
-There are separate test suites for individual parts of the project. Currently, all of these are automatically run whenever a PR is raised for a merge into the main branch.
-
-### Backend
-
-`vitest` for all API routes
-
-```bash
-cd apps/backend
-pnpm test
-```
-
-### Validators
-
-`vitest` for all validation rules
-
-```bash
-cd packages/validators
-pnpm test
-```
-
-### Web UI - functional tests
-
-`vitest` for helper functions
-
-```bash
-cd apps/web
-pnpm test
-```
-
-### Web UI - end-to-end testing
-
-`playwright` end-to-end tests for user activities, with a mock backend API
-
-```bash
-cd apps/web
-pnpm test:e2e
-```
-
-## Building
-
-```bash
-# Build everything
-pnpm build
-
-# Or individually
-pnpm --filter backend build
-pnpm --filter web build
-```
-
-## Database Support
-
-The backend uses Kysely with dialect switching based on the `DATABASE_TYPE` environment variable:
-
-| Value      | Driver         |
-| ---------- | -------------- |
-| `sqlite`   | better-sqlite3 |
-| `postgres` | pg             |
-| `mysql`    | mysql2         |
-
-Set `DATABASE_URL` to the appropriate connection string (or file path for SQLite).
+- Multi-database support. Currently limited to Sqlite, with MySQL and Postgres in the works
+- Upload images of your collection
+- Import wine details from 3rd party websites (Vivino, Wine Society, Naked Wines etc)
+- i18n
+- Tablet user interface
+- Build & automatically deploy styled wine menus
 
 ## FAQs
 
