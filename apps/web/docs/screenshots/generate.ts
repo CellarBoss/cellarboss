@@ -192,14 +192,14 @@ async function main() {
     await browser.close();
 
     console.log(`\n✅ Screenshots saved to ${OUTPUT_DIR}`);
+  } catch (err) {
+    console.error("Screenshot generation failed:", err);
+    process.exitCode = 1;
   } finally {
     await stopMockServer();
     nextProcess.kill();
-    process.exit(0);
+    process.exit();
   }
 }
 
-main().catch((err) => {
-  console.error("Screenshot generation failed:", err);
-  process.exit(1);
-});
+main();
