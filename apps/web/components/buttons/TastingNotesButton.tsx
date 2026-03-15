@@ -1,4 +1,9 @@
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { useApiQuery } from "@/hooks/use-api-query";
 import {
   getTastingNotesByVintageId,
@@ -56,14 +61,18 @@ export function TastingNotesButton({
   onClick,
 }: TastingNotesButtonProps) {
   return (
-    <Button
-      size="sm"
-      variant="outline"
-      onClick={onClick}
-      className="cursor-pointer"
-      title="View Tasting Notes"
-    >
-      <NotebookPen /> {count ? `${count}` : "0"}
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={onClick}
+          className="cursor-pointer"
+        >
+          <NotebookPen /> {count ? `${count}` : "0"}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>View Tasting Notes</TooltipContent>
+    </Tooltip>
   );
 }

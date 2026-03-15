@@ -1,4 +1,9 @@
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { Calendar } from "lucide-react";
 
 type VintageButtonProps = {
@@ -6,14 +11,18 @@ type VintageButtonProps = {
 };
 export function VintageButton({ onClick }: VintageButtonProps) {
   return (
-    <Button
-      size="sm"
-      variant="outline"
-      onClick={onClick}
-      className="cursor-pointer"
-      title="Add vintage"
-    >
-      <Calendar />
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={onClick}
+          className="cursor-pointer"
+        >
+          <Calendar />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Add vintage</TooltipContent>
+    </Tooltip>
   );
 }

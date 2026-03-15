@@ -1,4 +1,9 @@
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { Pencil } from "lucide-react";
 
 type EditButtonProps = {
@@ -6,14 +11,18 @@ type EditButtonProps = {
 };
 export function EditButton({ onEdit }: EditButtonProps) {
   return (
-    <Button
-      size="sm"
-      variant="outline"
-      onClick={onEdit}
-      className="cursor-pointer"
-      title="Edit"
-    >
-      <Pencil />
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={onEdit}
+          className="cursor-pointer"
+        >
+          <Pencil />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Edit</TooltipContent>
+    </Tooltip>
   );
 }

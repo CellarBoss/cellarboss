@@ -1,4 +1,9 @@
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { BottleWine } from "lucide-react";
 
 type BottleButtonProps = {
@@ -6,14 +11,18 @@ type BottleButtonProps = {
 };
 export function BottleButton({ onClick }: BottleButtonProps) {
   return (
-    <Button
-      size="sm"
-      variant="outline"
-      onClick={onClick}
-      className="cursor-pointer"
-      title="Add bottle"
-    >
-      <BottleWine />
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={onClick}
+          className="cursor-pointer"
+        >
+          <BottleWine />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Add bottle</TooltipContent>
+    </Tooltip>
   );
 }
