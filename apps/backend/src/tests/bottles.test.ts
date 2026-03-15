@@ -100,6 +100,7 @@ describe("Bottle API", () => {
             vintageId: testVintageId,
             storageId: null,
             status: "stored",
+            size: "standard",
           }),
         });
         expect(res.status).toBe(201);
@@ -126,6 +127,7 @@ describe("Bottle API", () => {
             vintageId: testVintageId,
             storageId: null,
             status: "stored",
+            size: "standard",
           }),
         });
         const created = await createRes.json();
@@ -189,6 +191,7 @@ describe("Bottle API", () => {
             vintageId: testVintageId,
             storageId: null,
             status: "stored",
+            size: "standard",
           }),
         });
 
@@ -229,6 +232,7 @@ describe("Bottle API", () => {
             vintageId: testVintageId,
             storageId: null,
             status: "stored",
+            size: "standard",
           }),
         });
         const created = await createRes.json();
@@ -256,6 +260,7 @@ describe("Bottle API", () => {
             vintageId: testVintageId,
             storageId: null,
             status: "stored",
+            size: "standard",
           }),
         });
         const created = await createRes.json();

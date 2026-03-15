@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   formatPrice,
   formatStatus,
+  formatBottleSize,
   formatDate,
   formatDateTime,
   formatDrinkingWindow,
@@ -45,6 +46,32 @@ describe("formatStatus", () => {
     expect(formatStatus("drunk")).toBe("Drunk");
     expect(formatStatus("sold")).toBe("Sold");
     expect(formatStatus("gifted")).toBe("Gifted");
+  });
+});
+
+describe("formatBottleSize", () => {
+  it("formats standard size with volume", () => {
+    expect(formatBottleSize("standard")).toBe("Standard (750ml)");
+  });
+
+  it("formats hyphenated size", () => {
+    expect(formatBottleSize("double-magnum")).toBe("Double Magnum (3L)");
+  });
+
+  it("formats all known sizes", () => {
+    expect(formatBottleSize("piccolo")).toBe("Piccolo (187ml)");
+    expect(formatBottleSize("half")).toBe("Half (375ml)");
+    expect(formatBottleSize("litre")).toBe("Litre (1L)");
+    expect(formatBottleSize("magnum")).toBe("Magnum (1.5L)");
+    expect(formatBottleSize("jeroboam")).toBe("Jeroboam (4.5L)");
+    expect(formatBottleSize("imperial")).toBe("Imperial (6L)");
+    expect(formatBottleSize("salmanazar")).toBe("Salmanazar (9L)");
+    expect(formatBottleSize("balthazar")).toBe("Balthazar (12L)");
+    expect(formatBottleSize("nebuchadnezzar")).toBe("Nebuchadnezzar (15L)");
+  });
+
+  it("falls back for unknown size", () => {
+    expect(formatBottleSize("unknown")).toBe("Unknown");
   });
 });
 

@@ -29,6 +29,7 @@ const BOTTLE_SEED = {
       purchasePrice: 150.0,
       storageId: 2,
       status: "stored",
+      size: "standard",
     },
     {
       id: 2,
@@ -37,6 +38,7 @@ const BOTTLE_SEED = {
       purchasePrice: 155.0,
       storageId: 1,
       status: "stored",
+      size: "magnum",
     },
   ],
   settings: [
@@ -94,5 +96,24 @@ test.describe("Bottles page", () => {
     await page.goto("/bottles");
 
     await expect(page.getByText("Stored").first()).toBeVisible();
+  });
+
+  test("shows bottle size on hover", async ({ adminContext }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/bottles");
+
+    // Bottle sizes are now shown as icons with tooltips on hover
+    const bottleIcons = page
+      .getByRole("row")
+      .locator("[data-slot='tooltip-trigger']");
+    await bottleIcons.first().hover();
+    await expect(page.getByRole("tooltip")).toContainText("Standard (750ml)");
+
+    // Move away to dismiss the first tooltip
+    await page.getByRole("heading", { name: "Bottles" }).hover();
+    await expect(page.getByRole("tooltip")).toBeHidden();
+
+    await bottleIcons.nth(1).hover();
+    await expect(page.getByRole("tooltip")).toContainText("Magnum (1.5L)");
   });
 });

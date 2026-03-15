@@ -1,3 +1,5 @@
+import { BOTTLE_SIZES } from "@/lib/constants/bottle-sizes";
+
 export function formatPrice(price: number | string, currency: string): string {
   try {
     return new Intl.NumberFormat("en-US", {
@@ -31,6 +33,10 @@ export function formatStatus(status: string): string {
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+}
+
+export function formatBottleSize(size: string): string {
+  return BOTTLE_SIZES[size]?.label ?? formatStatus(size);
 }
 
 export function formatDrinkingWindow(

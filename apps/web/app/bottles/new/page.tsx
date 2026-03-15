@@ -19,6 +19,7 @@ async function handleCreate(
     vintageId: Number(data.vintageId),
     storageId: data.storageId ? Number(data.storageId) : null,
     status: data.status,
+    size: data.size,
   };
 
   let lastResult: ApiResult<Bottle> | null = null;
@@ -42,6 +43,7 @@ function NewBottleForm() {
     vintageId: vintageId ? Number(vintageId) : 0,
     storageId: null,
     status: "ordered",
+    size: "standard",
     quantity: 1,
   };
 

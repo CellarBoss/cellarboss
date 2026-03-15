@@ -9,6 +9,7 @@ describe("createBottleSchema", () => {
       vintageId: 1,
       storageId: 2,
       status: "stored",
+      size: "standard",
     });
     expect(result.success).toBe(true);
   });
@@ -20,6 +21,7 @@ describe("createBottleSchema", () => {
       vintageId: 1,
       storageId: null,
       status: "ordered",
+      size: "standard",
     });
     expect(result.success).toBe(true);
   });
@@ -40,6 +42,7 @@ describe("createBottleSchema", () => {
         vintageId: 1,
         storageId: null,
         status,
+        size: "standard",
       });
       expect(result.success, `status "${status}" should be valid`).toBe(true);
     }
@@ -52,6 +55,7 @@ describe("createBottleSchema", () => {
       vintageId: 1,
       storageId: null,
       status: "stored",
+      size: "standard",
     });
     expect(result.success).toBe(false);
   });
@@ -63,6 +67,7 @@ describe("createBottleSchema", () => {
       vintageId: 1,
       storageId: null,
       status: "stored",
+      size: "standard",
     });
     expect(result.success).toBe(false);
   });
@@ -74,6 +79,7 @@ describe("createBottleSchema", () => {
       vintageId: 1,
       storageId: null,
       status: "stored",
+      size: "standard",
     });
     expect(result.success).toBe(true);
   });
@@ -85,6 +91,7 @@ describe("createBottleSchema", () => {
       vintageId: 1,
       storageId: null,
       status: "lost",
+      size: "standard",
     });
     expect(result.success).toBe(false);
   });
@@ -94,6 +101,57 @@ describe("createBottleSchema", () => {
       purchaseDate: "2022-06-15",
       purchasePrice: 100,
       vintageId: 0,
+      storageId: null,
+      status: "stored",
+      size: "standard",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts all bottle sizes", () => {
+    const sizes = [
+      "piccolo",
+      "half",
+      "standard",
+      "litre",
+      "magnum",
+      "double-magnum",
+      "jeroboam",
+      "imperial",
+      "salmanazar",
+      "balthazar",
+      "nebuchadnezzar",
+    ] as const;
+    for (const size of sizes) {
+      const result = createBottleSchema.safeParse({
+        purchaseDate: "2022-06-15",
+        purchasePrice: 100,
+        vintageId: 1,
+        storageId: null,
+        status: "stored",
+        size,
+      });
+      expect(result.success, `size "${size}" should be valid`).toBe(true);
+    }
+  });
+
+  it("rejects invalid size", () => {
+    const result = createBottleSchema.safeParse({
+      purchaseDate: "2022-06-15",
+      purchasePrice: 100,
+      vintageId: 1,
+      storageId: null,
+      status: "stored",
+      size: "huge",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects missing size", () => {
+    const result = createBottleSchema.safeParse({
+      purchaseDate: "2022-06-15",
+      purchasePrice: 100,
+      vintageId: 1,
       storageId: null,
       status: "stored",
     });
@@ -109,6 +167,11 @@ describe("updateBottleSchema", () => {
 
   it("accepts a partial update with just storageId", () => {
     const result = updateBottleSchema.safeParse({ storageId: 5 });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a partial update with just size", () => {
+    const result = updateBottleSchema.safeParse({ size: "magnum" });
     expect(result.success).toBe(true);
   });
 

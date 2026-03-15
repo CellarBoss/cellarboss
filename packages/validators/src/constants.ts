@@ -8,6 +8,21 @@ export const BOTTLE_STATUSES = [
 ] as const;
 export type BottleStatus = (typeof BOTTLE_STATUSES)[number];
 
+export const BOTTLE_SIZES = [
+  "piccolo",
+  "half",
+  "standard",
+  "litre",
+  "magnum",
+  "double-magnum",
+  "jeroboam",
+  "imperial",
+  "salmanazar",
+  "balthazar",
+  "nebuchadnezzar",
+] as const;
+export type BottleSize = (typeof BOTTLE_SIZES)[number];
+
 export const WINE_TYPES = [
   "red",
   "white",

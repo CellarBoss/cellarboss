@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BOTTLE_STATUSES } from "./constants.js";
+import { BOTTLE_STATUSES, BOTTLE_SIZES } from "./constants.js";
 
 export const createBottleSchema = z.object({
   purchaseDate: z.iso
@@ -18,6 +18,7 @@ export const createBottleSchema = z.object({
     .nullable()
     .describe("ID of the storage location, or null if not stored"),
   status: z.enum(BOTTLE_STATUSES).describe("Current status of the bottle"),
+  size: z.enum(BOTTLE_SIZES).describe("Size of the bottle"),
 });
 
 export const updateBottleSchema = createBottleSchema
