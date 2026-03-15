@@ -74,7 +74,11 @@ test.describe("DataTable row expansion URL state", () => {
     // Expand the first two rows
     const expandButtons = page.getByRole("button", { name: "Expand row" });
     await expandButtons.nth(0).click();
-    await expandButtons.nth(0).click(); // After first expand, the remaining "Expand row" buttons shift
+    // Wait for the first row's button to change to "Collapse row" before clicking the next
+    await expect(
+      page.getByRole("button", { name: "Collapse row" }),
+    ).toHaveCount(1);
+    await expandButtons.nth(0).click(); // Now nth(0) resolves to the second row's expand button
 
     // URL should contain both IDs
     await expect(page).toHaveURL(/expanded=/);
