@@ -1,5 +1,6 @@
 import { BottleWine } from "lucide-react";
 import type { WineType } from "@cellarboss/validators/constants";
+import { BOTTLE_SIZES } from "@/lib/constants/bottle-sizes";
 import { WINE_TYPE_COLORS } from "@/lib/constants/wine-colouring";
 import { formatBottleSize } from "@/lib/functions/format";
 import {
@@ -8,20 +9,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const BOTTLE_SIZE_ICON_SIZES: Record<string, number> = {
-  piccolo: 20,
-  half: 22,
-  standard: 24,
-  litre: 26,
-  magnum: 28,
-  "double-magnum": 30,
-  jeroboam: 32,
-  imperial: 34,
-  salmanazar: 36,
-  balthazar: 38,
-  nebuchadnezzar: 40,
-};
-
 export function BottleSizeIcon({
   size,
   wineType,
@@ -29,7 +16,7 @@ export function BottleSizeIcon({
   size: string;
   wineType: WineType;
 }) {
-  const iconSize = BOTTLE_SIZE_ICON_SIZES[size] ?? 16;
+  const iconSize = BOTTLE_SIZES[size]?.iconSize ?? 16;
   const colorClass = WINE_TYPE_COLORS[wineType].replace("bg-", "text-");
 
   return (
