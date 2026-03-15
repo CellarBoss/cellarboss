@@ -295,7 +295,11 @@ export default function BottlesPage() {
         const winemaker = wine ? winemakerMap.get(wine.wineMakerId) : undefined;
         return (
           <div className="flex items-center justify-between gap-2 flex-1 min-w-0">
-            <VintageDisplay vintage={vintage} wine={wine} winemaker={winemaker} />
+            <VintageDisplay
+              vintage={vintage}
+              wine={wine}
+              winemaker={winemaker}
+            />
             <BottleSizeIcon
               size={row.original.size}
               wineType={wine?.type ?? "red"}
