@@ -50,6 +50,7 @@ import { compareAsc } from "date-fns";
 import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
 import { StorageHierarchyDisplay } from "@/components/storage/StorageHierarchyDisplay";
 import { VintageDisplay } from "@/components/wine/VintageDisplay";
+import { BottleSizeIcon } from "@/components/bottles/BottleSizeIcon";
 import { ViewButton } from "@/components/buttons/ViewButton";
 import { getRegions } from "@/lib/api/regions";
 import { getCountries } from "@/lib/api/countries";
@@ -293,7 +294,13 @@ export default function BottlesPage() {
         const wine = vintage ? wineMap.get(vintage.wineId) : undefined;
         const winemaker = wine ? winemakerMap.get(wine.wineMakerId) : undefined;
         return (
-          <VintageDisplay vintage={vintage} wine={wine} winemaker={winemaker} />
+          <div className="flex items-center justify-between gap-2 flex-1 min-w-0">
+            <VintageDisplay vintage={vintage} wine={wine} winemaker={winemaker} />
+            <BottleSizeIcon
+              size={row.original.size}
+              wineType={wine?.type ?? "red"}
+            />
+          </div>
         );
       },
     },
@@ -386,8 +393,7 @@ export default function BottlesPage() {
       header: "Size",
       enableSorting: true,
       enableColumnFilter: true,
-      cell: ({ row }: { row: { original: Bottle } }) =>
-        formatBottleSize(row.original.size),
+      meta: { hidden: true },
     },
     {
       accessorKey: "status",
