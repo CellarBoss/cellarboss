@@ -88,7 +88,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Check formatting
-        run: pnpm dlx prettier --check **/*.{ts,tsx,md}
+        run: pnpm prettier --check "**/*.{ts,tsx,md}"
 
   test-web-functions:
     name: Test WebUI Functions
