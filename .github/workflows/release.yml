@@ -34,154 +34,14 @@ jobs:
       - name: Check formatting
         run: pnpm prettier --check "**/*.{ts,tsx,md}"
 
-  test-validators:
-    name: Test Validators
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
-        with:
-          node-version: '24.14.0'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run validators unit tests
-        run: pnpm --filter @cellarboss/validators test
-
-  test-backend:
-    name: Test Backend
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
-        with:
-          node-version: '24.14.0'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build backend
-        run: pnpm --filter backend build
-
-      - name: Run backend tests
-        run: pnpm --filter backend test
-        env:
-          DATABASE_TYPE: sqlite
-          DATABASE_URL: ':memory:'
-          NODE_ENV: test
-          BETTER_AUTH_URL: http://localhost:3000
-          BETTER_AUTH_SECRET: ci-test-placeholder
-
-  test-web-functions:
-    name: Test WebUI Functions
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
-        with:
-          node-version: '24.14.0'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build frontend
-        run: pnpm --filter @cellarboss/web build
-        env:
-          NEXT_TELEMETRY_DISABLED: 1
-          CELLARBOSS_SERVER: http://localhost:5000
-          BETTER_AUTH_SECRET: ci-build-placeholder
-          BETTER_AUTH_URL: http://localhost:5000
-
-      - name: Run web unit tests
-        run: pnpm --filter @cellarboss/web test
-
-  test-web-e2e:
-    name: Test WebUI E2E
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
-        with:
-          node-version: '24.14.0'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5
-        id: playwright-cache
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('apps/web/package.json') }}
-          restore-keys: |
-            playwright-${{ runner.os }}-
-
-      - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm --filter @cellarboss/web exec playwright install --with-deps chromium
-
-      - name: Install Playwright system deps (cache hit)
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: pnpm --filter @cellarboss/web exec playwright install-deps chromium
-
-      - name: Run E2E tests
-        run: pnpm --filter @cellarboss/web test:e2e
-        env:
-          NEXT_TELEMETRY_DISABLED: 1
-          CELLARBOSS_SERVER: http://localhost:5173
-          BETTER_AUTH_SECRET: e2e-test-secret
-          BETTER_AUTH_URL: http://localhost:5173
-          CI: true
-
-      - name: Upload Playwright report
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
-        if: always()
-        with:
-          name: playwright-report
-          path: apps/web/playwright-report/
-          retention-days: 7
-
-      - name: Upload failure screenshots
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
-        if: failure()
-        with:
-          name: playwright-screenshots
-          path: apps/web/test-results/
-          retention-days: 7
+  tests:
+    name: Tests
+    uses: ./.github/workflows/ci-tests.yml
 
   build-api-docs:
     name: Build API Docs
     runs-on: ubuntu-latest
-    needs: [prettier, test-validators, test-backend, test-web-functions, test-web-e2e]
+    needs: [prettier, tests]
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -213,7 +73,7 @@ jobs:
   build-webui-user-docs:
     name: Build WebUI User Docs
     runs-on: ubuntu-latest
-    needs: [prettier, test-validators, test-backend, test-web-functions, test-web-e2e]
+    needs: [prettier, tests]
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -330,7 +190,7 @@ jobs:
   docker-frontend:
     name: Build & Push Frontend Image
     runs-on: ubuntu-latest
-    needs: [prettier, test-validators, test-backend, test-web-functions, test-web-e2e]
+    needs: [prettier, tests]
 
     steps:
       - name: Checkout
@@ -373,7 +233,7 @@ jobs:
   docker-backend:
     name: Build & Push Backend Image
     runs-on: ubuntu-latest
-    needs: [prettier, test-validators, test-backend, test-web-functions, test-web-e2e]
+    needs: [prettier, tests]
 
     steps:
       - name: Checkout
