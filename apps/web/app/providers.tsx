@@ -6,14 +6,22 @@ import { ReactNode, useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
-export default function Providers({ children }: { children: ReactNode }) {
+export default function Providers({
+  children,
+  sidebarDefaultOpen,
+}: {
+  children: ReactNode;
+  sidebarDefaultOpen: boolean;
+}) {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <NuqsAdapter>
         <QueryClientProvider client={queryClient}>
-          <SidebarProvider>{children}</SidebarProvider>
+          <SidebarProvider defaultOpen={sidebarDefaultOpen}>
+            {children}
+          </SidebarProvider>
         </QueryClientProvider>
       </NuqsAdapter>
     </ThemeProvider>
