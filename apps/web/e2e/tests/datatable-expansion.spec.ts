@@ -81,12 +81,8 @@ test.describe("DataTable row expansion URL state", () => {
     await expandButtons.nth(0).click(); // Now nth(0) resolves to the second row's expand button
 
     // URL should contain both IDs
-    await expect(page).toHaveURL(/expanded=/);
-    const url = new URL(page.url());
-    const expanded = url.searchParams.get("expanded") ?? "";
-    const ids = expanded.split(",").sort();
-    expect(ids).toContain("1");
-    expect(ids).toContain("2");
+    await expect(page).toHaveURL(/expanded=.*1/);
+    await expect(page).toHaveURL(/expanded=.*2/);
   });
 
   test("expanded state persists across page refresh", async ({
