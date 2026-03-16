@@ -47,7 +47,7 @@ export default function SettingsAdminPage() {
       <PageHeader title="System Settings" />
 
       {settings.size === 0 ? (
-        <div className="bg-white border border-gray-200 rounded-lg p-6 text-center text-gray-500">
+        <div className="bg-card border border-border rounded-lg p-6 text-center text-muted-foreground">
           No settings configured yet.
         </div>
       ) : (
@@ -55,13 +55,15 @@ export default function SettingsAdminPage() {
           {Array.from(settings.entries()).map(([key, value]) => (
             <div
               key={key}
-              className="bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-between hover:bg-gray-50"
+              className="bg-card border border-border rounded-lg p-4 flex items-center justify-between hover:bg-accent"
             >
               <div>
-                <div className="font-medium text-gray-900">{key}</div>
-                <div className="text-sm text-gray-600">
+                <div className="font-medium text-foreground">{key}</div>
+                <div className="text-sm text-muted-foreground">
                   {value === null ? (
-                    <span className="italic text-gray-400">null</span>
+                    <span className="italic text-muted-foreground/60">
+                      null
+                    </span>
                   ) : (
                     String(value)
                   )}

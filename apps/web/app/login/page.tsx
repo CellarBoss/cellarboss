@@ -58,7 +58,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-md rounded-xl bg-white p-8 shadow">
+    <div className="w-full max-w-md rounded-xl bg-card p-8 shadow">
       <h1 className="mb-6 text-2xl font-bold text-center">
         Sign in to CellarBoss
       </h1>
@@ -91,7 +91,7 @@ function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-md bg-black py-2 text-white hover:bg-gray-800 disabled:opacity-50"
+          className="w-full rounded-md bg-primary py-2 text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
           {loading ? "Signing in…" : "Sign in"}
         </button>

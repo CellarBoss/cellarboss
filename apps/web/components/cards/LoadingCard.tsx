@@ -7,7 +7,9 @@ export function LoadingCard() {
       <PageHeader title="Loading..." />
       <div className="flex flex-col items-center justify-center space-y-4">
         <Loader2 className="animate-spin w-8 h-8 text-blue-600" />
-        <span className="text-gray-700 text-center">Please wait...</span>
+        <span className="text-muted-foreground text-center">
+          Please wait...
+        </span>
       </div>
     </section>
   );

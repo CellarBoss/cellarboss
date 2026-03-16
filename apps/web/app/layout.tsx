@@ -16,13 +16,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="bg-gray-50 text-gray-900">
+    <html lang="en" suppressHydrationWarning>
+      <body className="bg-background text-foreground">
         <Providers>
           <div className="flex min-h-screen w-full">
             <AppSidebar />
-            <main className="flex-1 p-6 md:p-10 bg-gray-100">
-              <div className="w-full bg-white shadow-sm rounded-lg p-6 md:p-10">
+            <main className="flex-1 p-6 md:p-10 bg-muted">
+              <div className="w-full bg-card shadow-sm rounded-lg p-6 md:p-10">
                 <Suspense fallback={<LoadingCard />}>{children}</Suspense>
               </div>
             </main>

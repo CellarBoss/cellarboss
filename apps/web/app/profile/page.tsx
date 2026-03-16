@@ -69,7 +69,7 @@ export default function ProfilePage() {
     return (
       <section>
         <PageHeader title="Profile" />
-        <div className="text-center text-gray-500 py-8">
+        <div className="text-center text-muted-foreground py-8">
           Please log in to view your profile.
         </div>
       </section>

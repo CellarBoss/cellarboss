@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <section className="text-center py-20">
       <h1 className="text-4xl font-bold mb-4">Welcome to CellarBoss 🍷</h1>
-      <p className="text-gray-600">
+      <p className="text-muted-foreground">
         Track and manage your cellar in one place.
       </p>
       <UserDisplay />
