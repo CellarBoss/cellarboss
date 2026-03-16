@@ -118,7 +118,7 @@ export function DataTableFilterControl<T>({
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2">
       {filters.map((filter) =>
         getFilterComponent(filter, table, columnFilters),
       )}
