@@ -131,7 +131,7 @@ export function AppSidebar() {
           </span>
         </div>
         <SidebarSeparator className="group-data-[collapsible=icon]:hidden" />
-        <div className="flex items-center justify-center gap-2 px-2 py-1">
+        <div className="flex items-center justify-center gap-2 px-2 py-1 group-data-[collapsible=icon]:flex-col">
           <ThemeToggleButton />
           <Tooltip>
             <TooltipTrigger asChild>
