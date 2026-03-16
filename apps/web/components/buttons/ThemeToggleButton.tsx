@@ -16,7 +16,7 @@ export function ThemeToggleButton() {
       <TooltipTrigger asChild>
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="flex items-center text-muted-foreground hover:text-foreground"
+          className="flex items-center text-muted-foreground hover:text-foreground cursor-pointer"
           aria-label="Toggle dark mode"
         >
           <Sun className="h-4 w-4 hidden dark:block" />

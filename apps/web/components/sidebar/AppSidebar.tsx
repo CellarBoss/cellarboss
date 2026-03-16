@@ -92,15 +92,22 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <Link
-          href="/"
-          className="flex items-center justify-center gap-2 px-2 py-3 font-semibold text-xl tracking-tight hover:opacity-80 transition-opacity"
-        >
-          <BottleWine className="h-5 w-5 shrink-0" />
-          <span className="group-data-[collapsible=icon]:hidden">
-            CellarBoss
-          </span>
-        </Link>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Link
+              href="/"
+              className="flex items-center justify-center gap-2 px-2 py-3 font-semibold text-xl tracking-tight hover:opacity-80 transition-opacity"
+            >
+              <BottleWine className="h-5 w-5 shrink-0" />
+              <span className="group-data-[collapsible=icon]:hidden">
+                CellarBoss
+              </span>
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="right" hidden={state !== "collapsed"}>
+            Dashboard
+          </TooltipContent>
+        </Tooltip>
       </SidebarHeader>
       <SidebarContent>
         {sections.map(({ label, items }) => (
@@ -137,7 +144,7 @@ export function AppSidebar() {
             <TooltipTrigger asChild>
               <button
                 onClick={() => toggleSidebar()}
-                className="flex items-center text-muted-foreground hover:text-foreground"
+                className="flex items-center text-muted-foreground hover:text-foreground cursor-pointer"
                 aria-label="Toggle sidebar"
               >
                 {state === "expanded" ? (
@@ -153,7 +160,7 @@ export function AppSidebar() {
             <TooltipTrigger asChild>
               <button
                 onClick={handleLogout}
-                className="flex items-center text-muted-foreground hover:text-foreground"
+                className="flex items-center text-muted-foreground hover:text-foreground cursor-pointer"
                 aria-label="Log out"
               >
                 <LogOut className="h-4 w-4" />
