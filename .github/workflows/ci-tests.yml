@@ -1,0 +1,277 @@
+name: CI Tests
+
+on:
+  workflow_call:
+    inputs:
+      detect-changes:
+        description: 'Run path-based change detection to conditionally skip unchanged test suites'
+        type: boolean
+        default: false
+      upload-coverage:
+        description: 'Run test:coverage instead of test and upload coverage artifacts'
+        type: boolean
+        default: false
+        
+jobs:
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      web: ${{ steps.filter.outputs.web || 'true' }}
+      validators: ${{ steps.filter.outputs.validators || 'true' }}
+      backend: ${{ steps.filter.outputs.backend || 'true' }}
+      common: ${{ steps.filter.outputs.common || 'true' }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        if: inputs.detect-changes
+
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3
+        id: filter
+        if: inputs.detect-changes
+        with:
+          filters: |
+            web:
+              - 'apps/web/**'
+              - 'packages/types/**'
+            validators:
+              - 'packages/validators/**'
+              - 'packages/types/**'
+            backend:
+              - 'apps/backend/**'
+              - 'packages/types/**'
+            common:
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - '.github/workflows/**'
+
+  test-web-functions:
+    name: Test WebUI Functions
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.web == 'true' || needs.changes.outputs.common == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version: '24.14.0'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend
+        run: pnpm --filter @cellarboss/web build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+          CELLARBOSS_SERVER: http://localhost:5000
+          BETTER_AUTH_SECRET: ci-build-placeholder
+          BETTER_AUTH_URL: http://localhost:5000
+
+      - name: Run web unit tests
+        run: pnpm --filter @cellarboss/web ${{ inputs.upload-coverage && 'test:coverage' || 'test' }}
+
+      - name: Upload coverage
+        if: inputs.upload-coverage
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        with:
+          name: coverage-web
+          path: apps/web/coverage/
+          retention-days: 1
+
+  test-validators:
+    name: Test Validators
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.validators == 'true' || needs.changes.outputs.common == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version: '24.14.0'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run validators unit tests
+        run: pnpm --filter @cellarboss/validators ${{ inputs.upload-coverage && 'test:coverage' || 'test' }}
+
+      - name: Upload coverage
+        if: inputs.upload-coverage
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        with:
+          name: coverage-validators
+          path: packages/validators/coverage/
+          retention-days: 1
+
+  test-backend:
+    name: Test Backend
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.common == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version: '24.14.0'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build backend
+        run: pnpm --filter backend build
+
+      - name: Run backend tests
+        run: pnpm --filter backend ${{ inputs.upload-coverage && 'test:coverage' || 'test' }}
+        env:
+          DATABASE_TYPE: sqlite
+          DATABASE_URL: ':memory:'
+          NODE_ENV: test
+          BETTER_AUTH_URL: http://localhost:3000
+          BETTER_AUTH_SECRET: ci-test-placeholder
+
+      - name: Upload coverage
+        if: inputs.upload-coverage
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        with:
+          name: coverage-backend
+          path: apps/backend/coverage/
+          retention-days: 1
+
+  test-web-e2e:
+    name: Test WebUI E2E
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.web == 'true' || needs.changes.outputs.common == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version: '24.14.0'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('apps/web/package.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @cellarboss/web exec playwright install --with-deps chromium
+
+      - name: Install Playwright system deps (cache hit)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter @cellarboss/web exec playwright install-deps chromium
+
+      - name: Run E2E tests
+        run: pnpm --filter @cellarboss/web test:e2e
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+          CELLARBOSS_SERVER: http://localhost:5173
+          BETTER_AUTH_SECRET: e2e-test-secret
+          BETTER_AUTH_URL: http://localhost:5173
+          CI: true
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        if: always()
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 7
+
+      - name: Upload Playwright results JSON
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        if: always()
+        with:
+          name: playwright-results
+          path: apps/web/playwright-results.json
+          retention-days: 1
+
+      - name: Upload failure screenshots
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        if: failure()
+        with:
+          name: playwright-screenshots
+          path: apps/web/test-results/
+          retention-days: 7
+
+  validate-api-docs:
+    name: Validate API Docs
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.validators == 'true' || needs.changes.outputs.common == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version: '24.14.0'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate API docs generation
+        run: pnpm --filter backend generate:docs
+
+  validate-web-docs:
+    name: Validate WebUI User Docs
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version: '24.14.0'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build docs (without screenshots)
+        run: pnpm --filter @cellarboss/web docs:build
