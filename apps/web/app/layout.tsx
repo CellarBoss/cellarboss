@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { cookies } from "next/headers";
 import "./globals.css";
 import { AppSidebar } from "@/components/sidebar/AppSidebar";
 import { LoadingCard } from "@/components/cards/LoadingCard";
@@ -10,19 +11,22 @@ export const metadata: Metadata = {
   description: "Your open source wine cellar inventory manager.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const sidebarOpen = cookieStore.get("sidebar_state")?.value !== "false";
+
   return (
-    <html lang="en">
-      <body className="bg-gray-50 text-gray-900">
-        <Providers>
+    <html lang="en" suppressHydrationWarning>
+      <body className="bg-background text-foreground">
+        <Providers sidebarDefaultOpen={sidebarOpen}>
           <div className="flex min-h-screen w-full">
             <AppSidebar />
-            <main className="flex-1 p-6 md:p-10 bg-gray-100">
-              <div className="w-full bg-white shadow-sm rounded-lg p-6 md:p-10">
+            <main className="flex-1 p-6 md:p-10 bg-muted">
+              <div className="w-full bg-card shadow-sm rounded-lg p-6 md:p-10">
                 <Suspense fallback={<LoadingCard />}>{children}</Suspense>
               </div>
             </main>

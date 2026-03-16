@@ -16,8 +16,11 @@ import {
   UserCircle,
   LogOut,
   Users,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { ThemeToggleButton } from "@/components/buttons/ThemeToggleButton";
 
 import {
   Sidebar,
@@ -30,7 +33,14 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
+  useSidebar,
 } from "@/components/ui/sidebar";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 const wineItems = [
   { title: "Bottles", url: "/bottles", icon: BottleWine },
@@ -59,6 +69,7 @@ const adminItems = [{ title: "Users", url: "/users", icon: Users }];
 
 export function AppSidebar() {
   const router = useRouter();
+  const { toggleSidebar, state } = useSidebar();
   const session = authClient.useSession();
   const user = session.data?.user;
   const isAdmin = user?.role === "admin";
@@ -79,15 +90,24 @@ export function AppSidebar() {
   ];
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarHeader>
-        <Link
-          href="/"
-          className="flex items-center justify-center gap-2 px-2 py-3 font-semibold text-xl tracking-tight hover:opacity-80 transition-opacity"
-        >
-          <BottleWine className="h-5 w-5 shrink-0" />
-          <span>CellarBoss</span>
-        </Link>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Link
+              href="/"
+              className="flex items-center justify-center gap-2 px-2 py-3 font-semibold text-xl tracking-tight hover:opacity-80 transition-opacity"
+            >
+              <BottleWine className="h-5 w-5 shrink-0" />
+              <span className="group-data-[collapsible=icon]:hidden">
+                CellarBoss
+              </span>
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="right" hidden={state !== "collapsed"}>
+            Dashboard
+          </TooltipContent>
+        </Tooltip>
       </SidebarHeader>
       <SidebarContent>
         {sections.map(({ label, items }) => (
@@ -97,7 +117,7 @@ export function AppSidebar() {
               <SidebarMenu>
                 {items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild tooltip={item.title}>
                       <a href={item.url}>
                         <item.icon />
                         <span>{item.title}</span>
@@ -111,21 +131,43 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <div className="flex items-center justify-between px-2 py-2 text-sm">
-          <div className="flex items-center gap-2 min-w-0">
-            <UserCircle className="h-5 w-5 shrink-0 text-muted-foreground" />
-            <span className="truncate text-muted-foreground">
-              {user?.name || user?.email}
-            </span>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1 text-muted-foreground hover:text-foreground shrink-0 ml-2"
-            title="Log out"
-          >
-            <LogOut className="h-4 w-4" />
-            <span>Logout</span>
-          </button>
+        <div className="flex items-center gap-2 px-2 py-1 min-w-0 group-data-[collapsible=icon]:justify-center">
+          <UserCircle className="h-5 w-5 shrink-0 text-muted-foreground" />
+          <span className="truncate text-sm text-muted-foreground group-data-[collapsible=icon]:hidden">
+            {user?.name || user?.email}
+          </span>
+        </div>
+        <SidebarSeparator className="group-data-[collapsible=icon]:hidden" />
+        <div className="flex items-center justify-center gap-2 px-2 py-1 group-data-[collapsible=icon]:flex-col">
+          <ThemeToggleButton />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => toggleSidebar()}
+                className="flex items-center text-muted-foreground hover:text-foreground cursor-pointer"
+                aria-label="Toggle sidebar"
+              >
+                {state === "expanded" ? (
+                  <PanelLeftClose className="h-4 w-4" />
+                ) : (
+                  <PanelLeftOpen className="h-4 w-4" />
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Toggle sidebar</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleLogout}
+                className="flex items-center text-muted-foreground hover:text-foreground cursor-pointer"
+                aria-label="Log out"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Log out</TooltipContent>
+          </Tooltip>
         </div>
       </SidebarFooter>
     </Sidebar>

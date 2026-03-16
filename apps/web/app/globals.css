@@ -121,9 +121,9 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.553 0.013 58.071);
 
-  --table-header: 210 18% 88%;
+  --table-header: 215 14% 20%;
   --table-row: transparent;
-  --table-row-hover: 210 20% 95%;
+  --table-row-hover: 215 14% 25%;
 }
 
 @layer base {
