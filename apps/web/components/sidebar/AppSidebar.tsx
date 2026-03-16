@@ -16,7 +16,10 @@ import {
   UserCircle,
   LogOut,
   Users,
+  Moon,
+  Sun,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import { authClient } from "@/lib/auth-client";
 
 import {
@@ -59,6 +62,7 @@ const adminItems = [{ title: "Users", url: "/users", icon: Users }];
 
 export function AppSidebar() {
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
   const session = authClient.useSession();
   const user = session.data?.user;
   const isAdmin = user?.role === "admin";
@@ -118,14 +122,24 @@ export function AppSidebar() {
               {user?.name || user?.email}
             </span>
           </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1 text-muted-foreground hover:text-foreground shrink-0 ml-2"
-            title="Log out"
-          >
-            <LogOut className="h-4 w-4" />
-            <span>Logout</span>
-          </button>
+          <div className="flex items-center gap-1 shrink-0 ml-2">
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="flex items-center text-muted-foreground hover:text-foreground"
+              title="Toggle dark mode"
+            >
+              <Sun className="h-4 w-4 hidden dark:block" />
+              <Moon className="h-4 w-4 block dark:hidden" />
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
+              title="Log out"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
+            </button>
+          </div>
         </div>
       </SidebarFooter>
     </Sidebar>
