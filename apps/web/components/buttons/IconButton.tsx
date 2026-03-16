@@ -30,6 +30,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         variant="outline"
         onClick={onClick}
         className="cursor-pointer"
+        aria-label={tooltip}
       >
         <Icon />
         {children}
