@@ -66,7 +66,7 @@ test.describe("Authentication", () => {
     await expect(page).not.toHaveURL(/\/login/);
 
     // Click the logout button in the sidebar
-    await page.getByRole("button", { name: "Logout" }).click();
+    await page.getByRole("button", { name: "Log out" }).click();
 
     // Should redirect to the login page
     await expect(page).toHaveURL(/\/login/);
