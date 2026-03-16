@@ -11,12 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Trash, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
+import { IconButton } from "./IconButton";
 
 type DeleteButtonProps = {
   onDelete: () => Promise<boolean>;
@@ -45,16 +40,7 @@ export function DeleteButton({ onDelete, itemDescription }: DeleteButtonProps) {
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <AlertDialogTrigger asChild>
-            <Button size="sm" variant="outline" className="cursor-pointer">
-              <Trash />
-            </Button>
-          </AlertDialogTrigger>
-        </TooltipTrigger>
-        <TooltipContent>Delete</TooltipContent>
-      </Tooltip>
+      <IconButton icon={Trash} tooltip="Delete" trigger={AlertDialogTrigger} />
 
       <AlertDialogContent>
         <AlertDialogHeader>

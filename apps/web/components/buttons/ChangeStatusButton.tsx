@@ -8,12 +8,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
 import { Tag, Loader2 } from "lucide-react";
+import { IconButton } from "./IconButton";
 import { FixedListField } from "@/components/cards/FixedListField";
 import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
 import type { Bottle } from "@cellarboss/types";
@@ -59,16 +55,7 @@ export function ChangeStatusButton({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <DialogTrigger asChild>
-            <Button size="sm" variant="outline" className="cursor-pointer">
-              <Tag />
-            </Button>
-          </DialogTrigger>
-        </TooltipTrigger>
-        <TooltipContent>Change status</TooltipContent>
-      </Tooltip>
+      <IconButton icon={Tag} tooltip="Change status" trigger={DialogTrigger} />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Change Status</DialogTitle>

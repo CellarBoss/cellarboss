@@ -8,12 +8,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
 import { MoveRight, Loader2 } from "lucide-react";
+import { IconButton } from "./IconButton";
 import HierarchicalSingleSelector from "@/components/selector/HierarchicalSingleSelector";
 import type { Storage } from "@cellarboss/types";
 
@@ -64,16 +60,11 @@ export function MoveBottleButton({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <DialogTrigger asChild>
-            <Button size="sm" variant="outline" className="cursor-pointer">
-              <MoveRight />
-            </Button>
-          </DialogTrigger>
-        </TooltipTrigger>
-        <TooltipContent>Move bottle to another storage</TooltipContent>
-      </Tooltip>
+      <IconButton
+        icon={MoveRight}
+        tooltip="Move bottle to another storage"
+        trigger={DialogTrigger}
+      />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Move Bottle</DialogTitle>
