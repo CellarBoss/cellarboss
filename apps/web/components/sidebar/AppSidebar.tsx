@@ -16,11 +16,9 @@ import {
   UserCircle,
   LogOut,
   Users,
-  Moon,
-  Sun,
 } from "lucide-react";
-import { useTheme } from "next-themes";
 import { authClient } from "@/lib/auth-client";
+import { ThemeToggleButton } from "@/components/buttons/ThemeToggleButton";
 
 import {
   Sidebar,
@@ -62,7 +60,6 @@ const adminItems = [{ title: "Users", url: "/users", icon: Users }];
 
 export function AppSidebar() {
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
   const session = authClient.useSession();
   const user = session.data?.user;
   const isAdmin = user?.role === "admin";
@@ -123,14 +120,7 @@ export function AppSidebar() {
             </span>
           </div>
           <div className="flex items-center gap-1 shrink-0 ml-2">
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="flex items-center text-muted-foreground hover:text-foreground"
-              title="Toggle dark mode"
-            >
-              <Sun className="h-4 w-4 hidden dark:block" />
-              <Moon className="h-4 w-4 block dark:hidden" />
-            </button>
+            <ThemeToggleButton />
             <button
               onClick={handleLogout}
               className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
