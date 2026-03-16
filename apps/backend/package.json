@@ -17,7 +17,6 @@
   "dependencies": {
     "@better-auth/cli": "1.4.21",
     "@cellarboss/types": "workspace:*",
-
     "@cellarboss/validators": "workspace:*",
     "@hono/node-server": "1.19.11",
     "@hono/zod-openapi": "1.2.2",
@@ -42,6 +41,7 @@
     "tsup": "8.5.1",
     "tsx": "4.21.0",
     "typescript": "5.9.3",
+    "vite": "^8.0.0",
     "vitest": "4.1.0"
   }
 }
