@@ -1,19 +1,9 @@
-import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
+import { IconButton } from "./IconButton";
 
 type EditButtonProps = {
   onEdit: () => Promise<void>;
 };
 export function EditButton({ onEdit }: EditButtonProps) {
-  return (
-    <Button
-      size="sm"
-      variant="outline"
-      onClick={onEdit}
-      className="cursor-pointer"
-      title="Edit"
-    >
-      <Pencil />
-    </Button>
-  );
+  return <IconButton icon={Pencil} tooltip="Edit" onClick={onEdit} />;
 }

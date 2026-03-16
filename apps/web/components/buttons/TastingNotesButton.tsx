@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
 import { useApiQuery } from "@/hooks/use-api-query";
 import {
   getTastingNotesByVintageId,
   getTastingNotesByWineId,
 } from "@/lib/api/tastingNotes";
 import { NotebookPen } from "lucide-react";
+import { IconButton } from "./IconButton";
 
 type TastingNotesButtonProps = {
   count?: number;
@@ -56,14 +56,12 @@ export function TastingNotesButton({
   onClick,
 }: TastingNotesButtonProps) {
   return (
-    <Button
-      size="sm"
-      variant="outline"
+    <IconButton
+      icon={NotebookPen}
+      tooltip="View Tasting Notes"
       onClick={onClick}
-      className="cursor-pointer"
-      title="View Tasting Notes"
     >
-      <NotebookPen /> {count ? `${count}` : "0"}
-    </Button>
+      {count ? `${count}` : "0"}
+    </IconButton>
   );
 }

@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { MoveRight, Loader2 } from "lucide-react";
+import { IconButton } from "./IconButton";
 import HierarchicalSingleSelector from "@/components/selector/HierarchicalSingleSelector";
 import type { Storage } from "@cellarboss/types";
 
@@ -59,16 +60,11 @@ export function MoveBottleButton({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button
-          size="sm"
-          variant="outline"
-          className="cursor-pointer"
-          title="Move bottle to another storage"
-        >
-          <MoveRight />
-        </Button>
-      </DialogTrigger>
+      <IconButton
+        icon={MoveRight}
+        tooltip="Move bottle to another storage"
+        trigger={DialogTrigger}
+      />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Move Bottle</DialogTitle>

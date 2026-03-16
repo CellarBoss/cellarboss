@@ -1,19 +1,9 @@
-import { Button } from "@/components/ui/button";
 import { Calendar } from "lucide-react";
+import { IconButton } from "./IconButton";
 
 type VintageButtonProps = {
   onClick: () => void;
 };
 export function VintageButton({ onClick }: VintageButtonProps) {
-  return (
-    <Button
-      size="sm"
-      variant="outline"
-      onClick={onClick}
-      className="cursor-pointer"
-      title="Add vintage"
-    >
-      <Calendar />
-    </Button>
-  );
+  return <IconButton icon={Calendar} tooltip="Add vintage" onClick={onClick} />;
 }
