@@ -31,7 +31,13 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 const wineItems = [
   { title: "Bottles", url: "/bottles", icon: BottleWine },
@@ -112,24 +118,27 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <div className="flex items-center justify-between px-2 py-2 text-sm">
-          <div className="flex items-center gap-2 min-w-0">
-            <UserCircle className="h-5 w-5 shrink-0 text-muted-foreground" />
-            <span className="truncate text-muted-foreground">
-              {user?.name || user?.email}
-            </span>
-          </div>
-          <div className="flex items-center gap-1 shrink-0 ml-2">
-            <ThemeToggleButton />
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
-              title="Log out"
-            >
-              <LogOut className="h-4 w-4" />
-              <span>Logout</span>
-            </button>
-          </div>
+        <div className="flex items-center gap-2 px-2 py-1 min-w-0">
+          <UserCircle className="h-5 w-5 shrink-0 text-muted-foreground" />
+          <span className="truncate text-sm text-muted-foreground">
+            {user?.name || user?.email}
+          </span>
+        </div>
+        <SidebarSeparator />
+        <div className="flex items-center justify-center gap-2 px-2 py-1">
+          <ThemeToggleButton />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleLogout}
+                className="flex items-center text-muted-foreground hover:text-foreground"
+                aria-label="Log out"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Log out</TooltipContent>
+          </Tooltip>
         </div>
       </SidebarFooter>
     </Sidebar>
