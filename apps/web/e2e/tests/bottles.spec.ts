@@ -102,10 +102,11 @@ test.describe("Bottles page", () => {
     const page = await adminContext.newPage();
     await page.goto("/bottles");
 
-    // Bottle sizes are now shown as icons with tooltips on hover
+    // Bottle sizes are shown as icons with tooltips on hover
+    // Use span tooltip triggers to avoid matching action button tooltips
     const bottleIcons = page
       .getByRole("row")
-      .locator("[data-slot='tooltip-trigger']");
+      .locator("span[data-slot='tooltip-trigger']");
     await bottleIcons.first().hover();
     await expect(page.getByRole("tooltip")).toContainText("Standard (750ml)");
 
