@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import Link from "next/link";
 import { Wine as WineIcon, Star } from "lucide-react";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import type {
@@ -19,7 +20,12 @@ import {
 type ActivityEvent = {
   id: string;
   type: "purchase" | "tasting";
-  description: string;
+  wineName: string;
+  wineId: number;
+  vintageId: number;
+  year: number | null;
+  wineMakerId: number;
+  wineMakerName: string;
   detail: string;
   date: Date;
 };
@@ -57,10 +63,18 @@ export function RecentActivity({
       const wine = wineMap.get(vintage.wineId);
       if (!wine) continue;
 
+      const winemaker = winemakerMap.get(wine.wineMakerId);
+      if (!winemaker) continue;
+
       result.push({
         id: `bottle-${bottle.id}`,
         type: "purchase",
-        description: `${wine.name}${vintage.year ? ` ${vintage.year}` : ""}`,
+        wineName: wine.name,
+        wineId: wine.id,
+        vintageId: vintage.id,
+        year: vintage.year,
+        wineMakerId: winemaker.id,
+        wineMakerName: winemaker.name,
         detail: "Purchased",
         date: purchaseDate,
       });
@@ -75,11 +89,19 @@ export function RecentActivity({
       const wine = wineMap.get(vintage.wineId);
       if (!wine) continue;
 
+      const winemaker = winemakerMap.get(wine.wineMakerId);
+      if (!winemaker) continue;
+
       result.push({
         id: `note-${note.id}`,
         type: "tasting",
-        description: `${wine.name}${vintage.year ? ` ${vintage.year}` : ""}`,
-        detail: `Scored ${note.score}/10`,
+        wineName: wine.name,
+        wineId: wine.id,
+        vintageId: vintage.id,
+        year: vintage.year,
+        wineMakerId: winemaker.id,
+        wineMakerName: winemaker.name,
+        detail: `Scored ${note.score}/10 by ${note.author}`,
         date: noteDate,
       });
     }
@@ -126,7 +148,29 @@ export function RecentActivity({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium truncate">{event.description}</p>
+                  <p className="font-medium truncate">
+                    <Link
+                      href={`/wines/${event.wineId}`}
+                      className="hover:underline"
+                    >
+                      {event.wineName}
+                    </Link>
+                    {event.year !== null && (
+                      <Link
+                        href={`/vintages/${event.vintageId}`}
+                        className="ml-1 hover:underline"
+                      >
+                        {event.year}
+                      </Link>
+                    )}{" "}
+                    &middot;
+                    <Link
+                      href={`/winemakers/${event.wineMakerId}`}
+                      className="text-muted-foreground ml-1 hover:underline"
+                    >
+                      {event.wineMakerName}
+                    </Link>
+                  </p>
                   <p className="text-xs text-muted-foreground">
                     {event.detail}
                   </p>
