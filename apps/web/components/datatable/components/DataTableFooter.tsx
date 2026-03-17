@@ -29,8 +29,8 @@ export default function DataTableFooter<T>({
     <TableFooter>
       <TableRow>
         <TableCell colSpan={columns.length}>
-          <div className="relative flex w-full items-center">
-            <div className="absolute left-1/2 -translate-x-1/2">
+          <div className="flex w-full flex-col items-center gap-2 sm:relative sm:flex-row">
+            <div className="order-1 sm:absolute sm:left-1/2 sm:-translate-x-1/2">
               <PaginationControl
                 pagination={pagination}
                 pageCount={pageCount}
@@ -48,7 +48,7 @@ export default function DataTableFooter<T>({
                 }
               />
             </div>
-            <div className="ml-auto flex items-center gap-2">
+            <div className="order-2 flex items-center gap-2 sm:ml-auto">
               <PaginationSelector
                 pageSize={pageSize}
                 onPageSizeChange={(size) =>

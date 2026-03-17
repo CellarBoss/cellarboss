@@ -180,8 +180,8 @@ export function DataTable<T>({
 
   return (
     <RowSelectionContext.Provider value={state.rowSelection}>
-      <div className="relative flex w-full items-center">
-        <div className="left-0 flex items-center gap-2">
+      <div className="relative flex w-full flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="flex flex-wrap items-center gap-2">
           <DataTableSearchControl
             table={table}
             filterColumnName={filterColumnName}
@@ -195,7 +195,7 @@ export function DataTable<T>({
             />
           ) : null}
         </div>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex items-center gap-2 sm:ml-auto">
           {buttons?.map((button, index) => (
             <Fragment key={index}>{button}</Fragment>
           ))}
