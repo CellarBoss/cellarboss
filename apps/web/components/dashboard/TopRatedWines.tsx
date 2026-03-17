@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import Link from "next/link";
 import { Star } from "lucide-react";
 import type { TastingNote, Vintage, Wine, WineMaker } from "@cellarboss/types";
 import {
@@ -49,8 +50,10 @@ export function TopRatedWines({
 
         return {
           vintageId,
+          wineId: wine.id,
           wineName: wine.name,
           year: vintage.year,
+          wineMakerId: winemaker?.id,
           winemakerName: winemaker?.name || "Unknown",
           avgScore: total / count,
           noteCount: count,
@@ -60,8 +63,10 @@ export function TopRatedWines({
       .sort((a, b) => b!.avgScore - a!.avgScore)
       .slice(0, 5) as Array<{
       vintageId: number;
+      wineId: number;
       wineName: string;
       year: number | null;
+      wineMakerId: number | undefined;
       winemakerName: string;
       avgScore: number;
       noteCount: number;
@@ -94,15 +99,32 @@ export function TopRatedWines({
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium truncate">
-                    {wine.wineName}
-                    {wine.year && (
-                      <span className="text-muted-foreground ml-1">
+                    <Link
+                      href={`/wines/${wine.wineId}`}
+                      className="hover:underline"
+                    >
+                      {wine.wineName}
+                    </Link>
+                    {wine.year !== null && (
+                      <Link
+                        href={`/vintages/${wine.vintageId}`}
+                        className="text-muted-foreground ml-1 hover:underline"
+                      >
                         {wine.year}
-                      </span>
+                      </Link>
                     )}
                   </p>
                   <p className="text-xs text-muted-foreground truncate">
-                    {wine.winemakerName}
+                    {wine.wineMakerId !== undefined ? (
+                      <Link
+                        href={`/winemakers/${wine.wineMakerId}`}
+                        className="hover:underline"
+                      >
+                        {wine.winemakerName}
+                      </Link>
+                    ) : (
+                      wine.winemakerName
+                    )}
                   </p>
                 </div>
                 <Badge variant="secondary" className="gap-1 shrink-0">
