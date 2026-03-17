@@ -31,7 +31,7 @@ export default function EditWinePage() {
     enabled: !!wineId,
   });
 
-  const result = queryGate(wineQuery, wineGrapesQuery);
+  const result = queryGate([wineQuery, wineGrapesQuery]);
   if (!result.ready) return result.gate;
 
   const [wine, wineGrapesList] = result.data;

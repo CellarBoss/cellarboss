@@ -42,7 +42,7 @@ export default function LocationsPage() {
     queryFn: getLocations,
   });
 
-  const result = queryGate(locationQuery);
+  const result = queryGate([locationQuery]);
   if (!result.ready) return result.gate;
 
   const [locationsList] = result.data;

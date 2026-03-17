@@ -24,7 +24,7 @@ export default function EditVintagePage() {
     enabled: !!vintageId,
   });
 
-  const result = queryGate(vintageQuery);
+  const result = queryGate([vintageQuery]);
   if (!result.ready) return result.gate;
 
   const [vintage] = result.data;

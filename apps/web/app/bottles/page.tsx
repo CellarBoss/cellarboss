@@ -90,7 +90,7 @@ export default function BottlesPage() {
   });
   const settingsQuery = useSettings();
 
-  const result = queryGate(
+  const result = queryGate([
     bottleQuery,
     vintageQuery,
     wineQuery,
@@ -100,7 +100,7 @@ export default function BottlesPage() {
     settingsQuery,
     regionQuery,
     countryQuery,
-  );
+  ]);
   if (!result.ready) return result.gate;
 
   const [

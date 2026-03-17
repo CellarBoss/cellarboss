@@ -42,13 +42,13 @@ export default function TastingNotesPage() {
 
   const settingsQuery = useSettings();
 
-  const result = queryGate(
+  const result = queryGate([
     notesQuery,
     vintagesQuery,
     winesQuery,
     winemakersQuery,
     settingsQuery,
-  );
+  ]);
   if (!result.ready) return result.gate;
 
   const [notes, vintages, wines, winemakers, settings] = result.data;

@@ -32,7 +32,7 @@ export default function EditStoragePage() {
     enabled: !!storageId,
   });
 
-  const result = queryGate(storageQuery);
+  const result = queryGate([storageQuery]);
   if (!result.ready) return result.gate;
 
   const [storage] = result.data;

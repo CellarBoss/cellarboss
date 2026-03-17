@@ -30,7 +30,7 @@ export default function EditTastingNotePage() {
     enabled: !!noteId,
   });
 
-  const result = queryGate(noteQuery);
+  const result = queryGate([noteQuery]);
   if (!result.ready) return result.gate;
 
   const [note] = result.data;

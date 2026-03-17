@@ -42,7 +42,7 @@ export default function WinemakersPage() {
     queryFn: getWinemakers,
   });
 
-  const result = queryGate(winemakerQuery);
+  const result = queryGate([winemakerQuery]);
   if (!result.ready) return result.gate;
 
   const [winemakersList] = result.data;

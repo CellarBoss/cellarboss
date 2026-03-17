@@ -39,7 +39,7 @@ export default function GrapesPage() {
 
   const grapeQuery = useApiQuery({ queryKey: ["grapes"], queryFn: getGrapes });
 
-  const result = queryGate(grapeQuery);
+  const result = queryGate([grapeQuery]);
   if (!result.ready) return result.gate;
 
   const [grapesList] = result.data;
