@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import Link from "next/link";
 import { AlertTriangle } from "lucide-react";
 import type { Bottle, Vintage, Wine, WineMaker } from "@cellarboss/types";
 import {
@@ -36,6 +37,7 @@ export function DrinkingSuggestions({
     const seen = new Set<number>();
     const urgent: Array<{
       vintageId: number;
+      wineId: number;
       wineName: string;
       year: number | null;
       winemakerName: string;
@@ -63,6 +65,7 @@ export function DrinkingSuggestions({
 
       urgent.push({
         vintageId: vintage.id,
+        wineId: wine.id,
         wineName: wine.name,
         year: vintage.year,
         winemakerName: winemaker?.name || "Unknown",
@@ -99,8 +102,9 @@ export function DrinkingSuggestions({
           <div className="space-y-4">
             {suggestions.map((item) => (
               <div key={item.vintageId} className="flex items-center gap-3">
-                <div
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold shrink-0"
+                <Link
+                  href={`/bottles?wineId=${item.wineId}${item.year !== null ? `&yearMin=${item.year}&yearMax=${item.year}` : ""}&status=stored`}
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold shrink-0 hover:opacity-80 transition-opacity"
                   style={{
                     backgroundColor:
                       "color-mix(in oklch, oklch(0.75 0.15 55) 15%, transparent)",
@@ -108,7 +112,7 @@ export function DrinkingSuggestions({
                   }}
                 >
                   {item.bottleCount}
-                </div>
+                </Link>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium truncate">
                     {item.wineName}
