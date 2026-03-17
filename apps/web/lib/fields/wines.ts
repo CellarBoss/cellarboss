@@ -7,7 +7,7 @@ import { getWinemakers } from "@/lib/api/winemakers";
 import { getRegions } from "@/lib/api/regions";
 import { getGrapes } from "@/lib/api/grapes";
 import { getCountries } from "@/lib/api/countries";
-import { WINE_TYPE_LABELS } from "@/lib/constants/wine-colouring";
+import { formatWineType } from "../functions/format";
 
 export type WineFormData = Wine & { grapeIds: number[] };
 
@@ -21,7 +21,7 @@ export const wineFields: FieldConfig<WineFormData>[] = [
     key: "type",
     label: "Type",
     type: "fixed-list",
-    options: WINE_TYPES.map((t) => ({ value: t, label: WINE_TYPE_LABELS[t] })),
+    options: WINE_TYPES.map((t) => ({ value: t, label: formatWineType(t) })),
     validator: z.enum(WINE_TYPES),
   },
   {
