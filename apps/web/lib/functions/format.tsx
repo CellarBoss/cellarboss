@@ -28,6 +28,10 @@ export function formatDateTime(
   return format(isoString, datetimeFormat);
 }
 
+export function formatWineType(type: string): string {
+  return type.charAt(0).toUpperCase() + type.slice(1);
+}
+
 export function formatStatus(status: string): string {
   return status
     .split("-")

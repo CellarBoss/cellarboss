@@ -28,10 +28,7 @@ import {
 import { VintageButton } from "@/components/buttons/VintageButton";
 import { WINE_TYPES } from "@cellarboss/validators/constants";
 import { WineTastingNotesButton } from "@/components/buttons/TastingNotesButton";
-
-function formatWineType(type: string): string {
-  return type.charAt(0).toUpperCase() + type.slice(1);
-}
+import { formatWineType } from "@/lib/functions/format";
 
 export default function WinesPage() {
   const queryClient = useQueryClient();
