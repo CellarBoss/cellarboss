@@ -162,17 +162,16 @@ export function RecentActivity({
                       >
                         {event.year}
                       </Link>
-                    )}{" "}
-                    &middot;
-                    <Link
-                      href={`/winemakers/${event.wineMakerId}`}
-                      className="text-muted-foreground ml-1 hover:underline"
-                    >
-                      {event.wineMakerName}
-                    </Link>
+                    )}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {event.detail}
+                    <Link
+                      href={`/winemakers/${event.wineMakerId}`}
+                      className="text-muted-foreground hover:underline"
+                    >
+                      {event.wineMakerName}
+                    </Link>{" "}
+                    &middot; {event.detail}
                   </p>
                 </div>
                 <span className="text-xs text-muted-foreground shrink-0">
