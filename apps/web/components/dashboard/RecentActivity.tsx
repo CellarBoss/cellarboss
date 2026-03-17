@@ -158,7 +158,7 @@ export function RecentActivity({
                     {event.year !== null && (
                       <Link
                         href={`/vintages/${event.vintageId}`}
-                        className="ml-1 hover:underline"
+                        className="text-muted-foreground ml-1 hover:underline"
                       >
                         {event.year}
                       </Link>
