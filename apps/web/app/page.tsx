@@ -1,23 +1,147 @@
 "use client";
 
-import { authClient } from "@/lib/auth-client";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { useSettings } from "@/hooks/use-settings";
+import { getBottles } from "@/lib/api/bottles";
+import { getVintages } from "@/lib/api/vintages";
+import { getWines } from "@/lib/api/wines";
+import { getWinemakers } from "@/lib/api/winemakers";
+import { getRegions } from "@/lib/api/regions";
+import { getCountries } from "@/lib/api/countries";
+import { getAllTastingNotes } from "@/lib/api/tastingNotes";
+import { queryGate } from "@/lib/functions/query-gate";
+import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
+import { CellarOverviewStats } from "@/components/dashboard/CellarOverviewStats";
+import { WineTypeBreakdown } from "@/components/dashboard/WineTypeBreakdown";
+import { DrinkingWindowTimeline } from "@/components/dashboard/DrinkingWindowTimeline";
+import { CellarValueOverTime } from "@/components/dashboard/CellarValueOverTime";
+import { CountryDistribution } from "@/components/dashboard/CountryDistribution";
+import { TopRatedWines } from "@/components/dashboard/TopRatedWines";
+import { DrinkingSuggestions } from "@/components/dashboard/DrinkingSuggestions";
+import { RecentActivity } from "@/components/dashboard/RecentActivity";
 
 export default function Home() {
-  return (
-    <section className="text-center py-20">
-      <h1 className="text-4xl font-bold mb-4">Welcome to CellarBoss 🍷</h1>
-      <p className="text-muted-foreground">
-        Track and manage your cellar in one place.
-      </p>
-      <UserDisplay />
-    </section>
+  const bottleQuery = useApiQuery({
+    queryKey: ["bottles"],
+    queryFn: getBottles,
+  });
+  const vintageQuery = useApiQuery({
+    queryKey: ["vintages"],
+    queryFn: getVintages,
+  });
+  const wineQuery = useApiQuery({
+    queryKey: ["wines"],
+    queryFn: getWines,
+  });
+  const winemakerQuery = useApiQuery({
+    queryKey: ["winemakers"],
+    queryFn: getWinemakers,
+  });
+  const regionQuery = useApiQuery({
+    queryKey: ["regions"],
+    queryFn: getRegions,
+  });
+  const countryQuery = useApiQuery({
+    queryKey: ["countries"],
+    queryFn: getCountries,
+  });
+  const tastingNoteQuery = useApiQuery({
+    queryKey: ["tastingNotes"],
+    queryFn: getAllTastingNotes,
+  });
+  const settingsQuery = useSettings();
+
+  const result = queryGate(
+    [
+      bottleQuery,
+      vintageQuery,
+      wineQuery,
+      winemakerQuery,
+      regionQuery,
+      countryQuery,
+      tastingNoteQuery,
+      settingsQuery,
+    ],
+    { loadingComponent: <DashboardSkeleton /> },
   );
-}
 
-export function UserDisplay() {
-  const session = authClient.useSession();
-  const user = session.data?.user;
+  if (!result.ready) return result.gate;
 
-  if (!session || !user) return null;
-  return <p>Hello, {user.name}</p>;
+  const [
+    bottles,
+    vintages,
+    wines,
+    winemakers,
+    regions,
+    countries,
+    tastingNotes,
+    settings,
+  ] = result.data;
+
+  const currency = (settings.get("currency") as string) || "USD";
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">
+          CellarBoss Dashboard
+        </h1>
+        <p className="text-muted-foreground">Your cellar at a glance</p>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <CellarOverviewStats
+          bottles={bottles}
+          vintages={vintages}
+          wines={wines}
+          currency={currency}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <WineTypeBreakdown
+          bottles={bottles}
+          vintages={vintages}
+          wines={wines}
+        />
+        <div className="lg:col-span-2">
+          <DrinkingWindowTimeline bottles={bottles} vintages={vintages} />
+        </div>
+      </div>
+
+      <CellarValueOverTime bottles={bottles} currency={currency} />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <TopRatedWines
+          tastingNotes={tastingNotes}
+          vintages={vintages}
+          wines={wines}
+          winemakers={winemakers}
+        />
+        <CountryDistribution
+          bottles={bottles}
+          vintages={vintages}
+          wines={wines}
+          regions={regions}
+          countries={countries}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <DrinkingSuggestions
+          bottles={bottles}
+          vintages={vintages}
+          wines={wines}
+          winemakers={winemakers}
+        />
+        <RecentActivity
+          bottles={bottles}
+          tastingNotes={tastingNotes}
+          vintages={vintages}
+          wines={wines}
+          winemakers={winemakers}
+        />
+      </div>
+    </div>
+  );
 }
