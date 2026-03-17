@@ -57,7 +57,7 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
     queryFn: () => getVintagesByWineId(wine.id),
   });
 
-  const result = queryGate(winemakerQuery, grapeQuery, wineGrapeQuery);
+  const result = queryGate([winemakerQuery, grapeQuery, wineGrapeQuery]);
   if (!result.ready) return result.gate;
 
   const [winemaker, grapes, wineGrapes] = result.data;
