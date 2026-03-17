@@ -39,11 +39,13 @@ import {
   formatBottleSize,
   formatDate,
   formatDrinkingStatus,
+  formatWineType,
 } from "@/lib/functions/format";
 import type { Bottle, Wine, WineMaker } from "@cellarboss/types";
 import {
   BOTTLE_STATUSES,
   BOTTLE_SIZES,
+  WINE_TYPES,
 } from "@cellarboss/validators/constants";
 import { Row } from "@tanstack/react-table";
 import { compareAsc } from "date-fns";
@@ -222,6 +224,16 @@ export default function BottlesPage() {
       columnId: "year",
       label: "Year",
       urlParamName: "year",
+    },
+    {
+      type: FilterType.MultiSelect,
+      columnId: "type",
+      label: "Type",
+      urlParamName: "type",
+      options: WINE_TYPES.map((s) => ({
+        value: s,
+        label: formatWineType(s),
+      })),
     },
     {
       type: FilterType.MultiSelect,
@@ -458,6 +470,16 @@ export default function BottlesPage() {
       enableSorting: false,
       meta: { hidden: true },
       accessorFn: (row: Bottle) => vintageMap.get(row.vintageId)?.year ?? 0,
+    },
+    {
+      // Hidden column used for filtering by bottle type
+      id: "type",
+      header: "",
+      enableColumnFilter: true,
+      enableSorting: false,
+      meta: { hidden: true },
+      accessorFn: (row: Bottle) =>
+        wineMap.get(vintageMap.get(row.vintageId)?.wineId ?? 0)?.type ?? "",
     },
     {
       // Hidden column used for filtering by drinking status

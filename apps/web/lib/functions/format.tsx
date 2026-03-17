@@ -1,4 +1,6 @@
 import { BOTTLE_SIZES } from "@/lib/constants/bottle-sizes";
+import { WINE_TYPE_LABELS } from "@/lib/constants/wine-colouring";
+import type { WineType } from "@cellarboss/validators/constants";
 
 export function formatPrice(price: number | string, currency: string): string {
   try {
@@ -26,6 +28,10 @@ export function formatDateTime(
   datetimeFormat: string,
 ): string {
   return format(isoString, datetimeFormat);
+}
+
+export function formatWineType(type: WineType): string {
+  return WINE_TYPE_LABELS[type];
 }
 
 export function formatStatus(status: string): string {
