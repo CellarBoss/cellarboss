@@ -40,6 +40,7 @@ export function DrinkingSuggestions({
       wineId: number;
       wineName: string;
       year: number | null;
+      wineMakerId: number | undefined;
       winemakerName: string;
       drinkUntil: number;
       bottleCount: number;
@@ -68,6 +69,7 @@ export function DrinkingSuggestions({
         wineId: wine.id,
         wineName: wine.name,
         year: vintage.year,
+        wineMakerId: winemaker?.id,
         winemakerName: winemaker?.name || "Unknown",
         drinkUntil: vintage.drinkUntil,
         bottleCount: 1,
@@ -115,15 +117,32 @@ export function DrinkingSuggestions({
                 </Link>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium truncate">
-                    {item.wineName}
-                    {item.year && (
-                      <span className="text-muted-foreground ml-1">
+                    <Link
+                      href={`/wines/${item.wineId}`}
+                      className="hover:underline"
+                    >
+                      {item.wineName}
+                    </Link>
+                    {item.year !== null && (
+                      <Link
+                        href={`/vintages/${item.vintageId}`}
+                        className="text-muted-foreground ml-1 hover:underline"
+                      >
                         {item.year}
-                      </span>
+                      </Link>
                     )}
                   </p>
                   <p className="text-xs text-muted-foreground truncate">
-                    {item.winemakerName}
+                    {item.wineMakerId !== undefined ? (
+                      <Link
+                        href={`/winemakers/${item.wineMakerId}`}
+                        className="hover:underline"
+                      >
+                        {item.winemakerName}
+                      </Link>
+                    ) : (
+                      item.winemakerName
+                    )}
                   </p>
                 </div>
                 <Badge
