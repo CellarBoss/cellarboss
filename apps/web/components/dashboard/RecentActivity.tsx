@@ -28,6 +28,7 @@ type ActivityEvent = {
   wineMakerName: string;
   detail: string;
   date: Date;
+  link: string | null;
 };
 
 interface RecentActivityProps {
@@ -77,6 +78,7 @@ export function RecentActivity({
         wineMakerName: winemaker.name,
         detail: "Purchased",
         date: purchaseDate,
+        link: `/bottles/${bottle.id}`,
       });
     }
 
@@ -103,6 +105,7 @@ export function RecentActivity({
         wineMakerName: winemaker.name,
         detail: `Scored ${note.score}/10 by ${note.author}`,
         date: noteDate,
+        link: `/tasting-notes/${note.id}`,
       });
     }
 
@@ -128,25 +131,35 @@ export function RecentActivity({
           <div className="space-y-4">
             {events.map((event) => (
               <div key={event.id} className="flex items-center gap-3">
-                <div
-                  className="flex h-8 w-8 items-center justify-center rounded-full shrink-0"
-                  style={{
-                    backgroundColor:
-                      event.type === "purchase"
-                        ? "color-mix(in oklch, var(--chart-1) 15%, transparent)"
-                        : "color-mix(in oklch, var(--chart-4) 15%, transparent)",
-                    color:
-                      event.type === "purchase"
-                        ? "var(--chart-1)"
-                        : "var(--chart-4)",
-                  }}
-                >
-                  {event.type === "purchase" ? (
+                {(() => {
+                  const isPurchase = event.type === "purchase";
+                  const chartVar = isPurchase ? "--chart-1" : "--chart-4";
+                  const icon = isPurchase ? (
                     <WineIcon className="h-4 w-4" />
                   ) : (
                     <Star className="h-4 w-4" />
-                  )}
-                </div>
+                  );
+                  const style = {
+                    backgroundColor: `color-mix(in oklch, var(${chartVar}) 15%, transparent)`,
+                    color: `var(${chartVar})`,
+                  };
+                  return event.link ? (
+                    <Link
+                      href={event.link}
+                      className="flex h-8 w-8 items-center justify-center rounded-full shrink-0 hover:opacity-80 transition-opacity"
+                      style={style}
+                    >
+                      {icon}
+                    </Link>
+                  ) : (
+                    <div
+                      className="flex h-8 w-8 items-center justify-center rounded-full shrink-0"
+                      style={style}
+                    >
+                      {icon}
+                    </div>
+                  );
+                })()}
                 <div className="flex-1 min-w-0">
                   <p className="font-medium truncate">
                     <Link
