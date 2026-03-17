@@ -120,7 +120,9 @@ export function CountryDistribution({
               onClick={(_data, index) => {
                 const item = chartData[index];
                 if (item) {
-                  router.push(`/bottles?countryId=${item.countryId}`);
+                  router.push(
+                    `/bottles?status=stored&countryId=${item.countryId}`,
+                  );
                 }
               }}
             />
