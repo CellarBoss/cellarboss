@@ -19,7 +19,7 @@ export default function ViewBottlePage() {
     enabled: !!bottleId,
   });
 
-  const result = queryGate(bottleQuery);
+  const result = queryGate([bottleQuery]);
   if (!result.ready) return result.gate;
 
   const [bottle] = result.data;

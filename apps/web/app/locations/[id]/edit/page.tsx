@@ -32,7 +32,7 @@ export default function EditLocationPage() {
     enabled: !!locationId,
   });
 
-  const result = queryGate(locationQuery);
+  const result = queryGate([locationQuery]);
   if (!result.ready) return result.gate;
 
   const [location] = result.data;

@@ -31,7 +31,7 @@ export default function EditRegionPage() {
     enabled: !!regionId,
   });
 
-  const result = queryGate(regionQuery);
+  const result = queryGate([regionQuery]);
   if (!result.ready) return result.gate;
 
   const [region] = result.data;

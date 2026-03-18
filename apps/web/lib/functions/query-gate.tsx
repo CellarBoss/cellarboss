@@ -20,18 +20,29 @@ type GateBlocked = {
   gate: React.JSX.Element;
 };
 
+export interface QueryGateOptions {
+  loadingComponent?: React.JSX.Element;
+  errorComponent?: (message: string) => React.JSX.Element;
+}
+
 export function queryGate<T extends UseApiQueryResult<unknown>[]>(
-  ...queries: T
+  queries: [...T],
+  options?: QueryGateOptions,
 ): GateSuccess<T> | GateBlocked {
+  const loading = options?.loadingComponent ?? <LoadingCard />;
+  const renderError =
+    options?.errorComponent ??
+    ((message: string) => <ErrorCard message={message} />);
+
   if (queries.some((q) => q.isLoading)) {
-    return { ready: false, gate: <LoadingCard /> };
+    return { ready: false, gate: loading };
   }
 
   for (const q of queries) {
     if (q.error) {
       return {
         ready: false,
-        gate: <ErrorCard message={q.error.apiError.message} />,
+        gate: renderError(q.error.apiError.message),
       };
     }
   }
@@ -40,7 +51,7 @@ export function queryGate<T extends UseApiQueryResult<unknown>[]>(
     if (q.data === undefined) {
       return {
         ready: false,
-        gate: <ErrorCard message="Unexpected error: no data received" />,
+        gate: renderError("Unexpected error: no data received"),
       };
     }
   }

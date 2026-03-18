@@ -19,7 +19,7 @@ export default function ViewCountryPage() {
     enabled: !!countryId,
   });
 
-  const result = queryGate(countryQuery);
+  const result = queryGate([countryQuery]);
   if (!result.ready) return result.gate;
 
   const [country] = result.data;

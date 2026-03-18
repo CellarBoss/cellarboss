@@ -93,12 +93,12 @@ export default function WinesPage() {
     queryFn: getCountries,
   });
 
-  const result = queryGate(
+  const result = queryGate([
     wineQuery,
     winemakerQuery,
     regionQuery,
     countryQuery,
-  );
+  ]);
   if (!result.ready) return result.gate;
 
   const [winesList, winemakerList, regionList, countryList] = result.data;

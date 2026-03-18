@@ -18,7 +18,7 @@ export default function ViewUserPage() {
     enabled: !!userId,
   });
 
-  const result = queryGate(userQuery);
+  const result = queryGate([userQuery]);
   if (!result.ready) return result.gate;
 
   const [user] = result.data;

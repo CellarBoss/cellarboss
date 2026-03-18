@@ -19,7 +19,7 @@ export default function ViewGrapePage() {
     enabled: !!grapeId,
   });
 
-  const result = queryGate(grapeQuery);
+  const result = queryGate([grapeQuery]);
   if (!result.ready) return result.gate;
 
   const [grape] = result.data;

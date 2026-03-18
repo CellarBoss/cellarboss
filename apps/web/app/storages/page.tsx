@@ -71,7 +71,7 @@ export default function StoragesPage() {
     queryFn: getLocations,
   });
 
-  const result = queryGate(storageQuery, locationQuery);
+  const result = queryGate([storageQuery, locationQuery]);
   if (!result.ready) return result.gate;
 
   const [storagesList, locationList] = result.data;

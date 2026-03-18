@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "@tanstack/react-form";
-import { Card } from "./Card";
+import { Card, CardContent } from "@/components/ui/card";
 import { GenericField } from "./GenericField";
 import { SaveButton } from "@/components/buttons/SaveButton";
 import { ResetButton } from "@/components/buttons/ResetButton";
@@ -97,25 +97,27 @@ export function GenericCard<T extends { id: number | string }>({
         }}
       >
         <Card>
-          <div className="w-full max-w-md">
-            {fields.map((field) => (
-              <GenericField
-                form={form}
-                key={String(field.key)}
-                name={String(field.key)}
-                label={field.label}
-                type={field.type}
-                editable={editable && field.editable !== false}
-                selectorConfig={
-                  "selectorConfig" in field ? field.selectorConfig : undefined
-                }
-                options={"options" in field ? field.options : undefined}
-                numberProps={
-                  "numberProps" in field ? field.numberProps : undefined
-                }
-              />
-            ))}
-          </div>
+          <CardContent>
+            <div className="w-full max-w-md">
+              {fields.map((field) => (
+                <GenericField
+                  form={form}
+                  key={String(field.key)}
+                  name={String(field.key)}
+                  label={field.label}
+                  type={field.type}
+                  editable={editable && field.editable !== false}
+                  selectorConfig={
+                    "selectorConfig" in field ? field.selectorConfig : undefined
+                  }
+                  options={"options" in field ? field.options : undefined}
+                  numberProps={
+                    "numberProps" in field ? field.numberProps : undefined
+                  }
+                />
+              ))}
+            </div>
+          </CardContent>
         </Card>
 
         <span className="flex items-center gap-4 mt-4">

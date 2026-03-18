@@ -19,7 +19,7 @@ export default function ViewWinemakerPage() {
     enabled: !!winemakerId,
   });
 
-  const result = queryGate(winemakerQuery);
+  const result = queryGate([winemakerQuery]);
   if (!result.ready) return result.gate;
 
   const [winemaker] = result.data;

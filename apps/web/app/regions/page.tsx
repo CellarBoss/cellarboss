@@ -67,7 +67,7 @@ export default function RegionsPage() {
     queryFn: getCountries,
   });
 
-  const result = queryGate(regionQuery, countryQuery);
+  const result = queryGate([regionQuery, countryQuery]);
   if (!result.ready) return result.gate;
 
   const [regionsList, countryList] = result.data;

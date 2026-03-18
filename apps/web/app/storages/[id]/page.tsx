@@ -19,7 +19,7 @@ export default function ViewStoragePage() {
     enabled: !!storageId,
   });
 
-  const result = queryGate(storageQuery);
+  const result = queryGate([storageQuery]);
   if (!result.ready) return result.gate;
 
   const [storage] = result.data;

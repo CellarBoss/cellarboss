@@ -32,7 +32,7 @@ export default function EditCountryPage() {
     enabled: !!countryId,
   });
 
-  const result = queryGate(countryQuery);
+  const result = queryGate([countryQuery]);
   if (!result.ready) return result.gate;
 
   const [country] = result.data;

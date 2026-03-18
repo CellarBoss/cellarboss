@@ -32,7 +32,7 @@ export default function ViewWinePage() {
     enabled: !!wineId,
   });
 
-  const result = queryGate(wineQuery, wineGrapesQuery, vintagesQuery);
+  const result = queryGate([wineQuery, wineGrapesQuery, vintagesQuery]);
   if (!result.ready) return result.gate;
 
   const [wine, wineGrapesList, vintages] = result.data;

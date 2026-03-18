@@ -32,7 +32,7 @@ export default function UsersPage() {
     );
   }
 
-  const result = queryGate(usersQuery);
+  const result = queryGate([usersQuery]);
   if (!result.ready) return result.gate;
 
   const [usersList] = result.data;

@@ -42,7 +42,7 @@ export default function CountriesPage() {
     queryFn: getCountries,
   });
 
-  const result = queryGate(countryQuery);
+  const result = queryGate([countryQuery]);
   if (!result.ready) return result.gate;
 
   const [countriesList] = result.data;
