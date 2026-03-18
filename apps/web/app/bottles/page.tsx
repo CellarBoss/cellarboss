@@ -31,7 +31,7 @@ import { ChangeStatusButton } from "@/components/buttons/ChangeStatusButton";
 import { AddButton } from "@/components/buttons/AddButton";
 import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { useSettings } from "@/hooks/use-settings";
+import { useSettingsContext } from "@/contexts/settings-context";
 import { queryGate } from "@/lib/functions/query-gate";
 import {
   formatPrice,
@@ -90,7 +90,7 @@ export default function BottlesPage() {
     queryKey: ["countries"],
     queryFn: getCountries,
   });
-  const settingsQuery = useSettings();
+  const settings = useSettingsContext();
 
   const result = queryGate([
     bottleQuery,
@@ -99,7 +99,6 @@ export default function BottlesPage() {
     winemakerQuery,
     storageQuery,
     locationQuery,
-    settingsQuery,
     regionQuery,
     countryQuery,
   ]);
@@ -112,7 +111,6 @@ export default function BottlesPage() {
     winemakers,
     storages,
     locations,
-    settings,
     regions,
     countries,
   ] = result.data;
