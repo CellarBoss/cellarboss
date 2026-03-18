@@ -84,7 +84,7 @@ jobs:
 
       - name: Playwright report summary
         if: steps.download.outcome == 'success'
-        uses: daun/playwright-report-summary@be9e270edd5ad86038604d3caa84a819a6ff6fed # v3
+        uses: daun/playwright-report-summary@1229105480a2a4bdd91598d8a146fbab41343fce # v3
         with:
           report-file: playwright/playwright-results.json
           comment-title: Playwright E2E Results
