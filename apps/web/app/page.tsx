@@ -1,7 +1,7 @@
 "use client";
 
 import { useApiQuery } from "@/hooks/use-api-query";
-import { useSettings } from "@/hooks/use-settings";
+import { useSettingsContext } from "@/contexts/settings-context";
 import { getBottles } from "@/lib/api/bottles";
 import { getVintages } from "@/lib/api/vintages";
 import { getWines } from "@/lib/api/wines";
@@ -49,7 +49,7 @@ export default function Home() {
     queryKey: ["tastingNotes"],
     queryFn: getAllTastingNotes,
   });
-  const settingsQuery = useSettings();
+  const settings = useSettingsContext();
 
   const result = queryGate(
     [
@@ -60,7 +60,6 @@ export default function Home() {
       regionQuery,
       countryQuery,
       tastingNoteQuery,
-      settingsQuery,
     ],
     { loadingComponent: <DashboardSkeleton /> },
   );
@@ -75,7 +74,6 @@ export default function Home() {
     regions,
     countries,
     tastingNotes,
-    settings,
   ] = result.data;
 
   const currency = (settings.get("currency") as string) || "USD";
