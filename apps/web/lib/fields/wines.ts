@@ -7,10 +7,7 @@ import { getWinemakers } from "@/lib/api/winemakers";
 import { getRegions } from "@/lib/api/regions";
 import { getGrapes } from "@/lib/api/grapes";
 import { getCountries } from "@/lib/api/countries";
-
-function formatWineType(type: string): string {
-  return type.charAt(0).toUpperCase() + type.slice(1);
-}
+import { formatWineType } from "../functions/format";
 
 export type WineFormData = Wine & { grapeIds: number[] };
 

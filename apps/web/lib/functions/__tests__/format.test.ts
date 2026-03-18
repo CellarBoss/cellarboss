@@ -7,6 +7,7 @@ import {
   formatDateTime,
   formatDrinkingWindow,
   formatDrinkingStatus,
+  formatWineType,
 } from "../format";
 
 describe("formatPrice", () => {
@@ -29,6 +30,24 @@ describe("formatPrice", () => {
 
   it("formats zero price", () => {
     expect(formatPrice(0, "USD")).toBe("$0.00");
+  });
+});
+
+describe("formatWineType", () => {
+  it("returns label for a wine type", () => {
+    expect(formatWineType("red")).toBe("Red");
+  });
+
+  it("returns accented label for rose", () => {
+    expect(formatWineType("rose")).toBe("Rosé");
+  });
+
+  it("returns label for all wine types", () => {
+    expect(formatWineType("white")).toBe("White");
+    expect(formatWineType("orange")).toBe("Orange");
+    expect(formatWineType("sparkling")).toBe("Sparkling");
+    expect(formatWineType("fortified")).toBe("Fortified");
+    expect(formatWineType("dessert")).toBe("Dessert");
   });
 });
 
