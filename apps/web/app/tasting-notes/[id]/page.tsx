@@ -43,12 +43,12 @@ export default function ViewTastingNotePage() {
     queryFn: wineMakerId ? () => getWinemakerById(wineMakerId) : skipToken,
   });
 
-  const result = queryGate(
+  const result = queryGate([
     tastingNoteQuery,
     vintageQuery,
     wineQuery,
     winemakerQuery,
-  );
+  ]);
   if (!result.ready) return result.gate;
 
   const [note, vintage, wine, winemaker] = result.data;
