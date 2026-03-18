@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { Label, Pie, PieChart } from "recharts";
 import type { Bottle, Vintage, Wine } from "@cellarboss/types";
 import {
@@ -48,6 +49,7 @@ export function WineTypeBreakdown({
   vintages,
   wines,
 }: WineTypeBreakdownProps) {
+  const router = useRouter();
   const { chartData, chartConfig, totalBottles } = useMemo(() => {
     const vintageMap = new Map(vintages.map((v) => [v.id, v]));
     const wineMap = new Map(wines.map((w) => [w.id, w]));
@@ -120,6 +122,12 @@ export function WineTypeBreakdown({
               innerRadius={60}
               strokeWidth={2}
               stroke="var(--background)"
+              className="cursor-pointer"
+              onClick={(data) => {
+                if (data?.type) {
+                  router.push(`/bottles?type=${data.type}`);
+                }
+              }}
             >
               <Label
                 content={({ viewBox }) => {
