@@ -24,7 +24,7 @@ const chartConfig = {
   },
   tooYoung: {
     label: "Too Young",
-    color: "oklch(0.7 0.12 230)",
+    color: "oklch(0.75 0.15 85)",
   },
   pastPeak: {
     label: "Past Peak",
