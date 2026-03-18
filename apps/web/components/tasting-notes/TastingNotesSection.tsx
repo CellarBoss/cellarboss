@@ -11,7 +11,7 @@ import {
 } from "@/lib/api/tastingNotes";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { useSetting } from "@/hooks/use-settings";
+import { useSettingsContext } from "@/contexts/settings-context";
 import { TastingNoteCard } from "./TastingNoteCard";
 
 type TastingNotesSectionProps =
@@ -21,7 +21,9 @@ type TastingNotesSectionProps =
 export function TastingNotesSection(props: TastingNotesSectionProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const datetimeFormat = useSetting("datetime").data as string | undefined;
+  const datetimeFormat = useSettingsContext().get("datetime") as
+    | string
+    | undefined;
 
   const isVintageMode = props.vintageId !== undefined;
 

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import type { TastingNote, Vintage, Wine, WineMaker } from "@cellarboss/types";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { useSettings } from "@/hooks/use-settings";
+import { useSettingsContext } from "@/contexts/settings-context";
 import { queryGate } from "@/lib/functions/query-gate";
 import { getAllTastingNotes, deleteTastingNote } from "@/lib/api/tastingNotes";
 import { getVintages } from "@/lib/api/vintages";
@@ -40,18 +40,17 @@ export default function TastingNotesPage() {
     queryFn: getWinemakers,
   });
 
-  const settingsQuery = useSettings();
+  const settings = useSettingsContext();
 
   const result = queryGate(
     notesQuery,
     vintagesQuery,
     winesQuery,
     winemakersQuery,
-    settingsQuery,
   );
   if (!result.ready) return result.gate;
 
-  const [notes, vintages, wines, winemakers, settings] = result.data;
+  const [notes, vintages, wines, winemakers] = result.data;
   const datetimeFormat = settings.get("datetime") as string | undefined;
 
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
