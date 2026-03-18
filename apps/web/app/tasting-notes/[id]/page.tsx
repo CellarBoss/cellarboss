@@ -9,7 +9,7 @@ import { getVintageById } from "@/lib/api/vintages";
 import { getWineById } from "@/lib/api/wines";
 import { getWinemakerById } from "@/lib/api/winemakers";
 import { TastingNoteCard } from "@/components/tasting-notes/TastingNoteCard";
-import { useSettings } from "@/hooks/use-settings";
+import { useSettingsContext } from "@/contexts/settings-context";
 import { BackButton } from "@/components/buttons/BackButton";
 import { PageHeader } from "@/components/page/PageHeader";
 
@@ -23,7 +23,7 @@ export default function ViewTastingNotePage() {
     queryFn: () => getTastingNoteById(Number(tastingNoteId)),
     enabled: !!tastingNoteId,
   });
-  const settingsQuery = useSettings();
+  const settings = useSettingsContext();
 
   const vintageId = tastingNoteQuery.data?.vintageId;
   const vintageQuery = useApiQuery({
@@ -45,14 +45,13 @@ export default function ViewTastingNotePage() {
 
   const result = queryGate(
     tastingNoteQuery,
-    settingsQuery,
     vintageQuery,
     wineQuery,
     winemakerQuery,
   );
   if (!result.ready) return result.gate;
 
-  const [note, settings, vintage, wine, winemaker] = result.data;
+  const [note, vintage, wine, winemaker] = result.data;
   const datetimeFormat = settings.get("datetime") as string | undefined;
 
   return (
