@@ -123,9 +123,10 @@ export function WineTypeBreakdown({
               strokeWidth={2}
               stroke="var(--background)"
               className="cursor-pointer"
-              onClick={(data) => {
-                if (data?.type) {
-                  router.push(`/bottles?type=${data.type}`);
+              onClick={(_data, index) => {
+                const item = chartData[index];
+                if (item?.type) {
+                  router.push(`/bottles?type=${item.type}`);
                 }
               }}
             >
