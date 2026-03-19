@@ -20,6 +20,7 @@ jobs:
       web: ${{ steps.filter.outputs.web || 'true' }}
       validators: ${{ steps.filter.outputs.validators || 'true' }}
       backend: ${{ steps.filter.outputs.backend || 'true' }}
+      api-client: ${{ steps.filter.outputs.api-client || 'true' }}
       common: ${{ steps.filter.outputs.common || 'true' }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -33,11 +34,15 @@ jobs:
             web:
               - 'apps/web/**'
               - 'packages/types/**'
+              - 'packages/api-client/**'
             validators:
               - 'packages/validators/**'
               - 'packages/types/**'
             backend:
               - 'apps/backend/**'
+              - 'packages/types/**'
+            api-client:
+              - 'packages/api-client/**'
               - 'packages/types/**'
             common:
               - 'package.json'
@@ -114,6 +119,38 @@ jobs:
         with:
           name: coverage-validators
           path: packages/validators/coverage/
+          retention-days: 1
+
+  test-api-client:
+    name: Test API Client
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.api-client == 'true' || needs.changes.outputs.common == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version: '24.14.0'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run api-client unit tests
+        run: pnpm --filter @cellarboss/api-client ${{ inputs.upload-coverage && 'test:coverage' || 'test' }}
+
+      - name: Upload coverage
+        if: inputs.upload-coverage
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        with:
+          name: coverage-api-client
+          path: packages/api-client/coverage/
           retention-days: 1
 
   test-backend:
