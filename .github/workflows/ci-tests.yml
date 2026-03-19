@@ -18,9 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       web: ${{ steps.filter.outputs.web || 'true' }}
-      validators: ${{ steps.filter.outputs.validators || 'true' }}
       backend: ${{ steps.filter.outputs.backend || 'true' }}
-      api-client: ${{ steps.filter.outputs.api-client || 'true' }}
+      packages: ${{ steps.filter.outputs.packages || 'true' }}
       common: ${{ steps.filter.outputs.common || 'true' }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -33,17 +32,12 @@ jobs:
           filters: |
             web:
               - 'apps/web/**'
-              - 'packages/types/**'
-              - 'packages/api-client/**'
-            validators:
-              - 'packages/validators/**'
-              - 'packages/types/**'
             backend:
               - 'apps/backend/**'
+            packages:
+              - 'packages/validators/**'
               - 'packages/types/**'
-            api-client:
               - 'packages/api-client/**'
-              - 'packages/types/**'
             common:
               - 'package.json'
               - 'pnpm-lock.yaml'
@@ -53,7 +47,7 @@ jobs:
     name: Test WebUI Functions
     runs-on: ubuntu-latest
     needs: changes
-    if: needs.changes.outputs.web == 'true' || needs.changes.outputs.common == 'true'
+    if: needs.changes.outputs.web == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.common == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -93,7 +87,7 @@ jobs:
     name: Test Validators
     runs-on: ubuntu-latest
     needs: changes
-    if: needs.changes.outputs.validators == 'true' || needs.changes.outputs.common == 'true'
+    if: needs.changes.outputs.packages == 'true' || needs.changes.outputs.common == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -125,7 +119,7 @@ jobs:
     name: Test API Client
     runs-on: ubuntu-latest
     needs: changes
-    if: needs.changes.outputs.api-client == 'true' || needs.changes.outputs.common == 'true'
+    if: needs.changes.outputs.packages == 'true' || needs.changes.outputs.common == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -157,7 +151,7 @@ jobs:
     name: Test Backend
     runs-on: ubuntu-latest
     needs: changes
-    if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.common == 'true'
+    if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.common == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -198,7 +192,7 @@ jobs:
     name: Test WebUI E2E
     runs-on: ubuntu-latest
     needs: changes
-    if: needs.changes.outputs.web == 'true' || needs.changes.outputs.common == 'true'
+    if: needs.changes.outputs.web == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.common == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -269,7 +263,7 @@ jobs:
     name: Validate API Docs
     runs-on: ubuntu-latest
     needs: changes
-    if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.validators == 'true' || needs.changes.outputs.common == 'true'
+    if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.common == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -293,7 +287,7 @@ jobs:
     name: Validate WebUI User Docs
     runs-on: ubuntu-latest
     needs: changes
-    if: needs.changes.outputs.web == 'true'
+    if: needs.changes.outputs.web == 'true' || needs.changes.outputs.packages == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
