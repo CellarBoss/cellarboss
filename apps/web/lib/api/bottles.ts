@@ -1,62 +1,39 @@
 "use server";
 
 import type { Bottle, CreateBottle } from "@cellarboss/types";
-import type { ApiResult } from "./types";
-import { makeServerRequest } from "./server";
+import type { ApiResult } from "@cellarboss/api-client";
+import { api } from "./client";
 
 export async function getBottles(): Promise<ApiResult<Bottle[]>> {
-  return makeServerRequest<Bottle[]>("bottle", "GET");
+  return api.bottles.getAll();
 }
 
 export async function getBottlesByVintageId(
   vintageId: number,
 ): Promise<ApiResult<Bottle[]>> {
-  return makeServerRequest<Bottle[]>("bottle/vintage/" + vintageId, "GET");
+  return api.bottles.getByVintageId(vintageId);
 }
 
 export async function getBottleCountsByVintageId(
   vintageId: number,
 ): Promise<ApiResult<Array<{ status: string; count: number }>>> {
-  return makeServerRequest<Array<{ status: string; count: number }>>(
-    "bottle/vintage/" + vintageId + "/counts",
-    "GET",
-  );
+  return api.bottles.getCountsByVintageId(vintageId);
 }
 
 export async function getBottleById(id: number): Promise<ApiResult<Bottle>> {
-  return makeServerRequest<Bottle>("bottle/" + id, "GET");
+  return api.bottles.getById(id);
 }
 
 export async function deleteBottle(id: number): Promise<ApiResult<boolean>> {
-  return makeServerRequest<boolean>("bottle/" + id, "DELETE");
+  return api.bottles.delete(id);
 }
 
 export async function createBottle(
   bottle: CreateBottle,
 ): Promise<ApiResult<Bottle>> {
-  const body = {
-    purchaseDate: bottle.purchaseDate,
-    purchasePrice: Number(bottle.purchasePrice),
-    vintageId: Number(bottle.vintageId),
-    storageId: bottle.storageId ? Number(bottle.storageId) : null,
-    status: bottle.status,
-    size: bottle.size,
-  };
-  return makeServerRequest<Bottle>("bottle", "POST", JSON.stringify(body));
+  return api.bottles.create(bottle);
 }
 
 export async function updateBottle(bottle: Bottle): Promise<ApiResult<Bottle>> {
-  const body = {
-    purchaseDate: bottle.purchaseDate,
-    purchasePrice: Number(bottle.purchasePrice),
-    vintageId: Number(bottle.vintageId),
-    storageId: bottle.storageId ? Number(bottle.storageId) : null,
-    status: bottle.status,
-    size: bottle.size,
-  };
-  return makeServerRequest<Bottle>(
-    "bottle/" + bottle.id,
-    "PUT",
-    JSON.stringify(body),
-  );
+  return api.bottles.update(bottle);
 }

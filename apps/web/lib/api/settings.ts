@@ -1,29 +1,22 @@
 "use server";
 
 import type { Setting } from "@cellarboss/types";
-import type { ApiResult } from "./types";
-import { makeServerRequest } from "./server";
+import type { ApiResult } from "@cellarboss/api-client";
+import { api } from "./client";
 
 export async function getSettings(): Promise<ApiResult<Setting[]>> {
-  return makeServerRequest<Setting[]>("settings", "GET");
+  return api.settings.getAll();
 }
 
 export async function getSettingByKey(
   key: string,
 ): Promise<ApiResult<Setting>> {
-  return makeServerRequest<Setting>(
-    `settings/${encodeURIComponent(key)}`,
-    "GET",
-  );
+  return api.settings.getByKey(key);
 }
 
 export async function updateSetting(
   key: string,
   value: string,
 ): Promise<ApiResult<Setting>> {
-  return makeServerRequest<Setting>(
-    `settings/${encodeURIComponent(key)}`,
-    "PUT",
-    JSON.stringify({ value }),
-  );
+  return api.settings.update(key, value);
 }
