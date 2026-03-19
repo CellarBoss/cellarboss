@@ -1,29 +1,25 @@
 "use server";
 
 import type { WineGrape, CreateWineGrape } from "@cellarboss/types";
-import type { ApiResult } from "./types";
-import { makeServerRequest } from "./server";
+import type { ApiResult } from "@cellarboss/api-client";
+import { api } from "./client";
 
 export async function getWineGrapes(): Promise<ApiResult<WineGrape[]>> {
-  return makeServerRequest<WineGrape[]>("winegrape", "GET");
+  return api.winegrapes.getAll();
 }
 
 export async function getWineGrapesByWineId(
   wineId: number,
 ): Promise<ApiResult<WineGrape[]>> {
-  return makeServerRequest<WineGrape[]>("winegrape/wine/" + wineId, "GET");
+  return api.winegrapes.getByWineId(wineId);
 }
 
 export async function createWineGrape(
   data: CreateWineGrape,
 ): Promise<ApiResult<WineGrape>> {
-  return makeServerRequest<WineGrape>(
-    "winegrape",
-    "POST",
-    JSON.stringify(data),
-  );
+  return api.winegrapes.create(data);
 }
 
 export async function deleteWineGrape(id: number): Promise<ApiResult<boolean>> {
-  return makeServerRequest<boolean>("winegrape/" + id, "DELETE");
+  return api.winegrapes.delete(id);
 }

@@ -20,6 +20,7 @@
     "docs:screenshots:build": "pnpm docs:screenshots && pnpm docs:build"
   },
   "dependencies": {
+    "@cellarboss/api-client": "workspace:*",
     "@cellarboss/types": "workspace:*",
     "@cellarboss/validators": "workspace:*",
     "@radix-ui/react-alert-dialog": "1.1.15",

@@ -46,6 +46,15 @@ jobs:
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Download api-client coverage
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        continue-on-error: true
+        with:
+          name: coverage-api-client
+          path: packages/api-client/coverage/
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Web coverage report
         if: hashFiles('apps/web/coverage/coverage-summary.json') != ''
         uses: davelosert/vitest-coverage-report-action@2500dafcee7dd64f85ab689c0b83798a8359770e # v2
@@ -66,6 +75,13 @@ jobs:
         with:
           name: Backend
           working-directory: apps/backend
+
+      - name: API Client coverage report
+        if: hashFiles('packages/api-client/coverage/coverage-summary.json') != ''
+        uses: davelosert/vitest-coverage-report-action@2500dafcee7dd64f85ab689c0b83798a8359770e # v2
+        with:
+          name: API Client
+          working-directory: packages/api-client
 
   playwright:
     name: Post Playwright Report

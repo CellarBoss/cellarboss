@@ -1,51 +1,35 @@
 "use server";
 
 import type { Vintage, CreateVintage } from "@cellarboss/types";
-import type { ApiResult } from "./types";
-import { makeServerRequest } from "./server";
+import type { ApiResult } from "@cellarboss/api-client";
+import { api } from "./client";
 
 export async function getVintages(): Promise<ApiResult<Vintage[]>> {
-  return makeServerRequest<Vintage[]>("vintage", "GET");
+  return api.vintages.getAll();
 }
 
 export async function getVintagesByWineId(
   wineId: number,
 ): Promise<ApiResult<Vintage[]>> {
-  return makeServerRequest<Vintage[]>("vintage/wine/" + wineId, "GET");
+  return api.vintages.getByWineId(wineId);
 }
 
 export async function deleteVintage(id: number): Promise<ApiResult<boolean>> {
-  return makeServerRequest<boolean>("vintage/" + id, "DELETE");
+  return api.vintages.delete(id);
 }
 
 export async function getVintageById(id: number): Promise<ApiResult<Vintage>> {
-  return makeServerRequest<Vintage>("vintage/" + id, "GET");
+  return api.vintages.getById(id);
 }
 
 export async function updateVintage(
   vintage: Vintage,
 ): Promise<ApiResult<Vintage>> {
-  const body = {
-    year: vintage.year ? Number(vintage.year) : null,
-    wineId: Number(vintage.wineId),
-    drinkFrom: vintage.drinkFrom ? Number(vintage.drinkFrom) : null,
-    drinkUntil: vintage.drinkUntil ? Number(vintage.drinkUntil) : null,
-  };
-  return makeServerRequest<Vintage>(
-    "vintage/" + vintage.id,
-    "PUT",
-    JSON.stringify(body),
-  );
+  return api.vintages.update(vintage);
 }
 
 export async function createVintage(
   vintage: CreateVintage,
 ): Promise<ApiResult<Vintage>> {
-  const body = {
-    year: vintage.year ? Number(vintage.year) : null,
-    wineId: Number(vintage.wineId),
-    drinkFrom: vintage.drinkFrom ? Number(vintage.drinkFrom) : null,
-    drinkUntil: vintage.drinkUntil ? Number(vintage.drinkUntil) : null,
-  };
-  return makeServerRequest<Vintage>("vintage", "POST", JSON.stringify(body));
+  return api.vintages.create(vintage);
 }

@@ -1,85 +1,32 @@
 "use server";
 
-import type { ApiResult } from "./types";
-import { makeServerRequest } from "./server";
+import type { ApiResult } from "@cellarboss/api-client";
+import { api } from "./client";
 
-export type AdminUser = {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  createdAt: string;
-  banned: boolean | null;
-  banReason: string | null;
-};
-
-export type UserFormData = {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  password?: string;
-};
+export type { AdminUser, UserFormData } from "@cellarboss/api-client";
+type AdminUser = import("@cellarboss/api-client").AdminUser;
+type UserFormData = import("@cellarboss/api-client").UserFormData;
 
 export async function getUsers(): Promise<ApiResult<AdminUser[]>> {
-  const result = await makeServerRequest<{ users: AdminUser[]; total: number }>(
-    "auth/admin/list-users?limit=1000",
-    "GET",
-  );
-  if (!result.ok) return result;
-  return { ok: true, data: result.data.users };
+  return api.users.getAll();
 }
 
 export async function getUserById(id: string): Promise<ApiResult<AdminUser>> {
-  return makeServerRequest<AdminUser>(`user/${id}`, "GET");
+  return api.users.getById(id);
 }
 
 export async function createUser(
   data: UserFormData,
 ): Promise<ApiResult<AdminUser>> {
-  const body: Record<string, string> = {
-    name: data.name,
-    email: data.email,
-    role: data.role,
-  };
-  if (data.password) {
-    body.password = data.password;
-  }
-  return makeServerRequest<AdminUser>(
-    "auth/admin/create-user",
-    "POST",
-    JSON.stringify(body),
-  );
+  return api.users.create(data);
 }
 
 export async function updateUser(
   data: UserFormData,
 ): Promise<ApiResult<AdminUser>> {
-  // Update name/email via custom route
-  const updateResult = await makeServerRequest<AdminUser>(
-    `user/${data.id}`,
-    "PUT",
-    JSON.stringify({ name: data.name, email: data.email }),
-  );
-  if (!updateResult.ok) return updateResult;
-
-  // Update role via better-auth admin plugin
-  const roleResult = await makeServerRequest<AdminUser>(
-    "auth/admin/set-role",
-    "POST",
-    JSON.stringify({ userId: data.id, role: data.role }),
-  );
-  if (!roleResult.ok) return roleResult;
-
-  return updateResult;
+  return api.users.update(data);
 }
 
 export async function deleteUser(id: string): Promise<ApiResult<boolean>> {
-  const result = await makeServerRequest<{ success: boolean }>(
-    "auth/admin/remove-user",
-    "POST",
-    JSON.stringify({ userId: id }),
-  );
-  if (!result.ok) return result;
-  return { ok: true, data: true };
+  return api.users.delete(id);
 }

@@ -1,19 +1,2 @@
-export type ApiError = {
-  message: string;
-  errors?: Record<string, string>;
-  status: number;
-};
-
-export class ApiQueryError extends Error {
-  public readonly apiError: ApiError;
-
-  constructor(apiError: ApiError) {
-    super(apiError.message);
-    this.name = "ApiQueryError";
-    this.apiError = apiError;
-  }
-}
-
-export type ApiResult<T> =
-  | { ok: true; data: T }
-  | { ok: false; error: ApiError };
+export { ApiQueryError } from "@cellarboss/api-client";
+export type { ApiError, ApiResult } from "@cellarboss/api-client";
