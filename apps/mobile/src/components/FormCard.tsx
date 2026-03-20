@@ -126,6 +126,7 @@ export function FormCard<T extends { id: number | string }>({
                     allowMultiple={field.selectorConfig.allowMultiple}
                     allowNone={field.selectorConfig.allowNone}
                     hierarchical={field.selectorConfig.hierarchical}
+                    groupBy={field.selectorConfig.groupBy}
                     disabled={!editable || field.editable === false}
                   />
                 ) : (

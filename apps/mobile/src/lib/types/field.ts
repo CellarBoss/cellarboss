@@ -2,12 +2,19 @@ import * as z from "zod";
 import type { GenericType } from "@cellarboss/types";
 import type { ApiResult } from "@cellarboss/api-client";
 
+export type GroupByConfig = {
+  key: string;
+  queryKey: string;
+  queryFn: () => Promise<ApiResult<GenericType[]>>;
+};
+
 export type SelectorConfig = {
   queryKey: string;
   queryFn: () => Promise<ApiResult<GenericType[]>>;
   allowMultiple?: boolean;
   allowNone?: boolean;
   hierarchical?: boolean;
+  groupBy?: GroupByConfig;
 };
 
 export type SelectOption = { value: string; label: string };

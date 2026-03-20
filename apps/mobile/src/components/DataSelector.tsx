@@ -19,6 +19,7 @@ type HierarchicalItem = GenericType & { parent?: number | null };
 type TreeNode = {
   item: GenericType;
   depth: number;
+  isGroupHeader?: boolean;
 };
 
 function buildFlatTree(
@@ -36,6 +37,12 @@ function buildFlatTree(
   return result;
 }
 
+type GroupByConfig = {
+  key: string;
+  queryKey: string;
+  queryFn: () => Promise<ApiResult<GenericType[]>>;
+};
+
 type DataSelectorProps = {
   label: string;
   value: string | string[];
@@ -45,6 +52,7 @@ type DataSelectorProps = {
   allowMultiple?: boolean;
   allowNone?: boolean;
   hierarchical?: boolean;
+  groupBy?: GroupByConfig;
   disabled?: boolean;
 };
 
@@ -59,6 +67,7 @@ export function DataSelector({
   allowMultiple = false,
   allowNone = false,
   hierarchical = false,
+  groupBy,
   disabled = false,
 }: DataSelectorProps) {
   const [visible, setVisible] = useState(false);
@@ -73,6 +82,17 @@ export function DataSelector({
     },
   });
 
+  const { data: groupItems, isLoading: groupLoading } = useQuery({
+    queryKey: [groupBy?.queryKey ?? "__unused__"],
+    queryFn: async () => {
+      if (!groupBy) return [];
+      const result = await groupBy.queryFn();
+      if (!result.ok) throw new Error(result.error.message);
+      return result.data;
+    },
+    enabled: !!groupBy,
+  });
+
   const displayItems = useMemo((): TreeNode[] => {
     if (!items) return [];
 
@@ -80,7 +100,6 @@ export function DataSelector({
       const tree = buildFlatTree(items as HierarchicalItem[]);
       if (search) {
         const lower = search.toLowerCase();
-        // Show matching items and their ancestors
         const matchIds = new Set(
           tree
             .filter(({ item }) => item.name.toLowerCase().includes(lower))
@@ -106,6 +125,48 @@ export function DataSelector({
       return allowNone ? [{ item: NONE_ITEM, depth: 0 }, ...tree] : tree;
     }
 
+    if (groupBy && groupItems) {
+      const groupMap = new Map(groupItems.map((g) => [g.id, g]));
+      const lower = search.toLowerCase();
+      const buckets = new Map<number, GenericType[]>();
+      for (const item of items) {
+        const groupId = (item as unknown as Record<string, unknown>)[
+          groupBy.key
+        ] as number;
+        if (!buckets.has(groupId)) buckets.set(groupId, []);
+        buckets.get(groupId)!.push(item);
+      }
+      const result: TreeNode[] = [];
+      if (allowNone && !search) {
+        result.push({ item: NONE_ITEM, depth: 0 });
+      }
+      for (const group of groupItems) {
+        const children = buckets.get(group.id) ?? [];
+        const filtered = search
+          ? children.filter((c) => c.name.toLowerCase().includes(lower))
+          : children;
+        if (filtered.length === 0) continue;
+        result.push({ item: group, depth: 0, isGroupHeader: true });
+        for (const child of filtered) {
+          result.push({ item: child, depth: 1 });
+        }
+      }
+      // Items with no matching group
+      const ungrouped = items.filter(
+        (item) =>
+          !groupMap.has(
+            (item as unknown as Record<string, unknown>)[groupBy.key] as number,
+          ),
+      );
+      const filteredUngrouped = search
+        ? ungrouped.filter((c) => c.name.toLowerCase().includes(lower))
+        : ungrouped;
+      for (const child of filteredUngrouped) {
+        result.push({ item: child, depth: 0 });
+      }
+      return result;
+    }
+
     const base = search
       ? items.filter((item) =>
           item.name.toLowerCase().includes(search.toLowerCase()),
@@ -115,9 +176,15 @@ export function DataSelector({
     return allowNone && !search
       ? [{ item: NONE_ITEM, depth: 0 }, ...flat]
       : flat;
-  }, [items, search, allowNone, hierarchical]);
+  }, [items, search, allowNone, hierarchical, groupBy, groupItems]);
 
-  const selectedValues = Array.isArray(value) ? value : value ? [value] : [];
+  const selectedValues = Array.isArray(value)
+    ? value
+    : allowMultiple && typeof value === "string" && value.includes(",")
+      ? value.split(",").filter(Boolean)
+      : value
+        ? [value]
+        : [];
   const selectedNames =
     !value || value === ""
       ? allowNone
@@ -135,7 +202,7 @@ export function DataSelector({
       return;
     }
     if (allowMultiple) {
-      const current = Array.isArray(value) ? value : value ? [value] : [];
+      const current = selectedValues;
       if (current.includes(itemId)) {
         onChange(current.filter((v) => v !== itemId));
       } else {
@@ -188,14 +255,28 @@ export function DataSelector({
             style={styles.searchbar}
           />
 
-          {isLoading ? (
+          {isLoading || groupLoading ? (
             <Text style={styles.loadingText}>Loading...</Text>
           ) : (
             <FlatList
               data={displayItems}
-              keyExtractor={(node) => String(node.item.id)}
+              keyExtractor={(node) =>
+                node.isGroupHeader
+                  ? `group-${node.item.id}`
+                  : String(node.item.id)
+              }
               style={styles.list}
               renderItem={({ item: node }) => {
+                if (node.isGroupHeader) {
+                  return (
+                    <View style={styles.groupHeader}>
+                      <Text style={styles.groupHeaderText}>
+                        {node.item.name}
+                      </Text>
+                    </View>
+                  );
+                }
+
                 const itemId = String(node.item.id);
                 const selected = selectedValues.includes(itemId);
 
@@ -316,6 +397,18 @@ const styles = StyleSheet.create({
   },
   itemSelected: {
     backgroundColor: theme.colors.primaryContainer,
+  },
+  groupHeader: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: theme.colors.surfaceVariant,
+  },
+  groupHeaderText: {
+    fontSize: 13,
+    fontWeight: "bold",
+    color: theme.colors.onSurfaceVariant,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
   },
   depthIndicator: {
     fontSize: 14,
