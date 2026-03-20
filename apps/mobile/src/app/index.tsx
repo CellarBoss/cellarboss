@@ -1,28 +1,17 @@
-import { View, Text, StyleSheet } from "react-native";
+import { Redirect } from "expo-router";
+import { useAuth } from "@/contexts/auth-context";
 
-export default function HomeScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>CellarBoss</Text>
-      <Text style={styles.subtitle}>Wine Cellar Management</Text>
-    </View>
-  );
+export default function Index() {
+  const auth = useAuth();
+
+  switch (auth.status) {
+    case "needs-setup":
+      return <Redirect href="/(auth)/setup" />;
+    case "unauthenticated":
+      return <Redirect href="/(auth)/login" />;
+    case "authenticated":
+      return <Redirect href="/(app)" />;
+    default:
+      return null;
+  }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#fff",
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#666",
-  },
-});
