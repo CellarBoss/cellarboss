@@ -13,6 +13,7 @@ import { queryGate } from "@/lib/functions/query-gate";
 import { formatPrice } from "@/lib/functions/format";
 import { theme } from "@/lib/theme";
 import type { Bottle } from "@cellarboss/types";
+import { formatStatus } from "@/lib/functions/format";
 
 const STATUS_COLORS: Record<string, string> = {
   stored: "#2E8B57",
@@ -22,13 +23,6 @@ const STATUS_COLORS: Record<string, string> = {
 
 function getStatusColor(status: string): string {
   return STATUS_COLORS[status] ?? "#6B7280";
-}
-
-function formatStatus(s: string) {
-  return s
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
 }
 
 const SORT_OPTIONS = [
