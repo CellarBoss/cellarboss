@@ -13,31 +13,7 @@ import {
   BOTTLE_STATUSES,
   BOTTLE_SIZES,
 } from "@cellarboss/validators/constants";
-
-function formatStatus(s: string) {
-  return s
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
-}
-
-const BOTTLE_SIZE_LABELS: Record<string, string> = {
-  piccolo: "Piccolo (187ml)",
-  half: "Half (375ml)",
-  standard: "Standard (750ml)",
-  litre: "Litre (1L)",
-  magnum: "Magnum (1.5L)",
-  "double-magnum": "Double Magnum (3L)",
-  jeroboam: "Jeroboam (4.5L)",
-  imperial: "Imperial (6L)",
-  salmanazar: "Salmanazar (9L)",
-  balthazar: "Balthazar (12L)",
-  nebuchadnezzar: "Nebuchadnezzar (15L)",
-};
-
-function formatBottleSize(s: string) {
-  return BOTTLE_SIZE_LABELS[s] ?? formatStatus(s);
-}
+import { formatStatus, formatBottleSize } from "@/lib/functions/format";
 
 const bottleFields: FieldConfig<Bottle>[] = [
   { key: "purchaseDate", label: "Purchase Date", type: "date" },

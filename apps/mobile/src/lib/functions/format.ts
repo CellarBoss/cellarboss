@@ -1,3 +1,5 @@
+import { BOTTLE_SIZE_LABELS } from "../types/bottle";
+
 export function formatPrice(price: number | string, currency: string): string {
   try {
     return new Intl.NumberFormat("en-US", {
@@ -22,4 +24,14 @@ export function formatDrinkingStatus(
   if (drinkUntil !== null && currentYear > drinkUntil) return "past";
   if (drinkFrom !== null && currentYear < drinkFrom) return "wait";
   return "drinkable";
+}
+
+export function formatStatus(s: string) {
+  return s
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+export function formatBottleSize(s: string) {
+  return BOTTLE_SIZE_LABELS[s] ?? formatStatus(s);
 }
