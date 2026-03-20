@@ -2,7 +2,7 @@ import { api } from "@/lib/api/client";
 import type { FieldConfig } from "@/lib/types/field";
 import type { Wine } from "@cellarboss/types";
 import { WINE_TYPES } from "@cellarboss/validators/constants";
-import { WINE_TYPE_LABELS } from "./WINE_TYPE_LABELS";
+import { WINE_TYPE_LABELS } from "../constants/wines";
 
 export type WineFormData = Wine & { grapeIds: number[] };
 
