@@ -26,6 +26,17 @@ export function formatDrinkingStatus(
   return "drinkable";
 }
 
+export function formatDrinkingWindow(
+  begin: number | null,
+  end: number | null,
+): string {
+  if (begin !== null && end !== null) return `${begin} until ${end}`;
+  if (begin === null && end !== null) return `Now until ${end}`;
+  if (begin !== null) return `From ${begin}`;
+  if (end !== null) return `Until ${end}`;
+  return "-";
+}
+
 export function formatStatus(s: string) {
   return s
     .split("-")
