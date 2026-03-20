@@ -8,6 +8,7 @@ import { queryGate } from "@/lib/functions/query-gate";
 import { theme } from "@/lib/theme";
 import { WineDetailsCard } from "@/components/wine/WineDetailsCard";
 import { WineVintagesList } from "@/components/wine/WineVintagesList";
+import { WineTastingNotesList } from "@/components/tasting-notes/TastingNotesList";
 
 export default function ViewWineScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -38,6 +39,7 @@ export default function ViewWineScreen() {
       <ScrollView contentContainerStyle={styles.scroll}>
         <WineDetailsCard wine={wine} />
         <WineVintagesList wineId={wine.id} />
+        <WineTastingNotesList wine={wine} />
       </ScrollView>
     </SafeAreaView>
   );
