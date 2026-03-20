@@ -20,6 +20,7 @@ export async function makeRequest<T>(
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
+    Origin: baseUrl,
   };
 
   if (token) {
