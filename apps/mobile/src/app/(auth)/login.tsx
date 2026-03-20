@@ -10,10 +10,12 @@ import {
   Platform,
   ScrollView,
 } from "react-native";
+import { useRouter } from "expo-router";
 import { useAuth } from "@/contexts/auth-context";
 import { getSavedEmail, getServerUrl } from "@/lib/auth/secure-store";
 
 export default function LoginScreen() {
+  const router = useRouter();
   const { signIn, resetServer } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,11 +48,14 @@ export default function LoginScreen() {
 
     if (!result.ok) {
       setError(result.error);
+    } else {
+      router.replace("/(app)");
     }
   }
 
   async function handleChangeServer() {
     await resetServer();
+    router.replace("/(auth)/setup");
   }
 
   return (

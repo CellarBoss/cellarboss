@@ -124,12 +124,16 @@ export async function signOut(): Promise<void> {
  */
 export async function testServerConnection(url: string): Promise<boolean> {
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
     const res = await fetch(`${url}/api/auth/get-session`, {
-      signal: AbortSignal.timeout(5000),
+      signal: controller.signal,
     });
+    clearTimeout(timeout);
     // A 200 with null session or 401 both indicate the server is reachable
     return res.status === 200 || res.status === 401;
-  } catch {
+  } catch (e) {
+    console.debug("Failed to connect to server", e);
     return false;
   }
 }

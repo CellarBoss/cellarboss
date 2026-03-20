@@ -10,17 +10,21 @@ import {
   Platform,
   ScrollView,
 } from "react-native";
+import { useRouter } from "expo-router";
 import { setServerUrl } from "@/lib/auth/secure-store";
 import { testServerConnection } from "@/lib/auth/auth-service";
 import { useAuth } from "@/contexts/auth-context";
 
 export default function SetupScreen() {
+  const router = useRouter();
   const { markServerConfigured } = useAuth();
   const [url, setUrl] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [testing, setTesting] = useState(false);
 
   async function handleConnect() {
+    console.debug("Starting server connection test...");
+
     setError(null);
 
     let trimmed = url.trim();
@@ -52,6 +56,7 @@ export default function SetupScreen() {
     await setServerUrl(trimmed);
     setTesting(false);
     markServerConfigured();
+    router.replace("/(auth)/login");
   }
 
   return (
