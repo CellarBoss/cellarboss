@@ -1,13 +1,13 @@
-import { StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
-import { FormCard } from "@/components/FormCard";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { theme } from "@/lib/theme";
-import { wineFields, type WineFormData } from "@/lib/fields/wines";
+import { WineDetailsCard } from "@/components/wine/WineDetailsCard";
+import { WineVintagesList } from "@/components/wine/WineVintagesList";
 
 export default function ViewWineScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -17,24 +17,16 @@ export default function ViewWineScreen() {
     queryKey: ["wines", Number(id)],
     queryFn: () => api.wines.getById(Number(id)),
   });
-  const grapeQuery = useApiQuery({
-    queryKey: ["winegrapes", "wine", Number(id)],
-    queryFn: () => api.winegrapes.getByWineId(Number(id)),
-  });
 
-  const result = queryGate([wineQuery, grapeQuery]);
+  const result = queryGate([wineQuery]);
   if (!result.ready) return result.gate;
 
-  const [wine, wineGrapes] = result.data;
-  const viewData: WineFormData = {
-    ...wine,
-    grapeIds: wineGrapes.map((wg) => wg.grapeId),
-  };
+  const [wine] = result.data;
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <ScreenHeader
-        title="Wine Details"
+        title={wine.name || "Wine Details"}
         showBack
         actions={[
           {
@@ -43,7 +35,10 @@ export default function ViewWineScreen() {
           },
         ]}
       />
-      <FormCard mode="view" data={viewData} fields={wineFields} />
+      <ScrollView contentContainerStyle={styles.scroll}>
+        <WineDetailsCard wine={wine} />
+        <WineVintagesList wineId={wine.id} />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -52,5 +47,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
+  },
+  scroll: {
+    padding: 16,
   },
 });
