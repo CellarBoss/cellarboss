@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     color: theme.colors.onSurface,
   },
   statusChip: {
-    height: 24,
+    height: 30,
   },
   statusChipText: {
     color: "#fff",
