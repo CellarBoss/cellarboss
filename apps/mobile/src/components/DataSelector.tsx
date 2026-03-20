@@ -14,6 +14,28 @@ import { theme } from "@/lib/theme";
 import type { GenericType } from "@cellarboss/types";
 import type { ApiResult } from "@cellarboss/api-client";
 
+type HierarchicalItem = GenericType & { parent?: number | null };
+
+type TreeNode = {
+  item: GenericType;
+  depth: number;
+};
+
+function buildFlatTree(
+  items: HierarchicalItem[],
+  parentId: number | null = null,
+  depth = 0,
+): TreeNode[] {
+  const result: TreeNode[] = [];
+  for (const item of items) {
+    if ((item.parent ?? null) === parentId) {
+      result.push({ item, depth });
+      result.push(...buildFlatTree(items, item.id, depth + 1));
+    }
+  }
+  return result;
+}
+
 type DataSelectorProps = {
   label: string;
   value: string | string[];
@@ -21,8 +43,12 @@ type DataSelectorProps = {
   queryKey: string;
   queryFn: () => Promise<ApiResult<GenericType[]>>;
   allowMultiple?: boolean;
+  allowNone?: boolean;
+  hierarchical?: boolean;
   disabled?: boolean;
 };
+
+const NONE_ITEM: GenericType = { id: -1, name: "None" };
 
 export function DataSelector({
   label,
@@ -31,6 +57,8 @@ export function DataSelector({
   queryKey,
   queryFn,
   allowMultiple = false,
+  allowNone = false,
+  hierarchical = false,
   disabled = false,
 }: DataSelectorProps) {
   const [visible, setVisible] = useState(false);
@@ -45,21 +73,67 @@ export function DataSelector({
     },
   });
 
-  const filtered = useMemo(() => {
+  const displayItems = useMemo((): TreeNode[] => {
     if (!items) return [];
-    if (!search) return items;
-    return items.filter((item) =>
-      item.name.toLowerCase().includes(search.toLowerCase()),
-    );
-  }, [items, search]);
+
+    if (hierarchical) {
+      const tree = buildFlatTree(items as HierarchicalItem[]);
+      if (search) {
+        const lower = search.toLowerCase();
+        // Show matching items and their ancestors
+        const matchIds = new Set(
+          tree
+            .filter(({ item }) => item.name.toLowerCase().includes(lower))
+            .map(({ item }) => item.id),
+        );
+        const parentMap = new Map(
+          (items as HierarchicalItem[]).map((i) => [i.id, i.parent ?? null]),
+        );
+        const visibleIds = new Set<number>();
+        for (const id of matchIds) {
+          visibleIds.add(id);
+          let pid = parentMap.get(id) ?? null;
+          while (pid !== null) {
+            visibleIds.add(pid);
+            pid = parentMap.get(pid) ?? null;
+          }
+        }
+        const filtered = tree.filter(({ item }) => visibleIds.has(item.id));
+        return allowNone
+          ? [{ item: NONE_ITEM, depth: 0 }, ...filtered]
+          : filtered;
+      }
+      return allowNone ? [{ item: NONE_ITEM, depth: 0 }, ...tree] : tree;
+    }
+
+    const base = search
+      ? items.filter((item) =>
+          item.name.toLowerCase().includes(search.toLowerCase()),
+        )
+      : items;
+    const flat = base.map((item) => ({ item, depth: 0 }));
+    return allowNone && !search
+      ? [{ item: NONE_ITEM, depth: 0 }, ...flat]
+      : flat;
+  }, [items, search, allowNone, hierarchical]);
 
   const selectedValues = Array.isArray(value) ? value : value ? [value] : [];
-  const selectedNames = items
-    ?.filter((item) => selectedValues.includes(String(item.id)))
-    .map((item) => item.name)
-    .join(", ");
+  const selectedNames =
+    !value || value === ""
+      ? allowNone
+        ? "None"
+        : undefined
+      : items
+          ?.filter((item) => selectedValues.includes(String(item.id)))
+          .map((item) => item.name)
+          .join(", ");
 
   function handleSelect(itemId: string) {
+    if (itemId === String(NONE_ITEM.id)) {
+      onChange("");
+      setVisible(false);
+      return;
+    }
     if (allowMultiple) {
       const current = Array.isArray(value) ? value : value ? [value] : [];
       if (current.includes(itemId)) {
@@ -118,17 +192,21 @@ export function DataSelector({
             <Text style={styles.loadingText}>Loading...</Text>
           ) : (
             <FlatList
-              data={filtered}
-              keyExtractor={(item) => String(item.id)}
+              data={displayItems}
+              keyExtractor={(node) => String(node.item.id)}
               style={styles.list}
-              renderItem={({ item }) => {
-                const itemId = String(item.id);
+              renderItem={({ item: node }) => {
+                const itemId = String(node.item.id);
                 const selected = selectedValues.includes(itemId);
 
                 return (
                   <Pressable
                     onPress={() => handleSelect(itemId)}
-                    style={[styles.item, selected && styles.itemSelected]}
+                    style={[
+                      styles.item,
+                      selected && styles.itemSelected,
+                      node.depth > 0 && { paddingLeft: 8 + node.depth * 20 },
+                    ]}
                   >
                     {allowMultiple ? (
                       <Checkbox
@@ -142,7 +220,10 @@ export function DataSelector({
                         onPress={() => handleSelect(itemId)}
                       />
                     )}
-                    <Text style={styles.itemText}>{item.name}</Text>
+                    {node.depth > 0 && (
+                      <Text style={styles.depthIndicator}>&nbsp;</Text>
+                    )}
+                    <Text style={styles.itemText}>{node.item.name}</Text>
                   </Pressable>
                 );
               }}
@@ -235,6 +316,11 @@ const styles = StyleSheet.create({
   },
   itemSelected: {
     backgroundColor: theme.colors.primaryContainer,
+  },
+  depthIndicator: {
+    fontSize: 14,
+    color: theme.colors.onSurfaceVariant,
+    marginRight: 2,
   },
   itemText: {
     fontSize: 16,

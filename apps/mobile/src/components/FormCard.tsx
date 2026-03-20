@@ -11,6 +11,8 @@ import { useRouter } from "expo-router";
 import { useForm } from "@tanstack/react-form";
 import * as Haptics from "expo-haptics";
 import { FormField } from "./FormField";
+import { DataSelector } from "./DataSelector";
+import { WineVintageSelector } from "./WineVintageSelector";
 import { theme } from "@/lib/theme";
 import type { ApiResult } from "@cellarboss/api-client";
 import type { FieldConfig } from "@/lib/types/field";
@@ -104,20 +106,45 @@ export function FormCard<T extends { id: number | string }>({
             <form.Field
               key={String(field.key)}
               name={String(field.key)}
-              children={(fieldApi) => (
-                <FormField
-                  label={field.label}
-                  value={fieldApi.state.value ?? ""}
-                  onChangeValue={(v) => fieldApi.handleChange(v)}
-                  type={field.type === "selector" ? "text" : field.type}
-                  editable={editable && field.editable !== false}
-                  error={fieldApi.state.meta.errors?.[0] as string | undefined}
-                  options={"options" in field ? field.options : undefined}
-                  numberProps={
-                    "numberProps" in field ? field.numberProps : undefined
-                  }
-                />
-              )}
+              children={(fieldApi) =>
+                field.type === "wine-vintage" ? (
+                  <WineVintageSelector
+                    label={field.label}
+                    value={fieldApi.state.value ?? ""}
+                    onChange={(v) => fieldApi.handleChange(v)}
+                    disabled={!editable || field.editable === false}
+                  />
+                ) : field.type === "selector" && field.selectorConfig ? (
+                  <DataSelector
+                    label={field.label}
+                    value={fieldApi.state.value ?? ""}
+                    onChange={(v) =>
+                      fieldApi.handleChange(Array.isArray(v) ? v.join(",") : v)
+                    }
+                    queryKey={field.selectorConfig.queryKey}
+                    queryFn={field.selectorConfig.queryFn}
+                    allowMultiple={field.selectorConfig.allowMultiple}
+                    allowNone={field.selectorConfig.allowNone}
+                    hierarchical={field.selectorConfig.hierarchical}
+                    disabled={!editable || field.editable === false}
+                  />
+                ) : (
+                  <FormField
+                    label={field.label}
+                    value={fieldApi.state.value ?? ""}
+                    onChangeValue={(v) => fieldApi.handleChange(v)}
+                    type={field.type}
+                    editable={editable && field.editable !== false}
+                    error={
+                      fieldApi.state.meta.errors?.[0] as string | undefined
+                    }
+                    options={"options" in field ? field.options : undefined}
+                    numberProps={
+                      "numberProps" in field ? field.numberProps : undefined
+                    }
+                  />
+                )
+              }
             />
           ))}
         </View>

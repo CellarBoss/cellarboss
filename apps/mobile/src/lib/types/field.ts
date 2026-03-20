@@ -6,6 +6,8 @@ export type SelectorConfig = {
   queryKey: string;
   queryFn: () => Promise<ApiResult<GenericType[]>>;
   allowMultiple?: boolean;
+  allowNone?: boolean;
+  hierarchical?: boolean;
 };
 
 export type SelectOption = { value: string; label: string };
@@ -25,6 +27,7 @@ export type FieldConfig<T, K extends keyof T = keyof T> = {
       options?: never;
     }
   | { type: "selector"; selectorConfig: SelectorConfig; options?: never }
+  | { type: "wine-vintage"; selectorConfig?: never; options?: never }
   | { type: "date"; selectorConfig?: never; options?: never }
   | { type: "fixed-list"; options: SelectOption[]; selectorConfig?: never }
   | { type: "wine-rating"; selectorConfig?: never; options?: never }
