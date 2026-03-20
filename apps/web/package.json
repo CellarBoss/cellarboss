@@ -62,7 +62,7 @@
     "@vitest/coverage-v8": "4.1.0",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "10.0.3",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "16.1.7",
     "hono": "4.12.8",
     "tailwindcss": "4.2.1",
     "tsx": "4.21.0",
