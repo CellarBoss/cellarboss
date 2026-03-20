@@ -55,6 +55,7 @@ describe("makeRequest", () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Origin: "https://cellar.example.com",
           Authorization: "Bearer my-token",
         },
       }),

@@ -167,7 +167,10 @@ describe("auth-service", () => {
         "https://cellar.example.com/api/auth/sign-out",
         expect.objectContaining({
           method: "POST",
-          headers: { Authorization: "Bearer my-token" },
+          headers: {
+            Authorization: "Bearer my-token",
+            Origin: "https://cellar.example.com",
+          },
         }),
       );
       expect(mockStore.has("cellarboss_auth_token")).toBe(false);
