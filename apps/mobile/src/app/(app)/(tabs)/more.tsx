@@ -3,7 +3,6 @@ import { List, Divider } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/contexts/auth-context";
-import { ScreenHeader } from "@/components/ScreenHeader";
 import { theme } from "@/lib/theme";
 
 export default function MoreScreen() {
@@ -13,7 +12,6 @@ export default function MoreScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <ScreenHeader title="More" />
       <ScrollView>
         <List.Section>
           <List.Subheader>Wine Data</List.Subheader>

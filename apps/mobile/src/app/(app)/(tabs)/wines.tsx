@@ -1,13 +1,11 @@
 import { View, StyleSheet } from "react-native";
 import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScreenHeader } from "@/components/ScreenHeader";
 import { theme } from "@/lib/theme";
 
 export default function WinesScreen() {
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <ScreenHeader title="Wines" />
       <View style={styles.content}>
         <Text style={styles.placeholder}>Wines list coming in Phase 3</Text>
       </View>

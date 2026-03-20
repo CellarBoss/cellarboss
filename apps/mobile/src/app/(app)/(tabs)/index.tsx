@@ -1,6 +1,5 @@
 import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScreenHeader } from "@/components/ScreenHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useSetting } from "@/hooks/use-settings";
 import { api } from "@/lib/api/client";
@@ -70,7 +69,6 @@ export default function DashboardScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <ScreenHeader title="Dashboard" />
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         <CellarOverviewStats
           bottles={bottles}

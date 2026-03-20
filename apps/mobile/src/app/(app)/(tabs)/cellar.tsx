@@ -4,7 +4,6 @@ import { Text, FAB, Chip } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { ScreenHeader } from "@/components/ScreenHeader";
 import { DataList } from "@/components/DataList";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { useApiQuery } from "@/hooks/use-api-query";
@@ -153,7 +152,6 @@ export default function CellarScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <ScreenHeader title="Cellar" />
       <View style={styles.content}>
         <DataList
           data={sortedBottles}
