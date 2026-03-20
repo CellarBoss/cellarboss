@@ -1,0 +1,269 @@
+import { useState, useCallback } from "react";
+import { View, Pressable, StyleSheet } from "react-native";
+import { Text, FAB } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { DataList } from "@/components/DataList";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { ScreenHeader } from "@/components/ScreenHeader";
+import { WineGlassRating } from "@/components/WineGlassRating";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { useSetting } from "@/hooks/use-settings";
+import { api } from "@/lib/api/client";
+import { queryGate } from "@/lib/functions/query-gate";
+import { formatDateTime } from "@/lib/functions/format";
+import { theme } from "@/lib/theme";
+import type { TastingNote, Vintage, Wine } from "@cellarboss/types";
+
+const SORT_OPTIONS = [
+  { label: "Date (Newest)", value: "date-desc" },
+  { label: "Date (Oldest)", value: "date-asc" },
+  { label: "Score (High)", value: "score-desc" },
+  { label: "Score (Low)", value: "score-asc" },
+];
+
+export default function TastingNotesScreen() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const [currentSort, setCurrentSort] = useState("date-desc");
+  const [deleteTarget, setDeleteTarget] = useState<TastingNote | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const { data: datetimeFormat } = useSetting("datetime");
+
+  const notesQuery = useApiQuery({
+    queryKey: ["tastingNotes"],
+    queryFn: () => api.tastingNotes.getAll(),
+  });
+  const vintageQuery = useApiQuery({
+    queryKey: ["vintages"],
+    queryFn: () => api.vintages.getAll(),
+  });
+  const wineQuery = useApiQuery({
+    queryKey: ["wines"],
+    queryFn: () => api.wines.getAll(),
+  });
+
+  const result = queryGate([notesQuery, vintageQuery, wineQuery]);
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => api.tastingNotes.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tastingNotes"] });
+      setDeleteTarget(null);
+    },
+  });
+
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await queryClient.invalidateQueries({ queryKey: ["tastingNotes"] });
+    setRefreshing(false);
+  }, [queryClient]);
+
+  if (!result.ready) return result.gate;
+
+  const [notes, vintages, wines] = result.data;
+
+  const vintageMap = new Map(vintages.map((v) => [v.id, v]));
+  const wineMap = new Map(wines.map((w) => [w.id, w]));
+
+  function getWineContext(note: TastingNote) {
+    const vintage = vintageMap.get(note.vintageId);
+    if (!vintage) return { wineName: "Unknown", vintageLabel: "" };
+    const wine = wineMap.get(vintage.wineId);
+    return {
+      wineName: wine?.name ?? "Unknown",
+      vintageLabel: vintage.year ? String(vintage.year) : "NV",
+    };
+  }
+
+  const sortedNotes = [...notes].sort((a, b) => {
+    switch (currentSort) {
+      case "date-desc":
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      case "date-asc":
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      case "score-desc":
+        return b.score - a.score;
+      case "score-asc":
+        return a.score - b.score;
+      default:
+        return 0;
+    }
+  });
+
+  return (
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <ScreenHeader title="Tasting Notes" showBack />
+      <View style={styles.content}>
+        <DataList
+          data={sortedNotes}
+          keyExtractor={(item) => String(item.id)}
+          searchPlaceholder="Search tasting notes..."
+          searchFilter={(item, query) => {
+            const lower = query.toLowerCase();
+            const ctx = getWineContext(item);
+            return (
+              ctx.wineName.toLowerCase().includes(lower) ||
+              item.author.toLowerCase().includes(lower) ||
+              item.notes.toLowerCase().includes(lower)
+            );
+          }}
+          sortOptions={SORT_OPTIONS}
+          onSort={setCurrentSort}
+          currentSort={currentSort}
+          onRefresh={handleRefresh}
+          refreshing={refreshing}
+          emptyIcon="note-text-outline"
+          emptyTitle="No tasting notes yet"
+          emptyMessage="Add your first tasting note to get started"
+          emptyActionLabel="Add Tasting Note"
+          onEmptyAction={() => router.push("/tasting-notes/new")}
+          swipeActions={(note) => [
+            {
+              icon: "pencil",
+              color: theme.colors.primary,
+              onPress: () => router.push(`/tasting-notes/${note.id}/edit`),
+            },
+            {
+              icon: "delete",
+              color: "#dc2626",
+              onPress: () => setDeleteTarget(note),
+            },
+          ]}
+          renderItem={(note) => (
+            <TastingNoteListItem
+              note={note}
+              wineContext={getWineContext(note)}
+              datetimeFormat={datetimeFormat}
+              onPress={() => router.push(`/tasting-notes/${note.id}`)}
+            />
+          )}
+        />
+      </View>
+
+      <FAB
+        icon="plus"
+        style={styles.fab}
+        onPress={() => router.push("/tasting-notes/new")}
+      />
+
+      <ConfirmDialog
+        visible={deleteTarget !== null}
+        title="Delete Tasting Note"
+        message={
+          deleteTarget
+            ? `Delete tasting note by ${deleteTarget.author}? This cannot be undone.`
+            : ""
+        }
+        confirmLabel="Delete"
+        onConfirm={() => {
+          if (deleteTarget) {
+            deleteMutation.mutate(deleteTarget.id);
+          }
+        }}
+        onCancel={() => setDeleteTarget(null)}
+      />
+    </SafeAreaView>
+  );
+}
+
+type TastingNoteListItemProps = {
+  note: TastingNote;
+  wineContext: { wineName: string; vintageLabel: string };
+  datetimeFormat?: string | number | boolean | null;
+  onPress: () => void;
+};
+
+function TastingNoteListItem({
+  note,
+  wineContext,
+  datetimeFormat,
+  onPress,
+}: TastingNoteListItemProps) {
+  return (
+    <Pressable style={styles.item} onPress={onPress}>
+      <View style={styles.itemTop}>
+        <View style={styles.wineInfo}>
+          <Text style={styles.itemTitle} numberOfLines={1}>
+            {wineContext.wineName}
+          </Text>
+          <Text style={styles.vintageLabel}>{wineContext.vintageLabel}</Text>
+        </View>
+        <WineGlassRating value={note.score} />
+      </View>
+      <Text style={styles.itemSub} numberOfLines={2}>
+        {note.notes}
+      </Text>
+      <View style={styles.itemMeta}>
+        <Text style={styles.metaText}>{note.author}</Text>
+        <Text style={styles.metaText}>
+          {typeof datetimeFormat === "string"
+            ? formatDateTime(note.date, datetimeFormat)
+            : note.date.split("T")[0]}
+        </Text>
+      </View>
+    </Pressable>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  content: {
+    flex: 1,
+  },
+  item: {
+    backgroundColor: theme.colors.surface,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.outlineVariant,
+  },
+  itemTop: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
+    marginBottom: 4,
+  },
+  wineInfo: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  itemTitle: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: "bold",
+    color: theme.colors.onSurface,
+  },
+  vintageLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: theme.colors.onSurfaceVariant,
+  },
+  itemSub: {
+    fontSize: 13,
+    color: theme.colors.onSurface,
+    marginBottom: 4,
+  },
+  itemMeta: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  metaText: {
+    fontSize: 12,
+    color: theme.colors.onSurfaceVariant,
+  },
+  fab: {
+    position: "absolute",
+    right: 16,
+    bottom: 16,
+    backgroundColor: theme.colors.primary,
+  },
+});

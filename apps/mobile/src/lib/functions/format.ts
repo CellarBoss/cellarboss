@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { BOTTLE_SIZE_LABELS } from "../types/bottle";
 
 export function formatPrice(price: number | string, currency: string): string {
@@ -35,6 +36,13 @@ export function formatDrinkingWindow(
   if (begin !== null) return `From ${begin}`;
   if (end !== null) return `Until ${end}`;
   return "-";
+}
+
+export function formatDateTime(
+  isoString: string,
+  datetimeFormat: string,
+): string {
+  return format(isoString, datetimeFormat);
 }
 
 export function formatStatus(s: string) {
