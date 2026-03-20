@@ -29,7 +29,10 @@ export async function signIn(
   try {
     const res = await fetch(`${baseUrl}/api/auth/sign-in/email`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Origin: baseUrl,
+      },
       body: JSON.stringify({ email, password }),
     });
 
@@ -108,6 +111,7 @@ export async function signOut(): Promise<void> {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
+          Origin: baseUrl,
         },
       });
     } catch {
