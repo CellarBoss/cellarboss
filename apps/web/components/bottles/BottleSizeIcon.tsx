@@ -1,5 +1,5 @@
 import { BottleWine } from "lucide-react";
-import type { WineType } from "@cellarboss/validators/constants";
+import type { BottleSize, WineType } from "@cellarboss/validators/constants";
 import { BOTTLE_SIZES } from "@/lib/constants/bottle-sizes";
 import { WINE_TYPE_COLORS } from "@/lib/constants/wine-colouring";
 import { formatBottleSize } from "@/lib/functions/format";
@@ -13,7 +13,7 @@ export function BottleSizeIcon({
   size,
   wineType,
 }: {
-  size: string;
+  size: BottleSize;
   wineType: WineType;
 }) {
   const iconSize = BOTTLE_SIZES[size]?.iconSize ?? 16;

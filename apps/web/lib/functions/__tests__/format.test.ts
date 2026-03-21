@@ -88,10 +88,6 @@ describe("formatBottleSize", () => {
     expect(formatBottleSize("balthazar")).toBe("Balthazar (12L)");
     expect(formatBottleSize("nebuchadnezzar")).toBe("Nebuchadnezzar (15L)");
   });
-
-  it("falls back for unknown size", () => {
-    expect(formatBottleSize("unknown")).toBe("Unknown");
-  });
 });
 
 describe("formatDate", () => {

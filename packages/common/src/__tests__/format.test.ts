@@ -80,8 +80,15 @@ describe("formatBottleSize", () => {
     expect(formatBottleSize("piccolo")).toBe("Piccolo (187ml)");
   });
 
-  it("falls back to formatStatus for unknown sizes", () => {
-    expect(formatBottleSize("custom-size")).toBe("Custom Size");
+  it("formats all known sizes", () => {
+    expect(formatBottleSize("half")).toBe("Half (375ml)");
+    expect(formatBottleSize("litre")).toBe("Litre (1L)");
+    expect(formatBottleSize("double-magnum")).toBe("Double Magnum (3L)");
+    expect(formatBottleSize("jeroboam")).toBe("Jeroboam (4.5L)");
+    expect(formatBottleSize("imperial")).toBe("Imperial (6L)");
+    expect(formatBottleSize("salmanazar")).toBe("Salmanazar (9L)");
+    expect(formatBottleSize("balthazar")).toBe("Balthazar (12L)");
+    expect(formatBottleSize("nebuchadnezzar")).toBe("Nebuchadnezzar (15L)");
   });
 });
 

@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import type { WineType } from "@cellarboss/validators/constants";
+import type { BottleSize, WineType } from "@cellarboss/validators/constants";
 import { WINE_TYPE_LABELS, BOTTLE_SIZE_LABELS } from "./constants";
 
 export function formatPrice(price: number | string, currency: string): string {
@@ -39,7 +39,7 @@ export function formatStatus(status: string): string {
     .join(" ");
 }
 
-export function formatBottleSize(size: string): string {
+export function formatBottleSize(size: BottleSize): string {
   return BOTTLE_SIZE_LABELS[size] ?? formatStatus(size);
 }
 
