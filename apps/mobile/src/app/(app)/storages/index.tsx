@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { View, Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import { Text, FAB } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -11,7 +11,45 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { theme } from "@/lib/theme";
-import type { Storage, Location } from "@cellarboss/types";
+import type { Storage } from "@cellarboss/types";
+
+type TreeNode = Storage & { subRows: TreeNode[] };
+type FlatNode = { storage: Storage; depth: number };
+
+function buildTree(storages: Storage[]): TreeNode[] {
+  const map = new Map<number, TreeNode>();
+  const roots: TreeNode[] = [];
+
+  for (const s of storages) {
+    map.set(s.id, { ...s, subRows: [] });
+  }
+
+  for (const node of map.values()) {
+    if (node.parent != null && map.has(node.parent)) {
+      map.get(node.parent)!.subRows.push(node);
+    } else {
+      roots.push(node);
+    }
+  }
+
+  return roots;
+}
+
+function flattenTree(
+  nodes: TreeNode[],
+  sortFn: (a: Storage, b: Storage) => number,
+  depth: number = 0,
+): FlatNode[] {
+  const sorted = [...nodes].sort(sortFn);
+  const result: FlatNode[] = [];
+  for (const node of sorted) {
+    result.push({ storage: node, depth });
+    if (node.subRows.length > 0) {
+      result.push(...flattenTree(node.subRows, sortFn, depth + 1));
+    }
+  }
+  return result;
+}
 
 const SORT_OPTIONS = [
   { label: "Name (A-Z)", value: "name-asc" },
@@ -57,55 +95,41 @@ export default function StoragesScreen() {
   const [storages, locations] = result.data;
 
   const locationMap = new Map(locations.map((l) => [l.id, l]));
-  const storageMap = new Map(storages.map((s) => [s.id, s]));
 
   function getLocationName(storage: Storage): string {
     if (!storage.locationId) return "";
     return locationMap.get(storage.locationId)?.name ?? "";
   }
 
-  function getHierarchyPath(storage: Storage): string[] {
-    const path: string[] = [];
-    let current: Storage | undefined = storage;
-    while (current?.parent) {
-      const parentStorage = storageMap.get(current.parent);
-      if (parentStorage) {
-        path.unshift(parentStorage.name);
-        current = parentStorage;
-      } else {
-        break;
-      }
+  function getSortFn(sort: string): (a: Storage, b: Storage) => number {
+    switch (sort) {
+      case "name-desc":
+        return (a, b) => b.name.localeCompare(a.name);
+      case "location-asc":
+        return (a, b) => getLocationName(a).localeCompare(getLocationName(b));
+      case "location-desc":
+        return (a, b) => getLocationName(b).localeCompare(getLocationName(a));
+      case "name-asc":
+      default:
+        return (a, b) => a.name.localeCompare(b.name);
     }
-    return path;
   }
 
-  const sortedStorages = [...storages].sort((a, b) => {
-    switch (currentSort) {
-      case "name-asc":
-        return a.name.localeCompare(b.name);
-      case "name-desc":
-        return b.name.localeCompare(a.name);
-      case "location-asc":
-        return getLocationName(a).localeCompare(getLocationName(b));
-      case "location-desc":
-        return getLocationName(b).localeCompare(getLocationName(a));
-      default:
-        return 0;
-    }
-  });
+  const tree = buildTree(storages);
+  const flatList = flattenTree(tree, getSortFn(currentSort));
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <ScreenHeader title="Storages" showBack />
       <DataList
-        data={sortedStorages}
-        keyExtractor={(item) => String(item.id)}
+        data={flatList}
+        keyExtractor={(item) => String(item.storage.id)}
         searchPlaceholder="Search storages..."
         searchFilter={(item, query) => {
           const lower = query.toLowerCase();
           return (
-            item.name.toLowerCase().includes(lower) ||
-            getLocationName(item).toLowerCase().includes(lower)
+            item.storage.name.toLowerCase().includes(lower) ||
+            getLocationName(item.storage).toLowerCase().includes(lower)
           );
         }}
         sortOptions={SORT_OPTIONS}
@@ -118,40 +142,26 @@ export default function StoragesScreen() {
         emptyMessage="Add your first storage to get started"
         emptyActionLabel="Add Storage"
         onEmptyAction={() => router.push("/storages/new")}
-        swipeActions={(storage) => [
+        swipeActions={(item) => [
           {
             icon: "pencil",
             color: theme.colors.primary,
-            onPress: () => router.push(`/storages/${storage.id}/edit`),
+            onPress: () => router.push(`/storages/${item.storage.id}/edit`),
           },
           {
             icon: "delete",
             color: "#dc2626",
-            onPress: () => setDeleteTarget(storage),
+            onPress: () => setDeleteTarget(item.storage),
           },
         ]}
-        renderItem={(storage) => {
-          const hierarchy = getHierarchyPath(storage);
+        renderItem={({ storage, depth }) => {
           const locationName = getLocationName(storage);
 
           return (
             <Pressable
-              style={styles.item}
+              style={[styles.item, { paddingLeft: depth * 24 + 16 }]}
               onPress={() => router.push(`/storages/${storage.id}`)}
             >
-              {hierarchy.length > 0 && (
-                <View style={styles.hierarchyRow}>
-                  {hierarchy.map((name, i) => (
-                    <View key={i} style={styles.hierarchySegment}>
-                      {i > 0 && (
-                        <Text style={styles.hierarchySeparator}>/</Text>
-                      )}
-                      <Text style={styles.hierarchyText}>{name}</Text>
-                    </View>
-                  ))}
-                  <Text style={styles.hierarchySeparator}>/</Text>
-                </View>
-              )}
               <Text style={styles.itemTitle} numberOfLines={1}>
                 {storage.name}
               </Text>
@@ -202,24 +212,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.outlineVariant,
-  },
-  hierarchyRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 2,
-  },
-  hierarchySegment: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  hierarchyText: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-  },
-  hierarchySeparator: {
-    fontSize: 12,
-    color: theme.colors.outlineVariant,
-    marginHorizontal: 4,
   },
   itemTitle: {
     fontSize: 15,
