@@ -1,7 +1,9 @@
+import { useState, useRef } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 import { useRouter } from "expo-router";
 import { Text, Icon, IconButton } from "react-native-paper";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { getStatusColor, BOTTLE_STATUS_ICONS } from "@/lib/constants/bottles";
 import { BOTTLE_SIZE_SHORT_LABELS } from "@cellarboss/common/constants";
 import { WINE_TYPE_COLORS } from "@/lib/constants/wines";
@@ -10,6 +12,9 @@ import {
   DRINKING_STATUS_ICONS,
 } from "@/lib/constants/drinking-status";
 import type { BottleStatus } from "@cellarboss/validators/constants";
+import { api } from "@/lib/api/client";
+import { StatusPickerModal } from "./StatusPickerModal";
+import { StoragePickerModal } from "./StoragePickerModal";
 
 import { theme } from "@/lib/theme";
 import type { Bottle } from "@cellarboss/types";
@@ -40,6 +45,11 @@ export function BottleListItem({
   onDelete,
 }: BottleListItemProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const swipeableRef = useRef<Swipeable>(null);
+  const [statusPickerVisible, setStatusPickerVisible] = useState(false);
+  const [storagePickerVisible, setStoragePickerVisible] = useState(false);
+
   const bottleColor = wineType
     ? WINE_TYPE_COLORS[wineType]
     : theme.colors.onSurfaceVariant;
@@ -48,6 +58,13 @@ export function BottleListItem({
   const drinkingIcon = DRINKING_STATUS_ICONS[drinkingStatus];
   const statusIcon =
     BOTTLE_STATUS_ICONS[bottle.status as BottleStatus] ?? "help-circle";
+
+  const updateMutation = useMutation({
+    mutationFn: (updated: Bottle) => api.bottles.update(updated),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bottles"] });
+    },
+  });
 
   const content = (
     <Pressable style={styles.item} onPress={onPress}>
@@ -105,33 +122,91 @@ export function BottleListItem({
     </Pressable>
   );
 
+  const modals = (
+    <>
+      <StatusPickerModal
+        visible={statusPickerVisible}
+        currentStatus={bottle.status as BottleStatus}
+        onConfirm={(status) => {
+          updateMutation.mutate({ ...bottle, status });
+          setStatusPickerVisible(false);
+        }}
+        onDismiss={() => setStatusPickerVisible(false)}
+      />
+      <StoragePickerModal
+        visible={storagePickerVisible}
+        currentStorageId={bottle.storageId}
+        onConfirm={(storageId) => {
+          updateMutation.mutate({ ...bottle, storageId });
+          setStoragePickerVisible(false);
+        }}
+        onDismiss={() => setStoragePickerVisible(false)}
+      />
+    </>
+  );
+
   if (!onDelete) {
-    return content;
+    return (
+      <>
+        {content}
+        {modals}
+      </>
+    );
   }
 
   return (
-    <Swipeable
-      renderRightActions={() => (
-        <View style={styles.swipeActions}>
-          <IconButton
-            icon="pencil"
-            iconColor="#fff"
-            containerColor={theme.colors.primary}
-            size={20}
-            onPress={() => router.push(`/bottles/${bottle.id}/edit`)}
-          />
-          <IconButton
-            icon="delete"
-            iconColor="#fff"
-            containerColor="#dc2626"
-            size={20}
-            onPress={onDelete}
-          />
-        </View>
-      )}
-    >
-      {content}
-    </Swipeable>
+    <>
+      <Swipeable
+        ref={swipeableRef}
+        renderRightActions={() => (
+          <View style={styles.swipeActions}>
+            <IconButton
+              icon="pencil"
+              iconColor="#fff"
+              containerColor={theme.colors.primary}
+              size={20}
+              onPress={() => {
+                swipeableRef.current?.close();
+                router.push(`/bottles/${bottle.id}/edit`);
+              }}
+            />
+            <IconButton
+              icon="swap-horizontal"
+              iconColor="#fff"
+              containerColor="#8B5CF6"
+              size={20}
+              onPress={() => {
+                swipeableRef.current?.close();
+                setStatusPickerVisible(true);
+              }}
+            />
+            <IconButton
+              icon="archive-arrow-down"
+              iconColor="#fff"
+              containerColor="#0891B2"
+              size={20}
+              onPress={() => {
+                swipeableRef.current?.close();
+                setStoragePickerVisible(true);
+              }}
+            />
+            <IconButton
+              icon="delete"
+              iconColor="#fff"
+              containerColor="#dc2626"
+              size={20}
+              onPress={() => {
+                swipeableRef.current?.close();
+                onDelete?.();
+              }}
+            />
+          </View>
+        )}
+      >
+        {content}
+      </Swipeable>
+      {modals}
+    </>
   );
 }
 
