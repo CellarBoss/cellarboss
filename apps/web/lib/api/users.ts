@@ -1,11 +1,11 @@
 "use server";
 
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 import { api } from "./client";
 
-export type { AdminUser, UserFormData } from "@cellarboss/api-client";
-type AdminUser = import("@cellarboss/api-client").AdminUser;
-type UserFormData = import("@cellarboss/api-client").UserFormData;
+export type { AdminUser, UserFormData } from "@cellarboss/common";
+type AdminUser = import("@cellarboss/common").AdminUser;
+type UserFormData = import("@cellarboss/common").UserFormData;
 
 export async function getUsers(): Promise<ApiResult<AdminUser[]>> {
   return api.users.getAll();

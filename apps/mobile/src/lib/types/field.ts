@@ -1,6 +1,6 @@
 import * as z from "zod";
 import type { GenericType } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 
 export type GroupByConfig = {
   key: string;

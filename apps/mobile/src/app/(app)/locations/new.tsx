@@ -7,7 +7,7 @@ import { api } from "@/lib/api/client";
 import { theme } from "@/lib/theme";
 import { locationFields } from "@/lib/fields/locations";
 import type { Location } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 
 export default function NewLocationScreen() {
   const queryClient = useQueryClient();

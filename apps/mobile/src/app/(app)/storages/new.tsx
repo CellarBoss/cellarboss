@@ -7,7 +7,7 @@ import { api } from "@/lib/api/client";
 import { theme } from "@/lib/theme";
 import { storageFields } from "@/lib/fields/storages";
 import type { Storage } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 
 export default function NewStorageScreen() {
   const queryClient = useQueryClient();

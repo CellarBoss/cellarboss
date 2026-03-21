@@ -10,7 +10,7 @@ import { queryGate } from "@/lib/functions/query-gate";
 import { theme } from "@/lib/theme";
 import { tastingNoteEditFields } from "@/lib/fields/tasting-notes";
 import type { TastingNote } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 
 export default function EditTastingNoteScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

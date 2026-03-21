@@ -7,7 +7,7 @@ import { api } from "@/lib/api/client";
 import { theme } from "@/lib/theme";
 import { regionFields } from "@/lib/fields/regions";
 import type { Region } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 
 export default function NewRegionScreen() {
   const queryClient = useQueryClient();

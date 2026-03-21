@@ -20,7 +20,6 @@
     "docs:screenshots:build": "pnpm docs:screenshots && pnpm docs:build"
   },
   "dependencies": {
-    "@cellarboss/api-client": "workspace:*",
     "@cellarboss/common": "workspace:*",
     "@cellarboss/types": "workspace:*",
     "@cellarboss/validators": "workspace:*",

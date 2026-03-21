@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { vintagesResource } from "../resources/vintages";
-import type { RequestFn } from "../types";
+import { vintagesResource } from "../../resources/vintages";
+import type { RequestFn } from "../../types";
 
 describe("vintagesResource", () => {
   const mockRequest = vi.fn() as unknown as RequestFn;

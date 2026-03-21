@@ -7,7 +7,7 @@ import { api } from "@/lib/api/client";
 import { theme } from "@/lib/theme";
 import { wineFields, type WineFormData } from "@/lib/fields/wines";
 import type { Wine } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 
 const defaultData: WineFormData = {
   id: 0,

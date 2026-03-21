@@ -10,7 +10,7 @@ import { queryGate } from "@/lib/functions/query-gate";
 import { theme } from "@/lib/theme";
 import { grapeFields } from "@/lib/fields/grapes";
 import type { Grape } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 
 export default function EditGrapeScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { ApiQueryError } from "../types";
-import type { ApiError } from "../types";
+import { ApiQueryError } from "../../types";
+import type { ApiError } from "../../types";
 
 describe("ApiQueryError", () => {
   it("sets message from apiError", () => {

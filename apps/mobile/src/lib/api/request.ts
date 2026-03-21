@@ -1,5 +1,5 @@
-import type { ApiResult } from "@cellarboss/api-client";
-import { processBackendError } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
+import { processBackendError } from "@cellarboss/common";
 import { getToken } from "@/lib/auth/secure-store";
 import { getApiBaseUrl } from "@/lib/api/base-url";
 

@@ -1,4 +1,4 @@
-import { createApiClient } from "@cellarboss/api-client";
+import { createApiClient } from "@cellarboss/common";
 import { makeServerRequest } from "./server";
 
 export const api = createApiClient({ request: makeServerRequest });

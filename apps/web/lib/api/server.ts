@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { webEnv } from "../env";
 import type { ApiResult } from "./types";
-import { processBackendError } from "@cellarboss/api-client";
+import { processBackendError } from "@cellarboss/common";
 
 export async function makeServerRequest<T>(
   path: string,

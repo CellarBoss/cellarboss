@@ -3,6 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest"
+  },
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -14,7 +19,6 @@
     }
   },
   "dependencies": {
-    "@cellarboss/api-client": "workspace:*",
     "@cellarboss/types": "workspace:*",
     "@cellarboss/validators": "workspace:*",
     "date-fns": "4.1.0"
@@ -25,6 +29,9 @@
   },
   "devDependencies": {
     "@types/react": "19.2.14",
-    "typescript": "5.9.3"
+    "@vitest/coverage-v8": "4.1.0",
+    "typescript": "5.9.3",
+    "vite": "8.0.0",
+    "vitest": "4.1.0"
   }
 }

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApiQuery } from "./use-api-query";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "../types";
 import type { Setting } from "@cellarboss/types";
 import { type SettingValueType, parseValue } from "../settings";
 

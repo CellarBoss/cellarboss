@@ -7,7 +7,7 @@ import { api } from "@/lib/api/client";
 import { theme } from "@/lib/theme";
 import { grapeFields } from "@/lib/fields/grapes";
 import type { Grape } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 
 export default function NewGrapeScreen() {
   const queryClient = useQueryClient();

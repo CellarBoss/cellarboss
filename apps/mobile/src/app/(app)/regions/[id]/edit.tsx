@@ -10,7 +10,7 @@ import { queryGate } from "@/lib/functions/query-gate";
 import { theme } from "@/lib/theme";
 import { regionFields } from "@/lib/fields/regions";
 import type { Region } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 
 export default function EditRegionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

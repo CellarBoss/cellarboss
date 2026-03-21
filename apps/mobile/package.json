@@ -14,7 +14,6 @@
     "lint": "expo lint"
   },
   "dependencies": {
-    "@cellarboss/api-client": "workspace:*",
     "@cellarboss/common": "workspace:*",
     "@cellarboss/types": "workspace:*",
     "@cellarboss/validators": "workspace:*",

@@ -8,7 +8,7 @@ import { api } from "@/lib/api/client";
 import { theme } from "@/lib/theme";
 import { tastingNoteCreateFields } from "@/lib/fields/tasting-notes";
 import type { TastingNote } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 
 export default function NewTastingNoteScreen() {
   const queryClient = useQueryClient();

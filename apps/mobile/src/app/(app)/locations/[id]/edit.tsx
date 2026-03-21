@@ -10,7 +10,7 @@ import { queryGate } from "@/lib/functions/query-gate";
 import { theme } from "@/lib/theme";
 import { locationFields } from "@/lib/fields/locations";
 import type { Location } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 
 export default function EditLocationScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

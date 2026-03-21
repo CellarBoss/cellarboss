@@ -1,7 +1,7 @@
 "use server";
 
 import type { Storage } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 import { api } from "./client";
 
 export async function getStorages(): Promise<ApiResult<Storage[]>> {

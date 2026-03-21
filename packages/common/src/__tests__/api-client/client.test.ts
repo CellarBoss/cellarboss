@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import { createApiClient } from "../client";
-import type { RequestFn } from "../types";
+import { createApiClient } from "../../client";
+import type { RequestFn } from "../../types";
 
 describe("createApiClient", () => {
   const mockRequest = vi.fn() as unknown as RequestFn;

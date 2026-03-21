@@ -102,9 +102,6 @@ importers:
 
   apps/mobile:
     dependencies:
-      '@cellarboss/api-client':
-        specifier: workspace:*
-        version: link:../../packages/api-client
       '@cellarboss/common':
         specifier: workspace:*
         version: link:../../packages/common
@@ -214,9 +211,6 @@ importers:
 
   apps/web:
     dependencies:
-      '@cellarboss/api-client':
-        specifier: workspace:*
-        version: link:../../packages/api-client
       '@cellarboss/common':
         specifier: workspace:*
         version: link:../../packages/common
@@ -366,30 +360,8 @@ importers:
         specifier: 4.1.0
         version: 4.1.0(@types/node@24.12.0)(@vitest/ui@4.1.0)(jsdom@20.0.3)(vite@8.0.0(@types/node@24.12.0)(esbuild@0.27.4)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2))
 
-  packages/api-client:
-    dependencies:
-      '@cellarboss/types':
-        specifier: workspace:*
-        version: link:../types
-    devDependencies:
-      '@vitest/coverage-v8':
-        specifier: 4.1.0
-        version: 4.1.0(vitest@4.1.0)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
-      vite:
-        specifier: 8.0.0
-        version: 8.0.0(@types/node@24.12.0)(esbuild@0.27.4)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2)
-      vitest:
-        specifier: 4.1.0
-        version: 4.1.0(@types/node@24.12.0)(@vitest/ui@4.1.0)(jsdom@20.0.3)(vite@8.0.0(@types/node@24.12.0)(esbuild@0.27.4)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2))
-
   packages/common:
     dependencies:
-      '@cellarboss/api-client':
-        specifier: workspace:*
-        version: link:../api-client
       '@cellarboss/types':
         specifier: workspace:*
         version: link:../types
@@ -409,9 +381,18 @@ importers:
       '@types/react':
         specifier: 19.2.14
         version: 19.2.14
+      '@vitest/coverage-v8':
+        specifier: 4.1.0
+        version: 4.1.0(vitest@4.1.0)
       typescript:
         specifier: 5.9.3
         version: 5.9.3
+      vite:
+        specifier: 8.0.0
+        version: 8.0.0(@types/node@24.12.0)(esbuild@0.27.4)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2)
+      vitest:
+        specifier: 4.1.0
+        version: 4.1.0(@types/node@24.12.0)(@vitest/ui@4.1.0)(jsdom@20.0.3)(vite@8.0.0(@types/node@24.12.0)(esbuild@0.27.4)(jiti@2.6.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2))
 
   packages/types:
     devDependencies:

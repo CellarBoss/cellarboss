@@ -4,7 +4,8 @@ import {
   UseQueryResult,
   skipToken,
 } from "@tanstack/react-query";
-import { ApiResult, ApiQueryError } from "@cellarboss/api-client";
+import type { ApiResult } from "../types";
+import { ApiQueryError } from "../types";
 
 type UseApiQueryOptions<T> = Omit<
   UseQueryOptions<T, ApiQueryError>,

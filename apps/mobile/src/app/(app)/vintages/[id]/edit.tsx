@@ -10,7 +10,7 @@ import { queryGate } from "@/lib/functions/query-gate";
 import { theme } from "@/lib/theme";
 import { vintageFields } from "@/lib/fields/vintages";
 import type { Vintage } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 
 export default function EditVintageScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

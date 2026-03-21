@@ -34,7 +34,7 @@ jest.mock("expo-constants", () => ({
 
 // Mock fetch
 const mockFetch = jest.fn();
-global.fetch = mockFetch;
+(globalThis as any).fetch = mockFetch;
 
 const mockUser = {
   id: "user-1",

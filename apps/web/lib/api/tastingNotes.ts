@@ -5,7 +5,7 @@ import type {
   CreateTastingNote,
   UpdateTastingNote,
 } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 import { api } from "./client";
 
 export async function getTastingNotesByVintageId(

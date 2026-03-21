@@ -10,7 +10,7 @@ import { queryGate } from "@/lib/functions/query-gate";
 import { theme } from "@/lib/theme";
 import { storageFields } from "@/lib/fields/storages";
 import type { Storage } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 
 export default function EditStorageScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

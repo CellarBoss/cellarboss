@@ -12,7 +12,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { theme } from "@/lib/theme";
 import type { GenericType } from "@cellarboss/types";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 
 type HierarchicalItem = GenericType & { parent?: number | null };
 

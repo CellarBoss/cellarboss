@@ -14,7 +14,7 @@ import { FormField } from "./FormField";
 import { DataSelector } from "./DataSelector";
 import { WineVintageSelector } from "./WineVintageSelector";
 import { theme, shadows } from "@/lib/theme";
-import type { ApiResult } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/common";
 import type { FieldConfig } from "@/lib/types/field";
 
 type FormCardProps<T extends { id: number | string }> = {
