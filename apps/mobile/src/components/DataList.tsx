@@ -2,12 +2,22 @@ import { useState, useCallback } from "react";
 import { FlatList, View, StyleSheet } from "react-native";
 import { Searchbar, Text, IconButton, Menu } from "react-native-paper";
 import { Swipeable } from "react-native-gesture-handler";
+import { FilterSheet, type FilterConfig } from "./FilterSheet";
 import { EmptyState } from "./EmptyState";
 import { theme } from "@/lib/theme";
+import type { SelectOption } from "@/lib/types/field";
 
 type SortOption = {
   label: string;
   value: string;
+};
+
+type DataListFilterConfig<T> = {
+  key: string;
+  label: string;
+  options: SelectOption[];
+  multiple?: boolean;
+  predicate: (item: T, selectedValues: string[]) => boolean;
 };
 
 type SwipeAction = {
@@ -25,6 +35,7 @@ type DataListProps<T> = {
   sortOptions?: SortOption[];
   onSort?: (value: string) => void;
   currentSort?: string;
+  filterConfigs?: DataListFilterConfig<T>[];
   swipeActions?: (item: T) => SwipeAction[];
   onRefresh?: () => void;
   refreshing?: boolean;
@@ -45,6 +56,7 @@ export function DataList<T>({
   sortOptions,
   onSort,
   currentSort,
+  filterConfigs,
   swipeActions,
   onRefresh,
   refreshing = false,
@@ -57,11 +69,32 @@ export function DataList<T>({
 }: DataListProps<T>) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortMenuVisible, setSortMenuVisible] = useState(false);
+  const [filterValues, setFilterValues] = useState<Record<string, string[]>>(
+    () => {
+      const initial: Record<string, string[]> = {};
+      filterConfigs?.forEach((c) => (initial[c.key] = []));
+      return initial;
+    },
+  );
 
-  const filteredData =
-    searchFilter && searchQuery
-      ? data.filter((item) => searchFilter(item, searchQuery))
-      : data;
+  let filteredData = data;
+
+  if (searchFilter && searchQuery) {
+    filteredData = filteredData.filter((item) =>
+      searchFilter(item, searchQuery),
+    );
+  }
+
+  if (filterConfigs) {
+    for (const config of filterConfigs) {
+      const selected = filterValues[config.key];
+      if (selected && selected.length > 0) {
+        filteredData = filteredData.filter((item) =>
+          config.predicate(item, selected),
+        );
+      }
+    }
+  }
 
   const renderSwipeableItem = useCallback(
     ({ item }: { item: T }) => {
@@ -99,9 +132,16 @@ export function DataList<T>({
     (o) => o.value === currentSort,
   )?.label;
 
+  const sheetFilters: FilterConfig[] | undefined = filterConfigs?.map((c) => ({
+    key: c.key,
+    label: c.label,
+    options: c.options,
+    multiple: c.multiple ?? true,
+  }));
+
   return (
     <View style={styles.container}>
-      {(searchFilter || sortOptions) && (
+      {(searchFilter || sortOptions || filterConfigs) && (
         <View style={styles.toolbar}>
           {searchFilter && (
             <Searchbar
@@ -109,6 +149,13 @@ export function DataList<T>({
               value={searchQuery}
               onChangeText={setSearchQuery}
               style={styles.searchbar}
+            />
+          )}
+          {sheetFilters && sheetFilters.length > 0 && (
+            <FilterSheet
+              filters={sheetFilters}
+              values={filterValues}
+              onChange={setFilterValues}
             />
           )}
           {sortOptions && onSort && (

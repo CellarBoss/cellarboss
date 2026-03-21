@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
 import { Text, FAB, Chip } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -24,6 +24,25 @@ const STATUS_COLORS: Record<string, string> = {
 function getStatusColor(status: string): string {
   return STATUS_COLORS[status] ?? "#6B7280";
 }
+
+const STATUS_FILTER_OPTIONS = [
+  { label: "Stored", value: "stored" },
+  { label: "Ordered", value: "ordered" },
+  { label: "In Primeur", value: "in-primeur" },
+  { label: "Drunk", value: "drunk" },
+  { label: "Sold", value: "sold" },
+  { label: "Gifted", value: "gifted" },
+];
+
+const WINE_TYPE_FILTER_OPTIONS = [
+  { label: "Red", value: "red" },
+  { label: "White", value: "white" },
+  { label: "Rosé", value: "rose" },
+  { label: "Orange", value: "orange" },
+  { label: "Sparkling", value: "sparkling" },
+  { label: "Fortified", value: "fortified" },
+  { label: "Dessert", value: "dessert" },
+];
 
 const SORT_OPTIONS = [
   { label: "Purchase Date (Newest)", value: "purchaseDate-desc" },
@@ -123,6 +142,32 @@ export default function CellarScreen() {
     return storageMap.get(bottle.storageId)?.name ?? "Unknown storage";
   }
 
+  function getWineType(bottle: Bottle): string | undefined {
+    const vintage = vintageMap.get(bottle.vintageId);
+    if (!vintage) return undefined;
+    const wine = wineMap.get(vintage.wineId);
+    return wine?.type;
+  }
+
+  const filterConfigs = [
+    {
+      key: "status",
+      label: "Status",
+      options: STATUS_FILTER_OPTIONS,
+      predicate: (bottle: Bottle, selectedValues: string[]) =>
+        selectedValues.includes(bottle.status),
+    },
+    {
+      key: "wineType",
+      label: "Wine Type",
+      options: WINE_TYPE_FILTER_OPTIONS,
+      predicate: (bottle: Bottle, selectedValues: string[]) => {
+        const type = getWineType(bottle);
+        return type != null && selectedValues.includes(type);
+      },
+    },
+  ];
+
   const sortedBottles = [...bottles].sort((a, b) => {
     switch (currentSort) {
       case "purchaseDate-asc":
@@ -157,6 +202,7 @@ export default function CellarScreen() {
           sortOptions={SORT_OPTIONS}
           onSort={setCurrentSort}
           currentSort={currentSort}
+          filterConfigs={filterConfigs}
           onRefresh={handleRefresh}
           refreshing={refreshing}
           emptyIcon="bottle-wine"
