@@ -19,7 +19,7 @@ type BottleListItemProps = {
   wineName: string;
   wineYear: string;
   winemakerName: string;
-  storageHierarchy: string[];
+  storageHierarchy?: string[];
   wineType: WineType | undefined;
   drinkingStatus: DrinkingStatus;
   onPress: () => void;
@@ -67,7 +67,7 @@ export function BottleListItem({
         <Text style={styles.itemSub} numberOfLines={1}>
           {winemakerName}
         </Text>
-        {storageHierarchy.length > 0 && (
+        {storageHierarchy && storageHierarchy.length > 0 && (
           <View style={styles.storageRow}>
             <Icon
               source="map-marker-outline"

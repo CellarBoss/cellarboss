@@ -7,14 +7,11 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { theme, shadows } from "@/lib/theme";
-import { WINE_TYPE_COLORS } from "@/lib/constants/wines";
 import { formatDrinkingStatus } from "@/lib/functions/format";
-import {
-  DRINKING_STATUS_ICONS,
-  DRINKING_STATUS_COLORS,
-} from "@/lib/constants/drinking-status";
+import { BottleListItem } from "@/components/bottle/BottleListItem";
 import { BottleCountBadge } from "@/components/storage/BottleCountBadge";
 import type { Storage } from "@cellarboss/types";
+import type { WineType } from "@cellarboss/validators/constants";
 
 export default function ViewStorageScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -44,6 +41,10 @@ export default function ViewStorageScreen() {
     queryKey: ["wines"],
     queryFn: () => api.wines.getAll(),
   });
+  const winemakersQuery = useApiQuery({
+    queryKey: ["winemakers"],
+    queryFn: () => api.winemakers.getAll(),
+  });
 
   const result = queryGate([
     storageQuery,
@@ -52,16 +53,25 @@ export default function ViewStorageScreen() {
     bottlesQuery,
     vintagesQuery,
     winesQuery,
+    winemakersQuery,
   ]);
   if (!result.ready) return result.gate;
 
-  const [storage, allStorages, locations, bottles, vintages, wines] =
-    result.data;
+  const [
+    storage,
+    allStorages,
+    locations,
+    bottles,
+    vintages,
+    wines,
+    winemakers,
+  ] = result.data;
 
   const storageMap = new Map(allStorages.map((s) => [s.id, s]));
   const locationMap = new Map(locations.map((l) => [l.id, l]));
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w) => [w.id, w]));
+  const winemakerMap = new Map(winemakers.map((m) => [m.id, m]));
 
   // Build parent hierarchy path
   const hierarchyPath: Storage[] = [];
@@ -91,15 +101,16 @@ export default function ViewStorageScreen() {
     (b) => b.storageId === storage.id && b.status === "stored",
   );
 
-  // Enrich bottles with wine/vintage info for display
-  const enrichedBottles = storedBottles
-    .map((bottle) => {
-      const vintage = vintageMap.get(bottle.vintageId);
-      const wine = vintage ? wineMap.get(vintage.wineId) : undefined;
-      return { bottle, vintage, wine };
-    })
-    .filter((b) => b.vintage && b.wine)
-    .sort((a, b) => a.wine!.name.localeCompare(b.wine!.name));
+  function getWineName(bottle: { vintageId: number }): string {
+    const vintage = vintageMap.get(bottle.vintageId);
+    if (!vintage) return "Unknown Wine";
+    const wine = wineMap.get(vintage.wineId);
+    return wine?.name ?? "Unknown Wine";
+  }
+
+  const sortedBottles = [...storedBottles].sort((a, b) =>
+    getWineName(a).localeCompare(getWineName(b)),
+  );
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -205,11 +216,9 @@ export default function ViewStorageScreen() {
                     style={[styles.bottleRow, isLast && styles.rowLast]}
                     onPress={() => router.push(`/storages/${child.id}`)}
                   >
-                    <View style={styles.bottleInfo}>
-                      <Text style={styles.wineName} numberOfLines={1}>
-                        {child.name}
-                      </Text>
-                    </View>
+                    <Text style={styles.childName} numberOfLines={1}>
+                      {child.name}
+                    </Text>
                     <BottleCountBadge
                       count={
                         bottles.filter(
@@ -229,48 +238,34 @@ export default function ViewStorageScreen() {
           <Text variant="titleSmall" style={styles.heading}>
             Bottles
           </Text>
-          <View style={styles.card}>
-            {enrichedBottles.length === 0 ? (
+          <View style={styles.bottlesCard}>
+            {sortedBottles.length === 0 ? (
               <Text style={styles.empty}>No bottles in this storage</Text>
             ) : (
-              enrichedBottles.map(({ bottle, vintage, wine }, index) => {
-                const isLast = index === enrichedBottles.length - 1;
-                const status = formatDrinkingStatus(
-                  vintage!.drinkFrom,
-                  vintage!.drinkUntil,
+              sortedBottles.map((bottle) => {
+                const vintage = vintageMap.get(bottle.vintageId);
+                const wine = vintage ? wineMap.get(vintage.wineId) : undefined;
+                const maker = wine
+                  ? winemakerMap.get(wine.wineMakerId)
+                  : undefined;
+                const drinkingStatus = formatDrinkingStatus(
+                  vintage?.drinkFrom ?? null,
+                  vintage?.drinkUntil ?? null,
                   currentYear,
                 );
                 return (
-                  <Pressable
+                  <BottleListItem
                     key={bottle.id}
-                    style={[styles.bottleRow, isLast && styles.rowLast]}
+                    bottle={bottle}
+                    wineName={wine?.name ?? "Unknown Wine"}
+                    wineYear={
+                      vintage?.year != null ? String(vintage.year) : "NV"
+                    }
+                    winemakerName={maker?.name ?? ""}
+                    wineType={wine?.type as WineType | undefined}
+                    drinkingStatus={drinkingStatus}
                     onPress={() => router.push(`/bottles/${bottle.id}`)}
-                  >
-                    <Icon
-                      source="bottle-wine"
-                      size={24}
-                      color={
-                        WINE_TYPE_COLORS[
-                          wine!.type as keyof typeof WINE_TYPE_COLORS
-                        ]
-                      }
-                    />
-                    <View style={styles.bottleInfo}>
-                      <Text style={styles.wineName} numberOfLines={1}>
-                        {wine!.name}
-                      </Text>
-                      <Text style={styles.vintageText} numberOfLines={1}>
-                        {vintage!.year ?? "NV"}
-                      </Text>
-                    </View>
-                    {DRINKING_STATUS_ICONS[status] !== "" && (
-                      <Icon
-                        source={DRINKING_STATUS_ICONS[status]}
-                        size={20}
-                        color={DRINKING_STATUS_COLORS[status]}
-                      />
-                    )}
-                  </Pressable>
+                  />
                 );
               })
             )}
@@ -298,6 +293,12 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     borderRadius: 12,
     padding: 16,
+    ...shadows.card,
+  },
+  bottlesCard: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: 12,
+    overflow: "hidden" as const,
     ...shadows.card,
   },
   detailsRow: {
@@ -351,17 +352,10 @@ const styles = StyleSheet.create({
   rowLast: {
     borderBottomWidth: 0,
   },
-  bottleInfo: {
+  childName: {
     flex: 1,
-  },
-  wineName: {
     fontSize: 15,
     fontWeight: "bold",
     color: theme.colors.onSurface,
-  },
-  vintageText: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-    marginTop: 1,
   },
 });
