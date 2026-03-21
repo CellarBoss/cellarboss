@@ -8,15 +8,16 @@ import { DataList } from "@/components/DataList";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { BottleListItem } from "@/components/bottle/BottleListItem";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { useSetting } from "@/hooks/use-settings";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
+import { formatDrinkingStatus } from "@/lib/functions/format";
 import { theme } from "@/lib/theme";
 import {
   STATUS_FILTER_OPTIONS,
   WINE_TYPE_FILTER_OPTIONS,
 } from "@/lib/constants/bottles";
-import type { Bottle } from "@cellarboss/types";
+import type { Bottle, Storage } from "@cellarboss/types";
+import type { WineType } from "@cellarboss/validators/constants";
 
 const SORT_OPTIONS = [
   { label: "Purchase Date (Newest)", value: "purchaseDate-desc" },
@@ -34,9 +35,6 @@ export default function CellarScreen() {
   const [currentSort, setCurrentSort] = useState("purchaseDate-desc");
   const [deleteTarget, setDeleteTarget] = useState<Bottle | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-
-  const currencySetting = useSetting("currency");
-  const currency = (currencySetting.data as string) || "USD";
 
   const bottleQuery = useApiQuery({
     queryKey: ["bottles"],
@@ -89,6 +87,7 @@ export default function CellarScreen() {
   const wineMap = new Map(wines.map((w) => [w.id, w]));
   const winemakerMap = new Map(winemakers.map((m) => [m.id, m]));
   const storageMap = new Map(storages.map((s) => [s.id, s]));
+  const currentYear = new Date().getFullYear();
 
   function getWineName(bottle: Bottle): string {
     const vintage = vintageMap.get(bottle.vintageId);
@@ -111,16 +110,33 @@ export default function CellarScreen() {
     return maker?.name ?? "";
   }
 
-  function getStorageName(bottle: Bottle): string {
-    if (!bottle.storageId) return "No storage";
-    return storageMap.get(bottle.storageId)?.name ?? "Unknown storage";
+  function getStorageHierarchy(bottle: Bottle): string[] {
+    if (!bottle.storageId) return [];
+    const path: string[] = [];
+    let current: Storage | undefined = storageMap.get(bottle.storageId);
+    while (current) {
+      path.unshift(current.name);
+      current =
+        current.parent != null ? storageMap.get(current.parent) : undefined;
+    }
+    return path;
   }
 
-  function getWineType(bottle: Bottle): string | undefined {
+  function getWineType(bottle: Bottle): WineType | undefined {
     const vintage = vintageMap.get(bottle.vintageId);
     if (!vintage) return undefined;
     const wine = wineMap.get(vintage.wineId);
-    return wine?.type;
+    return wine?.type as WineType | undefined;
+  }
+
+  function getDrinkingStatus(bottle: Bottle) {
+    const vintage = vintageMap.get(bottle.vintageId);
+    if (!vintage) return formatDrinkingStatus(null, null, currentYear);
+    return formatDrinkingStatus(
+      vintage.drinkFrom,
+      vintage.drinkUntil,
+      currentYear,
+    );
   }
 
   const filterConfigs = [
@@ -202,8 +218,9 @@ export default function CellarScreen() {
               wineName={getWineName(bottle)}
               wineYear={getWineYear(bottle)}
               winemakerName={getWinemakerName(bottle)}
-              storageName={getStorageName(bottle)}
-              currency={currency}
+              storageHierarchy={getStorageHierarchy(bottle)}
+              wineType={getWineType(bottle)}
+              drinkingStatus={getDrinkingStatus(bottle)}
               onPress={() => router.push(`/bottles/${bottle.id}`)}
             />
           )}

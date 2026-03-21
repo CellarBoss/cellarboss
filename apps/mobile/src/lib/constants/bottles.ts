@@ -16,6 +16,15 @@ export function getStatusColor(status: string): string {
   return BOTTLE_STATUS_COLORS[status as BottleStatus] ?? "#6B7280";
 }
 
+export const BOTTLE_STATUS_ICONS: Record<BottleStatus, string> = {
+  stored: "archive",
+  ordered: "truck-delivery",
+  "in-primeur": "timer-sand",
+  drunk: "glass-wine",
+  sold: "tag",
+  gifted: "gift",
+};
+
 export const STATUS_FILTER_OPTIONS = BOTTLE_STATUSES.map((s) => ({
   label: formatStatus(s),
   value: s,
