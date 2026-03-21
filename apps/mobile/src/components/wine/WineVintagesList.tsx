@@ -4,25 +4,12 @@ import { useRouter } from "expo-router";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
-import {
-  formatDrinkingStatus,
-  type DrinkingStatus,
-} from "@/lib/functions/format";
+import { formatDrinkingStatus } from "@/lib/functions/format";
 import { theme, shadows } from "@/lib/theme";
-
-const STATUS_COLORS: Record<DrinkingStatus, string> = {
-  drinkable: "#16a34a",
-  wait: "#ca8a04",
-  past: "#dc2626",
-  unknown: theme.colors.onSurfaceVariant,
-};
-
-const STATUS_LABELS: Record<DrinkingStatus, string> = {
-  drinkable: "Drinkable now",
-  wait: "Wait to drink",
-  past: "Past peak",
-  unknown: "",
-};
+import {
+  DRINKING_STATUS_COLORS,
+  DRINKING_STATUS_LABELS,
+} from "@/lib/constants/drinking-status";
 
 export function WineVintagesList({ wineId }: { wineId: number }) {
   const router = useRouter();
@@ -83,10 +70,13 @@ export function WineVintagesList({ wineId }: { wineId: number }) {
                   {vintage.year !== null ? vintage.year : "NV"}
                 </Text>
                 <Text
-                  style={[styles.status, { color: STATUS_COLORS[status] }]}
+                  style={[
+                    styles.status,
+                    { color: DRINKING_STATUS_COLORS[status] },
+                  ]}
                   numberOfLines={1}
                 >
-                  {STATUS_LABELS[status]}
+                  {DRINKING_STATUS_LABELS[status]}
                 </Text>
                 <View style={styles.bottles}>
                   <Icon

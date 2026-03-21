@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
-import { Text, FAB, Icon } from "react-native-paper";
+import { Text, FAB } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -11,6 +11,7 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { theme } from "@/lib/theme";
+import { BottleCountBadge } from "@/components/storage/BottleCountBadge";
 import type { Storage, Bottle } from "@cellarboss/types";
 
 type TreeNode = Storage & { subRows: TreeNode[] };
@@ -188,16 +189,7 @@ export default function StoragesScreen() {
                     </Text>
                   )}
                 </View>
-                {bottleCount > 0 && (
-                  <View style={styles.bottleCount}>
-                    <Icon
-                      source="bottle-wine"
-                      size={16}
-                      color={theme.colors.onSurfaceVariant}
-                    />
-                    <Text style={styles.bottleCountText}>{bottleCount}</Text>
-                  </View>
-                )}
+                <BottleCountBadge count={bottleCount} />
               </View>
             </Pressable>
           );
@@ -259,20 +251,6 @@ const styles = StyleSheet.create({
   },
   itemSub: {
     fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-  },
-  bottleCount: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: theme.colors.surfaceVariant,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    gap: 4,
-  },
-  bottleCountText: {
-    fontSize: 14,
-    fontWeight: "bold",
     color: theme.colors.onSurfaceVariant,
   },
   fab: {
