@@ -22,6 +22,7 @@ export default function NewRegionScreen() {
     data: Record<string, string>,
   ): Promise<ApiResult<Region>> => {
     const result = await api.regions.create({
+      id: 0,
       name: data.name,
       countryId: Number(data.countryId),
     });

@@ -21,6 +21,7 @@ export default function NewGrapeScreen() {
     data: Record<string, string>,
   ): Promise<ApiResult<Grape>> => {
     const result = await api.grapes.create({
+      id: 0,
       name: data.name,
     });
 

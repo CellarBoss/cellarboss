@@ -21,6 +21,7 @@ export default function NewCountryScreen() {
     data: Record<string, string>,
   ): Promise<ApiResult<Country>> => {
     const result = await api.countries.create({
+      id: 0,
       name: data.name,
     });
 
