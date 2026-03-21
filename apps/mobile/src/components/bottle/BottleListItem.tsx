@@ -13,6 +13,7 @@ import {
 } from "@/lib/constants/drinking-status";
 import type { BottleStatus } from "@cellarboss/validators/constants";
 import { api } from "@/lib/api/client";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { StatusPickerModal } from "./StatusPickerModal";
 import { StoragePickerModal } from "./StoragePickerModal";
 
@@ -30,7 +31,7 @@ type BottleListItemProps = {
   wineType: WineType | undefined;
   drinkingStatus: DrinkingStatus;
   onPress: () => void;
-  onDelete?: () => void;
+  swipeable?: boolean;
 };
 
 export function BottleListItem({
@@ -42,13 +43,14 @@ export function BottleListItem({
   wineType,
   drinkingStatus,
   onPress,
-  onDelete,
+  swipeable = false,
 }: BottleListItemProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const swipeableRef = useRef<Swipeable>(null);
   const [statusPickerVisible, setStatusPickerVisible] = useState(false);
   const [storagePickerVisible, setStoragePickerVisible] = useState(false);
+  const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
 
   const bottleColor = wineType
     ? WINE_TYPE_COLORS[wineType]
@@ -63,6 +65,14 @@ export function BottleListItem({
     mutationFn: (updated: Bottle) => api.bottles.update(updated),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bottles"] });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => api.bottles.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bottles"] });
+      setDeleteConfirmVisible(false);
     },
   });
 
@@ -142,10 +152,18 @@ export function BottleListItem({
         }}
         onDismiss={() => setStoragePickerVisible(false)}
       />
+      <ConfirmDialog
+        visible={deleteConfirmVisible}
+        title="Delete Bottle"
+        message={`Delete this bottle of ${wineName}? This cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={() => deleteMutation.mutate(bottle.id)}
+        onCancel={() => setDeleteConfirmVisible(false)}
+      />
     </>
   );
 
-  if (!onDelete) {
+  if (!swipeable) {
     return (
       <>
         {content}
@@ -197,7 +215,7 @@ export function BottleListItem({
               size={20}
               onPress={() => {
                 swipeableRef.current?.close();
-                onDelete?.();
+                setDeleteConfirmVisible(true);
               }}
             />
           </View>

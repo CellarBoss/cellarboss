@@ -3,9 +3,8 @@ import { View, StyleSheet } from "react-native";
 import { FAB } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { DataList } from "@/components/DataList";
-import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { BottleListItem } from "@/components/bottle/BottleListItem";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
@@ -35,7 +34,6 @@ export default function CellarScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [currentSort, setCurrentSort] = useState("purchaseDate-desc");
-  const [deleteTarget, setDeleteTarget] = useState<Bottle | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const bottleQuery = useApiQuery({
@@ -71,14 +69,6 @@ export default function CellarScreen() {
     storageQuery,
     locationQuery,
   ]);
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: number) => api.bottles.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["bottles"] });
-      setDeleteTarget(null);
-    },
-  });
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -259,7 +249,7 @@ export default function CellarScreen() {
               wineType={getWineType(bottle)}
               drinkingStatus={getDrinkingStatus(bottle)}
               onPress={() => router.push(`/bottles/${bottle.id}`)}
-              onDelete={() => setDeleteTarget(bottle)}
+              swipeable
             />
           )}
         />
@@ -269,23 +259,6 @@ export default function CellarScreen() {
         icon="plus"
         style={styles.fab}
         onPress={() => router.push("/bottles/new")}
-      />
-
-      <ConfirmDialog
-        visible={deleteTarget !== null}
-        title="Delete Bottle"
-        message={
-          deleteTarget
-            ? `Delete this bottle of ${getWineName(deleteTarget)}? This cannot be undone.`
-            : ""
-        }
-        confirmLabel="Delete"
-        onConfirm={() => {
-          if (deleteTarget) {
-            deleteMutation.mutate(deleteTarget.id);
-          }
-        }}
-        onCancel={() => setDeleteTarget(null)}
       />
     </SafeAreaView>
   );

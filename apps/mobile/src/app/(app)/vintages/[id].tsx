@@ -122,6 +122,7 @@ export default function ViewVintageScreen() {
                   wineType={wine?.type as WineType | undefined}
                   drinkingStatus={drinkingStatus}
                   onPress={() => router.push(`/bottles/${bottle.id}`)}
+                  swipeable
                 />
               ))
             )}
