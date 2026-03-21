@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
-import { Pressable, StyleSheet } from "react-native";
-import { Text, FAB } from "react-native-paper";
+import { View, Pressable, StyleSheet } from "react-native";
+import { Text, FAB, Icon } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -11,7 +11,7 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { theme } from "@/lib/theme";
-import type { Storage } from "@cellarboss/types";
+import type { Storage, Bottle } from "@cellarboss/types";
 
 type TreeNode = Storage & { subRows: TreeNode[] };
 type FlatNode = { storage: Storage; depth: number };
@@ -73,8 +73,12 @@ export default function StoragesScreen() {
     queryKey: ["locations"],
     queryFn: () => api.locations.getAll(),
   });
+  const bottlesQuery = useApiQuery({
+    queryKey: ["bottles"],
+    queryFn: () => api.bottles.getAll(),
+  });
 
-  const result = queryGate([storagesQuery, locationsQuery]);
+  const result = queryGate([storagesQuery, locationsQuery, bottlesQuery]);
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => api.storages.delete(id),
@@ -92,9 +96,19 @@ export default function StoragesScreen() {
 
   if (!result.ready) return result.gate;
 
-  const [storages, locations] = result.data;
+  const [storages, locations, bottles] = result.data;
 
   const locationMap = new Map(locations.map((l) => [l.id, l]));
+
+  const bottleCountByStorage = new Map<number, number>();
+  for (const bottle of bottles) {
+    if (bottle.status === "stored" && bottle.storageId != null) {
+      bottleCountByStorage.set(
+        bottle.storageId,
+        (bottleCountByStorage.get(bottle.storageId) ?? 0) + 1,
+      );
+    }
+  }
 
   function getLocationName(storage: Storage): string {
     if (!storage.locationId) return "";
@@ -156,20 +170,35 @@ export default function StoragesScreen() {
         ]}
         renderItem={({ storage, depth }) => {
           const locationName = getLocationName(storage);
+          const bottleCount = bottleCountByStorage.get(storage.id) ?? 0;
 
           return (
             <Pressable
               style={[styles.item, { paddingLeft: depth * 24 + 16 }]}
               onPress={() => router.push(`/storages/${storage.id}`)}
             >
-              <Text style={styles.itemTitle} numberOfLines={1}>
-                {storage.name}
-              </Text>
-              {locationName !== "" && (
-                <Text style={styles.itemSub} numberOfLines={1}>
-                  {locationName}
-                </Text>
-              )}
+              <View style={styles.itemRow}>
+                <View style={styles.itemContent}>
+                  <Text style={styles.itemTitle} numberOfLines={1}>
+                    {storage.name}
+                  </Text>
+                  {locationName !== "" && (
+                    <Text style={styles.itemSub} numberOfLines={1}>
+                      {locationName}
+                    </Text>
+                  )}
+                </View>
+                {bottleCount > 0 && (
+                  <View style={styles.bottleCount}>
+                    <Icon
+                      source="bottle-wine"
+                      size={16}
+                      color={theme.colors.onSurfaceVariant}
+                    />
+                    <Text style={styles.bottleCountText}>{bottleCount}</Text>
+                  </View>
+                )}
+              </View>
             </Pressable>
           );
         }}
@@ -213,6 +242,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.outlineVariant,
   },
+  itemRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  itemContent: {
+    flex: 1,
+    marginRight: 12,
+  },
   itemTitle: {
     fontSize: 15,
     fontWeight: "bold",
@@ -221,6 +259,20 @@ const styles = StyleSheet.create({
   },
   itemSub: {
     fontSize: 13,
+    color: theme.colors.onSurfaceVariant,
+  },
+  bottleCount: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: theme.colors.surfaceVariant,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    gap: 4,
+  },
+  bottleCountText: {
+    fontSize: 14,
+    fontWeight: "bold",
     color: theme.colors.onSurfaceVariant,
   },
   fab: {
