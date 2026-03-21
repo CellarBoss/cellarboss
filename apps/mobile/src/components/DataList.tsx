@@ -1,10 +1,10 @@
 import { useState, useCallback } from "react";
 import { FlatList, View, StyleSheet } from "react-native";
-import { Searchbar, Text, IconButton, Menu } from "react-native-paper";
+import { Searchbar, IconButton } from "react-native-paper";
 import { Swipeable } from "react-native-gesture-handler";
 import { FilterSheet, type FilterConfig } from "./FilterSheet";
+import { SortSheet } from "./SortSheet";
 import { EmptyState } from "./EmptyState";
-import { theme } from "@/lib/theme";
 import type { SelectOption } from "@/lib/types/field";
 
 type SortOption = {
@@ -68,7 +68,6 @@ export function DataList<T>({
   ListHeaderComponent,
 }: DataListProps<T>) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortMenuVisible, setSortMenuVisible] = useState(false);
   const [filterValues, setFilterValues] = useState<Record<string, string[]>>(
     () => {
       const initial: Record<string, string[]> = {};
@@ -128,10 +127,6 @@ export function DataList<T>({
     [renderItem, swipeActions],
   );
 
-  const currentSortLabel = sortOptions?.find(
-    (o) => o.value === currentSort,
-  )?.label;
-
   const sheetFilters: FilterConfig[] | undefined = filterConfigs?.map((c) => ({
     key: c.key,
     label: c.label,
@@ -151,45 +146,25 @@ export function DataList<T>({
               style={styles.searchbar}
             />
           )}
-          {sheetFilters && sheetFilters.length > 0 && (
-            <FilterSheet
-              filters={sheetFilters}
-              values={filterValues}
-              onChange={setFilterValues}
-            />
-          )}
-          {sortOptions && onSort && (
-            <Menu
-              visible={sortMenuVisible}
-              onDismiss={() => setSortMenuVisible(false)}
-              anchor={
-                <IconButton
-                  icon="sort"
-                  size={24}
-                  onPress={() => setSortMenuVisible(true)}
+          {(filterConfigs || sortOptions) && (
+            <View style={styles.toolbarActions}>
+              {sheetFilters && sheetFilters.length > 0 && (
+                <FilterSheet
+                  filters={sheetFilters}
+                  values={filterValues}
+                  onChange={setFilterValues}
                 />
-              }
-            >
-              {sortOptions.map((option) => (
-                <Menu.Item
-                  key={option.value}
-                  title={option.label}
-                  onPress={() => {
-                    onSort(option.value);
-                    setSortMenuVisible(false);
-                  }}
-                  leadingIcon={
-                    currentSort === option.value ? "check" : undefined
-                  }
+              )}
+              {sortOptions && onSort && currentSort && (
+                <SortSheet
+                  options={sortOptions}
+                  value={currentSort}
+                  onChange={onSort}
                 />
-              ))}
-            </Menu>
+              )}
+            </View>
           )}
         </View>
-      )}
-
-      {currentSortLabel && (
-        <Text style={styles.sortIndicator}>Sorted by: {currentSortLabel}</Text>
       )}
 
       <FlatList
@@ -221,21 +196,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   toolbar: {
-    flexDirection: "row",
-    alignItems: "center",
     paddingHorizontal: 12,
     paddingVertical: 8,
-    gap: 4,
+    gap: 8,
   },
   searchbar: {
-    flex: 1,
     height: 40,
   },
-  sortIndicator: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-    paddingHorizontal: 16,
-    paddingBottom: 4,
+  toolbarActions: {
+    flexDirection: "row",
+    gap: 8,
   },
   list: {
     paddingBottom: 16,
