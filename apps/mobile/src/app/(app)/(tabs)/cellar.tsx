@@ -249,18 +249,6 @@ export default function CellarScreen() {
           emptyMessage="Add your first bottle to get started"
           emptyActionLabel="Add Bottle"
           onEmptyAction={() => router.push("/bottles/new")}
-          swipeActions={(bottle) => [
-            {
-              icon: "pencil",
-              color: theme.colors.primary,
-              onPress: () => router.push(`/bottles/${bottle.id}/edit`),
-            },
-            {
-              icon: "delete",
-              color: "#dc2626",
-              onPress: () => setDeleteTarget(bottle),
-            },
-          ]}
           renderItem={(bottle) => (
             <BottleListItem
               bottle={bottle}
@@ -271,6 +259,7 @@ export default function CellarScreen() {
               wineType={getWineType(bottle)}
               drinkingStatus={getDrinkingStatus(bottle)}
               onPress={() => router.push(`/bottles/${bottle.id}`)}
+              onDelete={() => setDeleteTarget(bottle)}
             />
           )}
         />

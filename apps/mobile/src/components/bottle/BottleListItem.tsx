@@ -1,5 +1,7 @@
 import { View, Pressable, StyleSheet } from "react-native";
-import { Text, Icon } from "react-native-paper";
+import { Swipeable } from "react-native-gesture-handler";
+import { useRouter } from "expo-router";
+import { Text, Icon, IconButton } from "react-native-paper";
 import { getStatusColor, BOTTLE_STATUS_ICONS } from "@/lib/constants/bottles";
 import { BOTTLE_SIZE_SHORT_LABELS } from "@cellarboss/common/constants";
 import { WINE_TYPE_COLORS } from "@/lib/constants/wines";
@@ -23,6 +25,7 @@ type BottleListItemProps = {
   wineType: WineType | undefined;
   drinkingStatus: DrinkingStatus;
   onPress: () => void;
+  onDelete?: () => void;
 };
 
 export function BottleListItem({
@@ -34,7 +37,9 @@ export function BottleListItem({
   wineType,
   drinkingStatus,
   onPress,
+  onDelete,
 }: BottleListItemProps) {
+  const router = useRouter();
   const bottleColor = wineType
     ? WINE_TYPE_COLORS[wineType]
     : theme.colors.onSurfaceVariant;
@@ -44,7 +49,7 @@ export function BottleListItem({
   const statusIcon =
     BOTTLE_STATUS_ICONS[bottle.status as BottleStatus] ?? "help-circle";
 
-  return (
+  const content = (
     <Pressable style={styles.item} onPress={onPress}>
       <View style={styles.bottleIcon}>
         <Icon source="bottle-wine" size={28} color={bottleColor} />
@@ -98,6 +103,35 @@ export function BottleListItem({
         color={getStatusColor(bottle.status)}
       />
     </Pressable>
+  );
+
+  if (!onDelete) {
+    return content;
+  }
+
+  return (
+    <Swipeable
+      renderRightActions={() => (
+        <View style={styles.swipeActions}>
+          <IconButton
+            icon="pencil"
+            iconColor="#fff"
+            containerColor={theme.colors.primary}
+            size={20}
+            onPress={() => router.push(`/bottles/${bottle.id}/edit`)}
+          />
+          <IconButton
+            icon="delete"
+            iconColor="#fff"
+            containerColor="#dc2626"
+            size={20}
+            onPress={onDelete}
+          />
+        </View>
+      )}
+    >
+      {content}
+    </Swipeable>
   );
 }
 
@@ -153,5 +187,11 @@ const styles = StyleSheet.create({
   storageText: {
     fontSize: 12,
     color: theme.colors.onSurfaceVariant,
+  },
+  swipeActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 8,
+    gap: 4,
   },
 });
