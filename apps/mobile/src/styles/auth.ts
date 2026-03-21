@@ -1,9 +1,10 @@
 import { StyleSheet } from "react-native";
+import { theme, shadows } from "@/lib/theme";
 
 export const authStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: theme.colors.background,
   },
   scroll: {
     flexGrow: 1,
@@ -11,14 +12,10 @@ export const authStyles = StyleSheet.create({
     padding: 24,
   },
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.surface,
     borderRadius: 12,
     padding: 24,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    ...shadows.elevated,
   },
   title: {
     fontSize: 24,
@@ -28,7 +25,7 @@ export const authStyles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    color: "#666",
+    color: theme.colors.onSurfaceVariant,
     textAlign: "center",
     marginBottom: 20,
   },
@@ -45,7 +42,7 @@ export const authStyles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: theme.colors.outline,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -53,12 +50,12 @@ export const authStyles = StyleSheet.create({
     marginBottom: 16,
   },
   error: {
-    color: "#dc2626",
+    color: theme.colors.error,
     fontSize: 13,
     marginBottom: 12,
   },
   button: {
-    backgroundColor: "#7c3aed",
+    backgroundColor: theme.colors.primary,
     borderRadius: 8,
     paddingVertical: 12,
     alignItems: "center",
@@ -67,7 +64,7 @@ export const authStyles = StyleSheet.create({
     opacity: 0.6,
   },
   buttonText: {
-    color: "#fff",
+    color: theme.colors.onPrimary,
     fontSize: 16,
     fontWeight: "600",
   },
@@ -76,7 +73,7 @@ export const authStyles = StyleSheet.create({
     alignItems: "center",
   },
   linkText: {
-    color: "#7c3aed",
+    color: theme.colors.primary,
     fontSize: 14,
   },
 });

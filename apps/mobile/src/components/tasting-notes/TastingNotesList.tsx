@@ -5,7 +5,7 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { formatDateTime } from "@/lib/functions/format";
-import { theme } from "@/lib/theme";
+import { theme, shadows } from "@/lib/theme";
 import { TastingNote, Vintage, Wine } from "@cellarboss/types";
 
 export function WineTastingNotesList({ wine }: { wine: Wine }) {
@@ -101,11 +101,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: theme.colors.surface,
     borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
+    ...shadows.card,
     overflow: "hidden",
   },
   empty: {

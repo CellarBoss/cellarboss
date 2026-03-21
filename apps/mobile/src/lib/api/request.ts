@@ -1,4 +1,5 @@
-import type { ApiResult, ApiError } from "@cellarboss/api-client";
+import type { ApiResult } from "@cellarboss/api-client";
+import { processBackendError } from "@cellarboss/api-client";
 import { getToken } from "@/lib/auth/secure-store";
 import { getApiBaseUrl } from "@/lib/api/base-url";
 
@@ -52,27 +53,4 @@ export async function makeRequest<T>(
       },
     };
   }
-}
-
-function processBackendError(response: Response, data: any): ApiError {
-  if (data?.errors?.length) {
-    const fieldErrors: Record<string, string> = {};
-
-    for (const err of data.errors) {
-      if (err.path) {
-        fieldErrors[err.path] = err.msg;
-      }
-    }
-
-    return {
-      message: "Input validation failed",
-      errors: fieldErrors,
-      status: response.status,
-    };
-  }
-
-  return {
-    message: data?.error ?? data?.message ?? "Unexpected error",
-    status: response.status,
-  };
 }

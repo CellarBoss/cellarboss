@@ -8,7 +8,7 @@ import {
   formatDrinkingStatus,
   type DrinkingStatus,
 } from "@/lib/functions/format";
-import { theme } from "@/lib/theme";
+import { theme, shadows } from "@/lib/theme";
 
 const STATUS_COLORS: Record<DrinkingStatus, string> = {
   drinkable: "#16a34a",
@@ -124,11 +124,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: theme.colors.surface,
     borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
+    ...shadows.card,
     overflow: "hidden",
   },
   empty: {

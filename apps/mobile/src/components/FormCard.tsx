@@ -13,7 +13,7 @@ import * as Haptics from "expo-haptics";
 import { FormField } from "./FormField";
 import { DataSelector } from "./DataSelector";
 import { WineVintageSelector } from "./WineVintageSelector";
-import { theme } from "@/lib/theme";
+import { theme, shadows } from "@/lib/theme";
 import type { ApiResult } from "@cellarboss/api-client";
 import type { FieldConfig } from "@/lib/types/field";
 
@@ -189,11 +189,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     borderRadius: 12,
     padding: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
+    ...shadows.card,
   },
   error: {
     color: theme.colors.error,

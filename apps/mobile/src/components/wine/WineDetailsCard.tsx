@@ -1,5 +1,5 @@
 import { View, StyleSheet } from "react-native";
-import { theme } from "@/lib/theme";
+import { theme, shadows } from "@/lib/theme";
 import { Wine } from "@cellarboss/types";
 import { Icon, Text } from "react-native-paper";
 import { useApiQuery } from "@/hooks/use-api-query";
@@ -131,11 +131,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     borderRadius: 12,
     padding: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
+    ...shadows.card,
   },
   error: {
     color: theme.colors.error,

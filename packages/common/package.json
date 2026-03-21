@@ -1,0 +1,30 @@
+{
+  "name": "@cellarboss/common",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "types": "./src/*.ts",
+      "default": "./src/*.ts"
+    }
+  },
+  "dependencies": {
+    "@cellarboss/api-client": "workspace:*",
+    "@cellarboss/types": "workspace:*",
+    "@cellarboss/validators": "workspace:*",
+    "date-fns": "4.1.0"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "@tanstack/react-query": ">=5"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.14",
+    "typescript": "5.9.3"
+  }
+}

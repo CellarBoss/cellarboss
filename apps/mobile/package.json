@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@cellarboss/api-client": "workspace:*",
+    "@cellarboss/common": "workspace:*",
     "@cellarboss/types": "workspace:*",
     "@cellarboss/validators": "workspace:*",
     "@expo/metro-runtime": "~55.0.6",
