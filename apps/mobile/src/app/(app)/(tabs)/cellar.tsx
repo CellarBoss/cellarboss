@@ -11,11 +11,13 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { formatDrinkingStatus } from "@/lib/functions/format";
+import type { DrinkingStatus } from "@/lib/functions/format";
 import { theme } from "@/lib/theme";
 import {
   STATUS_FILTER_OPTIONS,
   WINE_TYPE_FILTER_OPTIONS,
 } from "@/lib/constants/bottles";
+import { DRINKING_STATUS_LABELS } from "@/lib/constants/drinking-status";
 import type { Bottle, Storage } from "@cellarboss/types";
 import type { WineType } from "@cellarboss/validators/constants";
 
@@ -56,6 +58,10 @@ export default function CellarScreen() {
     queryKey: ["storages"],
     queryFn: () => api.storages.getAll(),
   });
+  const locationQuery = useApiQuery({
+    queryKey: ["locations"],
+    queryFn: () => api.locations.getAll(),
+  });
 
   const result = queryGate([
     bottleQuery,
@@ -63,6 +69,7 @@ export default function CellarScreen() {
     wineQuery,
     winemakerQuery,
     storageQuery,
+    locationQuery,
   ]);
 
   const deleteMutation = useMutation({
@@ -81,7 +88,8 @@ export default function CellarScreen() {
 
   if (!result.ready) return result.gate;
 
-  const [bottles, vintages, wines, winemakers, storages] = result.data;
+  const [bottles, vintages, wines, winemakers, storages, locations] =
+    result.data;
 
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w) => [w.id, w]));
@@ -129,7 +137,7 @@ export default function CellarScreen() {
     return wine?.type as WineType | undefined;
   }
 
-  function getDrinkingStatus(bottle: Bottle) {
+  function getDrinkingStatus(bottle: Bottle): DrinkingStatus {
     const vintage = vintageMap.get(bottle.vintageId);
     if (!vintage) return formatDrinkingStatus(null, null, currentYear);
     return formatDrinkingStatus(
@@ -138,6 +146,24 @@ export default function CellarScreen() {
       currentYear,
     );
   }
+
+  function getLocationId(bottle: Bottle): number | null {
+    if (!bottle.storageId) return null;
+    const storage = storageMap.get(bottle.storageId);
+    return storage?.locationId ?? null;
+  }
+
+  const drinkingStatusOptions: DrinkingStatus[] = [
+    "drinkable",
+    "wait",
+    "past",
+    "unknown",
+  ];
+
+  const locationFilterOptions = locations.map((l) => ({
+    label: l.name,
+    value: String(l.id),
+  }));
 
   const filterConfigs = [
     {
@@ -154,6 +180,29 @@ export default function CellarScreen() {
       predicate: (bottle: Bottle, selectedValues: string[]) => {
         const type = getWineType(bottle);
         return type != null && selectedValues.includes(type);
+      },
+    },
+    {
+      key: "drinkingWindow",
+      label: "Drinking Window",
+      options: drinkingStatusOptions
+        .filter((s) => DRINKING_STATUS_LABELS[s] !== "")
+        .map((s) => ({
+          label: DRINKING_STATUS_LABELS[s],
+          value: s,
+        })),
+      predicate: (bottle: Bottle, selectedValues: string[]) =>
+        selectedValues.includes(getDrinkingStatus(bottle)),
+    },
+    {
+      key: "location",
+      label: "Location",
+      options: locationFilterOptions,
+      predicate: (bottle: Bottle, selectedValues: string[]) => {
+        const locationId = getLocationId(bottle);
+        return (
+          locationId != null && selectedValues.includes(String(locationId))
+        );
       },
     },
   ];
