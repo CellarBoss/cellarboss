@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
-import { Swipeable } from "react-native-gesture-handler";
+import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
+import type { SwipeableMethods } from "react-native-gesture-handler/ReanimatedSwipeable";
 import { useRouter } from "expo-router";
 import { Text, Icon, IconButton } from "react-native-paper";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -47,7 +48,7 @@ export function BottleListItem({
 }: BottleListItemProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const swipeableRef = useRef<Swipeable>(null);
+  const swipeableRef = useRef<SwipeableMethods>(null);
   const [statusPickerVisible, setStatusPickerVisible] = useState(false);
   const [storagePickerVisible, setStoragePickerVisible] = useState(false);
   const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
@@ -174,7 +175,7 @@ export function BottleListItem({
 
   return (
     <>
-      <Swipeable
+      <ReanimatedSwipeable
         ref={swipeableRef}
         renderRightActions={() => (
           <View style={styles.swipeActions}>
@@ -222,7 +223,7 @@ export function BottleListItem({
         )}
       >
         {content}
-      </Swipeable>
+      </ReanimatedSwipeable>
       {modals}
     </>
   );

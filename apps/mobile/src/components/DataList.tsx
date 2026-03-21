@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { FlatList, View, StyleSheet } from "react-native";
 import { Searchbar, IconButton } from "react-native-paper";
-import { Swipeable } from "react-native-gesture-handler";
+import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { FilterSheet, type FilterConfig } from "./FilterSheet";
 import { SortSheet } from "./SortSheet";
 import { EmptyState } from "./EmptyState";
@@ -95,7 +95,7 @@ export function DataList<T>({
     }
   }
 
-  const renderSwipeableItem = useCallback(
+  const renderReanimatedSwipeableItem = useCallback(
     ({ item }: { item: T }) => {
       const actions = swipeActions?.(item);
 
@@ -104,7 +104,7 @@ export function DataList<T>({
       }
 
       return (
-        <Swipeable
+        <ReanimatedSwipeable
           renderRightActions={() => (
             <View style={styles.swipeActions}>
               {actions.map((action, i) => (
@@ -121,7 +121,7 @@ export function DataList<T>({
           )}
         >
           {renderItem(item)}
-        </Swipeable>
+        </ReanimatedSwipeable>
       );
     },
     [renderItem, swipeActions],
@@ -170,7 +170,7 @@ export function DataList<T>({
 
       <FlatList
         data={filteredData}
-        renderItem={renderSwipeableItem}
+        renderItem={renderReanimatedSwipeableItem}
         keyExtractor={keyExtractor}
         onRefresh={onRefresh}
         refreshing={refreshing}
