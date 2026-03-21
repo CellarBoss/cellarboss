@@ -1,48 +1,22 @@
 import { useState, useCallback } from "react";
-import { View, Pressable, StyleSheet } from "react-native";
-import { Text, FAB, Chip } from "react-native-paper";
+import { View, StyleSheet } from "react-native";
+import { FAB } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { DataList } from "@/components/DataList";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { BottleListItem } from "@/components/bottle/BottleListItem";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useSetting } from "@/hooks/use-settings";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
-import { formatPrice } from "@/lib/functions/format";
 import { theme } from "@/lib/theme";
+import {
+  STATUS_FILTER_OPTIONS,
+  WINE_TYPE_FILTER_OPTIONS,
+} from "@/lib/constants/bottles";
 import type { Bottle } from "@cellarboss/types";
-import { formatStatus } from "@/lib/functions/format";
-
-const STATUS_COLORS: Record<string, string> = {
-  stored: "#2E8B57",
-  ordered: "#3B82F6",
-  drunk: "#9CA3AF",
-};
-
-function getStatusColor(status: string): string {
-  return STATUS_COLORS[status] ?? "#6B7280";
-}
-
-const STATUS_FILTER_OPTIONS = [
-  { label: "Stored", value: "stored" },
-  { label: "Ordered", value: "ordered" },
-  { label: "In Primeur", value: "in-primeur" },
-  { label: "Drunk", value: "drunk" },
-  { label: "Sold", value: "sold" },
-  { label: "Gifted", value: "gifted" },
-];
-
-const WINE_TYPE_FILTER_OPTIONS = [
-  { label: "Red", value: "red" },
-  { label: "White", value: "white" },
-  { label: "Rosé", value: "rose" },
-  { label: "Orange", value: "orange" },
-  { label: "Sparkling", value: "sparkling" },
-  { label: "Fortified", value: "fortified" },
-  { label: "Dessert", value: "dessert" },
-];
 
 const SORT_OPTIONS = [
   { label: "Purchase Date (Newest)", value: "purchaseDate-desc" },
@@ -262,51 +236,6 @@ export default function CellarScreen() {
   );
 }
 
-type BottleListItemProps = {
-  bottle: Bottle;
-  wineName: string;
-  wineYear: string;
-  winemakerName: string;
-  storageName: string;
-  currency: string;
-  onPress: () => void;
-};
-
-function BottleListItem({
-  bottle,
-  wineName,
-  wineYear,
-  winemakerName,
-  storageName,
-  currency,
-  onPress,
-}: BottleListItemProps) {
-  return (
-    <Pressable style={styles.item} onPress={onPress}>
-      <View style={styles.itemTop}>
-        <Text style={styles.itemTitle} numberOfLines={1}>
-          {wineName} {wineYear}
-        </Text>
-        <Chip
-          style={[
-            styles.statusChip,
-            { backgroundColor: getStatusColor(bottle.status) },
-          ]}
-          textStyle={styles.statusChipText}
-          compact
-        >
-          {formatStatus(bottle.status)}
-        </Chip>
-      </View>
-      <Text style={styles.itemSub} numberOfLines={1}>
-        {winemakerName}
-        {winemakerName ? " · " : ""}
-        {storageName} · {formatPrice(bottle.purchasePrice, currency)}
-      </Text>
-    </Pressable>
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -314,38 +243,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-  },
-  item: {
-    backgroundColor: theme.colors.surface,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-  },
-  itemTop: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 8,
-    marginBottom: 4,
-  },
-  itemTitle: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-  },
-  statusChip: {
-    height: 30,
-  },
-  statusChipText: {
-    color: "#fff",
-    fontSize: 11,
-    lineHeight: 14,
-  },
-  itemSub: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
   },
   fab: {
     position: "absolute",
