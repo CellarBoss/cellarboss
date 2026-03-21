@@ -144,6 +144,7 @@ export function DataList<T>({
               value={searchQuery}
               onChangeText={setSearchQuery}
               style={styles.searchbar}
+              inputStyle={styles.searchbarInput}
             />
           )}
           {(filterConfigs || sortOptions) && (
@@ -201,7 +202,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   searchbar: {
-    height: 40,
+    minHeight: 0,
+  },
+  searchbarInput: {
+    minHeight: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   toolbarActions: {
     flexDirection: "row",
