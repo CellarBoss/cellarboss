@@ -15,7 +15,15 @@ import {
   DRINKING_STATUS_ICONS,
 } from "@/lib/constants/drinking-status";
 
-export function VintageDetailsCard({ vintageId }: { vintageId: number }) {
+type VintageDetailsCardProps = {
+  vintageId: number;
+  onPress?: () => void;
+};
+
+export function VintageDetailsCard({
+  vintageId,
+  onPress,
+}: VintageDetailsCardProps) {
   const router = useRouter();
 
   const vintageQuery = useApiQuery({
@@ -88,7 +96,7 @@ export function VintageDetailsCard({ vintageId }: { vintageId: number }) {
       </Text>
       <Pressable
         style={styles.card}
-        onPress={() => router.push(`/vintages/${vintage.id}`)}
+        onPress={onPress ?? (() => router.push(`/vintages/${vintage.id}`))}
       >
         <View style={styles.row}>
           <View style={styles.details}>
