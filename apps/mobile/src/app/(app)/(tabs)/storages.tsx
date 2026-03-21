@@ -135,7 +135,6 @@ export default function StoragesScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <ScreenHeader title="Storages" showBack />
       <DataList
         data={flatList}
         keyExtractor={(item) => String(item.storage.id)}
