@@ -18,7 +18,6 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Dashboard",
-          tabBarTestID: "dashboard-tab",
           tabBarIcon: ({ color, size }) => (
             <Icon source="view-dashboard-outline" size={size} color={color} />
           ),
@@ -28,7 +27,6 @@ export default function TabLayout() {
         name="cellar"
         options={{
           title: "Cellar",
-          tabBarTestID: "cellar-tab",
           tabBarIcon: ({ color, size }) => (
             <Icon source="bottle-wine-outline" size={size} color={color} />
           ),
@@ -38,7 +36,6 @@ export default function TabLayout() {
         name="wines"
         options={{
           title: "Wines",
-          tabBarTestID: "wines-tab",
           tabBarIcon: ({ color, size }) => (
             <Icon source="glass-wine" size={size} color={color} />
           ),
@@ -48,7 +45,6 @@ export default function TabLayout() {
         name="storages"
         options={{
           title: "Storages",
-          tabBarTestID: "storages-tab",
           tabBarIcon: ({ color, size }) => (
             <Icon source="warehouse" size={size} color={color} />
           ),
@@ -58,7 +54,6 @@ export default function TabLayout() {
         name="more"
         options={{
           title: "More",
-          tabBarTestID: "more-tab",
           tabBarIcon: ({ color, size }) => (
             <Icon source="dots-horizontal" size={size} color={color} />
           ),
