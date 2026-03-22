@@ -16,11 +16,20 @@ export default function MoreScreen() {
         <List.Section>
           <List.Subheader>Wine Data</List.Subheader>
           <List.Item
-            testID="menu-vintages"
-            title="Vintages"
-            left={(props) => <List.Icon {...props} icon="calendar-range" />}
+            testID="menu-cellar"
+            title="Cellar"
+            left={(props) => (
+              <List.Icon {...props} icon="bottle-wine-outline" />
+            )}
             right={(props) => <List.Icon {...props} icon="chevron-right" />}
-            onPress={() => router.push("/(app)/vintages")}
+            onPress={() => router.push("/(app)/cellar")}
+          />
+          <List.Item
+            testID="menu-wines"
+            title="Wines"
+            left={(props) => <List.Icon {...props} icon="glass-wine" />}
+            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            onPress={() => router.push("/(app)/wines")}
           />
           <List.Item
             testID="menu-tasting-notes"
@@ -103,24 +112,6 @@ export default function MoreScreen() {
             right={(props) => <List.Icon {...props} icon="chevron-right" />}
             onPress={() => router.push("/(app)/profile")}
           />
-          {user?.role === "admin" && (
-            <>
-              <List.Item
-                title="Settings"
-                left={(props) => <List.Icon {...props} icon="cog-outline" />}
-                right={(props) => <List.Icon {...props} icon="chevron-right" />}
-                onPress={() => router.push("/(app)/settings")}
-              />
-              <List.Item
-                title="Users"
-                left={(props) => (
-                  <List.Icon {...props} icon="account-multiple-outline" />
-                )}
-                right={(props) => <List.Icon {...props} icon="chevron-right" />}
-                onPress={() => router.push("/(app)/users")}
-              />
-            </>
-          )}
           <List.Item
             testID="menu-sign-out"
             title="Sign Out"
