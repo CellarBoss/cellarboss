@@ -257,17 +257,28 @@ jobs:
 
       - name: Cache Expo prebuild
         uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        id: expo-prebuild-cache
         with:
           path: apps/mobile/android/
           key: expo-prebuild-android-${{ hashFiles('apps/mobile/package.json', 'apps/mobile/app.config.ts') }}
 
       - name: Expo prebuild (Android)
+        if: steps.expo-prebuild-cache.outputs.cache-hit != 'true'
         run: cd apps/mobile && npx expo prebuild --platform android --clean
+
+      - name: Cache Gradle
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('apps/mobile/android/**/*.gradle*', 'apps/mobile/android/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
 
       - name: Build Android debug APK
         run: |
           cd apps/mobile/android
-          ./gradlew assembleDebug -PreactNativeArchitectures=x86_64
+          ./gradlew assembleDebug -PreactNativeArchitectures=x86_64 --no-daemon --build-cache
 
       - name: Install Maestro
         run: |
