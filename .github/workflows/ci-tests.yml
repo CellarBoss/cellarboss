@@ -19,6 +19,7 @@ jobs:
     outputs:
       web: ${{ steps.filter.outputs.web || 'true' }}
       backend: ${{ steps.filter.outputs.backend || 'true' }}
+      mobile: ${{ steps.filter.outputs.mobile || 'true' }}
       packages: ${{ steps.filter.outputs.packages || 'true' }}
       structure: ${{ steps.filter.outputs.structure || 'true' }}
     steps:
@@ -34,6 +35,8 @@ jobs:
               - 'apps/web/**'
             backend:
               - 'apps/backend/**'
+            mobile:
+              - 'apps/mobile/**'
             packages:
               - 'packages/validators/**'
               - 'packages/types/**'
@@ -140,6 +143,26 @@ jobs:
           path: apps/backend/coverage/
           retention-days: 1
 
+  test-mobile:
+    name: Test Mobile
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.mobile == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.structure == 'true'
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: ./.github/actions/setup-node
+
+      - name: Run mobile unit tests
+        run: pnpm --filter @cellarboss/mobile ${{ inputs.upload-coverage && 'test:coverage' || 'test' }}
+
+      - name: Upload coverage
+        if: inputs.upload-coverage
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        with:
+          name: coverage-mobile
+          path: apps/mobile/coverage/
+          retention-days: 1
+
   test-web-e2e:
     name: Test WebUI E2E
     runs-on: ubuntu-latest
@@ -198,6 +221,75 @@ jobs:
           name: playwright-screenshots
           path: apps/web/test-results/
           retention-days: 7
+
+  test-mobile-e2e-android:
+    name: Test Mobile E2E (Android)
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.mobile == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.structure == 'true'
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: ./.github/actions/setup-node
+
+      - name: Setup Java
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
+
+      - name: Cache AVD
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-api-34-${{ runner.os }}
+
+      - name: Create AVD
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        run: |
+          sdkmanager "system-images;android-34;google_apis;x86_64"
+          echo "no" | avdmanager create avd -n test_device -k "system-images;android-34;google_apis;x86_64" --device "pixel_6"
+
+      - name: Cache Expo prebuild
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        with:
+          path: apps/mobile/android/
+          key: expo-prebuild-android-${{ hashFiles('apps/mobile/package.json', 'apps/mobile/app.config.ts') }}
+
+      - name: Expo prebuild (Android)
+        run: cd apps/mobile && npx expo prebuild --platform android --clean
+
+      - name: Build Android debug APK
+        run: |
+          cd apps/mobile/android
+          ./gradlew assembleDebug
+
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Start mock server
+        run: pnpm --filter @cellarboss/mock-server start &
+
+      - name: Start emulator and run tests
+        uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          avd-name: test_device
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
+          script: |
+            adb install apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk
+            maestro test apps/mobile/e2e/flows/
 
   validate-api-docs:
     name: Validate API Docs
