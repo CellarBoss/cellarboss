@@ -144,6 +144,7 @@ export default function TastingNotesScreen() {
       </View>
 
       <FAB
+        testID="fab-add"
         icon="plus"
         style={styles.fab}
         onPress={() => router.push("/tasting-notes/new")}

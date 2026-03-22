@@ -1,0 +1,42 @@
+appId: com.cellarboss.mobile
+---
+- runScript: ../../scripts/seed-data.js
+- launchApp:
+    clearState: true
+
+# Setup and login
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+- tapOn:
+    id: "email-input"
+- inputText: "admin@cellarboss.test"
+- tapOn:
+    id: "password-input"
+- inputText: "password"
+- tapOn:
+    id: "sign-in-button"
+
+# Navigate to Wines tab
+- tapOn:
+    id: "wines-tab"
+- assertVisible: "Meursault Premier Cru"
+
+# Swipe left on a wine to reveal delete action, then tap delete
+# Note: Meursault has no vintages with bottles, so it can be deleted
+- swipe:
+    direction: LEFT
+    from:
+      text: "Meursault Premier Cru"
+
+# Tap the delete icon that appears
+- tapOn:
+    text: "Delete"
+    optional: true
+
+# Confirm the deletion dialog
+- assertVisible: "Delete Wine"
+- tapOn:
+    id: "confirm-button"

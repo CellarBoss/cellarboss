@@ -1,0 +1,75 @@
+appId: com.cellarboss.mobile
+---
+- runScript: ../../scripts/seed-data.js
+- launchApp:
+    clearState: true
+
+# Setup and login
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+- tapOn:
+    id: "email-input"
+- inputText: "admin@cellarboss.test"
+- tapOn:
+    id: "password-input"
+- inputText: "password"
+- tapOn:
+    id: "sign-in-button"
+- assertVisible:
+    id: "dashboard-tab"
+
+# Navigate to More tab
+- tapOn:
+    id: "more-tab"
+
+# Verify all menu sections are visible
+- assertVisible: "Wine Data"
+- assertVisible: "Reference Data"
+- assertVisible: "Storage"
+- assertVisible: "Account"
+
+# Navigate to Winemakers and back
+- tapOn:
+    id: "menu-winemakers"
+- assertVisible: "Château Margaux"
+- tapOn:
+    id: "header-back-button"
+
+# Navigate to Regions and back
+- tapOn:
+    id: "menu-regions"
+- assertVisible: "Bordeaux"
+- tapOn:
+    id: "header-back-button"
+
+# Navigate to Countries and back
+- tapOn:
+    id: "menu-countries"
+- assertVisible: "France"
+- tapOn:
+    id: "header-back-button"
+
+# Navigate to Grapes and back
+- tapOn:
+    id: "menu-grapes"
+- assertVisible: "Cabernet Sauvignon"
+- tapOn:
+    id: "header-back-button"
+
+# Navigate to Locations and back
+- tapOn:
+    id: "menu-locations"
+- assertVisible: "Home Cellar"
+- tapOn:
+    id: "header-back-button"
+
+# Navigate to Profile
+- tapOn:
+    id: "menu-profile"
+- assertVisible: "Test Admin"
+- assertVisible: "admin@cellarboss.test"
+- tapOn:
+    id: "header-back-button"

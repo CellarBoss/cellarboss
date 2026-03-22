@@ -76,6 +76,7 @@ export default function SetupScreen() {
 
           <Text style={styles.label}>Server URL</Text>
           <TextInput
+            testID="server-url-input"
             style={styles.input}
             value={url}
             onChangeText={setUrl}
@@ -91,6 +92,7 @@ export default function SetupScreen() {
           {error && <Text style={styles.error}>{error}</Text>}
 
           <Pressable
+            testID="connect-button"
             style={[styles.button, testing && styles.buttonDisabled]}
             onPress={handleConnect}
             disabled={testing}

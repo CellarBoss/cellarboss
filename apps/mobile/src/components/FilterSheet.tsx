@@ -68,6 +68,7 @@ export function FilterSheet({ filters, values, onChange }: FilterSheetProps) {
   return (
     <>
       <Button
+        testID="filter-button"
         mode={activeCount > 0 ? "contained-tonal" : "outlined"}
         icon="filter-variant"
         onPress={handleOpen}
@@ -123,10 +124,18 @@ export function FilterSheet({ filters, values, onChange }: FilterSheetProps) {
           </ScrollView>
 
           <View style={styles.actions}>
-            <Button mode="outlined" onPress={handleClear}>
+            <Button
+              testID="filter-clear-button"
+              mode="outlined"
+              onPress={handleClear}
+            >
               Clear All
             </Button>
-            <Button mode="contained" onPress={handleApply}>
+            <Button
+              testID="filter-apply-button"
+              mode="contained"
+              onPress={handleApply}
+            >
               Apply
             </Button>
           </View>

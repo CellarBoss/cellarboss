@@ -140,6 +140,7 @@ export function DataList<T>({
         <View style={styles.toolbar}>
           {searchFilter && (
             <Searchbar
+              testID="search-input"
               placeholder={searchPlaceholder}
               value={searchQuery}
               onChangeText={setSearchQuery}

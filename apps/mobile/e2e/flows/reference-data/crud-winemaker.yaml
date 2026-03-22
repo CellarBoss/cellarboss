@@ -1,0 +1,41 @@
+appId: com.cellarboss.mobile
+---
+- runScript: ../../scripts/seed-data.js
+- launchApp:
+    clearState: true
+
+# Setup and login
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+- tapOn:
+    id: "email-input"
+- inputText: "admin@cellarboss.test"
+- tapOn:
+    id: "password-input"
+- inputText: "password"
+- tapOn:
+    id: "sign-in-button"
+
+# Navigate to More > Winemakers
+- tapOn:
+    id: "more-tab"
+- tapOn:
+    id: "menu-winemakers"
+
+# Verify existing winemakers
+- assertVisible: "Château Margaux"
+- assertVisible: "Domaine Leflaive"
+
+# Create new winemaker
+- tapOn:
+    id: "fab-add"
+- assertVisible: "New Winemaker"
+- tapOn:
+    id: "field-name"
+- inputText: "Test Winemaker"
+- tapOn:
+    id: "save-button"
+- assertVisible: "Saved successfully"

@@ -61,6 +61,7 @@ export function FormField({
           onDismiss={() => setMenuVisible(false)}
           anchor={
             <Button
+              testID={`field-${label.toLowerCase().replace(/\s+/g, "-")}`}
               mode="outlined"
               onPress={() => setMenuVisible(true)}
               disabled={!editable}
@@ -91,6 +92,7 @@ export function FormField({
     return (
       <View style={styles.field}>
         <TextInput
+          testID={`field-${label.toLowerCase().replace(/\s+/g, "-")}`}
           label={label}
           value={value}
           onChangeText={onChangeValue}
@@ -110,6 +112,7 @@ export function FormField({
   return (
     <View style={styles.field}>
       <TextInput
+        testID={`field-${label.toLowerCase().replace(/\s+/g, "-")}`}
         label={label}
         value={value}
         onChangeText={onChangeValue}

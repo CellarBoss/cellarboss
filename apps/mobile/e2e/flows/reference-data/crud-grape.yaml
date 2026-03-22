@@ -1,0 +1,41 @@
+appId: com.cellarboss.mobile
+---
+- runScript: ../../scripts/seed-data.js
+- launchApp:
+    clearState: true
+
+# Setup and login
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+- tapOn:
+    id: "email-input"
+- inputText: "admin@cellarboss.test"
+- tapOn:
+    id: "password-input"
+- inputText: "password"
+- tapOn:
+    id: "sign-in-button"
+
+# Navigate to More > Grapes
+- tapOn:
+    id: "more-tab"
+- tapOn:
+    id: "menu-grapes"
+
+# Verify existing grapes
+- assertVisible: "Cabernet Sauvignon"
+- assertVisible: "Chardonnay"
+
+# Create new grape
+- tapOn:
+    id: "fab-add"
+- assertVisible: "New Grape"
+- tapOn:
+    id: "field-name"
+- inputText: "Pinot Noir"
+- tapOn:
+    id: "save-button"
+- assertVisible: "Saved successfully"

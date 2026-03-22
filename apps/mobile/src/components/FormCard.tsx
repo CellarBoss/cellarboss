@@ -155,6 +155,7 @@ export function FormCard<T extends { id: number | string }>({
 
         <View style={styles.actions}>
           <Button
+            testID="back-button"
             mode="outlined"
             onPress={() => router.back()}
             style={styles.actionButton}
@@ -163,6 +164,7 @@ export function FormCard<T extends { id: number | string }>({
           </Button>
           {editable && (
             <Button
+              testID="save-button"
               mode="contained"
               onPress={() => form.handleSubmit()}
               loading={isProcessing}

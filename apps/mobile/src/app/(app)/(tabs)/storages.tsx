@@ -196,6 +196,7 @@ export default function StoragesScreen() {
       />
 
       <FAB
+        testID="fab-add"
         icon="plus"
         style={styles.fab}
         onPress={() => router.push("/storages/new")}

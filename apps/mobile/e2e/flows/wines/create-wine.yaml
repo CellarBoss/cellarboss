@@ -1,0 +1,51 @@
+appId: com.cellarboss.mobile
+---
+- runScript: ../../scripts/seed-data.js
+- launchApp:
+    clearState: true
+
+# Setup and login
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+- tapOn:
+    id: "email-input"
+- inputText: "admin@cellarboss.test"
+- tapOn:
+    id: "password-input"
+- inputText: "password"
+- tapOn:
+    id: "sign-in-button"
+
+# Navigate to Wines tab
+- tapOn:
+    id: "wines-tab"
+
+# Tap FAB to create new wine
+- tapOn:
+    id: "fab-add"
+- assertVisible: "New Wine"
+
+# Fill in the name
+- tapOn:
+    id: "field-name"
+- inputText: "Chateau Test Wine"
+
+# Select wine type
+- tapOn:
+    id: "field-type"
+- tapOn: "Red"
+
+# Select winemaker
+- tapOn:
+    id: "selector-winemaker"
+- tapOn: "Château Margaux"
+
+# Save the wine
+- tapOn:
+    id: "save-button"
+
+# Verify success message
+- assertVisible: "Saved successfully"

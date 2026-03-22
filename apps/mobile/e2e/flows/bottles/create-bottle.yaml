@@ -1,0 +1,43 @@
+appId: com.cellarboss.mobile
+---
+- runScript: ../../scripts/seed-data.js
+- launchApp:
+    clearState: true
+
+# Setup and login
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+- tapOn:
+    id: "email-input"
+- inputText: "admin@cellarboss.test"
+- tapOn:
+    id: "password-input"
+- inputText: "password"
+- tapOn:
+    id: "sign-in-button"
+
+# Navigate to Cellar tab
+- tapOn:
+    id: "cellar-tab"
+
+# Tap FAB to create new bottle
+- tapOn:
+    id: "fab-add"
+- assertVisible: "New Bottle"
+
+# Fill in purchase date
+- tapOn:
+    id: "field-purchase-date"
+- inputText: "2025-01-15"
+
+# Fill in purchase price
+- tapOn:
+    id: "field-purchase-price"
+- inputText: "75.00"
+
+# Save the bottle
+- tapOn:
+    id: "save-button"

@@ -256,6 +256,7 @@ export default function CellarScreen() {
       </View>
 
       <FAB
+        testID="fab-add"
         icon="plus"
         style={styles.fab}
         onPress={() => router.push("/bottles/new")}

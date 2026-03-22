@@ -37,8 +37,11 @@ export function ConfirmDialog({
           <Text variant="bodyMedium">{message}</Text>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button onPress={onCancel}>{cancelLabel}</Button>
+          <Button testID="cancel-button" onPress={onCancel}>
+            {cancelLabel}
+          </Button>
           <Button
+            testID="confirm-button"
             onPress={handleConfirm}
             textColor={destructive ? "#dc2626" : undefined}
           >

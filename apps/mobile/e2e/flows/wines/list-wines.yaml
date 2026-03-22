@@ -1,0 +1,41 @@
+appId: com.cellarboss.mobile
+---
+- runScript: ../../scripts/seed-data.js
+- launchApp:
+    clearState: true
+
+# Setup and login
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+- tapOn:
+    id: "email-input"
+- inputText: "admin@cellarboss.test"
+- tapOn:
+    id: "password-input"
+- inputText: "password"
+- tapOn:
+    id: "sign-in-button"
+
+# Navigate to Wines tab
+- tapOn:
+    id: "wines-tab"
+
+# Verify wine list shows default data
+- assertVisible: "Château Margaux 2015"
+- assertVisible: "Meursault Premier Cru"
+
+# Test search functionality
+- tapOn:
+    id: "search-input"
+- inputText: "Margaux"
+- assertVisible: "Château Margaux 2015"
+- assertNotVisible: "Meursault Premier Cru"
+
+# Clear search
+- tapOn:
+    id: "search-input"
+- eraseText: 7
+- assertVisible: "Meursault Premier Cru"

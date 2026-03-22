@@ -23,7 +23,12 @@ export function EmptyState({
       <Text style={styles.title}>{title}</Text>
       {message && <Text style={styles.message}>{message}</Text>}
       {actionLabel && onAction && (
-        <Button mode="contained" onPress={onAction} style={styles.button}>
+        <Button
+          testID="empty-action-button"
+          mode="contained"
+          onPress={onAction}
+          style={styles.button}
+        >
           {actionLabel}
         </Button>
       )}

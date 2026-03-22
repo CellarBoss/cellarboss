@@ -143,6 +143,7 @@ export default function VintagesScreen() {
       </View>
 
       <FAB
+        testID="fab-add"
         icon="plus"
         style={styles.fab}
         onPress={() => router.push("/vintages/new")}

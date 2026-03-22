@@ -218,6 +218,7 @@ export function DataSelector({
     <View style={styles.field}>
       <Text style={styles.label}>{label}</Text>
       <Pressable
+        testID={`selector-${label.toLowerCase().replace(/\s+/g, "-")}`}
         onPress={() => !disabled && setVisible(true)}
         style={[styles.selector, disabled && styles.selectorDisabled]}
       >
@@ -249,6 +250,7 @@ export function DataSelector({
           </View>
 
           <Searchbar
+            testID="selector-search-input"
             placeholder="Search..."
             value={search}
             onChangeText={setSearch}
@@ -314,6 +316,7 @@ export function DataSelector({
           {allowMultiple && (
             <View style={styles.modalActions}>
               <Pressable
+                testID="selector-done-button"
                 onPress={() => setVisible(false)}
                 style={styles.doneButton}
               >

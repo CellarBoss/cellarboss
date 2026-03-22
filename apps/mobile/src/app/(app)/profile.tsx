@@ -34,6 +34,7 @@ export default function ProfileScreen() {
 
         <View style={styles.signOutSection}>
           <Button
+            testID="sign-out-button"
             mode="outlined"
             onPress={() => auth.signOut()}
             textColor={theme.colors.error}

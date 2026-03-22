@@ -1,0 +1,31 @@
+appId: com.cellarboss.mobile
+---
+- runScript: ../../scripts/seed-data.js
+- launchApp:
+    clearState: true
+
+# Setup and login
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+- tapOn:
+    id: "email-input"
+- inputText: "admin@cellarboss.test"
+- tapOn:
+    id: "password-input"
+- inputText: "password"
+- tapOn:
+    id: "sign-in-button"
+
+# Navigate to Cellar tab
+- tapOn:
+    id: "cellar-tab"
+
+# Tap on the existing bottle to view details
+- tapOn: "Château Margaux 2015"
+
+# Verify detail screen loads with bottle info
+- assertVisible: "Château Margaux 2015"
+- assertVisible: "150"

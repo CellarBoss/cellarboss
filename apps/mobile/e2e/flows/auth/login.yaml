@@ -1,0 +1,29 @@
+appId: com.cellarboss.mobile
+---
+- runScript: ../../scripts/seed-data.js
+- launchApp:
+    clearState: true
+
+# Setup server first
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+- assertVisible: "Sign In"
+
+# Enter credentials
+- tapOn:
+    id: "email-input"
+- inputText: "admin@cellarboss.test"
+- tapOn:
+    id: "password-input"
+- inputText: "password"
+
+# Sign in
+- tapOn:
+    id: "sign-in-button"
+
+# Should land on the dashboard
+- assertVisible:
+    id: "dashboard-tab"

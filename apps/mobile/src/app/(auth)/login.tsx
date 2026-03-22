@@ -73,6 +73,7 @@ export default function LoginScreen() {
 
           <Text style={styles.label}>Email</Text>
           <TextInput
+            testID="email-input"
             style={styles.input}
             value={email}
             onChangeText={setEmail}
@@ -86,6 +87,7 @@ export default function LoginScreen() {
 
           <Text style={styles.label}>Password</Text>
           <TextInput
+            testID="password-input"
             style={styles.input}
             value={password}
             onChangeText={setPassword}
@@ -100,6 +102,7 @@ export default function LoginScreen() {
           {error && <Text style={styles.error}>{error}</Text>}
 
           <Pressable
+            testID="sign-in-button"
             style={[styles.button, loading && styles.buttonDisabled]}
             onPress={handleSignIn}
             disabled={loading}
@@ -111,7 +114,11 @@ export default function LoginScreen() {
             )}
           </Pressable>
 
-          <Pressable style={styles.link} onPress={handleChangeServer}>
+          <Pressable
+            testID="change-server-link"
+            style={styles.link}
+            onPress={handleChangeServer}
+          >
             <Text style={styles.linkText}>Change server</Text>
           </Pressable>
         </View>

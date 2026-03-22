@@ -106,6 +106,7 @@ export default function CountriesScreen() {
       />
 
       <FAB
+        testID="fab-add"
         icon="plus"
         style={styles.fab}
         onPress={() => router.push("/countries/new")}

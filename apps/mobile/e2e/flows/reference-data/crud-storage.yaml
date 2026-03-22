@@ -1,0 +1,45 @@
+appId: com.cellarboss.mobile
+---
+- runScript: ../../scripts/seed-data.js
+- launchApp:
+    clearState: true
+
+# Setup and login
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+- tapOn:
+    id: "email-input"
+- inputText: "admin@cellarboss.test"
+- tapOn:
+    id: "password-input"
+- inputText: "password"
+- tapOn:
+    id: "sign-in-button"
+
+# Navigate to Storages tab
+- tapOn:
+    id: "storages-tab"
+
+# Verify existing storages
+- assertVisible: "Rack A"
+- assertVisible: "Shelf 1"
+
+# Create new storage
+- tapOn:
+    id: "fab-add"
+- assertVisible: "New Storage"
+- tapOn:
+    id: "field-name"
+- inputText: "Rack B"
+
+# Select location
+- tapOn:
+    id: "selector-location"
+- tapOn: "Home Cellar"
+
+- tapOn:
+    id: "save-button"
+- assertVisible: "Saved successfully"

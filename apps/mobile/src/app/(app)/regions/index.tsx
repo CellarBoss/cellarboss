@@ -129,6 +129,7 @@ export default function RegionsScreen() {
       />
 
       <FAB
+        testID="fab-add"
         icon="plus"
         style={styles.fab}
         onPress={() => router.push("/regions/new")}

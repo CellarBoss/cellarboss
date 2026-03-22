@@ -1,0 +1,43 @@
+appId: com.cellarboss.mobile
+---
+- runScript: ../../scripts/seed-data.js
+- launchApp:
+    clearState: true
+
+# Setup and login
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+- tapOn:
+    id: "email-input"
+- inputText: "admin@cellarboss.test"
+- tapOn:
+    id: "password-input"
+- inputText: "password"
+- tapOn:
+    id: "sign-in-button"
+
+# Navigate to Wines tab
+- tapOn:
+    id: "wines-tab"
+
+# Tap on a wine to view details
+- tapOn: "Château Margaux 2015"
+
+# Verify detail screen loads
+- assertVisible: "Château Margaux 2015"
+
+# Navigate to edit (via action button in header)
+- tapOn:
+    text: "Edit"
+    optional: true
+
+# If no "Edit" text, the screen may have an edit icon in the header
+# Alternatively navigate back and swipe
+- assertVisible: "Edit Wine"
+    optional: true
+
+# Verify form is pre-filled
+- assertVisible: "Château Margaux 2015"

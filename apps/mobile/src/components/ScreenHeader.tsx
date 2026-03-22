@@ -26,6 +26,7 @@ export function ScreenHeader({
       <View style={styles.left}>
         {showBack && (
           <IconButton
+            testID="header-back-button"
             icon="arrow-left"
             size={24}
             onPress={() => router.back()}

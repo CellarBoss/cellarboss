@@ -1,0 +1,47 @@
+appId: com.cellarboss.mobile
+---
+- runScript: ../../scripts/seed-data.js
+- launchApp:
+    clearState: true
+
+# Setup and login
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+- tapOn:
+    id: "email-input"
+- inputText: "admin@cellarboss.test"
+- tapOn:
+    id: "password-input"
+- inputText: "password"
+- tapOn:
+    id: "sign-in-button"
+
+# Navigate to More > Regions
+- tapOn:
+    id: "more-tab"
+- tapOn:
+    id: "menu-regions"
+
+# Verify existing regions
+- assertVisible: "Bordeaux"
+- assertVisible: "Burgundy"
+
+# Create new region
+- tapOn:
+    id: "fab-add"
+- assertVisible: "New Region"
+- tapOn:
+    id: "field-name"
+- inputText: "Champagne"
+
+# Select country
+- tapOn:
+    id: "selector-country"
+- tapOn: "France"
+
+- tapOn:
+    id: "save-button"
+- assertVisible: "Saved successfully"

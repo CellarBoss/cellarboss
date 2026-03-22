@@ -106,6 +106,7 @@ export default function LocationsScreen() {
       />
 
       <FAB
+        testID="fab-add"
         icon="plus"
         style={styles.fab}
         onPress={() => router.push("/locations/new")}

@@ -1,0 +1,35 @@
+appId: com.cellarboss.mobile
+---
+- runScript: ../../scripts/seed-data.js
+- launchApp:
+    clearState: true
+
+# Setup and login
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+- tapOn:
+    id: "email-input"
+- inputText: "admin@cellarboss.test"
+- tapOn:
+    id: "password-input"
+- inputText: "password"
+- tapOn:
+    id: "sign-in-button"
+
+# Dashboard should be visible with stats
+- assertVisible:
+    id: "dashboard-tab"
+
+# Verify overview stats are rendered (from default mock data: 1 bottle)
+- assertVisible: "Total Bottles"
+- assertVisible: "Total Wines"
+
+# Scroll down to see more dashboard cards
+- scrollUntilVisible:
+    element:
+      text: "Wine Type"
+    direction: DOWN
+    timeout: 5000

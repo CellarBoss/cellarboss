@@ -153,6 +153,7 @@ export default function WinesScreen() {
       </View>
 
       <FAB
+        testID="fab-add"
         icon="plus"
         style={styles.fab}
         onPress={() => router.push("/wines/new")}

@@ -16,12 +16,14 @@ export default function MoreScreen() {
         <List.Section>
           <List.Subheader>Wine Data</List.Subheader>
           <List.Item
+            testID="menu-vintages"
             title="Vintages"
             left={(props) => <List.Icon {...props} icon="calendar-range" />}
             right={(props) => <List.Icon {...props} icon="chevron-right" />}
             onPress={() => router.push("/(app)/vintages")}
           />
           <List.Item
+            testID="menu-tasting-notes"
             title="Tasting Notes"
             left={(props) => <List.Icon {...props} icon="note-text-outline" />}
             right={(props) => <List.Icon {...props} icon="chevron-right" />}
@@ -34,6 +36,7 @@ export default function MoreScreen() {
         <List.Section>
           <List.Subheader>Reference Data</List.Subheader>
           <List.Item
+            testID="menu-winemakers"
             title="Winemakers"
             left={(props) => (
               <List.Icon {...props} icon="account-group-outline" />
@@ -42,18 +45,21 @@ export default function MoreScreen() {
             onPress={() => router.push("/(app)/winemakers")}
           />
           <List.Item
+            testID="menu-regions"
             title="Regions"
             left={(props) => <List.Icon {...props} icon="map-marker-outline" />}
             right={(props) => <List.Icon {...props} icon="chevron-right" />}
             onPress={() => router.push("/(app)/regions")}
           />
           <List.Item
+            testID="menu-countries"
             title="Countries"
             left={(props) => <List.Icon {...props} icon="earth" />}
             right={(props) => <List.Icon {...props} icon="chevron-right" />}
             onPress={() => router.push("/(app)/countries")}
           />
           <List.Item
+            testID="menu-grapes"
             title="Grapes"
             left={(props) => (
               <List.Icon {...props} icon="fruit-grapes-outline" />
@@ -68,12 +74,14 @@ export default function MoreScreen() {
         <List.Section>
           <List.Subheader>Storage</List.Subheader>
           <List.Item
+            testID="menu-storages"
             title="Storages"
             left={(props) => <List.Icon {...props} icon="warehouse" />}
             right={(props) => <List.Icon {...props} icon="chevron-right" />}
             onPress={() => router.push("/(app)/storages")}
           />
           <List.Item
+            testID="menu-locations"
             title="Locations"
             left={(props) => (
               <List.Icon {...props} icon="map-marker-radius-outline" />
@@ -88,6 +96,7 @@ export default function MoreScreen() {
         <List.Section>
           <List.Subheader>Account</List.Subheader>
           <List.Item
+            testID="menu-profile"
             title="Profile"
             description={user?.email}
             left={(props) => <List.Icon {...props} icon="account-outline" />}
@@ -113,6 +122,7 @@ export default function MoreScreen() {
             </>
           )}
           <List.Item
+            testID="menu-sign-out"
             title="Sign Out"
             titleStyle={{ color: theme.colors.error }}
             left={(props) => (
