@@ -6,7 +6,7 @@ function computeVersionCode(version: string): number {
   const [major = 0, minor = 0, patch = 0] = version
     .split(".")
     .map((n) => parseInt(n, 10));
-  return major * 10000 + minor * 100 + patch;
+  return major * 10000 + minor * 100 + patch || 1;
 }
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
