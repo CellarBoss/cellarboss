@@ -1,23 +1,6 @@
 appId: org.cellarboss.mobile
 ---
-- runScript: ../../scripts/seed-data.js
-- launchApp:
-    clearState: true
-
-# Setup and login
-- tapOn:
-    id: "server-url-input"
-- inputText: "http://10.0.2.2:5174"
-- tapOn:
-    id: "connect-button"
-- tapOn:
-    id: "email-input"
-- inputText: "admin@cellarboss.test"
-- tapOn:
-    id: "password-input"
-- inputText: "password"
-- tapOn:
-    id: "sign-in-button"
+- runFlow: ../../shared/setup-and-login.yaml
 - assertVisible:
     id: "dashboard-tab"
 
