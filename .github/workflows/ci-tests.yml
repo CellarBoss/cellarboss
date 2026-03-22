@@ -267,7 +267,7 @@ jobs:
       - name: Build Android debug APK
         run: |
           cd apps/mobile/android
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug -PreactNativeArchitectures=x86_64
 
       - name: Install Maestro
         run: |
