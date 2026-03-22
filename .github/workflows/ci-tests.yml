@@ -306,7 +306,7 @@ jobs:
           disable-animations: true
           script: |
             adb install apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk
-            maestro test apps/mobile/e2e/
+            maestro test apps/mobile/e2e/flows/
 
   validate-api-docs:
     name: Validate API Docs

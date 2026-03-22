@@ -1,1 +1,3 @@
 appId: org.cellarboss.mobile
+flows:
+  - "**/*"
