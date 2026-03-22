@@ -1,4 +1,4 @@
-import type { MockState } from "../../e2e/mock-server/index";
+import type { MockState } from "@cellarboss/mock-server";
 
 /**
  * Rich mock data for documentation screenshots.
