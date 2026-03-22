@@ -60,8 +60,20 @@
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
     },
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "src/__tests__/helpers/"
+    ],
+    "setupFiles": [
+      "<rootDir>/src/__tests__/helpers/mock-haptics.ts"
+    ],
     "setupFilesAfterEnv": [
       "@testing-library/jest-native/extend-expect"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/app/**",
+      "!src/__tests__/**"
     ]
   }
 }
