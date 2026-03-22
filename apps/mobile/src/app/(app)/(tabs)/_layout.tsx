@@ -18,6 +18,8 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Dashboard",
+          // @ts-expect-error — tabBarTestID is supported by @react-navigation/bottom-tabs but not typed by expo-router
+          tabBarTestID: "dashboard-tab",
           tabBarIcon: ({ color, size }) => (
             <Icon source="view-dashboard-outline" size={size} color={color} />
           ),
@@ -27,6 +29,8 @@ export default function TabLayout() {
         name="cellar"
         options={{
           title: "Cellar",
+          // @ts-expect-error
+          tabBarTestID: "cellar-tab",
           tabBarIcon: ({ color, size }) => (
             <Icon source="bottle-wine-outline" size={size} color={color} />
           ),
@@ -36,6 +40,8 @@ export default function TabLayout() {
         name="wines"
         options={{
           title: "Wines",
+          // @ts-expect-error
+          tabBarTestID: "wines-tab",
           tabBarIcon: ({ color, size }) => (
             <Icon source="glass-wine" size={size} color={color} />
           ),
@@ -45,6 +51,8 @@ export default function TabLayout() {
         name="storages"
         options={{
           title: "Storages",
+          // @ts-expect-error
+          tabBarTestID: "storages-tab",
           tabBarIcon: ({ color, size }) => (
             <Icon source="warehouse" size={size} color={color} />
           ),
@@ -54,6 +62,8 @@ export default function TabLayout() {
         name="more"
         options={{
           title: "More",
+          // @ts-expect-error
+          tabBarTestID: "more-tab",
           tabBarIcon: ({ color, size }) => (
             <Icon source="dots-horizontal" size={size} color={color} />
           ),
