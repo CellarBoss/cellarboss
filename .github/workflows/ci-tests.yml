@@ -275,10 +275,12 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('apps/mobile/android/**/*.gradle*', 'apps/mobile/android/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
 
-      - name: Build Android debug APK
+      - name: Build Android debug APK (with bundled JS)
+        env:
+          ENTRY_FILE: index.js
         run: |
           cd apps/mobile/android
-          ./gradlew assembleDebug -PreactNativeArchitectures=x86_64 --no-daemon --build-cache
+          ./gradlew assembleDebug -PreactNativeArchitectures=x86_64 --no-daemon --build-cache -PbundleInDebug=true
 
       - name: Install Maestro
         run: |

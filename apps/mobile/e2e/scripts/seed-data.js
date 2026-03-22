@@ -1,7 +1,6 @@
 // Maestro runScript: Seeds the mock server with a valid session and resets state.
-// Uses 10.0.2.2 for Android emulator (maps to host localhost).
-// Change to localhost for iOS simulator.
-const BASE_URL = "http://10.0.2.2:5174";
+// runScript executes on the host machine, so we use localhost directly.
+const BASE_URL = "http://localhost:5174";
 
 async function seed() {
   // Reset state to defaults
