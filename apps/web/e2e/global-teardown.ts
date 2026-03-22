@@ -1,4 +1,4 @@
-import { stopMockServer } from "./mock-server/index";
+import { stopMockServer } from "@cellarboss/mock-server";
 
 export default async function globalTeardown() {
   await stopMockServer();

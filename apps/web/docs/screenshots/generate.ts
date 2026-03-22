@@ -1,5 +1,5 @@
 import { chromium, type Page, type BrowserContext } from "@playwright/test";
-import { startMockServer, stopMockServer } from "../../e2e/mock-server/index";
+import { startMockServer, stopMockServer } from "@cellarboss/mock-server";
 import { docsSeedData } from "./seed-data";
 import { join, resolve } from "path";
 import { mkdirSync } from "fs";
