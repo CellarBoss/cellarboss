@@ -1,10 +1,19 @@
 import { ExpoConfig, ConfigContext } from "expo/config";
 
+const appVersion = process.env.APP_VERSION?.replace(/^v/, "") || "0.0.0";
+
+function computeVersionCode(version: string): number {
+  const [major = 0, minor = 0, patch = 0] = version
+    .split(".")
+    .map((n) => parseInt(n, 10));
+  return major * 10000 + minor * 100 + patch;
+}
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: "CellarBoss",
   slug: "cellarboss",
-  version: "0.0.0",
+  version: appVersion,
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "light",
@@ -17,6 +26,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: "org.cellarboss.mobile",
+    buildNumber: appVersion,
   },
   android: {
     adaptiveIcon: {
@@ -26,6 +36,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       monochromeImage: "./assets/android-icon-monochrome.png",
     },
     package: "org.cellarboss.mobile",
+    versionCode: computeVersionCode(appVersion),
   },
   web: {
     favicon: "./assets/favicon.png",
