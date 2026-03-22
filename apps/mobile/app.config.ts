@@ -16,7 +16,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   ios: {
     supportsTablet: true,
-    bundleIdentifier: "com.cellarboss.mobile",
+    bundleIdentifier: "org.cellarboss.mobile",
   },
   android: {
     adaptiveIcon: {
@@ -25,7 +25,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundImage: "./assets/android-icon-background.png",
       monochromeImage: "./assets/android-icon-monochrome.png",
     },
-    package: "com.cellarboss.mobile",
+    package: "org.cellarboss.mobile",
   },
   web: {
     favicon: "./assets/favicon.png",

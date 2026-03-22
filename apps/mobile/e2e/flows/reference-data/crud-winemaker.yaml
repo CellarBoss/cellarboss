@@ -1,4 +1,4 @@
-appId: com.cellarboss.mobile
+appId: org.cellarboss.mobile
 ---
 - runScript: ../../scripts/seed-data.js
 - launchApp:
