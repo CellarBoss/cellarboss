@@ -36,7 +36,8 @@ appId: org.cellarboss.mobile
 
 # If no "Edit" text, the screen may have an edit icon in the header
 # Alternatively navigate back and swipe
-- assertVisible: "Edit Wine"
+- assertVisible:
+    text: "Edit Wine"
     optional: true
 
 # Verify form is pre-filled
