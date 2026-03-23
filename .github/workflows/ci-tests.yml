@@ -275,12 +275,10 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('apps/mobile/android/**/*.gradle*', 'apps/mobile/android/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
 
-      - name: Build Android debug APK (with bundled JS)
-        env:
-          ENTRY_FILE: index.js
+      - name: Build Android release APK
         run: |
           cd apps/mobile/android
-          ./gradlew assembleDebug -PreactNativeArchitectures=x86_64 --no-daemon --build-cache -PbundleInDebug=true
+          ./gradlew assembleRelease -PreactNativeArchitectures=x86_64 --no-daemon --build-cache
 
       - name: Install Maestro
         run: |
@@ -307,7 +305,7 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
           disable-animations: true
           script: |
-            adb install apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk
+            adb install apps/mobile/android/app/build/outputs/apk/release/app-release.apk
             cd apps/mobile/e2e && maestro test flows/
 
   validate-api-docs:
