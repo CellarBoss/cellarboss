@@ -306,7 +306,15 @@ jobs:
           disable-animations: true
           script: |
             adb install apps/mobile/android/app/build/outputs/apk/release/app-release.apk
-            cd apps/mobile/e2e && maestro test flows/
+            cd apps/mobile/e2e && maestro test --debug-output ../../../maestro-debug-output flows/
+
+      - name: Upload Maestro debug output
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        if: always()
+        with:
+          name: maestro-debug-output
+          path: maestro-debug-output/
+          retention-days: 7
 
   validate-api-docs:
     name: Validate API Docs
