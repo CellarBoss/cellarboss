@@ -11,6 +11,13 @@ appId: org.cellarboss.mobile
     id: "fab-add"
 - assertVisible: "New Bottle"
 
+# Select wine and vintage
+- tapOn: "Choose a wine..."
+- assertVisible: "Select Wine"
+- tapOn: "Château Margaux"
+- assertVisible: "Vintage"
+- tapOn: "2015"
+
 # Fill in purchase date
 - tapOn:
     id: "field-purchase-date"
