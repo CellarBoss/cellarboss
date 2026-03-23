@@ -13,6 +13,6 @@ appId: org.cellarboss.mobile
 # Scroll down to see more dashboard cards
 - scrollUntilVisible:
     element:
-      text: "Wine Type"
+      text: "Recent Activity"
     direction: DOWN
     timeout: 5000
