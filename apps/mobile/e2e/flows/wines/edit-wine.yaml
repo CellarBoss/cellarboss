@@ -27,6 +27,8 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "field-name"
 - eraseText
+- tapOn:
+    id: "field-name"
 - inputText: "Château Margaux Grand Vin"
 - hideKeyboard
 
