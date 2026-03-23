@@ -251,8 +251,8 @@ importers:
         specifier: 1.28.5
         version: 1.28.5(react-dom@19.2.4(react@19.2.0))(react@19.2.0)
       '@tanstack/react-query':
-        specifier: 5.91.2
-        version: 5.91.2(react@19.2.0)
+        specifier: 5.91.3
+        version: 5.91.3(react@19.2.0)
       '@tanstack/react-table':
         specifier: 8.21.3
         version: 8.21.3(react-dom@19.2.4(react@19.2.0))(react@19.2.0)
@@ -3125,6 +3125,11 @@ packages:
 
   '@tanstack/react-query@5.91.2':
     resolution: {integrity: sha512-GClLPzbM57iFXv+FlvOUL56XVe00PxuTaVEyj1zAObhRiKF008J5vedmaq7O6ehs+VmPHe8+PUQhMuEyv8d9wQ==}
+    peerDependencies:
+      react: 19.2.0
+
+  '@tanstack/react-query@5.91.3':
+    resolution: {integrity: sha512-D8jsCexxS5crZxAeiH6VlLHOUzmHOxeW5c11y8rZu0c34u/cy18hUKQXA/gn1Ila3ZIFzP+Pzv76YnliC0EtZQ==}
     peerDependencies:
       react: 19.2.0
 
@@ -11346,6 +11351,11 @@ snapshots:
       - react-dom
 
   '@tanstack/react-query@5.91.2(react@19.2.0)':
+    dependencies:
+      '@tanstack/query-core': 5.91.2
+      react: 19.2.0
+
+  '@tanstack/react-query@5.91.3(react@19.2.0)':
     dependencies:
       '@tanstack/query-core': 5.91.2
       react: 19.2.0
