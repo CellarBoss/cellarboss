@@ -11,4 +11,4 @@ appId: org.cellarboss.mobile
 
 # Verify detail screen loads with bottle info
 - assertVisible: "Château Margaux 2015"
-- assertVisible: "150"
+- assertVisible: "$150.00"

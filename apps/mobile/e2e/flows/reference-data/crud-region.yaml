@@ -19,6 +19,7 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "field-name"
 - inputText: "Champagne"
+- hideKeyboard
 
 # Select country
 - tapOn:
@@ -27,4 +28,4 @@ appId: org.cellarboss.mobile
 
 - tapOn:
     id: "save-button"
-- assertVisible: "Saved successfully"
+- assertVisible: "Saved successfully!"

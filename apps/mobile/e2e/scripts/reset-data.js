@@ -3,7 +3,8 @@
 const BASE_URL = "http://localhost:5174";
 
 async function reset() {
-  await fetch(`${BASE_URL}/__test/reset`, { method: "POST" });
+  const res = await fetch(`${BASE_URL}/__test/reset`, { method: "POST" });
+  if (!res.ok) throw new Error(`Reset failed: ${res.status}`);
 }
 
 reset();

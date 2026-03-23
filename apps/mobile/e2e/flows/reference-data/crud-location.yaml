@@ -18,6 +18,7 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "field-name"
 - inputText: "Office Wine Fridge"
+- hideKeyboard
 - tapOn:
     id: "save-button"
-- assertVisible: "Saved successfully"
+- assertVisible: "Saved successfully!"

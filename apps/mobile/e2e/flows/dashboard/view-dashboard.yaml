@@ -7,8 +7,8 @@ appId: org.cellarboss.mobile
     id: "dashboard-tab"
 
 # Verify overview stats are rendered (from default mock data: 1 bottle)
-- assertVisible: "Total Bottles"
-- assertVisible: "Total Wines"
+- assertVisible: "Bottles Stored"
+- assertVisible: "Unique Wines"
 
 # Scroll down to see more dashboard cards
 - scrollUntilVisible:

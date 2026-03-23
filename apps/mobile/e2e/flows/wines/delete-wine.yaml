@@ -16,10 +16,12 @@ appId: org.cellarboss.mobile
 
 # Tap the delete icon that appears
 - tapOn:
-    text: "Delete"
-    optional: true
+    id: "swipe-action-delete"
 
 # Confirm the deletion dialog
 - assertVisible: "Delete Wine"
 - tapOn:
     id: "confirm-button"
+
+# Verify wine is removed from the list
+- assertNotVisible: "Meursault Premier Cru"

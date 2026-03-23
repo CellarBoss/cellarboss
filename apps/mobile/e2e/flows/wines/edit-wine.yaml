@@ -6,22 +6,31 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "wines-tab"
 
-# Tap on a wine to view details
-- tapOn: "Château Margaux 2015"
+# Verify wine is listed
+- assertVisible: "Château Margaux"
 
-# Verify detail screen loads
-- assertVisible: "Château Margaux 2015"
+# Swipe left on the wine to reveal edit action
+- swipe:
+    direction: LEFT
+    from:
+      text: "Château Margaux"
 
-# Navigate to edit (via action button in header)
+# Tap the edit icon that appears
 - tapOn:
-    text: "Edit"
-    optional: true
+    id: "swipe-action-pencil"
 
-# If no "Edit" text, the screen may have an edit icon in the header
-# Alternatively navigate back and swipe
-- assertVisible:
-    text: "Edit Wine"
-    optional: true
+# Verify edit screen loaded with pre-filled data
+- assertVisible: "Edit Wine"
+- assertVisible: "Château Margaux"
 
-# Verify form is pre-filled
-- assertVisible: "Château Margaux 2015"
+# Update the wine name
+- tapOn:
+    id: "field-name"
+- eraseText
+- inputText: "Château Margaux Grand Vin"
+- hideKeyboard
+
+# Save
+- tapOn:
+    id: "save-button"
+- assertVisible: "Saved successfully!"

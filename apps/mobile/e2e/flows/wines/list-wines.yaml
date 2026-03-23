@@ -7,14 +7,14 @@ appId: org.cellarboss.mobile
     id: "wines-tab"
 
 # Verify wine list shows default data
-- assertVisible: "Château Margaux 2015"
+- assertVisible: "Château Margaux"
 - assertVisible: "Meursault Premier Cru"
 
 # Test search functionality
 - tapOn:
     id: "search-input"
 - inputText: "Margaux"
-- assertVisible: "Château Margaux 2015"
+- assertVisible: "Château Margaux"
 - assertNotVisible: "Meursault Premier Cru"
 
 # Clear search

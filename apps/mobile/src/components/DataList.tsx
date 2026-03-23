@@ -110,6 +110,7 @@ export function DataList<T>({
               {actions.map((action, i) => (
                 <IconButton
                   key={i}
+                  testID={`swipe-action-${action.icon}`}
                   icon={action.icon}
                   iconColor="#fff"
                   containerColor={action.color}

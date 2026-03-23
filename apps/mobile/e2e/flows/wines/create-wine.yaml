@@ -15,6 +15,7 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "field-name"
 - inputText: "Chateau Test Wine"
+- hideKeyboard
 
 # Select wine type
 - tapOn:
@@ -31,4 +32,4 @@ appId: org.cellarboss.mobile
     id: "save-button"
 
 # Verify success message
-- assertVisible: "Saved successfully"
+- assertVisible: "Saved successfully!"

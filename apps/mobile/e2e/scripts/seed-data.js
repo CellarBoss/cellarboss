@@ -4,10 +4,11 @@ const BASE_URL = "http://localhost:5174";
 
 async function seed() {
   // Reset state to defaults
-  await fetch(`${BASE_URL}/__test/reset`, { method: "POST" });
+  const resetRes = await fetch(`${BASE_URL}/__test/reset`, { method: "POST" });
+  if (!resetRes.ok) throw new Error(`Reset failed: ${resetRes.status}`);
 
   // Ensure a valid session exists
-  await fetch(`${BASE_URL}/__test/set-session`, {
+  const sessionRes = await fetch(`${BASE_URL}/__test/set-session`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -24,6 +25,7 @@ async function seed() {
       },
     }),
   });
+  if (!sessionRes.ok) throw new Error(`Set-session failed: ${sessionRes.status}`);
 }
 
 seed();
