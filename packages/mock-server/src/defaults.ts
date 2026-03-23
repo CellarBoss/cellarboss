@@ -33,7 +33,7 @@ export const defaultState: MockState = {
   wines: [
     {
       id: 1,
-      name: "Château Margaux 2015",
+      name: "Château Margaux",
       type: "red",
       wineMakerId: 1,
       regionId: 1,
