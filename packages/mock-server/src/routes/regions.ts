@@ -1,5 +1,6 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import { createRegionSchema, updateRegionSchema } from "@cellarboss/validators";
 
 let nextId = 1000;
 
@@ -15,7 +16,9 @@ export function registerRegionRoutes(app: Hono, state: MockState) {
 
   app.post("/api/region", async (c) => {
     const body = await c.req.json();
-    const region = { id: ++nextId, ...body };
+    const result = createRegionSchema.safeParse(body);
+    if (!result.success) return c.json({ error: result.error.issues }, 400);
+    const region = { id: ++nextId, ...result.data };
     state.regions.push(region);
     return c.json(region, 201);
   });
@@ -23,9 +26,11 @@ export function registerRegionRoutes(app: Hono, state: MockState) {
   app.put("/api/region/:id", async (c) => {
     const id = Number(c.req.param("id"));
     const body = await c.req.json();
+    const result = updateRegionSchema.safeParse(body);
+    if (!result.success) return c.json({ error: result.error.issues }, 400);
     const idx = state.regions.findIndex((r) => r.id === id);
     if (idx === -1) return c.json({ error: "Not found" }, 404);
-    state.regions[idx] = { ...state.regions[idx], ...body };
+    state.regions[idx] = { ...state.regions[idx], ...result.data };
     return c.json(state.regions[idx]);
   });
 

@@ -1,5 +1,6 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import { createWineGrapeSchema } from "@cellarboss/validators";
 
 export function registerWinegrapeRoutes(app: Hono, state: MockState) {
   app.get("/api/winegrape", (c) => c.json(state.wineGrapes));
@@ -12,9 +13,10 @@ export function registerWinegrapeRoutes(app: Hono, state: MockState) {
 
   app.post("/api/winegrape", async (c) => {
     const body = await c.req.json();
-    const wineGrape = { wineId: body.wineId, grapeId: body.grapeId };
-    state.wineGrapes.push(wineGrape);
-    return c.json(wineGrape, 201);
+    const result = createWineGrapeSchema.safeParse(body);
+    if (!result.success) return c.json({ error: result.error.issues }, 400);
+    state.wineGrapes.push(result.data);
+    return c.json(result.data, 201);
   });
 
   app.delete("/api/winegrape/:wineId/:grapeId", (c) => {

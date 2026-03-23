@@ -11,6 +11,7 @@
     "start": "tsx src/start.ts"
   },
   "dependencies": {
+    "@cellarboss/validators": "workspace:*",
     "@hono/node-server": "1.19.11",
     "hono": "4.12.8"
   },

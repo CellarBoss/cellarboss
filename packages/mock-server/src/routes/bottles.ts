@@ -1,5 +1,6 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import { createBottleSchema, updateBottleSchema } from "@cellarboss/validators";
 
 let nextId = 1000;
 
@@ -32,7 +33,11 @@ export function registerBottleRoutes(app: Hono, state: MockState) {
 
   app.post("/api/bottle", async (c) => {
     const body = await c.req.json();
-    const bottle = { id: ++nextId, ...body };
+    const result = createBottleSchema.safeParse(body);
+    if (!result.success) {
+      return c.json({ error: result.error.issues }, 400);
+    }
+    const bottle = { id: ++nextId, ...result.data };
     state.bottles.push(bottle);
     return c.json(bottle, 201);
   });
@@ -40,9 +45,13 @@ export function registerBottleRoutes(app: Hono, state: MockState) {
   app.put("/api/bottle/:id", async (c) => {
     const id = Number(c.req.param("id"));
     const body = await c.req.json();
+    const result = updateBottleSchema.safeParse(body);
+    if (!result.success) {
+      return c.json({ error: result.error.issues }, 400);
+    }
     const idx = state.bottles.findIndex((b) => b.id === id);
     if (idx === -1) return c.json({ error: "Not found" }, 404);
-    state.bottles[idx] = { ...state.bottles[idx], ...body };
+    state.bottles[idx] = { ...state.bottles[idx], ...result.data };
     return c.json(state.bottles[idx]);
   });
 

@@ -1,5 +1,9 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import {
+  createStorageSchema,
+  updateStorageSchema,
+} from "@cellarboss/validators";
 
 let nextId = 1000;
 
@@ -15,7 +19,9 @@ export function registerStorageRoutes(app: Hono, state: MockState) {
 
   app.post("/api/storage", async (c) => {
     const body = await c.req.json();
-    const storage = { id: ++nextId, ...body };
+    const result = createStorageSchema.safeParse(body);
+    if (!result.success) return c.json({ error: result.error.issues }, 400);
+    const storage = { id: ++nextId, ...result.data };
     state.storages.push(storage);
     return c.json(storage, 201);
   });
@@ -23,9 +29,11 @@ export function registerStorageRoutes(app: Hono, state: MockState) {
   app.put("/api/storage/:id", async (c) => {
     const id = Number(c.req.param("id"));
     const body = await c.req.json();
+    const result = updateStorageSchema.safeParse(body);
+    if (!result.success) return c.json({ error: result.error.issues }, 400);
     const idx = state.storages.findIndex((s) => s.id === id);
     if (idx === -1) return c.json({ error: "Not found" }, 404);
-    state.storages[idx] = { ...state.storages[idx], ...body };
+    state.storages[idx] = { ...state.storages[idx], ...result.data };
     return c.json(state.storages[idx]);
   });
 

@@ -408,6 +408,9 @@ importers:
 
   packages/mock-server:
     dependencies:
+      '@cellarboss/validators':
+        specifier: workspace:*
+        version: link:../validators
       '@hono/node-server':
         specifier: 1.19.11
         version: 1.19.11(hono@4.12.8)
