@@ -14,13 +14,16 @@ appId: org.cellarboss.mobile
 # Fill in purchase date
 - tapOn:
     id: "field-purchase-date"
+- eraseText
 - inputText: "2025-01-15"
 
 # Fill in purchase price
 - tapOn:
     id: "field-purchase-price"
+- eraseText
 - inputText: "75.00"
 
 # Save the bottle
 - tapOn:
     id: "save-button"
+- assertVisible: "Saved successfully!"
