@@ -41,7 +41,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   web: {
     favicon: "./assets/favicon.png",
   },
-  plugins: [["expo-router", { root: "./src/app" }], "expo-secure-store"],
+  plugins: [
+    ["expo-router", { root: "./src/app" }],
+    "expo-secure-store",
+    "./plugins/with-network-security-config",
+  ],
   extra: {
     apiBaseUrl: process.env.API_BASE_URL ?? "http://localhost:5000",
     eas: {
