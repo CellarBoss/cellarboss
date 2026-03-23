@@ -2,6 +2,11 @@ packages:
   - 'apps/*'
   - 'packages/*'
 
+catalog:
+  '@tanstack/react-query': 5.91.3
+  '@tanstack/react-form': 1.28.5
+  '@tanstack/react-table': 8.21.3
+
 onlyBuiltDependencies:
   - better-sqlite3
   - esbuild
