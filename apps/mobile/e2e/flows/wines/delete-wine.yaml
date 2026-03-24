@@ -13,6 +13,7 @@ appId: org.cellarboss.mobile
     direction: LEFT
     from:
       text: "Meursault Premier Cru"
+- waitForAnimationToEnd
 
 # Tap the delete icon that appears
 - tapOn:

@@ -36,6 +36,13 @@ appId: org.cellarboss.mobile
 - inputText: "75.00"
 - hideKeyboard
 
+# Scroll to save button (may be off-screen after filling form)
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
+
 # Save the bottle
 - tapOn:
     id: "save-button"

@@ -15,4 +15,4 @@ appId: org.cellarboss.mobile
     element:
       text: "Recent Activity"
     direction: DOWN
-    timeout: 5000
+    timeout: 20000

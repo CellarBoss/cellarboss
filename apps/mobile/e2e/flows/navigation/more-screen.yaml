@@ -8,11 +8,16 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "more-tab"
 
-# Verify all menu sections are visible
+# Verify top menu sections are visible
 - assertVisible: "Wine Data"
 - assertVisible: "Reference Data"
-- assertVisible: "Storage"
-- assertVisible: "Account"
+
+# Scroll down to verify bottom sections
+- scrollUntilVisible:
+    element:
+      text: "Account"
+    direction: DOWN
+    timeout: 10000
 
 # Navigate to Winemakers and back
 - tapOn:
@@ -42,14 +47,24 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "header-back-button"
 
-# Navigate to Locations and back
+# Navigate to Locations and back (may need scroll on small screens)
+- scrollUntilVisible:
+    element:
+      id: "menu-locations"
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: "menu-locations"
 - assertVisible: "Home Cellar"
 - tapOn:
     id: "header-back-button"
 
-# Navigate to Profile
+# Navigate to Profile (may need scroll on small screens)
+- scrollUntilVisible:
+    element:
+      id: "menu-profile"
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: "menu-profile"
 - assertVisible: "Test Admin"

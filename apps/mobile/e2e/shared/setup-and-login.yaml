@@ -21,3 +21,4 @@ appId: org.cellarboss.mobile
 - inputText: "password"
 - tapOn:
     id: "sign-in-button"
+- waitForAnimationToEnd

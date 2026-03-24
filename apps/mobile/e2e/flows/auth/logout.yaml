@@ -25,6 +25,11 @@ appId: org.cellarboss.mobile
 # Navigate to More tab and sign out
 - tapOn:
     id: "more-tab"
+- scrollUntilVisible:
+    element:
+      id: "menu-sign-out"
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: "menu-sign-out"
 

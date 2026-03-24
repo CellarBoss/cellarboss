@@ -5,6 +5,11 @@ appId: org.cellarboss.mobile
 # Navigate to More > Locations
 - tapOn:
     id: "more-tab"
+- scrollUntilVisible:
+    element:
+      id: "menu-locations"
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: "menu-locations"
 
