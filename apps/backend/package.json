@@ -19,7 +19,7 @@
     "@cellarboss/types": "workspace:*",
     "@cellarboss/validators": "workspace:*",
     "@hono/node-server": "1.19.11",
-    "@hono/zod-openapi": "1.2.2",
+    "@hono/zod-openapi": "1.2.3",
     "@hono/zod-validator": "0.7.6",
     "@scalar/hono-api-reference": "0.10.4",
     "better-auth": "1.5.5",
@@ -35,7 +35,7 @@
   "devDependencies": {
     "@types/better-sqlite3": "7.6.13",
     "@types/node": "24.12.0",
-    "@types/pg": "8.18.0",
+    "@types/pg": "8.20.0",
     "@vitest/coverage-v8": "4.1.0",
     "@vitest/ui": "4.1.0",
     "tsup": "8.5.1",
