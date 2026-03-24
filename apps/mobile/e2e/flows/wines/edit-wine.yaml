@@ -10,10 +10,13 @@ appId: org.cellarboss.mobile
 - assertVisible: "Château Margaux"
 
 # Swipe left on the wine to reveal edit action
+# Note: "Château Margaux" appears twice per list item (wine name + winemaker subtitle).
+# Use index: 0 to target the title text so the swipe registers on the swipeable row.
 - swipe:
     direction: LEFT
     from:
       text: "Château Margaux"
+      index: 0
 - waitForAnimationToEnd
 
 # Tap the edit icon that appears

@@ -1,8 +1,9 @@
 appId: org.cellarboss.mobile
 ---
 - runScript: ../../scripts/seed-data.js
-- launchApp:
-    clearState: true
+- stopApp
+- clearState
+- launchApp
 
 # Should land on the setup screen
 - assertVisible: "Welcome to CellarBoss"

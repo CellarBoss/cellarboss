@@ -1,8 +1,9 @@
 appId: org.cellarboss.mobile
 ---
 - runScript: ../../scripts/seed-data.js
-- launchApp:
-    clearState: true
+- stopApp
+- clearState
+- launchApp
 
 # Setup server first
 - tapOn:
