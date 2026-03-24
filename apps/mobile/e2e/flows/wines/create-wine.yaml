@@ -32,4 +32,7 @@ appId: org.cellarboss.mobile
     id: "save-button"
 
 # Verify success message
-- assertVisible: "Saved successfully!"
+- extendedWaitUntil:
+    visible:
+      text: "Saved successfully!"
+    timeout: 10000

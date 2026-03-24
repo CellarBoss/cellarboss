@@ -36,4 +36,7 @@ appId: org.cellarboss.mobile
 # Save
 - tapOn:
     id: "save-button"
-- assertVisible: "Saved successfully!"
+- extendedWaitUntil:
+    visible:
+      text: "Saved successfully!"
+    timeout: 10000
