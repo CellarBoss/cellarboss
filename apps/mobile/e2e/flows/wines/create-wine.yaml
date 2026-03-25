@@ -27,7 +27,12 @@ appId: org.cellarboss.mobile
     id: "selector-winemaker"
 - tapOn: "Château Margaux"
 
-# Save the wine
+# Save the wine (button may be off-screen after form fill)
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: "save-button"
 

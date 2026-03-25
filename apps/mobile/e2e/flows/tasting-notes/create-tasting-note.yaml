@@ -34,6 +34,11 @@ appId: org.cellarboss.mobile
 - hideKeyboard
 
 # Save
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: "save-button"
 - extendedWaitUntil:

@@ -20,6 +20,11 @@ appId: org.cellarboss.mobile
     id: "field-name"
 - inputText: "Pinot Noir"
 - hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: "save-button"
 - extendedWaitUntil:

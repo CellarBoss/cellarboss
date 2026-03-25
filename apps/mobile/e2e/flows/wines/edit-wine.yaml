@@ -37,7 +37,12 @@ appId: org.cellarboss.mobile
 - inputText: "Château Margaux Grand Vin"
 - hideKeyboard
 
-# Save
+# Save (button may be off-screen after keyboard dismiss)
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: "save-button"
 - extendedWaitUntil:

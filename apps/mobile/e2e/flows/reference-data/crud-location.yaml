@@ -24,6 +24,11 @@ appId: org.cellarboss.mobile
     id: "field-name"
 - inputText: "Office Wine Fridge"
 - hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: "save-button"
 - extendedWaitUntil:

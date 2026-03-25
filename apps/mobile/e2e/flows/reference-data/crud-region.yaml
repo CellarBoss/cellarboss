@@ -26,6 +26,11 @@ appId: org.cellarboss.mobile
     id: "selector-country"
 - tapOn: "France"
 
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: "save-button"
 - extendedWaitUntil:
