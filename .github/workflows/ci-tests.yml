@@ -280,6 +280,12 @@ jobs:
           cd apps/mobile/android
           ./gradlew assembleRelease -PreactNativeArchitectures=x86_64 --no-daemon --build-cache
 
+      - name: Free memory for emulator
+        run: |
+          pkill -f gradle || true
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk/ndk /opt/ghc
+          sudo apt-get clean
+
       - name: Install Maestro
         run: |
           curl -Ls "https://get.maestro.mobile.dev" | bash
@@ -304,7 +310,7 @@ jobs:
           arch: x86_64
           avd-name: test_device
           force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 3072
+          emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
           disable-animations: true
           script: |
             adb install apps/mobile/android/app/build/outputs/apk/release/app-release.apk
