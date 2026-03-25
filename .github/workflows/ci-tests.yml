@@ -253,7 +253,7 @@ jobs:
         if: steps.avd-cache.outputs.cache-hit != 'true'
         run: |
           sdkmanager "system-images;android-31;google_apis;x86_64"
-          echo "no" | avdmanager create avd -n test_device -k "system-images;android-31;google_apis;x86_64" --device "pixel_6"
+          echo "no" | avdmanager create avd -n test_device -k "system-images;android-31;google_apis;x86_64" --device "pixel_6" --force
 
       - name: Cache Expo prebuild
         uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
