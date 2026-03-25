@@ -41,6 +41,7 @@ export function ScreenHeader({
           {actions.map((action, i) => (
             <IconButton
               key={i}
+              testID={`header-action-${action.icon}`}
               icon={action.icon}
               size={24}
               onPress={action.onPress}

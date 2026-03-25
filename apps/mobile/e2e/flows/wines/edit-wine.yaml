@@ -6,27 +6,17 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "wines-tab"
 
-# Verify wine is listed
-- assertVisible: "Château Margaux"
+# Tap the wine to open detail view
+- tapOn:
+    id: "wine-item-1"
 
-# Swipe left on the wine to reveal edit action (use testID to avoid ambiguous text match)
-- swipe:
-    direction: LEFT
-    from:
-      id: "wine-item-1"
-- waitForAnimationToEnd
-
-# Tap the edit icon that appears
-- retry:
-    maxRetries: 2
-    commands:
-      - tapOn:
-          id: "swipe-action-pencil"
+# Tap the edit action in the header
+- tapOn:
+    id: "header-action-pencil"
 
 # Verify edit screen loaded with pre-filled data
 - assertVisible: "Edit Wine"
 - assertVisible: "Château Margaux"
-- waitForAnimationToEnd
 
 # Update the wine name
 - tapOn:
@@ -37,7 +27,7 @@ appId: org.cellarboss.mobile
 - inputText: "Château Margaux Grand Vin"
 - hideKeyboard
 
-# Save (button may be off-screen after keyboard dismiss)
+# Save
 - scrollUntilVisible:
     element:
       id: "save-button"
