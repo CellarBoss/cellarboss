@@ -224,7 +224,7 @@ jobs:
 
   test-mobile-e2e-android:
     name: Test Mobile E2E (Android)
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: changes
     if: needs.changes.outputs.mobile == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.structure == 'true'
     steps:
