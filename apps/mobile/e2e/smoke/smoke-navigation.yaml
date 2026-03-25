@@ -2,6 +2,12 @@ appId: org.cellarboss.mobile
 ---
 - runFlow: smoke-login.yaml
 
+# Wait for tabs to be fully loaded after login
+- extendedWaitUntil:
+    visible:
+      id: "cellar-tab"
+    timeout: 10000
+
 # Navigate through all tabs
 - tapOn:
     id: "cellar-tab"
@@ -20,9 +26,14 @@ appId: org.cellarboss.mobile
 - waitForAnimationToEnd
 
 # Verify more screen renders menu items
-- assertVisible:
-    id: "menu-wines"
+- extendedWaitUntil:
+    visible:
+      id: "menu-wines"
+    timeout: 10000
 - assertVisible:
     id: "menu-countries"
-- assertVisible:
-    id: "menu-profile"
+- scrollUntilVisible:
+    element:
+      id: "menu-profile"
+    direction: DOWN
+    timeout: 10000

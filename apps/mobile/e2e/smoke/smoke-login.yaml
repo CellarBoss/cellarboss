@@ -20,6 +20,7 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "password-input"
 - inputText: "password"
+- hideKeyboard
 - tapOn:
     id: "sign-in-button"
 - waitForAnimationToEnd

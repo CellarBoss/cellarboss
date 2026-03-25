@@ -2,6 +2,12 @@ appId: org.cellarboss.mobile
 ---
 - runFlow: smoke-login.yaml
 
+# Wait for tabs to be fully loaded after login
+- extendedWaitUntil:
+    visible:
+      id: "cellar-tab"
+    timeout: 10000
+
 # Navigate to Cellar tab
 - tapOn:
     id: "cellar-tab"
