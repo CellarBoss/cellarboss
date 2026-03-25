@@ -1,0 +1,103 @@
+name: Android E2E Smoke Tests
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  smoke-test-android:
+    name: Android Smoke Test
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: ./.github/actions/setup-node
+
+      - name: Setup Java
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
+
+      - name: Cache AVD
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-api-31-${{ runner.os }}
+
+      - name: Create AVD
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        run: |
+          sdkmanager "system-images;android-31;google_apis;x86_64"
+          echo "no" | avdmanager create avd -n test_device -k "system-images;android-31;google_apis;x86_64" --device "pixel_6"
+
+      - name: Cache Expo prebuild
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        id: expo-prebuild-cache
+        with:
+          path: apps/mobile/android/
+          key: expo-prebuild-android-${{ hashFiles('apps/mobile/package.json', 'apps/mobile/app.config.ts') }}
+
+      - name: Expo prebuild (Android)
+        if: steps.expo-prebuild-cache.outputs.cache-hit != 'true'
+        run: cd apps/mobile && npx expo prebuild --platform android --clean
+
+      - name: Cache Gradle
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('apps/mobile/android/**/*.gradle*', 'apps/mobile/android/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
+
+      - name: Build Android release APK
+        run: |
+          cd apps/mobile/android
+          ./gradlew assembleRelease -PreactNativeArchitectures=x86_64 --no-daemon --build-cache
+
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Start mock server
+        run: pnpm --filter @cellarboss/mock-server start &
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Start emulator and run smoke tests
+        uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
+        env:
+          MAESTRO_DRIVER_STARTUP_TIMEOUT: 180000
+        with:
+          api-level: 31
+          target: google_apis
+          arch: x86_64
+          avd-name: test_device
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
+          script: |
+            adb wait-for-device
+            adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
+            adb install apps/mobile/android/app/build/outputs/apk/release/app-release.apk
+            cd apps/mobile/e2e && maestro test --debug-output "$GITHUB_WORKSPACE/maestro-debug-output" --flatten-debug-output smoke/
+
+      - name: Upload Maestro debug output
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        if: always()
+        with:
+          name: maestro-debug-output
+          path: maestro-debug-output/
+          retention-days: 7

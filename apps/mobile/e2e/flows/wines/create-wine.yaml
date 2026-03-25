@@ -1,0 +1,43 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+
+# Navigate to Wines tab
+- tapOn:
+    id: "wines-tab"
+
+# Tap FAB to create new wine
+- tapOn:
+    id: "fab-add"
+- assertVisible: "New Wine"
+
+# Fill in the name
+- tapOn:
+    id: "field-name"
+- inputText: "Chateau Test Wine"
+- hideKeyboard
+
+# Select wine type
+- tapOn:
+    id: "field-type"
+- tapOn: "Red"
+
+# Select winemaker
+- tapOn:
+    id: "selector-winemaker"
+- tapOn: "Château Margaux"
+
+# Save the wine (button may be off-screen after form fill)
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "save-button"
+
+# Verify success message
+- extendedWaitUntil:
+    visible:
+      text: "Saved successfully!"
+    timeout: 10000

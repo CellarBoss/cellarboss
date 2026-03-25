@@ -1,0 +1,14 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+
+# Navigate to Cellar tab
+- tapOn:
+    id: "cellar-tab"
+
+# Tap on the existing bottle to view details
+- tapOn: "Château Margaux 2015"
+
+# Verify detail screen loads with bottle info
+- assertVisible: "Château Margaux 2015"
+- assertVisible: "Bordeaux, France"

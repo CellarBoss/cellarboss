@@ -1,0 +1,37 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+
+# Navigate to More > Locations
+- tapOn:
+    id: "more-tab"
+- scrollUntilVisible:
+    element:
+      id: "menu-locations"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "menu-locations"
+
+# Verify existing locations
+- assertVisible: "Home Cellar"
+
+# Create new location
+- tapOn:
+    id: "fab-add"
+- assertVisible: "New Location"
+- tapOn:
+    id: "field-name"
+- inputText: "Office Wine Fridge"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "save-button"
+- extendedWaitUntil:
+    visible:
+      text: "Saved successfully!"
+    timeout: 10000

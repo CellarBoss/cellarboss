@@ -1,0 +1,33 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+
+# Navigate to More > Grapes
+- tapOn:
+    id: "more-tab"
+- tapOn:
+    id: "menu-grapes"
+
+# Verify existing grapes
+- assertVisible: "Cabernet Sauvignon"
+- assertVisible: "Chardonnay"
+
+# Create new grape
+- tapOn:
+    id: "fab-add"
+- assertVisible: "New Grape"
+- tapOn:
+    id: "field-name"
+- inputText: "Pinot Noir"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "save-button"
+- extendedWaitUntil:
+    visible:
+      text: "Saved successfully!"
+    timeout: 10000

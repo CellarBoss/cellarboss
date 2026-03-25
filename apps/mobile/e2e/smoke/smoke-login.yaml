@@ -1,0 +1,29 @@
+appId: org.cellarboss.mobile
+---
+# Seed test data and launch with clean state
+- runScript: ../scripts/seed-data.js
+- stopApp
+- clearState
+- launchApp
+
+# Connect to server
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+
+# Login
+- tapOn:
+    id: "email-input"
+- inputText: "admin@cellarboss.test"
+- tapOn:
+    id: "password-input"
+- inputText: "password"
+- tapOn:
+    id: "sign-in-button"
+- waitForAnimationToEnd
+
+# Verify we reached the app (cellar tab should be visible)
+- assertVisible:
+    id: "cellar-tab"

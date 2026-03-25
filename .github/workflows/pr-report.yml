@@ -46,12 +46,21 @@ jobs:
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Download api-client coverage
+      - name: Download common coverage
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         continue-on-error: true
         with:
-          name: coverage-api-client
-          path: packages/api-client/coverage/
+          name: coverage-common
+          path: packages/common/coverage/
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download mobile coverage
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        continue-on-error: true
+        with:
+          name: coverage-mobile
+          path: apps/mobile/coverage/
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -76,12 +85,19 @@ jobs:
           name: Backend
           working-directory: apps/backend
 
-      - name: API Client coverage report
-        if: hashFiles('packages/api-client/coverage/coverage-summary.json') != ''
+      - name: Common coverage report
+        if: hashFiles('packages/common/coverage/coverage-summary.json') != ''
         uses: davelosert/vitest-coverage-report-action@2500dafcee7dd64f85ab689c0b83798a8359770e # v2
         with:
-          name: API Client
-          working-directory: packages/api-client
+          name: Common
+          working-directory: packages/common
+
+      - name: Mobile coverage report
+        if: hashFiles('apps/mobile/coverage/coverage-summary.json') != ''
+        uses: davelosert/vitest-coverage-report-action@2500dafcee7dd64f85ab689c0b83798a8359770e # v2
+        with:
+          name: Mobile
+          working-directory: apps/mobile
 
   playwright:
     name: Post Playwright Report

@@ -1,0 +1,186 @@
+import { useState, useCallback } from "react";
+import { View, Pressable, StyleSheet } from "react-native";
+import { Text, FAB } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { DataList } from "@/components/DataList";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { ScreenHeader } from "@/components/ScreenHeader";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { api } from "@/lib/api/client";
+import { queryGate } from "@/lib/functions/query-gate";
+import { theme } from "@/lib/theme";
+import type { Region, Country } from "@cellarboss/types";
+
+const SORT_OPTIONS = [
+  { label: "Name (A-Z)", value: "name-asc" },
+  { label: "Name (Z-A)", value: "name-desc" },
+  { label: "Country (A-Z)", value: "country-asc" },
+  { label: "Country (Z-A)", value: "country-desc" },
+];
+
+export default function RegionsScreen() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const [currentSort, setCurrentSort] = useState("name-asc");
+  const [deleteTarget, setDeleteTarget] = useState<Region | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const regionsQuery = useApiQuery({
+    queryKey: ["regions"],
+    queryFn: () => api.regions.getAll(),
+  });
+  const countriesQuery = useApiQuery({
+    queryKey: ["countries"],
+    queryFn: () => api.countries.getAll(),
+  });
+
+  const result = queryGate([regionsQuery, countriesQuery]);
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => api.regions.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["regions"] });
+      setDeleteTarget(null);
+    },
+  });
+
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await queryClient.invalidateQueries({ queryKey: ["regions"] });
+    setRefreshing(false);
+  }, [queryClient]);
+
+  if (!result.ready) return result.gate;
+
+  const [regions, countries] = result.data;
+
+  const countryMap = new Map(countries.map((c) => [c.id, c]));
+
+  function getCountryName(region: Region): string {
+    return countryMap.get(region.countryId)?.name ?? "";
+  }
+
+  const sortedRegions = [...regions].sort((a, b) => {
+    switch (currentSort) {
+      case "name-asc":
+        return a.name.localeCompare(b.name);
+      case "name-desc":
+        return b.name.localeCompare(a.name);
+      case "country-asc":
+        return getCountryName(a).localeCompare(getCountryName(b));
+      case "country-desc":
+        return getCountryName(b).localeCompare(getCountryName(a));
+      default:
+        return 0;
+    }
+  });
+
+  return (
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <ScreenHeader title="Regions" showBack />
+      <DataList
+        data={sortedRegions}
+        keyExtractor={(item) => String(item.id)}
+        searchPlaceholder="Search regions..."
+        searchFilter={(item, query) => {
+          const lower = query.toLowerCase();
+          return (
+            item.name.toLowerCase().includes(lower) ||
+            getCountryName(item).toLowerCase().includes(lower)
+          );
+        }}
+        sortOptions={SORT_OPTIONS}
+        onSort={setCurrentSort}
+        currentSort={currentSort}
+        onRefresh={handleRefresh}
+        refreshing={refreshing}
+        emptyIcon="map-marker-outline"
+        emptyTitle="No regions yet"
+        emptyMessage="Add your first region to get started"
+        emptyActionLabel="Add Region"
+        onEmptyAction={() => router.push("/regions/new")}
+        swipeActions={(region) => [
+          {
+            icon: "pencil",
+            color: theme.colors.primary,
+            onPress: () => router.push(`/regions/${region.id}/edit`),
+          },
+          {
+            icon: "delete",
+            color: "#dc2626",
+            onPress: () => setDeleteTarget(region),
+          },
+        ]}
+        renderItem={(region) => (
+          <Pressable
+            style={styles.item}
+            onPress={() => router.push(`/regions/${region.id}`)}
+          >
+            <Text style={styles.itemTitle} numberOfLines={1}>
+              {region.name}
+            </Text>
+            <Text style={styles.itemSub} numberOfLines={1}>
+              {getCountryName(region)}
+            </Text>
+          </Pressable>
+        )}
+      />
+
+      <FAB
+        testID="fab-add"
+        icon="plus"
+        style={styles.fab}
+        onPress={() => router.push("/regions/new")}
+      />
+
+      <ConfirmDialog
+        visible={deleteTarget !== null}
+        title="Delete Region"
+        message={
+          deleteTarget
+            ? `Delete region "${deleteTarget.name}"? This cannot be undone. Regions with wines cannot be deleted.`
+            : ""
+        }
+        confirmLabel="Delete"
+        onConfirm={() => {
+          if (deleteTarget) {
+            deleteMutation.mutate(deleteTarget.id);
+          }
+        }}
+        onCancel={() => setDeleteTarget(null)}
+      />
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  item: {
+    backgroundColor: theme.colors.surface,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.outlineVariant,
+  },
+  itemTitle: {
+    fontSize: 15,
+    fontWeight: "bold",
+    color: theme.colors.onSurface,
+    marginBottom: 2,
+  },
+  itemSub: {
+    fontSize: 13,
+    color: theme.colors.onSurfaceVariant,
+  },
+  fab: {
+    position: "absolute",
+    right: 16,
+    bottom: 16,
+    backgroundColor: theme.colors.primary,
+  },
+});

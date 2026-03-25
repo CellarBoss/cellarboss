@@ -1,0 +1,52 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+
+# Navigate to Cellar tab
+- tapOn:
+    id: "cellar-tab"
+
+# Tap FAB to create new bottle
+- tapOn:
+    id: "fab-add"
+- assertVisible: "New Bottle"
+
+# Select wine and vintage
+# Note: "Château Margaux" appears twice in the modal (winemaker header + wine name).
+# Use index: 1 to tap the wine item, not the non-interactive group header.
+- tapOn: "Choose a wine..."
+- assertVisible: "Select Wine"
+- tapOn:
+    text: "Château Margaux"
+    index: 1
+- assertVisible: "Vintage"
+- tapOn: "2015"
+
+# Fill in purchase date
+- tapOn:
+    id: "field-purchase-date"
+- eraseText
+- inputText: "2025-01-15"
+- hideKeyboard
+
+# Fill in purchase price
+- tapOn:
+    id: "field-purchase-price"
+- eraseText
+- inputText: "75.00"
+- hideKeyboard
+
+# Scroll to save button (may be off-screen after filling form)
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
+
+# Save the bottle
+- tapOn:
+    id: "save-button"
+- extendedWaitUntil:
+    visible:
+      text: "Saved successfully!"
+    timeout: 10000

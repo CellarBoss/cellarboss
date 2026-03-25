@@ -1,0 +1,18 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+
+# Dashboard should be visible with stats
+- assertVisible:
+    id: "dashboard-tab"
+
+# Verify overview stats are rendered (from default mock data: 1 bottle)
+- assertVisible: "Bottles Stored"
+- assertVisible: "Unique Wines"
+
+# Scroll down to see more dashboard cards
+- scrollUntilVisible:
+    element:
+      text: "Recent Activity"
+    direction: DOWN
+    timeout: 20000

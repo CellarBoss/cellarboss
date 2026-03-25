@@ -1,0 +1,41 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+
+# Navigate to Wines tab
+- tapOn:
+    id: "wines-tab"
+
+# Tap the wine to open detail view
+- tapOn:
+    id: "wine-item-1"
+
+# Tap the edit action in the header
+- tapOn:
+    id: "header-action-pencil"
+
+# Verify edit screen loaded with pre-filled data
+- assertVisible: "Edit Wine"
+- assertVisible: "Château Margaux"
+
+# Update the wine name
+- tapOn:
+    id: "field-name"
+- eraseText
+- tapOn:
+    id: "field-name"
+- inputText: "Château Margaux Grand Vin"
+- hideKeyboard
+
+# Save
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "save-button"
+- extendedWaitUntil:
+    visible:
+      text: "Saved successfully!"
+    timeout: 10000

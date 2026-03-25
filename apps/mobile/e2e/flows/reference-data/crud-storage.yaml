@@ -1,0 +1,37 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+
+# Navigate to Storages tab
+- tapOn:
+    id: "storages-tab"
+
+# Verify existing storages
+- assertVisible: "Rack A"
+- assertVisible: "Shelf 1"
+
+# Create new storage
+- tapOn:
+    id: "fab-add"
+- assertVisible: "New Storage"
+- tapOn:
+    id: "field-name"
+- inputText: "Rack B"
+- hideKeyboard
+
+# Select location
+- tapOn:
+    id: "selector-location"
+- tapOn: "Home Cellar"
+
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "save-button"
+- extendedWaitUntil:
+    visible:
+      text: "Saved successfully!"
+    timeout: 10000

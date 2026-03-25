@@ -1,0 +1,28 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: smoke-login.yaml
+
+# Navigate through all tabs
+- tapOn:
+    id: "cellar-tab"
+- waitForAnimationToEnd
+
+- tapOn:
+    id: "wines-tab"
+- waitForAnimationToEnd
+
+- tapOn:
+    id: "storages-tab"
+- waitForAnimationToEnd
+
+- tapOn:
+    id: "more-tab"
+- waitForAnimationToEnd
+
+# Verify more screen renders menu items
+- assertVisible:
+    id: "menu-wines"
+- assertVisible:
+    id: "menu-countries"
+- assertVisible:
+    id: "menu-profile"

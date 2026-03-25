@@ -1,0 +1,73 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+- assertVisible:
+    id: "dashboard-tab"
+
+# Navigate to More tab
+- tapOn:
+    id: "more-tab"
+
+# Verify top menu sections are visible
+- assertVisible: "Wine Data"
+- assertVisible: "Reference Data"
+
+# Scroll down to verify bottom sections
+- scrollUntilVisible:
+    element:
+      text: "Account"
+    direction: DOWN
+    timeout: 10000
+
+# Navigate to Winemakers and back
+- tapOn:
+    id: "menu-winemakers"
+- assertVisible: "Château Margaux"
+- tapOn:
+    id: "header-back-button"
+
+# Navigate to Regions and back
+- tapOn:
+    id: "menu-regions"
+- assertVisible: "Bordeaux"
+- tapOn:
+    id: "header-back-button"
+
+# Navigate to Countries and back
+- tapOn:
+    id: "menu-countries"
+- assertVisible: "France"
+- tapOn:
+    id: "header-back-button"
+
+# Navigate to Grapes and back
+- tapOn:
+    id: "menu-grapes"
+- assertVisible: "Cabernet Sauvignon"
+- tapOn:
+    id: "header-back-button"
+
+# Navigate to Locations and back (may need scroll on small screens)
+- scrollUntilVisible:
+    element:
+      id: "menu-locations"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "menu-locations"
+- assertVisible: "Home Cellar"
+- tapOn:
+    id: "header-back-button"
+
+# Navigate to Profile (may need scroll on small screens)
+- scrollUntilVisible:
+    element:
+      id: "menu-profile"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "menu-profile"
+- assertVisible: "Test Admin"
+- assertVisible: "admin@cellarboss.test"
+- tapOn:
+    id: "header-back-button"

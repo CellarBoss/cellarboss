@@ -1,5 +1,9 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import {
+  createTastingNoteSchema,
+  updateTastingNoteSchema,
+} from "@cellarboss/validators";
 
 let nextId = 1000;
 
@@ -32,9 +36,11 @@ export function registerTastingNoteRoutes(app: Hono, state: MockState) {
 
   app.post("/api/tasting-note", async (c) => {
     const body = await c.req.json();
+    const result = createTastingNoteSchema.safeParse(body);
+    if (!result.success) return c.json({ error: result.error.issues }, 400);
     const note = {
       id: ++nextId,
-      ...body,
+      ...result.data,
       authorId: state.session?.user.id ?? "unknown",
       author: state.session?.user.name ?? "Unknown",
       date: new Date().toISOString(),
@@ -46,9 +52,11 @@ export function registerTastingNoteRoutes(app: Hono, state: MockState) {
   app.put("/api/tasting-note/:id", async (c) => {
     const id = Number(c.req.param("id"));
     const body = await c.req.json();
+    const result = updateTastingNoteSchema.safeParse(body);
+    if (!result.success) return c.json({ error: result.error.issues }, 400);
     const idx = state.tastingNotes.findIndex((n) => n.id === id);
     if (idx === -1) return c.json({ error: "Not found" }, 404);
-    state.tastingNotes[idx] = { ...state.tastingNotes[idx], ...body };
+    state.tastingNotes[idx] = { ...state.tastingNotes[idx], ...result.data };
     return c.json(state.tastingNotes[idx]);
   });
 

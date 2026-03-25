@@ -1,5 +1,6 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import { createGrapeSchema, updateGrapeSchema } from "@cellarboss/validators";
 
 let nextId = 1000;
 
@@ -15,7 +16,9 @@ export function registerGrapeRoutes(app: Hono, state: MockState) {
 
   app.post("/api/grape", async (c) => {
     const body = await c.req.json();
-    const grape = { id: ++nextId, ...body };
+    const result = createGrapeSchema.safeParse(body);
+    if (!result.success) return c.json({ error: result.error.issues }, 400);
+    const grape = { id: ++nextId, ...result.data };
     state.grapes.push(grape);
     return c.json(grape, 201);
   });
@@ -23,9 +26,11 @@ export function registerGrapeRoutes(app: Hono, state: MockState) {
   app.put("/api/grape/:id", async (c) => {
     const id = Number(c.req.param("id"));
     const body = await c.req.json();
+    const result = updateGrapeSchema.safeParse(body);
+    if (!result.success) return c.json({ error: result.error.issues }, 400);
     const idx = state.grapes.findIndex((g) => g.id === id);
     if (idx === -1) return c.json({ error: "Not found" }, 404);
-    state.grapes[idx] = { ...state.grapes[idx], ...body };
+    state.grapes[idx] = { ...state.grapes[idx], ...result.data };
     return c.json(state.grapes[idx]);
   });
 

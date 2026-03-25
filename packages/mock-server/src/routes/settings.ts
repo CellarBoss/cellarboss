@@ -1,5 +1,6 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import { updateSettingSchema } from "@cellarboss/validators";
 
 export function registerSettingsRoutes(app: Hono, state: MockState) {
   app.get("/api/settings", (c) => c.json(state.settings));
@@ -14,12 +15,14 @@ export function registerSettingsRoutes(app: Hono, state: MockState) {
   app.put("/api/settings/:key", async (c) => {
     const key = decodeURIComponent(c.req.param("key"));
     const body = await c.req.json();
+    const result = updateSettingSchema.safeParse(body);
+    if (!result.success) return c.json({ error: result.error.issues }, 400);
     const idx = state.settings.findIndex((s) => s.key === key);
     if (idx === -1) {
-      state.settings.push({ key, value: body.value });
+      state.settings.push({ key, value: result.data.value });
     } else {
-      state.settings[idx] = { key, value: body.value };
+      state.settings[idx] = { key, value: result.data.value };
     }
-    return c.json({ key, value: body.value });
+    return c.json({ key, value: result.data.value });
   });
 }

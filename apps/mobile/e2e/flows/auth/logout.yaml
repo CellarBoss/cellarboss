@@ -1,0 +1,38 @@
+appId: org.cellarboss.mobile
+---
+- runScript: ../../scripts/seed-data.js
+- stopApp
+- clearState
+- launchApp
+
+# Setup and login
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+- assertVisible: "Sign In"
+- tapOn:
+    id: "email-input"
+- inputText: "admin@cellarboss.test"
+- tapOn:
+    id: "password-input"
+- inputText: "password"
+- tapOn:
+    id: "sign-in-button"
+- assertVisible:
+    id: "dashboard-tab"
+
+# Navigate to More tab and sign out
+- tapOn:
+    id: "more-tab"
+- scrollUntilVisible:
+    element:
+      id: "menu-sign-out"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "menu-sign-out"
+
+# Should return to login/setup screen
+- assertVisible: "Sign In"

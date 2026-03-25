@@ -1,0 +1,47 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+
+# Navigate to More > Tasting Notes
+- tapOn:
+    id: "more-tab"
+- tapOn:
+    id: "menu-tasting-notes"
+
+# Verify existing tasting note
+- assertVisible: "Exceptional depth and complexity. Dark fruit aromas with hints of cedar."
+
+# Create new tasting note
+- tapOn:
+    id: "fab-add"
+- assertVisible: "New Tasting Note"
+
+# Select wine and vintage
+# Note: "Château Margaux" appears twice in the modal (winemaker header + wine name).
+# Use index: 1 to tap the wine item, not the non-interactive group header.
+- tapOn: "Choose a wine..."
+- assertVisible: "Select Wine"
+- tapOn:
+    text: "Château Margaux"
+    index: 1
+- assertVisible: "Vintage"
+- tapOn: "2015"
+
+# Fill in the notes textarea
+- tapOn:
+    id: "field-notes"
+- inputText: "Lovely nose with cherry and oak. Smooth tannins."
+- hideKeyboard
+
+# Save
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "save-button"
+- extendedWaitUntil:
+    visible:
+      text: "Saved successfully!"
+    timeout: 10000

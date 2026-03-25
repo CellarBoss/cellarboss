@@ -1,0 +1,24 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+
+# Navigate to Wines tab
+- tapOn:
+    id: "wines-tab"
+
+# Verify wine list shows default data
+- assertVisible: "Château Margaux"
+- assertVisible: "Meursault Premier Cru"
+
+# Test search functionality
+- tapOn:
+    id: "search-input"
+- inputText: "Margaux"
+- assertVisible: "Château Margaux"
+- assertNotVisible: "Meursault Premier Cru"
+
+# Clear search
+- tapOn:
+    id: "search-input"
+- eraseText: 7
+- assertVisible: "Meursault Premier Cru"

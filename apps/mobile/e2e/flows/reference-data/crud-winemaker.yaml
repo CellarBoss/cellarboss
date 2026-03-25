@@ -1,0 +1,33 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+
+# Navigate to More > Winemakers
+- tapOn:
+    id: "more-tab"
+- tapOn:
+    id: "menu-winemakers"
+
+# Verify existing winemakers
+- assertVisible: "Château Margaux"
+- assertVisible: "Domaine Leflaive"
+
+# Create new winemaker
+- tapOn:
+    id: "fab-add"
+- assertVisible: "New Winemaker"
+- tapOn:
+    id: "field-name"
+- inputText: "Test Winemaker"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "save-button"
+- extendedWaitUntil:
+    visible:
+      text: "Saved successfully!"
+    timeout: 10000

@@ -1,2 +1,2 @@
-export { ApiQueryError } from "@cellarboss/api-client";
-export type { ApiError, ApiResult } from "@cellarboss/api-client";
+export { ApiQueryError } from "@cellarboss/common";
+export type { ApiError, ApiResult } from "@cellarboss/common";

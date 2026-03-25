@@ -1,0 +1,39 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+
+# Navigate to More > Regions
+- tapOn:
+    id: "more-tab"
+- tapOn:
+    id: "menu-regions"
+
+# Verify existing regions
+- assertVisible: "Bordeaux"
+- assertVisible: "Burgundy"
+
+# Create new region
+- tapOn:
+    id: "fab-add"
+- assertVisible: "New Region"
+- tapOn:
+    id: "field-name"
+- inputText: "Champagne"
+- hideKeyboard
+
+# Select country
+- tapOn:
+    id: "selector-country"
+- tapOn: "France"
+
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "save-button"
+- extendedWaitUntil:
+    visible:
+      text: "Saved successfully!"
+    timeout: 10000

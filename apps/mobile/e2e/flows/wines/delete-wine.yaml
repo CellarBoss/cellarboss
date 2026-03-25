@@ -1,0 +1,28 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+
+# Navigate to Wines tab
+- tapOn:
+    id: "wines-tab"
+- assertVisible: "Meursault Premier Cru"
+
+# Swipe left on a wine to reveal delete action, then tap delete
+# Note: Meursault has no vintages with bottles, so it can be deleted
+- swipe:
+    direction: LEFT
+    from:
+      text: "Meursault Premier Cru"
+- waitForAnimationToEnd
+
+# Tap the delete icon that appears
+- tapOn:
+    id: "swipe-action-delete"
+
+# Confirm the deletion dialog
+- assertVisible: "Delete Wine"
+- tapOn:
+    id: "confirm-button"
+
+# Verify wine is removed from the list
+- assertNotVisible: "Meursault Premier Cru"

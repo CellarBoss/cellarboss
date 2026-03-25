@@ -4,7 +4,7 @@ import { createWineSchema, updateWineSchema } from "../wines.validator";
 describe("createWineSchema", () => {
   it("accepts a valid wine", () => {
     const result = createWineSchema.safeParse({
-      name: "Château Margaux 2015",
+      name: "Château Margaux",
       wineMakerId: 1,
       regionId: 2,
       type: "red",

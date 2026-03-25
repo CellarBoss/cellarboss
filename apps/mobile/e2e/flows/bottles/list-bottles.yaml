@@ -1,0 +1,21 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+
+# Navigate to Cellar tab
+- tapOn:
+    id: "cellar-tab"
+
+# Verify bottle list shows default data (1 bottle of Château Margaux 2015)
+- assertVisible: "Château Margaux 2015"
+
+# Test search functionality
+- tapOn:
+    id: "search-input"
+- inputText: "Margaux"
+- assertVisible: "Château Margaux 2015"
+
+# Clear search
+- tapOn:
+    id: "search-input"
+- eraseText: 7

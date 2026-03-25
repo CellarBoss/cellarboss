@@ -1,5 +1,5 @@
 import { betterAuth } from "better-auth";
-import { admin } from "better-auth/plugins";
+import { admin, bearer } from "better-auth/plugins";
 import { getDialect } from "@db";
 import { env } from "./env.js";
 
@@ -20,5 +20,6 @@ export const auth = betterAuth({
     admin({
       defaultRole: "user",
     }),
+    bearer(),
   ],
 });

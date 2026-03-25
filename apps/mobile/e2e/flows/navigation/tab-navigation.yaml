@@ -1,0 +1,29 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+- assertVisible:
+    id: "dashboard-tab"
+
+# Switch to Cellar tab
+- tapOn:
+    id: "cellar-tab"
+- assertVisible: "Search bottles..."
+
+# Switch to Wines tab
+- tapOn:
+    id: "wines-tab"
+- assertVisible: "Search wines..."
+
+# Switch to Storages tab
+- tapOn:
+    id: "storages-tab"
+- assertVisible: "Search storages..."
+
+# Switch to More tab
+- tapOn:
+    id: "more-tab"
+- assertVisible: "Reference Data"
+
+# Switch back to Dashboard
+- tapOn:
+    id: "dashboard-tab"

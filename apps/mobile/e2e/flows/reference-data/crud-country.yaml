@@ -1,0 +1,33 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../../shared/setup-and-login.yaml
+
+# Navigate to More > Countries
+- tapOn:
+    id: "more-tab"
+- tapOn:
+    id: "menu-countries"
+
+# Verify existing countries
+- assertVisible: "France"
+- assertVisible: "Italy"
+
+# Create new country
+- tapOn:
+    id: "fab-add"
+- assertVisible: "New Country"
+- tapOn:
+    id: "field-name"
+- inputText: "Spain"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "save-button"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "save-button"
+- extendedWaitUntil:
+    visible:
+      text: "Saved successfully!"
+    timeout: 10000
