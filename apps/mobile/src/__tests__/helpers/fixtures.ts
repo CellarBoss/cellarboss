@@ -1,4 +1,44 @@
-import type { Wine, Vintage, Bottle, WineMaker } from "@cellarboss/types";
+import type {
+  Wine,
+  Vintage,
+  Bottle,
+  WineMaker,
+  Country,
+  Region,
+  Grape,
+  Location,
+  Storage,
+  TastingNote,
+} from "@cellarboss/types";
+
+export const countries: Country[] = [
+  { id: 1, name: "France" },
+  { id: 2, name: "Australia" },
+  { id: 3, name: "Italy" },
+];
+
+export const regions: Region[] = [
+  { id: 1, name: "Burgundy", countryId: 1 },
+  { id: 2, name: "Bordeaux", countryId: 1 },
+  { id: 3, name: "Barossa Valley", countryId: 2 },
+];
+
+export const grapes: Grape[] = [
+  { id: 1, name: "Pinot Noir" },
+  { id: 2, name: "Cabernet Sauvignon" },
+  { id: 3, name: "Chardonnay" },
+];
+
+export const locations: Location[] = [
+  { id: 1, name: "Home Cellar" },
+  { id: 2, name: "Wine Fridge" },
+];
+
+export const storages: Storage[] = [
+  { id: 1, name: "Rack A", locationId: 1, parent: null },
+  { id: 2, name: "Rack B", locationId: 1, parent: null },
+  { id: 3, name: "Shelf 1", locationId: 1, parent: 1 },
+];
 
 export const winemakers: WineMaker[] = [
   { id: 1, name: "Domaine de la Romanée-Conti" },
@@ -106,5 +146,26 @@ export const bottles: Bottle[] = [
     storageId: 1,
     status: "stored",
     size: "magnum",
+  },
+];
+
+export const tastingNotes: TastingNote[] = [
+  {
+    id: 1,
+    vintageId: 1,
+    date: "2025-01-10T12:00:00Z",
+    authorId: "user-1",
+    author: "Admin User",
+    score: 9,
+    notes: "Exceptional complexity and depth",
+  },
+  {
+    id: 2,
+    vintageId: 3,
+    date: "2025-02-15T12:00:00Z",
+    authorId: "user-1",
+    author: "Admin User",
+    score: 7,
+    notes: "Good everyday drinking wine",
   },
 ];
