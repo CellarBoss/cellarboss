@@ -24,8 +24,11 @@ jobs:
 
   tests:
     name: Tests
-    uses: ./.github/workflows/ci-tests.yml
-
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/workflows/ci-tests.yml
+      - uses: ./.github/workflows/smoketest-android.yml
+    
   build-api-docs:
     name: Build API Docs
     runs-on: ubuntu-latest
