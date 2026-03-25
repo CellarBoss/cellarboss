@@ -304,9 +304,7 @@ jobs:
           arch: x86_64
           avd-name: test_device
           force-avd-creation: false
-          ram-size: 3072M
-          heap-size: 576M
-          emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -memory 3072
           disable-animations: true
           script: |
             adb install apps/mobile/android/app/build/outputs/apk/release/app-release.apk
