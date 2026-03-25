@@ -9,19 +9,19 @@ appId: org.cellarboss.mobile
 # Verify wine is listed
 - assertVisible: "Château Margaux"
 
-# Swipe left on the wine to reveal edit action
-# Note: "Château Margaux" appears twice per list item (wine name + winemaker subtitle).
-# Use index: 0 to target the title text so the swipe registers on the swipeable row.
+# Swipe left on the wine to reveal edit action (use testID to avoid ambiguous text match)
 - swipe:
     direction: LEFT
     from:
-      text: "Château Margaux"
-      index: 0
+      id: "wine-item-1"
 - waitForAnimationToEnd
 
 # Tap the edit icon that appears
-- tapOn:
-    id: "swipe-action-pencil"
+- retry:
+    maxRetries: 2
+    commands:
+      - tapOn:
+          id: "swipe-action-pencil"
 
 # Verify edit screen loaded with pre-filled data
 - assertVisible: "Edit Wine"

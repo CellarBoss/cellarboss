@@ -193,7 +193,11 @@ function WineListItem({
   onPress,
 }: WineListItemProps) {
   return (
-    <Pressable style={styles.item} onPress={onPress}>
+    <Pressable
+      testID={`wine-item-${wine.id}`}
+      style={styles.item}
+      onPress={onPress}
+    >
       <View style={styles.itemTop}>
         <View style={styles.nameRow}>
           <View

@@ -81,7 +81,7 @@ export function FormCard<T extends { id: number | string }>({
           } else {
             router.back();
           }
-        }, 1000);
+        }, 2500);
       } catch (err: unknown) {
         setErrorMessage(
           err instanceof Error ? err.message : "Something went wrong.",
