@@ -7,7 +7,10 @@ const monorepoRoot = path.resolve(projectRoot, "../..");
 const config = getDefaultConfig(projectRoot);
 
 // Watch the shared packages in the monorepo
-config.watchFolders = [monorepoRoot];
+config.watchFolders = [
+  ...config.watchFolders,
+  monorepoRoot,
+];
 
 // Resolve modules from both the project and the monorepo root
 config.resolver.nodeModulesPaths = [
