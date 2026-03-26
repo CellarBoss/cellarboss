@@ -65,6 +65,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen name="bottles" options={{ href: null }} />
+      <Tabs.Screen name="countries" options={{ href: null }} />
+      <Tabs.Screen name="grapes" options={{ href: null }} />
+      <Tabs.Screen name="locations" options={{ href: null }} />
+      <Tabs.Screen name="regions" options={{ href: null }} />
+      <Tabs.Screen name="tasting-notes" options={{ href: null }} />
+      <Tabs.Screen name="vintages" options={{ href: null }} />
+      <Tabs.Screen name="winemakers" options={{ href: null }} />
+      <Tabs.Screen name="profile" options={{ href: null }} />
     </Tabs>
   );
 }
