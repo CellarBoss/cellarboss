@@ -13,11 +13,25 @@ export function CountryRegionsList({ countryId }: { countryId: number }) {
     queryKey: ["regions"],
     queryFn: () => api.regions.getAll(),
   });
+  const wineQuery = useApiQuery({
+    queryKey: ["wines"],
+    queryFn: () => api.wines.getAll(),
+  });
 
-  const result = queryGate([regionQuery]);
+  const result = queryGate([regionQuery, wineQuery]);
   if (!result.ready) return result.gate;
 
-  const [regions] = result.data;
+  const [regions, wines] = result.data;
+
+  const wineCountByRegion = new Map<number, number>();
+  for (const wine of wines) {
+    if (wine.regionId !== null) {
+      wineCountByRegion.set(
+        wine.regionId,
+        (wineCountByRegion.get(wine.regionId) ?? 0) + 1,
+      );
+    }
+  }
   const filtered = regions
     .filter((r) => r.countryId === countryId)
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -48,6 +62,18 @@ export function CountryRegionsList({ countryId }: { countryId: number }) {
                 <Text style={styles.regionName} numberOfLines={1}>
                   {region.name}
                 </Text>
+                {(wineCountByRegion.get(region.id) ?? 0) > 0 && (
+                  <View style={styles.badge}>
+                    <Icon
+                      source="glass-wine"
+                      size={14}
+                      color={theme.colors.onSurfaceVariant}
+                    />
+                    <Text style={styles.badgeText}>
+                      {wineCountByRegion.get(region.id)}
+                    </Text>
+                  </View>
+                )}
                 <Icon
                   source="chevron-right"
                   size={20}
@@ -107,6 +133,15 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "bold",
     color: theme.colors.onSurface,
+  },
+  badge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  badgeText: {
+    fontSize: 13,
+    color: theme.colors.onSurfaceVariant,
   },
   addLink: {
     flexDirection: "row",
