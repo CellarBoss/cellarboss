@@ -109,11 +109,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: theme.colors.onSurface,
   },
-  wineType: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-    textTransform: "capitalize",
-  },
   addLink: {
     flexDirection: "row",
     alignItems: "center",
