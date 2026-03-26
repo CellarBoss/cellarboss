@@ -1,0 +1,21 @@
+appId: org.cellarboss.mobile
+---
+- runScript: ../docs-seed-data.js
+- stopApp
+- clearState
+- launchApp
+
+# Capture the server setup screen
+- waitForAnimationToEnd
+- takeScreenshot: auth-setup
+
+# Connect to server
+- tapOn:
+    id: "server-url-input"
+- inputText: "http://10.0.2.2:5174"
+- tapOn:
+    id: "connect-button"
+- waitForAnimationToEnd
+
+# Capture the login screen
+- takeScreenshot: auth-login

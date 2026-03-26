@@ -1,0 +1,13 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../shared/setup-and-login.yaml
+
+# Capture tab bar (dashboard is active by default)
+- waitForAnimationToEnd
+- takeScreenshot: navigation-tabs
+
+# Navigate to More tab
+- tapOn:
+    id: "more-tab"
+- waitForAnimationToEnd
+- takeScreenshot: navigation-more
