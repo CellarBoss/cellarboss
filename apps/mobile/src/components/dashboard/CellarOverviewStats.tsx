@@ -2,6 +2,7 @@ import { View, StyleSheet } from "react-native";
 import type { Bottle, Vintage, Wine } from "@cellarboss/types";
 import { StatCard } from "./StatCard";
 import { formatPrice, formatDrinkingStatus } from "@/lib/functions/format";
+import { useRouter } from "expo-router";
 import { theme } from "@/lib/theme";
 
 type CellarOverviewStatsProps = {
@@ -17,6 +18,7 @@ export function CellarOverviewStats({
   wines,
   currency,
 }: CellarOverviewStatsProps) {
+  const router = useRouter();
   const currentYear = new Date().getFullYear();
 
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
@@ -60,6 +62,7 @@ export function CellarOverviewStats({
         value={totalBottles}
         subtitle="in cellar"
         color={theme.colors.primary}
+        onPress={() => router.push("/cellar")}
       />
       <StatCard
         title="Unique Wines"

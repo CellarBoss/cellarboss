@@ -7,11 +7,18 @@ type StatCardProps = {
   value: string | number;
   subtitle: string;
   color: string;
+  onPress?: () => void;
 };
 
-export function StatCard({ title, value, subtitle, color }: StatCardProps) {
+export function StatCard({
+  title,
+  value,
+  subtitle,
+  color,
+  onPress,
+}: StatCardProps) {
   return (
-    <Card style={styles.card}>
+    <Card style={styles.card} onPress={onPress}>
       <Card.Content style={styles.content}>
         <View style={[styles.accent, { backgroundColor: color }]} />
         <Text style={styles.title} numberOfLines={1}>
