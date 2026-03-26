@@ -18,3 +18,4 @@ jobs:
         with:
           token: ${{ secrets.RENOVATE_TOKEN }}
           configurationFile: .github/renovate.json
+          repository: CellarBoss/cellarboss
