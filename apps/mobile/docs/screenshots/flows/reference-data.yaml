@@ -1,0 +1,53 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../shared/setup-and-login.yaml
+
+# --- Winemakers ---
+- tapOn:
+    id: "more-tab"
+- waitForAnimationToEnd
+- tapOn:
+    id: "menu-winemakers"
+- waitForAnimationToEnd
+- takeScreenshot: winemakers-list
+- pressKey: back
+- waitForAnimationToEnd
+
+# --- Regions ---
+- tapOn:
+    id: "menu-regions"
+- waitForAnimationToEnd
+- takeScreenshot: regions-list
+- pressKey: back
+- waitForAnimationToEnd
+
+# --- Countries ---
+- tapOn:
+    id: "menu-countries"
+- waitForAnimationToEnd
+- takeScreenshot: countries-list
+- pressKey: back
+- waitForAnimationToEnd
+
+# --- Grapes ---
+- tapOn:
+    id: "menu-grapes"
+- waitForAnimationToEnd
+- takeScreenshot: grapes-list
+- pressKey: back
+- waitForAnimationToEnd
+
+# --- Storages (use tab, already on More) ---
+- tapOn:
+    id: "storages-tab"
+- waitForAnimationToEnd
+- takeScreenshot: storages-list
+
+# --- Locations ---
+- tapOn:
+    id: "more-tab"
+- waitForAnimationToEnd
+- tapOn:
+    id: "menu-locations"
+- waitForAnimationToEnd
+- takeScreenshot: locations-list

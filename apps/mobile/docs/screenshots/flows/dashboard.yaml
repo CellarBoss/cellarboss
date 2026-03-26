@@ -1,0 +1,7 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../shared/setup-and-login.yaml
+
+# Dashboard is the default tab after login
+- waitForAnimationToEnd
+- takeScreenshot: dashboard-overview

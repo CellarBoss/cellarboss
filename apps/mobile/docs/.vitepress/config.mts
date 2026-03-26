@@ -24,18 +24,26 @@ function screenshotPlaceholder(): Plugin {
 }
 
 export default defineConfig({
-  title: "CellarBoss",
-  description: "User documentation for the CellarBoss wine cellar management application",
-  base: "/web/",
+  title: "CellarBoss Mobile",
+  description: "User documentation for the CellarBoss mobile app",
+  base: "/mobile/",
   ignoreDeadLinks: true,
   vite: {
     plugins: [screenshotPlaceholder()],
   },
   themeConfig: {
     nav: [
-      { text: "User Guide", link: "/guide/" },
-      { text: "Mobile Docs", link: "https://docs.cellarboss.org/mobile/", target: "_self" },
-      { text: "API Reference", link: "https://docs.cellarboss.org/api/", target: "_self" },
+      { text: "Mobile Guide", link: "/guide/" },
+      {
+        text: "Web Docs",
+        link: "https://docs.cellarboss.org/web/",
+        target: "_self",
+      },
+      {
+        text: "API Reference",
+        link: "https://docs.cellarboss.org/api/",
+        target: "_self",
+      },
     ],
     sidebar: [
       {
@@ -45,6 +53,7 @@ export default defineConfig({
           { text: "Installation", link: "/guide/installation" },
           { text: "Authentication", link: "/guide/authentication" },
           { text: "Dashboard", link: "/guide/dashboard" },
+          { text: "Navigation", link: "/guide/navigation" },
         ],
       },
       {
@@ -63,18 +72,9 @@ export default defineConfig({
         ],
       },
       {
-        text: "Administration",
-        items: [
-          { text: "Users", link: "/resources/users" },
-          { text: "Settings", link: "/guide/settings" },
-          { text: "Profile", link: "/guide/profile" },
-        ],
-      },
-      {
         text: "Features",
         items: [
-          { text: "DataTable", link: "/features/datatable" },
-          { text: "Storage Hierarchy", link: "/features/storage-hierarchy" },
+          { text: "Search & Filter", link: "/features/search-and-filter" },
         ],
       },
     ],

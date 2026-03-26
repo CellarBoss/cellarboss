@@ -1,0 +1,35 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../shared/setup-and-login.yaml
+
+# Navigate to Cellar tab
+- tapOn:
+    id: "cellar-tab"
+- waitForAnimationToEnd
+- takeScreenshot: bottles-list
+
+# Tap on first bottle to view detail
+- tapOn: "Château Margaux 2015"
+- waitForAnimationToEnd
+- takeScreenshot: bottles-detail
+
+# Go back to list
+- pressKey: back
+- waitForAnimationToEnd
+
+# Tap FAB to create new bottle
+- tapOn:
+    id: "fab-add"
+- waitForAnimationToEnd
+- takeScreenshot: bottles-create
+
+# Go back
+- pressKey: back
+- waitForAnimationToEnd
+
+# Tap first bottle again for edit
+- tapOn: "Château Margaux 2015"
+- waitForAnimationToEnd
+- tapOn: "Edit"
+- waitForAnimationToEnd
+- takeScreenshot: bottles-edit

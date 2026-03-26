@@ -12,7 +12,12 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "lint": "expo lint",
-    "test:e2e": "maestro test e2e/smoke/"
+    "test:e2e": "maestro test e2e/smoke/",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "docs:screenshots": "bash docs/screenshots/generate.sh",
+    "docs:screenshots:build": "pnpm docs:screenshots && pnpm docs:build"
   },
   "dependencies": {
     "@cellarboss/common": "workspace:*",
@@ -50,7 +55,8 @@
     "jest-expo": "55.0.11",
     "babel-preset-expo": "55.0.12",
     "react-test-renderer": "catalog:",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitepress": "1.6.4"
   },
   "jest": {
     "preset": "jest-expo",

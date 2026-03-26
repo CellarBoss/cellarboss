@@ -1,0 +1,24 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../shared/setup-and-login.yaml
+
+# Navigate to Wines tab
+- tapOn:
+    id: "wines-tab"
+- waitForAnimationToEnd
+- takeScreenshot: wines-list
+
+# Tap on first wine to view detail
+- tapOn: "Château Margaux"
+- waitForAnimationToEnd
+- takeScreenshot: wines-detail
+
+# Go back to list
+- pressKey: back
+- waitForAnimationToEnd
+
+# Tap FAB to create new wine
+- tapOn:
+    id: "fab-add"
+- waitForAnimationToEnd
+- takeScreenshot: wines-create

@@ -1,0 +1,18 @@
+appId: org.cellarboss.mobile
+---
+- runFlow: ../shared/setup-and-login.yaml
+
+# Navigate to More > Tasting Notes
+- tapOn:
+    id: "more-tab"
+- waitForAnimationToEnd
+- tapOn:
+    id: "menu-tasting-notes"
+- waitForAnimationToEnd
+- takeScreenshot: tasting-notes-list
+
+# Tap FAB to create new tasting note
+- tapOn:
+    id: "fab-add"
+- waitForAnimationToEnd
+- takeScreenshot: tasting-notes-create

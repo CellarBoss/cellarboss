@@ -1,0 +1,165 @@
+// Maestro runScript: Seeds the mock server with rich documentation data.
+// runScript executes on the host machine, so we use localhost directly.
+const BASE_URL = "http://localhost:5174";
+
+async function seed() {
+  // Reset state to defaults
+  const resetRes = await fetch(`${BASE_URL}/__test/reset`, { method: "POST" });
+  if (!resetRes.ok) throw new Error(`Reset failed: ${resetRes.status}`);
+
+  // Set up admin session
+  const sessionRes = await fetch(`${BASE_URL}/__test/set-session`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user: {
+        id: "admin-user-1",
+        name: "Admin User",
+        email: "admin@cellarboss.test",
+        role: "admin",
+      },
+      session: {
+        id: "session-admin-1",
+        token: "token-admin",
+        expiresAt: new Date(Date.now() + 86400000).toISOString(),
+      },
+    }),
+  });
+  if (!sessionRes.ok) throw new Error(`Set-session failed: ${sessionRes.status}`);
+
+  // Set rich documentation data
+  const stateRes = await fetch(`${BASE_URL}/__test/set-state`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      countries: [
+        { id: 1, name: "France" },
+        { id: 2, name: "Italy" },
+        { id: 3, name: "Spain" },
+        { id: 4, name: "Germany" },
+        { id: 5, name: "United States" },
+        { id: 6, name: "Australia" },
+      ],
+      regions: [
+        { id: 1, name: "Bordeaux", countryId: 1 },
+        { id: 2, name: "Burgundy", countryId: 1 },
+        { id: 3, name: "Champagne", countryId: 1 },
+        { id: 4, name: "Tuscany", countryId: 2 },
+        { id: 5, name: "Piedmont", countryId: 2 },
+        { id: 6, name: "Rioja", countryId: 3 },
+        { id: 7, name: "Mosel", countryId: 4 },
+        { id: 8, name: "Napa Valley", countryId: 5 },
+        { id: 9, name: "Barossa Valley", countryId: 6 },
+      ],
+      winemakers: [
+        { id: 1, name: "Château Margaux" },
+        { id: 2, name: "Domaine Leflaive" },
+        { id: 3, name: "Krug" },
+        { id: 4, name: "Antinori" },
+        { id: 5, name: "Giacomo Conterno" },
+        { id: 6, name: "López de Heredia" },
+        { id: 7, name: "Joh. Jos. Prüm" },
+        { id: 8, name: "Opus One" },
+        { id: 9, name: "Penfolds" },
+      ],
+      grapes: [
+        { id: 1, name: "Cabernet Sauvignon" },
+        { id: 2, name: "Merlot" },
+        { id: 3, name: "Chardonnay" },
+        { id: 4, name: "Pinot Noir" },
+        { id: 5, name: "Sangiovese" },
+        { id: 6, name: "Nebbiolo" },
+        { id: 7, name: "Tempranillo" },
+        { id: 8, name: "Riesling" },
+        { id: 9, name: "Shiraz" },
+        { id: 10, name: "Sauvignon Blanc" },
+      ],
+      wines: [
+        { id: 1, name: "Château Margaux", type: "red", wineMakerId: 1, regionId: 1 },
+        { id: 2, name: "Puligny-Montrachet Premier Cru", type: "white", wineMakerId: 2, regionId: 2 },
+        { id: 3, name: "Krug Grande Cuvée", type: "sparkling", wineMakerId: 3, regionId: 3 },
+        { id: 4, name: "Tignanello", type: "red", wineMakerId: 4, regionId: 4 },
+        { id: 5, name: "Barolo Monfortino Riserva", type: "red", wineMakerId: 5, regionId: 5 },
+        { id: 6, name: "Viña Tondonia Reserva", type: "red", wineMakerId: 6, regionId: 6 },
+        { id: 7, name: "Wehlener Sonnenuhr Spätlese", type: "white", wineMakerId: 7, regionId: 7 },
+        { id: 8, name: "Opus One", type: "red", wineMakerId: 8, regionId: 8 },
+        { id: 9, name: "Grange", type: "red", wineMakerId: 9, regionId: 9 },
+        { id: 10, name: "Viña Tondonia Blanco Reserva", type: "white", wineMakerId: 6, regionId: 6 },
+      ],
+      vintages: [
+        { id: 1, wineId: 1, year: 2015, drinkFrom: 2025, drinkUntil: 2060 },
+        { id: 2, wineId: 1, year: 2018, drinkFrom: 2028, drinkUntil: 2065 },
+        { id: 3, wineId: 2, year: 2020, drinkFrom: 2023, drinkUntil: 2035 },
+        { id: 4, wineId: 3, year: 2010, drinkFrom: null, drinkUntil: null },
+        { id: 5, wineId: 4, year: 2019, drinkFrom: 2024, drinkUntil: 2040 },
+        { id: 6, wineId: 5, year: 2014, drinkFrom: 2030, drinkUntil: 2060 },
+        { id: 7, wineId: 6, year: 2011, drinkFrom: 2020, drinkUntil: 2040 },
+        { id: 8, wineId: 7, year: 2021, drinkFrom: 2024, drinkUntil: 2045 },
+        { id: 9, wineId: 8, year: 2018, drinkFrom: 2025, drinkUntil: 2050 },
+        { id: 10, wineId: 9, year: 2017, drinkFrom: 2025, drinkUntil: 2055 },
+      ],
+      locations: [
+        { id: 1, name: "Home Cellar" },
+        { id: 2, name: "Off-site Storage" },
+      ],
+      storages: [
+        { id: 1, name: "Room A", parent: null, locationId: 1 },
+        { id: 2, name: "Room B", parent: null, locationId: 1 },
+        { id: 3, name: "Rack 1", parent: 1, locationId: 1 },
+        { id: 4, name: "Rack 2", parent: 1, locationId: 1 },
+        { id: 5, name: "Shelf 1", parent: 3, locationId: 1 },
+        { id: 6, name: "Shelf 2", parent: 3, locationId: 1 },
+        { id: 7, name: "Shelf 3", parent: 4, locationId: 1 },
+        { id: 8, name: "Wine Fridge", parent: 2, locationId: 1 },
+        { id: 9, name: "Climate Unit", parent: null, locationId: 2 },
+      ],
+      bottles: [
+        { id: 1, vintageId: 1, purchaseDate: "2023-03-15", purchasePrice: 450.0, storageId: 5, status: "stored", size: "standard" },
+        { id: 2, vintageId: 1, purchaseDate: "2023-03-15", purchasePrice: 450.0, storageId: 5, status: "stored", size: "standard" },
+        { id: 3, vintageId: 2, purchaseDate: "2024-01-10", purchasePrice: 520.0, storageId: 6, status: "stored", size: "magnum" },
+        { id: 4, vintageId: 3, purchaseDate: "2023-06-20", purchasePrice: 85.0, storageId: 7, status: "stored", size: "standard" },
+        { id: 5, vintageId: 4, purchaseDate: "2022-12-01", purchasePrice: 280.0, storageId: 8, status: "consumed", size: "standard" },
+        { id: 6, vintageId: 5, purchaseDate: "2024-05-10", purchasePrice: 95.0, storageId: 5, status: "stored", size: "standard" },
+        { id: 7, vintageId: 6, purchaseDate: "2023-09-05", purchasePrice: 350.0, storageId: 9, status: "stored", size: "magnum" },
+        { id: 8, vintageId: 7, purchaseDate: "2024-02-14", purchasePrice: 55.0, storageId: 6, status: "stored", size: "half" },
+        { id: 9, vintageId: 8, purchaseDate: "2023-07-22", purchasePrice: 42.0, storageId: 7, status: "stored", size: "standard" },
+        { id: 10, vintageId: 9, purchaseDate: "2024-03-01", purchasePrice: 380.0, storageId: 9, status: "stored", size: "jeroboam" },
+        { id: 11, vintageId: 10, purchaseDate: "2022-11-20", purchasePrice: 320.0, storageId: 5, status: "consumed", size: "standard" },
+        { id: 12, vintageId: 3, purchaseDate: "2024-08-15", purchasePrice: 90.0, storageId: 8, status: "stored", size: "standard" },
+      ],
+      tastingNotes: [
+        { id: 1, vintageId: 1, date: "2025-11-15T19:30:00.000Z", authorId: "admin-1", author: "Admin User", score: 9, notes: "Exceptional depth and complexity. Dark fruit aromas with hints of cedar and tobacco. Silky tannins with a very long finish." },
+        { id: 2, vintageId: 3, date: "2025-10-20T12:00:00.000Z", authorId: "user-2", author: "Jane Smith", score: 8, notes: "Elegant and well-balanced. Citrus and stone fruit on the nose. Crisp acidity with a buttery mouthfeel." },
+        { id: 3, vintageId: 5, date: "2025-09-05T18:00:00.000Z", authorId: "admin-1", author: "Admin User", score: 7, notes: "Bold and structured. Cherry and leather notes. Needs more time to fully integrate." },
+        { id: 4, vintageId: 9, date: "2025-12-01T20:15:00.000Z", authorId: "user-3", author: "Bob Wilson", score: 10, notes: "Absolutely stunning. Layers of dark fruit, spice, and oak. Perfect balance and an unforgettable finish." },
+      ],
+      settings: [
+        { key: "currency", value: "USD" },
+        { key: "date", value: "yyyy-MM-dd" },
+        { key: "datetime", value: "yyyy-MM-dd HH:mm" },
+      ],
+      wineGrapes: [
+        { wineId: 1, grapeId: 1 },
+        { wineId: 1, grapeId: 2 },
+        { wineId: 2, grapeId: 3 },
+        { wineId: 3, grapeId: 4 },
+        { wineId: 3, grapeId: 3 },
+        { wineId: 4, grapeId: 5 },
+        { wineId: 5, grapeId: 6 },
+        { wineId: 6, grapeId: 7 },
+        { wineId: 7, grapeId: 8 },
+        { wineId: 8, grapeId: 1 },
+        { wineId: 9, grapeId: 9 },
+        { wineId: 10, grapeId: 10 },
+      ],
+      users: [
+        { id: "admin-user-1", name: "Admin User", email: "admin@cellarboss.test", role: "admin", createdAt: "2024-01-01T00:00:00.000Z", banned: null, banReason: null },
+        { id: "regular-user-1", name: "Jane Smith", email: "jane@cellarboss.test", role: "user", createdAt: "2024-03-15T00:00:00.000Z", banned: null, banReason: null },
+        { id: "regular-user-2", name: "Bob Wilson", email: "bob@cellarboss.test", role: "user", createdAt: "2024-06-01T00:00:00.000Z", banned: null, banReason: null },
+      ],
+    }),
+  });
+  if (!stateRes.ok) throw new Error(`Set-state failed: ${stateRes.status}`);
+}
+
+seed();
