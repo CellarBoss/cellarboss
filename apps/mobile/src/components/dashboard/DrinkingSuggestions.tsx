@@ -1,7 +1,8 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import { Card, Text } from "react-native-paper";
 import type { Bottle, Vintage, Wine, WineMaker } from "@cellarboss/types";
 import { theme } from "@/lib/theme";
+import { useRouter } from "expo-router";
 
 type DrinkingSuggestionsProps = {
   bottles: Bottle[];
@@ -16,6 +17,7 @@ export function DrinkingSuggestions({
   wines,
   winemakers,
 }: DrinkingSuggestionsProps) {
+  const router = useRouter();
   const currentYear = new Date().getFullYear();
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w) => [w.id, w]));
@@ -82,37 +84,43 @@ export function DrinkingSuggestions({
           const isPastPeak = drinkUntil < currentYear;
 
           return (
-            <View key={vintageId} style={styles.row}>
-              <View style={styles.countBadge}>
-                <Text style={styles.countText}>{count}</Text>
-              </View>
-              <View style={styles.details}>
-                <Text style={styles.wineName} numberOfLines={1}>
-                  {wineName}
-                  {year}
-                </Text>
-                {winemakerName ? (
-                  <Text style={styles.winemaker} numberOfLines={1}>
-                    {winemakerName}
+            <Pressable
+              key={vintageId}
+              style={styles.card}
+              onPress={() => router.push(`/vintages/${vintageId}`)}
+            >
+              <View style={styles.row}>
+                <View style={styles.countBadge}>
+                  <Text style={styles.countText}>{count}</Text>
+                </View>
+                <View style={styles.details}>
+                  <Text style={styles.wineName} numberOfLines={1}>
+                    {wineName}
+                    {year}
                   </Text>
-                ) : null}
-              </View>
-              <View
-                style={[
-                  styles.deadlineBadge,
-                  isPastPeak && styles.deadlineBadgePast,
-                ]}
-              >
-                <Text
+                  {winemakerName ? (
+                    <Text style={styles.winemaker} numberOfLines={1}>
+                      {winemakerName}
+                    </Text>
+                  ) : null}
+                </View>
+                <View
                   style={[
-                    styles.deadlineText,
-                    isPastPeak && styles.deadlineTextPast,
+                    styles.deadlineBadge,
+                    isPastPeak && styles.deadlineBadgePast,
                   ]}
                 >
-                  By {drinkUntil}
-                </Text>
+                  <Text
+                    style={[
+                      styles.deadlineText,
+                      isPastPeak && styles.deadlineTextPast,
+                    ]}
+                  >
+                    By {drinkUntil}
+                  </Text>
+                </View>
               </View>
-            </View>
+            </Pressable>
           );
         })}
       </Card.Content>
