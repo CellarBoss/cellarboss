@@ -228,15 +228,19 @@ jobs:
     needs: changes
     if: needs.changes.outputs.mobile == 'true' || needs.changes.outputs.structure == 'true'
     steps:
-      - uses: actions/checkout@v4
-
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: ./.github/actions/setup-node
 
+      - name: Install dependencies
+        working-directory: apps/mobile
+        run: npm ci
+
       - name: Expo doctor
+        working-directory: apps/mobile
         run: npx expo-doctor@latest --verbose
 
       - name: Expo dependency check
+        working-directory: apps/mobile
         run: npx expo install --check
 
   validate-api-docs:
