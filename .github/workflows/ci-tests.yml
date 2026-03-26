@@ -222,6 +222,23 @@ jobs:
           path: apps/web/test-results/
           retention-days: 7
 
+  validate-expo:
+    name: Validate Expo Setup
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.mobile == 'true' || needs.changes.outputs.structure == 'true'
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: ./.github/actions/setup-node
+
+      - name: Expo doctor
+        working-directory: apps/mobile
+        run: npx expo-doctor@latest --verbose
+
+      - name: Expo dependency check
+        working-directory: apps/mobile
+        run: npx expo install --check
+
   validate-api-docs:
     name: Validate API Docs
     runs-on: ubuntu-latest

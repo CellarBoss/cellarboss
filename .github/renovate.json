@@ -29,6 +29,15 @@
   ],
   "packageRules": [
     {
+      "matchPackagePatterns": [
+        "^expo",
+        "^@expo",
+        "^react-native",
+        "^react$"
+      ],
+      "enabled": false
+    },
+    {
       "matchUpdateTypes": [
         "patch",
         "digest"
