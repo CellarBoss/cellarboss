@@ -63,7 +63,7 @@ export function RecentActivity({
       wineName: wine?.name ?? "Unknown Wine",
       year: vintage?.year ?? null,
       winemakerName: winemaker?.name ?? "",
-      detail: `Purchased · ${bottle.size ?? "standard"}`,
+      detail: `Purchased`,
     });
   }
 
