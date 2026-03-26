@@ -28,7 +28,6 @@
     "**/coverage/**"
   ],
   "packageRules": [
-    // Don't update React Native and Expo packages until we can verify compatibility with the new versions
     {
       "matchPackagePatterns": [
         "^expo",
