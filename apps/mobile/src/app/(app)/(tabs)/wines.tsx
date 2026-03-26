@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
-import { Text, FAB } from "react-native-paper";
+import { Text, FAB, Icon } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -198,25 +198,49 @@ function WineListItem({
       style={styles.item}
       onPress={onPress}
     >
-      <View style={styles.itemTop}>
-        <View style={styles.nameRow}>
-          <View
-            style={[
-              styles.typeDot,
-              { backgroundColor: WINE_TYPE_COLORS[wine.type] },
-            ]}
-          />
+      <View style={styles.itemRow}>
+        <View style={styles.itemText}>
           <Text style={styles.itemTitle} numberOfLines={1}>
             {wine.name}
           </Text>
+          {winemakerName && (
+            <View style={styles.detailRow}>
+              <Icon
+                source="account"
+                size={16}
+                color={theme.colors.onSurfaceVariant}
+              />
+              <Text variant="bodyMedium" style={styles.detailText}>
+                {winemakerName}
+              </Text>
+            </View>
+          )}
+          {regionDisplay && (
+            <View style={styles.detailRow}>
+              <Icon
+                source="earth"
+                size={16}
+                color={theme.colors.onSurfaceVariant}
+              />
+              <Text variant="bodyMedium" style={styles.detailText}>
+                {regionDisplay}
+              </Text>
+            </View>
+          )}
+          {/*
+          <Text style={styles.itemSub} numberOfLines={1}>
+            {winemakerName}
+            {winemakerName && regionDisplay ? " · " : ""}
+            {regionDisplay}
+          </Text>
+          */}
         </View>
-        <Text style={styles.typeLabel}>{WINE_TYPE_LABELS[wine.type]}</Text>
+        <Icon
+          source="bottle-wine"
+          size={40}
+          color={WINE_TYPE_COLORS[wine.type]}
+        />
       </View>
-      <Text style={styles.itemSub} numberOfLines={1}>
-        {winemakerName}
-        {winemakerName && regionDisplay ? " · " : ""}
-        {regionDisplay}
-      </Text>
     </Pressable>
   );
 }
@@ -236,18 +260,24 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.outlineVariant,
   },
-  itemTop: {
+  itemRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    gap: 8,
-    marginBottom: 4,
+    gap: 12,
   },
-  nameRow: {
-    flexDirection: "row",
-    alignItems: "center",
+  detailRow: {
+    flexDirection: "row" as const,
+    alignItems: "center" as const,
+    gap: 6,
+    marginTop: 2,
+  },
+  detailText: {
     flex: 1,
-    gap: 8,
+    color: theme.colors.onSurfaceVariant,
+  },
+  itemText: {
+    flex: 1,
+    gap: 2,
   },
   typeDot: {
     width: 10,
@@ -267,7 +297,7 @@ const styles = StyleSheet.create({
   itemSub: {
     fontSize: 13,
     color: theme.colors.onSurfaceVariant,
-    marginLeft: 18,
+    marginLeft: 0,
   },
   fab: {
     position: "absolute",
