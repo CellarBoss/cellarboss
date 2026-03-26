@@ -20,12 +20,16 @@ const defaultData: WineFormData = {
 };
 
 export default function NewWineScreen() {
-  const { wineMakerId } = useLocalSearchParams<{ wineMakerId?: string }>();
+  const { wineMakerId, regionId } = useLocalSearchParams<{
+    wineMakerId?: string;
+    regionId?: string;
+  }>();
   const queryClient = useQueryClient();
 
   const initialData: WineFormData = {
     ...defaultData,
     ...(wineMakerId ? { wineMakerId: Number(wineMakerId) } : {}),
+    ...(regionId ? { regionId: Number(regionId) } : {}),
   };
 
   const processSave = async (
