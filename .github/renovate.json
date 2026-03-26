@@ -29,13 +29,13 @@
   ],
   "packageRules": [
     {
-      "matchPackagePatterns": [
-        "^expo",
-        "^@expo",
-        "^react-native",
-        "^react$"
-      ],
-      "enabled": false
+      "enabled": false,
+      "matchPackageNames": [
+        "/^expo/",
+        "/^@expo/",
+        "/^react-native/",
+        "/^react$/"
+      ]
     },
     {
       "matchUpdateTypes": [
