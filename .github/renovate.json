@@ -7,7 +7,8 @@
   "semanticCommits": "enabled",
   "semanticCommitType": "deps",
   "semanticCommitScope": "",
-  "prConcurrentLimit": 8,
+  "prConcurrentLimit": 4,
+  "branchConcurrentLimit": 2,
   "prHourlyLimit": 2,
   "draftPR": false,
   "dependencyDashboard": true,
@@ -16,8 +17,16 @@
     "enabled": true,
     "automerge": true,
     "automergeType": "pr",
-    "semanticCommitType": "chore"
+    "semanticCommitType": "chore",
+    "schedule": ["before 5am on monday"],
+    "prConcurrentLimit": 1
   },
+  "ignorePaths": [
+    "**/dist/**",
+    "**/build/**",
+    "**/.next/**",
+    "**/coverage/**"
+  ],
   "packageRules": [
     {
       "matchUpdateTypes": [
