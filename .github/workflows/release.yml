@@ -93,10 +93,109 @@ jobs:
           path: apps/web/docs/.vitepress/dist/
           retention-days: 1
 
+  build-mobile-user-docs:
+    name: Build Mobile User Docs
+    runs-on: ubuntu-latest
+    needs: [prettier, tests, smoketest-android]
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: ./.github/actions/setup-node
+
+      - name: Setup Java
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@651bceb6f9ca583f16b8d75b62c36ded2ae6fc9c # v4
+
+      - name: Cache AVD
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-api-31-${{ runner.os }}
+
+      - name: Create AVD
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        run: |
+          sdkmanager "system-images;android-31;google_apis;x86_64"
+          echo "no" | avdmanager create avd -n test_device -k "system-images;android-31;google_apis;x86_64" --device "pixel_6"
+
+      - name: Cache Expo prebuild
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        id: expo-prebuild-cache
+        with:
+          path: apps/mobile/android/
+          key: expo-prebuild-android-${{ hashFiles('apps/mobile/package.json', 'apps/mobile/app.config.ts') }}
+
+      - name: Expo prebuild (Android)
+        if: steps.expo-prebuild-cache.outputs.cache-hit != 'true'
+        run: cd apps/mobile && npx expo prebuild --platform android --clean
+
+      - name: Cache Gradle
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('apps/mobile/android/**/*.gradle*', 'apps/mobile/android/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
+
+      - name: Build Android release APK
+        run: |
+          cd apps/mobile/android
+          ./gradlew assembleRelease -PreactNativeArchitectures=x86_64 --no-daemon --build-cache
+
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Start mock server
+        run: pnpm --filter @cellarboss/mock-server start &
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Generate screenshots
+        uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
+        env:
+          MAESTRO_DRIVER_STARTUP_TIMEOUT: 180000
+        with:
+          api-level: 31
+          target: google_apis
+          arch: x86_64
+          avd-name: test_device
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          disable-animations: true
+          script: |
+            adb wait-for-device
+            adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
+            adb install apps/mobile/android/app/build/outputs/apk/release/app-release.apk
+            cd apps/mobile && pnpm docs:screenshots
+
+      - name: Build mobile docs
+        run: pnpm --filter @cellarboss/mobile docs:build
+
+      - name: Upload mobile docs artifact
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        with:
+          name: mobile-user-docs
+          path: apps/mobile/docs/.vitepress/dist/
+          retention-days: 1
+
   deploy-docs:
     name: Deploy Documentation
     runs-on: ubuntu-latest
-    needs: [build-api-docs, build-webui-user-docs]
+    needs: [build-api-docs, build-webui-user-docs, build-mobile-user-docs]
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -113,6 +212,12 @@ jobs:
           name: webui-user-docs
           path: _site/web
 
+      - name: Download mobile user docs
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: mobile-user-docs
+          path: _site/mobile
+
       - name: Create landing page
         run: |
           cat > _site/index.html << 'LANDING'
@@ -124,7 +229,7 @@ jobs:
             <meta http-equiv="refresh" content="0; url=web/">
           </head>
           <body>
-            <a href="web/">Web UI User Guide</a> | <a href="api/">API Reference</a>
+            <a href="web/">Web UI User Guide</a> | <a href="mobile/">Mobile App Guide</a> | <a href="api/">API Reference</a>
           </body>
           </html>
           LANDING
