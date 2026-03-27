@@ -7,7 +7,6 @@ import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { DataList } from "@/components/DataList";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { ScreenHeader } from "@/components/ScreenHeader";
-import { WineGlassRating } from "@/components/WineGlassRating";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useSetting } from "@/hooks/use-settings";
 import { api } from "@/lib/api/client";
@@ -22,6 +21,14 @@ const SORT_OPTIONS = [
   { label: "Score (High)", value: "score-desc" },
   { label: "Score (Low)", value: "score-asc" },
 ];
+
+function getScoreColor(score: number): string {
+  if (score >= 9) return "#2e7d32";
+  if (score >= 7) return "#558b2f";
+  if (score >= 5) return "#f9a825";
+  if (score >= 3) return "#ef6c00";
+  return "#c62828";
+}
 
 export default function TastingNotesScreen() {
   const router = useRouter();
@@ -44,8 +51,17 @@ export default function TastingNotesScreen() {
     queryKey: ["wines"],
     queryFn: () => api.wines.getAll(),
   });
+  const winemakerQuery = useApiQuery({
+    queryKey: ["winemakers"],
+    queryFn: () => api.winemakers.getAll(),
+  });
 
-  const result = queryGate([notesQuery, vintageQuery, wineQuery]);
+  const result = queryGate([
+    notesQuery,
+    vintageQuery,
+    wineQuery,
+    winemakerQuery,
+  ]);
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => api.tastingNotes.delete(id),
@@ -63,18 +79,20 @@ export default function TastingNotesScreen() {
 
   if (!result.ready) return result.gate;
 
-  const [notes, vintages, wines] = result.data;
+  const [notes, vintages, wines, winemakers] = result.data;
 
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w) => [w.id, w]));
+  const winemakerMap = new Map(winemakers.map((wm) => [wm.id, wm.name]));
 
   function getWineContext(note: TastingNote) {
     const vintage = vintageMap.get(note.vintageId);
-    if (!vintage) return { wineName: "Unknown", vintageLabel: "" };
+    if (!vintage) return { wineTitle: "Unknown", winemakerName: "" };
     const wine = wineMap.get(vintage.wineId);
+    const year = vintage.year ? String(vintage.year) : "NV";
     return {
-      wineName: wine?.name ?? "Unknown",
-      vintageLabel: vintage.year ? String(vintage.year) : "NV",
+      wineTitle: wine ? `${wine.name} ${year}` : `Unknown ${year}`,
+      winemakerName: wine ? (winemakerMap.get(wine.wineMakerId) ?? "") : "",
     };
   }
 
@@ -105,7 +123,8 @@ export default function TastingNotesScreen() {
             const lower = query.toLowerCase();
             const ctx = getWineContext(item);
             return (
-              ctx.wineName.toLowerCase().includes(lower) ||
+              ctx.wineTitle.toLowerCase().includes(lower) ||
+              ctx.winemakerName.toLowerCase().includes(lower) ||
               item.author.toLowerCase().includes(lower) ||
               item.notes.toLowerCase().includes(lower)
             );
@@ -172,7 +191,7 @@ export default function TastingNotesScreen() {
 
 type TastingNoteListItemProps = {
   note: TastingNote;
-  wineContext: { wineName: string; vintageLabel: string };
+  wineContext: { wineTitle: string; winemakerName: string };
   datetimeFormat?: string | number | boolean | null;
   onPress: () => void;
 };
@@ -185,25 +204,38 @@ function TastingNoteListItem({
 }: TastingNoteListItemProps) {
   return (
     <Pressable style={styles.item} onPress={onPress}>
-      <View style={styles.itemTop}>
-        <View style={styles.wineInfo}>
-          <Text style={styles.itemTitle} numberOfLines={1}>
-            {wineContext.wineName}
-          </Text>
-          <Text style={styles.vintageLabel}>{wineContext.vintageLabel}</Text>
-        </View>
-        <WineGlassRating value={note.score} />
+      <View
+        style={[
+          styles.scoreBadge,
+          { backgroundColor: getScoreColor(note.score) },
+        ]}
+      >
+        <Text style={styles.scoreText}>{note.score}</Text>
       </View>
-      <Text style={styles.itemSub} numberOfLines={2}>
-        {note.notes}
-      </Text>
-      <View style={styles.itemMeta}>
-        <Text style={styles.metaText}>{note.author}</Text>
-        <Text style={styles.metaText}>
-          {typeof datetimeFormat === "string"
-            ? formatDateTime(note.date, datetimeFormat)
-            : note.date.split("T")[0]}
-        </Text>
+      <View style={styles.itemContent}>
+        <View style={styles.itemTop}>
+          <Text style={styles.itemTitle} numberOfLines={1}>
+            {wineContext.wineTitle}
+          </Text>
+          {!!wineContext.winemakerName && (
+            <Text style={styles.winemakerLabel} numberOfLines={1}>
+              {wineContext.winemakerName}
+            </Text>
+          )}
+        </View>
+        {!!note.notes && (
+          <Text style={styles.itemSub} numberOfLines={2}>
+            {note.notes}
+          </Text>
+        )}
+        <View style={styles.itemMeta}>
+          <Text style={styles.metaText}>{note.author}</Text>
+          <Text style={styles.metaText}>
+            {typeof datetimeFormat === "string"
+              ? formatDateTime(note.date, datetimeFormat)
+              : note.date.split("T")[0]}
+          </Text>
+        </View>
       </View>
     </Pressable>
   );
@@ -223,16 +255,29 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.outlineVariant,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 12,
+  },
+  scoreBadge: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 2,
+    flexShrink: 0,
+  },
+  scoreText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+  itemContent: {
+    flex: 1,
+    gap: 3,
   },
   itemTop: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 8,
-    marginBottom: 4,
-  },
-  wineInfo: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
@@ -243,19 +288,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: theme.colors.onSurface,
   },
-  vintageLabel: {
-    fontSize: 14,
-    fontWeight: "600",
+  winemakerLabel: {
+    fontSize: 13,
     color: theme.colors.onSurfaceVariant,
   },
   itemSub: {
     fontSize: 13,
     color: theme.colors.onSurface,
-    marginBottom: 4,
+    lineHeight: 18,
   },
   itemMeta: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginTop: 2,
   },
   metaText: {
     fontSize: 12,

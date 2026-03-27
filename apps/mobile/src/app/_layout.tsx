@@ -1,11 +1,11 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, StatusBar } from "react-native";
 import { Slot } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PaperProvider, ActivityIndicator } from "react-native-paper";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AuthProvider, useAuth } from "@/contexts/auth-context";
+import { NavigationHistoryProvider } from "@/contexts/navigation-history-context";
 import { theme } from "@/lib/theme";
 
 const queryClient = new QueryClient();
@@ -31,8 +31,10 @@ export default function RootLayout() {
         <PaperProvider theme={theme}>
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
-              <StatusBar style="auto" />
-              <AuthGate />
+              <NavigationHistoryProvider>
+                <StatusBar barStyle="dark-content" translucent={true} />
+                <AuthGate />
+              </NavigationHistoryProvider>
             </AuthProvider>
           </QueryClientProvider>
         </PaperProvider>

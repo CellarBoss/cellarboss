@@ -20,6 +20,7 @@
 
 - [ ] Backend
 - [ ] Web application
+- [ ] Android application
 - [ ] Project scaffolding (Docker images etc)
 
 ## Related Issues

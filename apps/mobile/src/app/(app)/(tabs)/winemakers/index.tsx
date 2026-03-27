@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
-import { Pressable, StyleSheet } from "react-native";
-import { Text, FAB } from "react-native-paper";
+import { View, Pressable, StyleSheet } from "react-native";
+import { Text, FAB, Icon } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -29,8 +29,12 @@ export default function WinemakersScreen() {
     queryKey: ["winemakers"],
     queryFn: () => api.winemakers.getAll(),
   });
+  const winesQuery = useApiQuery({
+    queryKey: ["wines"],
+    queryFn: () => api.wines.getAll(),
+  });
 
-  const result = queryGate([winemakersQuery]);
+  const result = queryGate([winemakersQuery, winesQuery]);
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => api.winemakers.delete(id),
@@ -48,7 +52,15 @@ export default function WinemakersScreen() {
 
   if (!result.ready) return result.gate;
 
-  const [winemakers] = result.data;
+  const [winemakers, wines] = result.data;
+
+  const wineCountByWinemaker = new Map<number, number>();
+  for (const wine of wines) {
+    wineCountByWinemaker.set(
+      wine.wineMakerId,
+      (wineCountByWinemaker.get(wine.wineMakerId) ?? 0) + 1,
+    );
+  }
 
   const sortedWinemakers = [...winemakers].sort((a, b) => {
     switch (currentSort) {
@@ -93,16 +105,31 @@ export default function WinemakersScreen() {
             onPress: () => setDeleteTarget(winemaker),
           },
         ]}
-        renderItem={(winemaker) => (
-          <Pressable
-            style={styles.item}
-            onPress={() => router.push(`/winemakers/${winemaker.id}`)}
-          >
-            <Text style={styles.itemTitle} numberOfLines={1}>
-              {winemaker.name}
-            </Text>
-          </Pressable>
-        )}
+        renderItem={(winemaker) => {
+          const wineCount = wineCountByWinemaker.get(winemaker.id) ?? 0;
+          return (
+            <Pressable
+              style={styles.item}
+              onPress={() => router.push(`/winemakers/${winemaker.id}`)}
+            >
+              <View style={styles.itemRow}>
+                <Text style={styles.itemTitle} numberOfLines={1}>
+                  {winemaker.name}
+                </Text>
+                {wineCount > 0 && (
+                  <View style={styles.badge}>
+                    <Icon
+                      source="glass-wine"
+                      size={14}
+                      color={theme.colors.onSurfaceVariant}
+                    />
+                    <Text style={styles.badgeText}>{wineCount}</Text>
+                  </View>
+                )}
+              </View>
+            </Pressable>
+          );
+        }}
       />
 
       <FAB
@@ -144,10 +171,31 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.outlineVariant,
   },
+  itemRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
   itemTitle: {
     fontSize: 15,
     fontWeight: "bold",
     color: theme.colors.onSurface,
+    flex: 1,
+    marginRight: 12,
+  },
+  badge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: theme.colors.surfaceVariant,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    gap: 4,
+  },
+  badgeText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: theme.colors.onSurfaceVariant,
   },
   fab: {
     position: "absolute",

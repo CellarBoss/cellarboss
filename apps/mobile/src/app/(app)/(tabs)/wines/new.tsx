@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
+import { useLocalSearchParams } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { FormCard } from "@/components/FormCard";
 import { api } from "@/lib/api/client";
@@ -19,7 +20,17 @@ const defaultData: WineFormData = {
 };
 
 export default function NewWineScreen() {
+  const { wineMakerId, regionId } = useLocalSearchParams<{
+    wineMakerId?: string;
+    regionId?: string;
+  }>();
   const queryClient = useQueryClient();
+
+  const initialData: WineFormData = {
+    ...defaultData,
+    ...(wineMakerId ? { wineMakerId: Number(wineMakerId) } : {}),
+    ...(regionId ? { regionId: Number(regionId) } : {}),
+  };
 
   const processSave = async (
     data: Record<string, string>,
@@ -57,7 +68,7 @@ export default function NewWineScreen() {
       <ScreenHeader title="New Wine" showBack />
       <FormCard
         mode="create"
-        data={defaultData}
+        data={initialData}
         fields={wineFields}
         processSave={processSave}
       />

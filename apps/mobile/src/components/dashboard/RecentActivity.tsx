@@ -1,6 +1,7 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import { Card, Text, Icon } from "react-native-paper";
 import { parseISO, formatDistanceToNow, subDays } from "date-fns";
+import { useRouter } from "expo-router";
 import type {
   Bottle,
   TastingNote,
@@ -26,6 +27,7 @@ type ActivityItem = {
   year: number | null;
   winemakerName: string;
   detail: string;
+  onClick?: () => void;
 };
 
 export function RecentActivity({
@@ -35,6 +37,8 @@ export function RecentActivity({
   wines,
   winemakers,
 }: RecentActivityProps) {
+  const router = useRouter();
+
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w) => [w.id, w]));
   const winemakerMap = new Map(winemakers.map((wm) => [wm.id, wm]));
@@ -63,7 +67,10 @@ export function RecentActivity({
       wineName: wine?.name ?? "Unknown Wine",
       year: vintage?.year ?? null,
       winemakerName: winemaker?.name ?? "",
-      detail: `Purchased · ${bottle.size ?? "standard"}`,
+      detail: `Purchased`,
+      onClick: () => {
+        router.push(`/bottles/${bottle.id}`);
+      },
     });
   }
 
@@ -89,6 +96,9 @@ export function RecentActivity({
       year: vintage?.year ?? null,
       winemakerName: winemaker?.name ?? "",
       detail: `Tasted · ${note.score}/10`,
+      onClick: () => {
+        router.push(`/tasting-notes/${note.id}`);
+      },
     });
   }
 
@@ -111,39 +121,41 @@ export function RecentActivity({
       <Card.Title title="Recent Activity" />
       <Card.Content style={styles.content}>
         {recent.map((item) => (
-          <View key={item.id} style={styles.row}>
-            <View
-              style={[
-                styles.iconWrapper,
-                item.type === "purchase"
-                  ? styles.iconPurchase
-                  : styles.iconTasting,
-              ]}
-            >
-              <Icon
-                source={
-                  item.type === "purchase" ? "bottle-wine" : "star-outline"
-                }
-                size={16}
-                color={
-                  item.type === "purchase" ? theme.colors.primary : "#DAA520"
-                }
-              />
-            </View>
-            <View style={styles.details}>
-              <Text style={styles.wineName} numberOfLines={1}>
-                {item.wineName}
-                {item.year ? ` ${item.year}` : ""}
+          <Pressable key={item.id} style={styles.card} onPress={item.onClick}>
+            <View style={styles.row}>
+              <View
+                style={[
+                  styles.iconWrapper,
+                  item.type === "purchase"
+                    ? styles.iconPurchase
+                    : styles.iconTasting,
+                ]}
+              >
+                <Icon
+                  source={
+                    item.type === "purchase" ? "bottle-wine" : "star-outline"
+                  }
+                  size={16}
+                  color={
+                    item.type === "purchase" ? theme.colors.primary : "#DAA520"
+                  }
+                />
+              </View>
+              <View style={styles.details}>
+                <Text style={styles.wineName} numberOfLines={1}>
+                  {item.wineName}
+                  {item.year ? ` ${item.year}` : ""}
+                </Text>
+                <Text style={styles.detail} numberOfLines={1}>
+                  {item.winemakerName ? `${item.winemakerName} · ` : ""}
+                  {item.detail}
+                </Text>
+              </View>
+              <Text style={styles.time}>
+                {formatDistanceToNow(item.date, { addSuffix: true })}
               </Text>
-              <Text style={styles.detail} numberOfLines={1}>
-                {item.winemakerName ? `${item.winemakerName} · ` : ""}
-                {item.detail}
-              </Text>
             </View>
-            <Text style={styles.time}>
-              {formatDistanceToNow(item.date, { addSuffix: true })}
-            </Text>
-          </View>
+          </Pressable>
         ))}
       </Card.Content>
     </Card>

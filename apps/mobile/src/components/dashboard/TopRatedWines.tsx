@@ -1,6 +1,7 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import { Card, Text } from "react-native-paper";
 import type { TastingNote, Vintage, Wine, WineMaker } from "@cellarboss/types";
+import { useRouter } from "expo-router";
 import { theme } from "@/lib/theme";
 
 type TopRatedWinesProps = {
@@ -16,6 +17,8 @@ export function TopRatedWines({
   wines,
   winemakers,
 }: TopRatedWinesProps) {
+  const router = useRouter();
+
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w) => [w.id, w]));
   const winemakerMap = new Map(winemakers.map((wm) => [wm.id, wm]));
@@ -69,23 +72,29 @@ export function TopRatedWines({
           const winemakerName = winemaker?.name ?? "";
 
           return (
-            <View key={vintageId} style={styles.row}>
-              <Text style={styles.rank}>{index + 1}</Text>
-              <View style={styles.details}>
-                <Text style={styles.wineName} numberOfLines={1}>
-                  {wineName}
-                  {year}
-                </Text>
-                {winemakerName ? (
-                  <Text style={styles.winemaker} numberOfLines={1}>
-                    {winemakerName}
+            <Pressable
+              key={vintageId}
+              style={styles.card}
+              onPress={() => router.push(`/vintages/${vintageId}`)}
+            >
+              <View style={styles.row}>
+                <Text style={styles.rank}>{index + 1}</Text>
+                <View style={styles.details}>
+                  <Text style={styles.wineName} numberOfLines={1}>
+                    {wineName}
+                    {year}
                   </Text>
-                ) : null}
+                  {winemakerName ? (
+                    <Text style={styles.winemaker} numberOfLines={1}>
+                      {winemakerName}
+                    </Text>
+                  ) : null}
+                </View>
+                <View style={styles.scoreBadge}>
+                  <Text style={styles.scoreText}>{avg.toFixed(1)}</Text>
+                </View>
               </View>
-              <View style={styles.scoreBadge}>
-                <Text style={styles.scoreText}>{avg.toFixed(1)}</Text>
-              </View>
-            </View>
+            </Pressable>
           );
         })}
       </Card.Content>

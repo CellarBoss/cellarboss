@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { Button, Text } from "react-native-paper";
-import { useRouter } from "expo-router";
+import { useNavigationHistory } from "@/contexts/navigation-history-context";
 import { useForm } from "@tanstack/react-form";
 import * as Haptics from "expo-haptics";
 import { FormField } from "./FormField";
@@ -44,7 +44,7 @@ export function FormCard<T extends { id: number | string }>({
   processSave,
   onSuccess,
 }: FormCardProps<T>) {
-  const router = useRouter();
+  const { goBack } = useNavigationHistory();
   const editable = mode !== "view";
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -79,7 +79,7 @@ export function FormCard<T extends { id: number | string }>({
           if (onSuccess) {
             onSuccess();
           } else {
-            router.back();
+            goBack();
           }
         }, 2500);
       } catch (err: unknown) {
@@ -157,7 +157,7 @@ export function FormCard<T extends { id: number | string }>({
           <Button
             testID="back-button"
             mode="outlined"
-            onPress={() => router.back()}
+            onPress={goBack}
             style={styles.actionButton}
           >
             Back

@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
-import { Pressable, StyleSheet } from "react-native";
-import { Text, FAB } from "react-native-paper";
+import { View, Pressable, StyleSheet } from "react-native";
+import { Text, FAB, Icon } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -29,8 +29,12 @@ export default function GrapesScreen() {
     queryKey: ["grapes"],
     queryFn: () => api.grapes.getAll(),
   });
+  const winegrapesQuery = useApiQuery({
+    queryKey: ["winegrapes"],
+    queryFn: () => api.winegrapes.getAll(),
+  });
 
-  const result = queryGate([grapesQuery]);
+  const result = queryGate([grapesQuery, winegrapesQuery]);
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => api.grapes.delete(id),
@@ -48,7 +52,15 @@ export default function GrapesScreen() {
 
   if (!result.ready) return result.gate;
 
-  const [grapes] = result.data;
+  const [grapes, winegrapes] = result.data;
+
+  const wineCountByGrape = new Map<number, number>();
+  for (const wg of winegrapes) {
+    wineCountByGrape.set(
+      wg.grapeId,
+      (wineCountByGrape.get(wg.grapeId) ?? 0) + 1,
+    );
+  }
 
   const sortedGrapes = [...grapes].sort((a, b) => {
     switch (currentSort) {
@@ -93,16 +105,31 @@ export default function GrapesScreen() {
             onPress: () => setDeleteTarget(grape),
           },
         ]}
-        renderItem={(grape) => (
-          <Pressable
-            style={styles.item}
-            onPress={() => router.push(`/grapes/${grape.id}`)}
-          >
-            <Text style={styles.itemTitle} numberOfLines={1}>
-              {grape.name}
-            </Text>
-          </Pressable>
-        )}
+        renderItem={(grape) => {
+          const wineCount = wineCountByGrape.get(grape.id) ?? 0;
+          return (
+            <Pressable
+              style={styles.item}
+              onPress={() => router.push(`/grapes/${grape.id}`)}
+            >
+              <View style={styles.itemRow}>
+                <Text style={styles.itemTitle} numberOfLines={1}>
+                  {grape.name}
+                </Text>
+                {wineCount > 0 && (
+                  <View style={styles.badge}>
+                    <Icon
+                      source="glass-wine"
+                      size={14}
+                      color={theme.colors.onSurfaceVariant}
+                    />
+                    <Text style={styles.badgeText}>{wineCount}</Text>
+                  </View>
+                )}
+              </View>
+            </Pressable>
+          );
+        }}
       />
 
       <FAB
@@ -144,10 +171,31 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.outlineVariant,
   },
+  itemRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
   itemTitle: {
     fontSize: 15,
     fontWeight: "bold",
     color: theme.colors.onSurface,
+    flex: 1,
+    marginRight: 12,
+  },
+  badge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: theme.colors.surfaceVariant,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    gap: 4,
+  },
+  badgeText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: theme.colors.onSurfaceVariant,
   },
   fab: {
     position: "absolute",
