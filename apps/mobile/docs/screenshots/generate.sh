@@ -62,10 +62,6 @@ cd "$SCRIPT_DIR"
 timeout 900 maestro test --output "$MAESTRO_OUTPUT_DIR" flows/ || MAESTRO_EXIT_CODE=$?
 MAESTRO_EXIT_CODE=${MAESTRO_EXIT_CODE:-0}
 
-echo "Stopping emulator..."
-adb emu kill || true
-pkill -f emulator || true
-
 # 4. Copy screenshots to docs public directory
 echo ""
 echo "Copying screenshots to $OUTPUT_DIR..."

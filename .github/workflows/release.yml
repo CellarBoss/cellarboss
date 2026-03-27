@@ -162,6 +162,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Generate screenshots
+        timeout-minutes: 20
         uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
         env:
           MAESTRO_DRIVER_STARTUP_TIMEOUT: 180000
