@@ -1,41 +1,44 @@
-import { StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
-import { FormCard } from "@/components/FormCard";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { theme } from "@/lib/theme";
-import { regionFields } from "@/lib/fields/regions";
+import { WinemakerDetailsCard } from "@/components/winemaker/WinemakerDetailsCard";
+import { WinemakerWinesList } from "@/components/winemaker/WinemakerWinesList";
 
-export default function ViewRegionScreen() {
+export default function ViewWinemakerScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
 
-  const regionQuery = useApiQuery({
-    queryKey: ["regions", Number(id)],
-    queryFn: () => api.regions.getById(Number(id)),
+  const winemakerQuery = useApiQuery({
+    queryKey: ["winemakers", Number(id)],
+    queryFn: () => api.winemakers.getById(Number(id)),
   });
 
-  const result = queryGate([regionQuery]);
+  const result = queryGate([winemakerQuery]);
   if (!result.ready) return result.gate;
 
-  const [region] = result.data;
+  const [winemaker] = result.data;
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <ScreenHeader
-        title={region.name}
+        title={winemaker.name}
         showBack
         actions={[
           {
             icon: "pencil",
-            onPress: () => router.push(`/regions/${id}/edit`),
+            onPress: () => router.push(`/winemakers/${id}/edit`),
           },
         ]}
       />
-      <FormCard mode="view" data={region} fields={regionFields} />
+      <ScrollView contentContainerStyle={styles.scroll}>
+        <WinemakerDetailsCard winemaker={winemaker} />
+        <WinemakerWinesList winemakerId={winemaker.id} />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -44,5 +47,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
+  },
+  scroll: {
+    padding: 16,
   },
 });

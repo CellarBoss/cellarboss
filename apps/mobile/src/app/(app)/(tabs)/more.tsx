@@ -22,7 +22,7 @@ export default function MoreScreen() {
               <List.Icon {...props} icon="bottle-wine-outline" />
             )}
             right={(props) => <List.Icon {...props} icon="chevron-right" />}
-            onPress={() => router.push("/(app)/cellar")}
+            onPress={() => router.push("/(app)/bottles")}
           />
           <List.Item
             testID="menu-wines"

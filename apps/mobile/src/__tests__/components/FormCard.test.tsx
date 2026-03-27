@@ -1,16 +1,10 @@
 import "../helpers/mock-navigation";
 import "../helpers/mock-haptics";
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-} from "@testing-library/react-native";
-import { PaperProvider } from "react-native-paper";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { screen, fireEvent, waitFor } from "@testing-library/react-native";
 import * as Haptics from "expo-haptics";
 import { FormCard } from "@/components/FormCard";
 import { mockRouter } from "../helpers/mock-navigation";
+import { renderWithProviders } from "../helpers/test-utils";
 import type { FieldConfig } from "@/lib/types/field";
 
 type TestEntity = { id: number; name: string; type: string };
@@ -31,10 +25,6 @@ const fields: FieldConfig<TestEntity>[] = [
 function renderFormCard(
   props: Partial<React.ComponentProps<typeof FormCard<TestEntity>>> = {},
 ) {
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  });
-
   const defaultProps = {
     mode: "edit" as const,
     data: { id: 1, name: "Test Wine", type: "red" },
@@ -42,13 +32,7 @@ function renderFormCard(
     ...props,
   };
 
-  return render(
-    <PaperProvider>
-      <QueryClientProvider client={queryClient}>
-        <FormCard {...defaultProps} />
-      </QueryClientProvider>
-    </PaperProvider>,
-  );
+  return renderWithProviders(<FormCard {...defaultProps} />);
 }
 
 describe("FormCard", () => {
@@ -76,7 +60,7 @@ describe("FormCard", () => {
     expect(screen.getByText("Save")).toBeTruthy();
   });
 
-  it("Back button calls router.back()", () => {
+  it("Back button navigates back", () => {
     renderFormCard();
     fireEvent.press(screen.getByText("Back"));
     expect(mockRouter.back).toHaveBeenCalled();

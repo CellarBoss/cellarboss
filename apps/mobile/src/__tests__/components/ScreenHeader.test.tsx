@@ -1,17 +1,13 @@
 import "../helpers/mock-navigation";
-import { render, screen, fireEvent } from "@testing-library/react-native";
-import { PaperProvider } from "react-native-paper";
+import { screen, fireEvent } from "@testing-library/react-native";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { mockRouter } from "../helpers/mock-navigation";
+import { renderWithProviders } from "../helpers/test-utils";
 
 function renderHeader(
   props: Partial<React.ComponentProps<typeof ScreenHeader>> = {},
 ) {
-  return render(
-    <PaperProvider>
-      <ScreenHeader title="My Screen" {...props} />
-    </PaperProvider>,
-  );
+  return renderWithProviders(<ScreenHeader title="My Screen" {...props} />);
 }
 
 describe("ScreenHeader", () => {
@@ -24,9 +20,8 @@ describe("ScreenHeader", () => {
     expect(screen.getByText("My Screen")).toBeTruthy();
   });
 
-  it("back button calls router.back()", () => {
+  it("back button navigates back", () => {
     renderHeader({ showBack: true });
-    // The back button is an IconButton with icon "arrow-left"
     const buttons = screen.getAllByRole("button");
     fireEvent.press(buttons[0]);
     expect(mockRouter.back).toHaveBeenCalledTimes(1);
@@ -34,7 +29,6 @@ describe("ScreenHeader", () => {
 
   it("does not show back button by default", () => {
     renderHeader();
-    // Only action buttons (if any), no back button
     expect(screen.queryAllByRole("button")).toHaveLength(0);
   });
 

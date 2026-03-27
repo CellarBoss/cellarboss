@@ -13,9 +13,9 @@ body:
       label: Area
       description: Which part of the application is affected?
       options:
-        - Frontend (web UI)
+        - Web UI
+        - Android application
         - Backend (API)
-        - Both
         - Docker / deployment
         - Other
     validations:

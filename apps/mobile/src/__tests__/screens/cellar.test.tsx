@@ -26,7 +26,7 @@ jest.mock("react-native-gesture-handler/ReanimatedSwipeable", () => {
   };
 });
 
-import CellarScreen from "@/app/(app)/(tabs)/cellar";
+import CellarScreen from "@/app/(app)/(tabs)/bottles";
 
 describe("CellarScreen", () => {
   beforeEach(() => {

@@ -84,6 +84,7 @@ export const mockApi = {
     delete: jest.fn(),
   },
   winegrapes: {
+    getAll: jest.fn().mockResolvedValue(mockOk([])),
     getByWineId: jest.fn().mockResolvedValue(mockOk([])),
     create: jest.fn(),
     delete: jest.fn(),
