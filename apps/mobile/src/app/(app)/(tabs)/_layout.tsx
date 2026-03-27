@@ -26,7 +26,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="cellar"
+        name="bottles"
         options={{
           title: "Cellar",
           tabBarButtonTestID: "cellar-tab",
@@ -65,7 +65,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen name="bottles" options={{ href: null }} />
       <Tabs.Screen name="countries" options={{ href: null }} />
       <Tabs.Screen name="grapes" options={{ href: null }} />
       <Tabs.Screen name="locations" options={{ href: null }} />
