@@ -34,7 +34,8 @@
         "/^expo/",
         "/^@expo/",
         "/^react-native/",
-        "/^react$/"
+        "/^react$/",
+        "/^@react-navigation/"
       ]
     },
     {
