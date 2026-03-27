@@ -24,6 +24,11 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "more-tab"
 - waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: "menu-countries"
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: "menu-countries"
 - waitForAnimationToEnd
@@ -42,6 +47,11 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "more-tab"
 - waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: "menu-locations"
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: "menu-locations"
 - waitForAnimationToEnd
