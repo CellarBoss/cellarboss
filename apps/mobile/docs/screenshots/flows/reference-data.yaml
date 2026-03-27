@@ -9,44 +9,46 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "menu-winemakers"
 - waitForAnimationToEnd
-- takeScreenshot: winemakers-list
-- pressKey: back
-- waitForAnimationToEnd
+- takeScreenshot: ${SCREENSHOT_DIR}/winemakers-list
 
 # --- Regions ---
 - tapOn:
+    id: "more-tab"
+- waitForAnimationToEnd
+- tapOn:
     id: "menu-regions"
 - waitForAnimationToEnd
-- takeScreenshot: regions-list
-- pressKey: back
-- waitForAnimationToEnd
+- takeScreenshot: ${SCREENSHOT_DIR}/regions-list
 
 # --- Countries ---
 - tapOn:
+    id: "more-tab"
+- waitForAnimationToEnd
+- tapOn:
     id: "menu-countries"
 - waitForAnimationToEnd
-- takeScreenshot: countries-list
-- pressKey: back
-- waitForAnimationToEnd
+- takeScreenshot: ${SCREENSHOT_DIR}/countries-list
 
 # --- Grapes ---
 - tapOn:
+    id: "more-tab"
+- waitForAnimationToEnd
+- tapOn:
     id: "menu-grapes"
 - waitForAnimationToEnd
-- takeScreenshot: grapes-list
-- pressKey: back
-- waitForAnimationToEnd
+- takeScreenshot: ${SCREENSHOT_DIR}/grapes-list
 
-# --- Locations (still on More screen from grapes) ---
+# --- Locations ---
+- tapOn:
+    id: "more-tab"
+- waitForAnimationToEnd
 - tapOn:
     id: "menu-locations"
 - waitForAnimationToEnd
-- takeScreenshot: locations-list
-- pressKey: back
-- waitForAnimationToEnd
+- takeScreenshot: ${SCREENSHOT_DIR}/locations-list
 
 # --- Storages (use tab) ---
 - tapOn:
     id: "storages-tab"
 - waitForAnimationToEnd
-- takeScreenshot: storages-list
+- takeScreenshot: ${SCREENSHOT_DIR}/storages-list

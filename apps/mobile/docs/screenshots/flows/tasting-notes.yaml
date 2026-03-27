@@ -9,10 +9,10 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "menu-tasting-notes"
 - waitForAnimationToEnd
-- takeScreenshot: tasting-notes-list
+- takeScreenshot: ${SCREENSHOT_DIR}/tasting-notes-list
 
 # Tap FAB to create new tasting note
 - tapOn:
     id: "fab-add"
 - waitForAnimationToEnd
-- takeScreenshot: tasting-notes-create
+- takeScreenshot: ${SCREENSHOT_DIR}/tasting-notes-create

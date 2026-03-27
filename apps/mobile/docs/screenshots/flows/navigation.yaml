@@ -4,10 +4,10 @@ appId: org.cellarboss.mobile
 
 # Capture tab bar (dashboard is active by default)
 - waitForAnimationToEnd
-- takeScreenshot: navigation-tabs
+- takeScreenshot: ${SCREENSHOT_DIR}/navigation-tabs
 
 # Navigate to More tab
 - tapOn:
     id: "more-tab"
 - waitForAnimationToEnd
-- takeScreenshot: navigation-more
+- takeScreenshot: ${SCREENSHOT_DIR}/navigation-more

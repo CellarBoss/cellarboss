@@ -4,4 +4,4 @@ appId: org.cellarboss.mobile
 
 # Dashboard is the default tab after login
 - waitForAnimationToEnd
-- takeScreenshot: dashboard-overview
+- takeScreenshot: ${SCREENSHOT_DIR}/dashboard-overview
