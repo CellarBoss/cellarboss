@@ -27,6 +27,8 @@ export function NavigationHistoryProvider({
   const params = useGlobalSearchParams();
   const router = useRouter();
   const isGoingBack = useRef(false);
+  const paramsRef = useRef(params);
+  paramsRef.current = params;
 
   useEffect(() => {
     if (isGoingBack.current) {
@@ -34,7 +36,9 @@ export function NavigationHistoryProvider({
       return;
     }
 
-    const queryParams = Object.entries(params).filter(([k]) => k !== "id");
+    const queryParams = Object.entries(paramsRef.current).filter(
+      ([k]) => k !== "id",
+    );
     const qs = queryParams
       .map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`)
       .join("&");
@@ -43,7 +47,7 @@ export function NavigationHistoryProvider({
     setHistory((prev) =>
       prev[prev.length - 1] === fullPath ? prev : [...prev, fullPath],
     );
-  }, [pathname, params]);
+  }, [pathname]);
 
   const goBack = useCallback(() => {
     setHistory((prev) => {
