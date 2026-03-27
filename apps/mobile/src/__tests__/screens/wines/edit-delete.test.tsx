@@ -8,7 +8,7 @@ import { screen, waitFor, fireEvent } from "@testing-library/react-native";
 import { renderWithProviders } from "../../helpers/test-utils";
 import { wines } from "../../helpers/fixtures";
 
-import EditWineScreen from "@/app/(app)/wines/[id]/edit";
+import EditWineScreen from "@/app/(app)/(tabs)/wines/[id]/edit";
 
 describe("EditWineScreen", () => {
   beforeEach(() => {

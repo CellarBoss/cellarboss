@@ -28,18 +28,18 @@ jest.mock("react-native-gesture-handler/ReanimatedSwipeable", () => {
 });
 
 // Import all list screens
-import CountriesScreen from "@/app/(app)/countries/index";
-import NewCountryScreen from "@/app/(app)/countries/new";
-import RegionsScreen from "@/app/(app)/regions/index";
-import NewRegionScreen from "@/app/(app)/regions/new";
-import WinemakersScreen from "@/app/(app)/winemakers/index";
-import NewWinemakerScreen from "@/app/(app)/winemakers/new";
-import GrapesScreen from "@/app/(app)/grapes/index";
-import NewGrapeScreen from "@/app/(app)/grapes/new";
-import LocationsScreen from "@/app/(app)/locations/index";
-import NewLocationScreen from "@/app/(app)/locations/new";
-import StoragesScreen from "@/app/(app)/(tabs)/storages";
-import NewStorageScreen from "@/app/(app)/storages/new";
+import CountriesScreen from "@/app/(app)/(tabs)/countries/index";
+import NewCountryScreen from "@/app/(app)/(tabs)/countries/new";
+import RegionsScreen from "@/app/(app)/(tabs)/regions/index";
+import NewRegionScreen from "@/app/(app)/(tabs)/regions/new";
+import WinemakersScreen from "@/app/(app)/(tabs)/winemakers/index";
+import NewWinemakerScreen from "@/app/(app)/(tabs)/winemakers/new";
+import GrapesScreen from "@/app/(app)/(tabs)/grapes/index";
+import NewGrapeScreen from "@/app/(app)/(tabs)/grapes/new";
+import LocationsScreen from "@/app/(app)/(tabs)/locations/index";
+import NewLocationScreen from "@/app/(app)/(tabs)/locations/new";
+import StoragesScreen from "@/app/(app)/(tabs)/storages/index";
+import NewStorageScreen from "@/app/(app)/(tabs)/storages/new";
 
 describe("Reference Data Screens", () => {
   beforeEach(() => {

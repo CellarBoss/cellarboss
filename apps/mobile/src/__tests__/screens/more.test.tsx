@@ -51,7 +51,7 @@ describe("MoreScreen", () => {
   it("navigates to cellar on tap", () => {
     renderWithProviders(<MoreScreen />);
     fireEvent.press(screen.getByTestId("menu-cellar"));
-    expect(mockRouter.push).toHaveBeenCalledWith("/(app)/cellar");
+    expect(mockRouter.push).toHaveBeenCalledWith("/(app)/bottles");
   });
 
   it("navigates to wines on tap", () => {

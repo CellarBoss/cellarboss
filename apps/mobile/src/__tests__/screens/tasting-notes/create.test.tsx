@@ -6,7 +6,7 @@ import { mockOk, mockError } from "../../helpers/mock-api";
 import { screen, waitFor, fireEvent } from "@testing-library/react-native";
 import { renderWithProviders } from "../../helpers/test-utils";
 
-import NewTastingNoteScreen from "@/app/(app)/tasting-notes/new";
+import NewTastingNoteScreen from "@/app/(app)/(tabs)/tasting-notes/new";
 
 describe("NewTastingNoteScreen", () => {
   beforeEach(() => {
