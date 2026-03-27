@@ -30,6 +30,7 @@ appId: org.cellarboss.mobile
 # Tap first bottle again for edit
 - tapOn: "Château Margaux 2015"
 - waitForAnimationToEnd
-- tapOn: "Edit"
+- tapOn:
+    id: "header-action-pencil"
 - waitForAnimationToEnd
 - takeScreenshot: bottles-edit
