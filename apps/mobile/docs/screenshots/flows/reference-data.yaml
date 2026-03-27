@@ -37,17 +37,16 @@ appId: org.cellarboss.mobile
 - pressKey: back
 - waitForAnimationToEnd
 
-# --- Storages (use tab, already on More) ---
-- tapOn:
-    id: "storages-tab"
-- waitForAnimationToEnd
-- takeScreenshot: storages-list
-
-# --- Locations ---
-- tapOn:
-    id: "more-tab"
-- waitForAnimationToEnd
+# --- Locations (still on More screen from grapes) ---
 - tapOn:
     id: "menu-locations"
 - waitForAnimationToEnd
 - takeScreenshot: locations-list
+- pressKey: back
+- waitForAnimationToEnd
+
+# --- Storages (use tab) ---
+- tapOn:
+    id: "storages-tab"
+- waitForAnimationToEnd
+- takeScreenshot: storages-list
