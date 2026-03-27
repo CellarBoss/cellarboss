@@ -312,7 +312,7 @@ jobs:
           packageName: org.cellarboss.mobile
           releaseFiles: artifacts/app-release.aab
           track: internal
-          status: completed
+          status: draft
 
   create-release:
     name: Publish GitHub Release
