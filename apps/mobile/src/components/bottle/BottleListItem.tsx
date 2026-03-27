@@ -1,5 +1,11 @@
 import { useState, useRef } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  interpolate,
+  Extrapolation,
+} from "react-native-reanimated";
+import type { SharedValue } from "react-native-reanimated";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import type { SwipeableMethods } from "react-native-gesture-handler/ReanimatedSwipeable";
 import { useRouter } from "expo-router";
@@ -22,6 +28,28 @@ import { theme } from "@/lib/theme";
 import type { Bottle } from "@cellarboss/types";
 import type { WineType, BottleSize } from "@cellarboss/validators/constants";
 import type { DrinkingStatus } from "@/lib/functions/format";
+
+function DrunkSwipeReveal({ progress }: { progress: SharedValue<number> }) {
+  const iconsStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(progress.value, [0, 0.3], [0, 1], Extrapolation.CLAMP),
+  }));
+  const glassStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        rotate: `${interpolate(progress.value, [0, 1], [0, 125], Extrapolation.CLAMP)}deg`,
+      },
+    ],
+  }));
+  return (
+    <View style={styles.swipeLeftReveal}>
+      <Animated.View style={[styles.swipeLeftIcons, iconsStyle]}>
+        <Animated.View style={glassStyle}>
+          <Icon source="glass-wine" size={24} color="#fff" />
+        </Animated.View>
+      </Animated.View>
+    </View>
+  );
+}
 
 type BottleListItemProps = {
   bottle: Bottle;
@@ -52,6 +80,7 @@ export function BottleListItem({
   const [statusPickerVisible, setStatusPickerVisible] = useState(false);
   const [storagePickerVisible, setStoragePickerVisible] = useState(false);
   const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
+  const [drunkConfirmVisible, setDrunkConfirmVisible] = useState(false);
 
   const bottleColor = wineType
     ? WINE_TYPE_COLORS[wineType]
@@ -161,6 +190,23 @@ export function BottleListItem({
         onConfirm={() => deleteMutation.mutate(bottle.id)}
         onCancel={() => setDeleteConfirmVisible(false)}
       />
+      <ConfirmDialog
+        visible={drunkConfirmVisible}
+        title="Mark as Drunk"
+        message={`Mark this bottle of ${wineName} as drunk?`}
+        confirmLabel="Yes"
+        cancelLabel="No"
+        destructive={false}
+        onConfirm={() => {
+          updateMutation.mutate({ ...bottle, status: "drunk" });
+          setDrunkConfirmVisible(false);
+          swipeableRef.current?.close();
+        }}
+        onCancel={() => {
+          setDrunkConfirmVisible(false);
+          swipeableRef.current?.close();
+        }}
+      />
     </>
   );
 
@@ -177,6 +223,15 @@ export function BottleListItem({
     <>
       <ReanimatedSwipeable
         ref={swipeableRef}
+        onSwipeableOpen={(direction) => {
+          if (direction === "right") {
+            setDrunkConfirmVisible(true);
+          }
+        }}
+        leftThreshold={1}
+        renderLeftActions={(progress) => (
+          <DrunkSwipeReveal progress={progress} />
+        )}
         renderRightActions={() => (
           <View style={styles.swipeActions}>
             <IconButton
@@ -281,6 +336,18 @@ const styles = StyleSheet.create({
   storageText: {
     fontSize: 12,
     color: theme.colors.onSurfaceVariant,
+  },
+  swipeLeftIcons: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  swipeLeftReveal: {
+    justifyContent: "center",
+    alignItems: "flex-start",
+    backgroundColor: "#16a34a",
+    width: 120,
+    paddingLeft: 20,
   },
   swipeActions: {
     flexDirection: "row",
