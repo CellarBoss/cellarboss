@@ -61,6 +61,10 @@ export async function startMockServer(port: number): Promise<ServerType> {
   const app = new Hono();
 
   // Control endpoints for test setup
+  app.get("/__test/healthcheck", (c) => {
+    return c.json({ ok: true });
+  });
+
   app.post("/__test/set-session", async (c) => {
     state.session = await c.req.json();
     return c.json({ ok: true });
