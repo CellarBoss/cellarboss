@@ -62,7 +62,7 @@ export function CellarOverviewStats({
         value={totalBottles}
         subtitle="in cellar"
         color={theme.colors.primary}
-        onPress={() => router.push("/cellar")}
+        onPress={() => router.push("/bottles")}
       />
       <StatCard
         title="Unique Wines"
