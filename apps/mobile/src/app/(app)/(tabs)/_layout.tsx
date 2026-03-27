@@ -1,6 +1,39 @@
+import {
+  CommonActions,
+  NavigationProp,
+  ParamListBase,
+  Route,
+} from "@react-navigation/native";
 import { Tabs } from "expo-router";
 import { Icon } from "react-native-paper";
 import { theme } from "@/lib/theme";
+
+function resetTabOnPress({
+  navigation,
+  route,
+}: {
+  navigation: NavigationProp<ParamListBase>;
+  route: Route<string>;
+}) {
+  return {
+    tabPress: (e: { preventDefault: () => void }) => {
+      e.preventDefault();
+      const state = navigation.getState();
+      const tabIndex = state.routes.findIndex(
+        (r: Route<string>) => r.key === route.key,
+      );
+      navigation.dispatch(
+        CommonActions.reset({
+          ...state,
+          index: tabIndex,
+          routes: state.routes.map((r: Route<string>) =>
+            r.key === route.key ? { key: r.key, name: r.name } : r,
+          ),
+        }),
+      );
+    },
+  };
+}
 
 export default function TabLayout() {
   return (
@@ -17,6 +50,7 @@ export default function TabLayout() {
     >
       <Tabs.Screen
         name="index"
+        listeners={resetTabOnPress}
         options={{
           title: "Dashboard",
           tabBarButtonTestID: "dashboard-tab",
@@ -27,6 +61,7 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="bottles"
+        listeners={resetTabOnPress}
         options={{
           title: "Cellar",
           tabBarButtonTestID: "cellar-tab",
@@ -37,6 +72,7 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="wines"
+        listeners={resetTabOnPress}
         options={{
           title: "Wines",
           tabBarButtonTestID: "wines-tab",
@@ -47,6 +83,7 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="storages"
+        listeners={resetTabOnPress}
         options={{
           title: "Storages",
           tabBarButtonTestID: "storages-tab",
@@ -57,6 +94,7 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="more"
+        listeners={resetTabOnPress}
         options={{
           title: "More",
           tabBarButtonTestID: "more-tab",
