@@ -1,5 +1,5 @@
 import { View, Pressable, StyleSheet } from "react-native";
-import { Text } from "react-native-paper";
+import { Text, Icon } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
@@ -29,7 +29,7 @@ export function VintageTastingNotesList({ vintage }: { vintage: Vintage }) {
   const result = queryGate([notesQuery]);
   if (!result.ready) return result.gate;
 
-  return <TastingNotesList notes={result.data[0]} />;
+  return <TastingNotesList notes={result.data[0]} vintageId={vintage.id} />;
 }
 
 function getScoreColor(score: number): string {
@@ -40,10 +40,20 @@ function getScoreColor(score: number): string {
   return "#c62828";
 }
 
-function TastingNotesList({ notes }: { notes: TastingNote[] }) {
+function TastingNotesList({
+  notes,
+  vintageId,
+}: {
+  notes: TastingNote[];
+  vintageId?: number;
+}) {
   const router = useRouter();
 
   const sorted = [...notes].sort((a, b) => b.date.localeCompare(a.date));
+
+  const newNoteHref = vintageId
+    ? `/tasting-notes/new?vintageId=${vintageId}`
+    : "/tasting-notes/new";
 
   return (
     <View style={styles.section}>
@@ -85,6 +95,13 @@ function TastingNotesList({ notes }: { notes: TastingNote[] }) {
           })
         )}
       </View>
+      <Pressable
+        style={styles.addLink}
+        onPress={() => router.push(newNoteHref)}
+      >
+        <Icon source="plus" size={16} color={theme.colors.primary} />
+        <Text style={styles.addText}>Add tasting note</Text>
+      </Pressable>
     </View>
   );
 }
@@ -151,5 +168,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: theme.colors.onSurfaceVariant,
     marginLeft: 12,
+  },
+  addLink: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 4,
+    paddingVertical: 12,
+  },
+  addText: {
+    fontSize: 14,
+    color: theme.colors.primary,
+    fontWeight: "500",
   },
 });
