@@ -341,6 +341,8 @@ const styles = StyleSheet.create({
   empty: {
     fontSize: 13,
     color: theme.colors.onSurfaceVariant,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   bottleRow: {
     flexDirection: "row",
