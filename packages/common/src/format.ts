@@ -56,6 +56,11 @@ export function formatDrinkingWindow(
 
 export type DrinkingStatus = "drinkable" | "wait" | "past" | "unknown";
 
+export function scoreColor(score: number): string {
+  const hue = (score / 10) * 120;
+  return `hsl(${hue}, 70%, 35%)`;
+}
+
 export function formatDrinkingStatus(
   drinkFrom: number | null,
   drinkUntil: number | null,

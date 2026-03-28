@@ -7,6 +7,7 @@ import { queryGate } from "@/lib/functions/query-gate";
 import { formatDateTime } from "@/lib/functions/format";
 import { theme, shadows } from "@/lib/theme";
 import { TastingNote, Vintage, Wine } from "@cellarboss/types";
+import { scoreColor } from "@cellarboss/common";
 
 export function WineTastingNotesList({ wine }: { wine: Wine }) {
   const notesQuery = useApiQuery({
@@ -30,14 +31,6 @@ export function VintageTastingNotesList({ vintage }: { vintage: Vintage }) {
   if (!result.ready) return result.gate;
 
   return <TastingNotesList notes={result.data[0]} vintageId={vintage.id} />;
-}
-
-function getScoreColor(score: number): string {
-  if (score >= 9) return "#2e7d32";
-  if (score >= 7) return "#558b2f";
-  if (score >= 5) return "#f9a825";
-  if (score >= 3) return "#ef6c00";
-  return "#c62828";
 }
 
 function TastingNotesList({
@@ -76,7 +69,7 @@ function TastingNotesList({
                 <View
                   style={[
                     styles.scoreBadge,
-                    { backgroundColor: getScoreColor(note.score) },
+                    { backgroundColor: scoreColor(note.score) },
                   ]}
                 >
                   <Text style={styles.scoreText}>{note.score}</Text>

@@ -13,6 +13,7 @@ import { useSetting } from "@/hooks/use-settings";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { formatDateTime } from "@/lib/functions/format";
+import { scoreColor } from "@cellarboss/common";
 import { theme } from "@/lib/theme";
 import type { TastingNote, Vintage, Wine } from "@cellarboss/types";
 
@@ -22,14 +23,6 @@ const SORT_OPTIONS = [
   { label: "Score (High)", value: "score-desc" },
   { label: "Score (Low)", value: "score-asc" },
 ];
-
-function getScoreColor(score: number): string {
-  if (score >= 9) return "#2e7d32";
-  if (score >= 7) return "#558b2f";
-  if (score >= 5) return "#f9a825";
-  if (score >= 3) return "#ef6c00";
-  return "#c62828";
-}
 
 export default function TastingNotesScreen() {
   const router = useRouter();
@@ -201,10 +194,7 @@ function TastingNoteListItem({
   return (
     <Pressable style={styles.item} onPress={onPress}>
       <View
-        style={[
-          styles.scoreBadge,
-          { backgroundColor: getScoreColor(note.score) },
-        ]}
+        style={[styles.scoreBadge, { backgroundColor: scoreColor(note.score) }]}
       >
         <Text style={styles.scoreText}>{note.score}</Text>
       </View>

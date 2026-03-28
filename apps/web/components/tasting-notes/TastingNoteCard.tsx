@@ -5,11 +5,7 @@ import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { Badge } from "@/components/ui/badge";
 import { Barrel, Calendar, User } from "lucide-react";
 import { formatDateTime } from "@/lib/functions/format";
-
-function scoreColor(score: number): string {
-  const hue = (score / 10) * 120;
-  return `hsl(${hue}, 70%, 35%)`;
-}
+import { scoreColor } from "@cellarboss/common";
 
 type TastingNoteCardProps = {
   note: TastingNote;
