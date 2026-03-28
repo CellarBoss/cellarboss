@@ -1,11 +1,11 @@
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView } from "react-native";
+import { commonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
-import { theme } from "@/lib/theme";
 import { CountryDetailsCard } from "@/components/country/CountryDetailsCard";
 import { CountryRegionsList } from "@/components/country/CountryRegionsList";
 
@@ -24,7 +24,7 @@ export default function ViewCountryScreen() {
   const [country] = result.data;
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader
         title={country.name}
         showBack
@@ -35,20 +35,10 @@ export default function ViewCountryScreen() {
           },
         ]}
       />
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={commonStyles.detailScrollContent}>
         <CountryDetailsCard country={country} />
         <CountryRegionsList countryId={country.id} />
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  scroll: {
-    padding: 16,
-  },
-});

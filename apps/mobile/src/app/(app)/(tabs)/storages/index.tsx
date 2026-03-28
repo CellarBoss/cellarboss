@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
-import { Text, FAB } from "react-native-paper";
+import { Text } from "react-native-paper";
+import { AddFAB } from "@/components/AddFAB";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -10,6 +11,7 @@ import { ScreenHeader } from "@/components/ScreenHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
+import { commonStyles } from "@/styles/common";
 import { theme } from "@/lib/theme";
 import { BottleCountBadge } from "@/components/storage/BottleCountBadge";
 import type { Storage, Bottle } from "@cellarboss/types";
@@ -134,7 +136,7 @@ export default function StoragesScreen() {
   const flatList = flattenTree(tree, getSortFn(currentSort));
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <DataList
         data={flatList}
         keyExtractor={(item) => String(item.storage.id)}
@@ -177,13 +179,13 @@ export default function StoragesScreen() {
               style={[styles.item, { paddingLeft: depth * 24 + 16 }]}
               onPress={() => router.push(`/storages/${storage.id}`)}
             >
-              <View style={styles.itemRow}>
-                <View style={styles.itemContent}>
-                  <Text style={styles.itemTitle} numberOfLines={1}>
+              <View style={[commonStyles.listItemRow, styles.row]}>
+                <View style={styles.content}>
+                  <Text style={commonStyles.listItemTitle} numberOfLines={1}>
                     {storage.name}
                   </Text>
                   {locationName !== "" && (
-                    <Text style={styles.itemSub} numberOfLines={1}>
+                    <Text style={commonStyles.listItemSub} numberOfLines={1}>
                       {locationName}
                     </Text>
                   )}
@@ -195,12 +197,7 @@ export default function StoragesScreen() {
         }}
       />
 
-      <FAB
-        testID="fab-add"
-        icon="plus"
-        style={styles.fab}
-        onPress={() => router.push("/storages/new")}
-      />
+      <AddFAB onPress={() => router.push("/storages/new")} />
 
       <ConfirmDialog
         visible={deleteTarget !== null}
@@ -223,10 +220,6 @@ export default function StoragesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
   item: {
     backgroundColor: theme.colors.surface,
     paddingHorizontal: 16,
@@ -234,29 +227,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.outlineVariant,
   },
-  itemRow: {
-    flexDirection: "row",
-    alignItems: "center",
+  row: {
     justifyContent: "space-between",
   },
-  itemContent: {
+  content: {
     flex: 1,
     marginRight: 12,
-  },
-  itemTitle: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-    marginBottom: 2,
-  },
-  itemSub: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-  },
-  fab: {
-    position: "absolute",
-    right: 16,
-    bottom: 16,
-    backgroundColor: theme.colors.primary,
   },
 });

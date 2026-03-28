@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
-import { View, StyleSheet } from "react-native";
-import { FAB } from "react-native-paper";
+import { AddFAB } from "@/components/AddFAB";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
@@ -11,7 +10,7 @@ import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { formatDrinkingStatus } from "@/lib/functions/format";
 import type { DrinkingStatus } from "@/lib/functions/format";
-import { theme } from "@/lib/theme";
+import { commonStyles } from "@/styles/common";
 import {
   STATUS_FILTER_OPTIONS,
   WINE_TYPE_FILTER_OPTIONS,
@@ -219,64 +218,41 @@ export default function CellarScreen() {
   });
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
-      <View style={styles.content}>
-        <DataList
-          data={sortedBottles}
-          keyExtractor={(item) => String(item.id)}
-          searchPlaceholder="Search bottles..."
-          searchFilter={(item, query) =>
-            getWineName(item).toLowerCase().includes(query.toLowerCase())
-          }
-          sortOptions={SORT_OPTIONS}
-          onSort={setCurrentSort}
-          currentSort={currentSort}
-          filterConfigs={filterConfigs}
-          onRefresh={handleRefresh}
-          refreshing={refreshing}
-          emptyIcon="bottle-wine"
-          emptyTitle="No bottles yet"
-          emptyMessage="Add your first bottle to get started"
-          emptyActionLabel="Add Bottle"
-          onEmptyAction={() => router.push("/bottles/new")}
-          renderItem={(bottle) => (
-            <BottleListItem
-              bottle={bottle}
-              wineName={getWineName(bottle)}
-              wineYear={getWineYear(bottle)}
-              winemakerName={getWinemakerName(bottle)}
-              storageHierarchy={getStorageHierarchy(bottle)}
-              wineType={getWineType(bottle)}
-              drinkingStatus={getDrinkingStatus(bottle)}
-              onPress={() => router.push(`/bottles/${bottle.id}`)}
-              swipeable
-            />
-          )}
-        />
-      </View>
-
-      <FAB
-        testID="fab-add"
-        icon="plus"
-        style={styles.fab}
-        onPress={() => router.push("/bottles/new")}
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
+      <DataList
+        data={sortedBottles}
+        keyExtractor={(item) => String(item.id)}
+        searchPlaceholder="Search bottles..."
+        searchFilter={(item, query) =>
+          getWineName(item).toLowerCase().includes(query.toLowerCase())
+        }
+        sortOptions={SORT_OPTIONS}
+        onSort={setCurrentSort}
+        currentSort={currentSort}
+        filterConfigs={filterConfigs}
+        onRefresh={handleRefresh}
+        refreshing={refreshing}
+        emptyIcon="bottle-wine"
+        emptyTitle="No bottles yet"
+        emptyMessage="Add your first bottle to get started"
+        emptyActionLabel="Add Bottle"
+        onEmptyAction={() => router.push("/bottles/new")}
+        renderItem={(bottle) => (
+          <BottleListItem
+            bottle={bottle}
+            wineName={getWineName(bottle)}
+            wineYear={getWineYear(bottle)}
+            winemakerName={getWinemakerName(bottle)}
+            storageHierarchy={getStorageHierarchy(bottle)}
+            wineType={getWineType(bottle)}
+            drinkingStatus={getDrinkingStatus(bottle)}
+            onPress={() => router.push(`/bottles/${bottle.id}`)}
+            swipeable
+          />
+        )}
       />
+
+      <AddFAB onPress={() => router.push("/bottles/new")} />
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  content: {
-    flex: 1,
-  },
-  fab: {
-    position: "absolute",
-    right: 16,
-    bottom: 16,
-    backgroundColor: theme.colors.primary,
-  },
-});

@@ -1,4 +1,5 @@
 import { View, ScrollView, StyleSheet } from "react-native";
+import { commonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
@@ -8,7 +9,6 @@ import { StorageDetailsCard } from "@/components/storage/StorageDetailsCard";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
-import { theme } from "@/lib/theme";
 
 export default function ViewBottleScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -25,7 +25,7 @@ export default function ViewBottleScreen() {
   const [bottle] = result.data;
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader
         title="Bottle Details"
         showBack
@@ -36,7 +36,7 @@ export default function ViewBottleScreen() {
           },
         ]}
       />
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={commonStyles.detailScrollContent}>
         <VintageDetailsCard vintageId={bottle.vintageId} />
         <View style={styles.section}>
           <BottleDetailsCard bottle={bottle} />
@@ -52,13 +52,6 @@ export default function ViewBottleScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  scroll: {
-    padding: 16,
-  },
   section: {
     marginTop: 16,
   },

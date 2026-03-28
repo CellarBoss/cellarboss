@@ -1,10 +1,9 @@
-import { StyleSheet } from "react-native";
+import { commonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { FormCard } from "@/components/FormCard";
 import { api } from "@/lib/api/client";
-import { theme } from "@/lib/theme";
 import { grapeFields } from "@/lib/fields/grapes";
 import type { Grape } from "@cellarboss/types";
 import type { ApiResult } from "@cellarboss/common";
@@ -33,7 +32,7 @@ export default function NewGrapeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader title="New Grape" showBack />
       <FormCard
         mode="create"
@@ -44,10 +43,3 @@ export default function NewGrapeScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-});

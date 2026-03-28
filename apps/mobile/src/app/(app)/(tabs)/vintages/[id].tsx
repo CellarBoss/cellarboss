@@ -1,5 +1,6 @@
 import { View, ScrollView, StyleSheet } from "react-native";
 import { Text } from "react-native-paper";
+import { commonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
@@ -10,6 +11,7 @@ import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { formatDrinkingStatus } from "@/lib/functions/format";
 import { theme, shadows } from "@/lib/theme";
+import { VintageTastingNotesList } from "@/components/tasting-notes/TastingNotesList";
 import type { Storage } from "@cellarboss/types";
 import type { WineType } from "@cellarboss/validators/constants";
 
@@ -86,7 +88,7 @@ export default function ViewVintageScreen() {
   const maker = wine ? winemakerMap.get(wine.wineMakerId) : undefined;
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader
         title={`${wineName} ${yearLabel}`}
         showBack
@@ -97,7 +99,7 @@ export default function ViewVintageScreen() {
           },
         ]}
       />
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={commonStyles.detailScrollContent}>
         <VintageDetailsCard
           vintageId={vintage.id}
           onPress={wine ? () => router.push(`/wines/${wine.id}`) : undefined}
@@ -128,19 +130,14 @@ export default function ViewVintageScreen() {
             )}
           </View>
         </View>
+
+        <VintageTastingNotesList vintage={vintage} />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  scroll: {
-    padding: 16,
-  },
   heading: {
     color: theme.colors.onSurface,
     marginBottom: 8,

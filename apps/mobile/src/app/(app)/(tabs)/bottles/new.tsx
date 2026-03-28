@@ -1,10 +1,9 @@
-import { StyleSheet } from "react-native";
+import { commonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { FormCard } from "@/components/FormCard";
 import { api } from "@/lib/api/client";
 import { bottleFields } from "@/lib/fields/bottles";
-import { theme } from "@/lib/theme";
 import type { Bottle } from "@cellarboss/types";
 
 const defaultData: Bottle = {
@@ -30,7 +29,7 @@ const processSave = async (data: Record<string, string>) => {
 
 export default function NewBottleScreen() {
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader title="New Bottle" showBack />
       <FormCard
         mode="create"
@@ -41,10 +40,3 @@ export default function NewBottleScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-});

@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
-import { View, Pressable, StyleSheet } from "react-native";
-import { Text, FAB } from "react-native-paper";
+import { Pressable, StyleSheet } from "react-native";
+import { Text } from "react-native-paper";
+import { AddFAB } from "@/components/AddFAB";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -10,8 +11,9 @@ import { ScreenHeader } from "@/components/ScreenHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
+import { commonStyles } from "@/styles/common";
 import { theme } from "@/lib/theme";
-import type { Region, Country } from "@cellarboss/types";
+import type { Region } from "@cellarboss/types";
 
 const SORT_OPTIONS = [
   { label: "Name (A-Z)", value: "name-asc" },
@@ -78,7 +80,7 @@ export default function RegionsScreen() {
   });
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader title="Regions" showBack />
       <DataList
         data={sortedRegions}
@@ -115,25 +117,23 @@ export default function RegionsScreen() {
         ]}
         renderItem={(region) => (
           <Pressable
-            style={styles.item}
+            style={commonStyles.listItem}
             onPress={() => router.push(`/regions/${region.id}`)}
           >
-            <Text style={styles.itemTitle} numberOfLines={1}>
+            <Text
+              style={[commonStyles.listItemTitle, styles.title]}
+              numberOfLines={1}
+            >
               {region.name}
             </Text>
-            <Text style={styles.itemSub} numberOfLines={1}>
+            <Text style={commonStyles.listItemSub} numberOfLines={1}>
               {getCountryName(region)}
             </Text>
           </Pressable>
         )}
       />
 
-      <FAB
-        testID="fab-add"
-        icon="plus"
-        style={styles.fab}
-        onPress={() => router.push("/regions/new")}
-      />
+      <AddFAB onPress={() => router.push("/regions/new")} />
 
       <ConfirmDialog
         visible={deleteTarget !== null}
@@ -156,31 +156,7 @@ export default function RegionsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  item: {
-    backgroundColor: theme.colors.surface,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-  },
-  itemTitle: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
+  title: {
     marginBottom: 2,
-  },
-  itemSub: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-  },
-  fab: {
-    position: "absolute",
-    right: 16,
-    bottom: 16,
-    backgroundColor: theme.colors.primary,
   },
 });

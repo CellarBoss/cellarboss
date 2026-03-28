@@ -1,11 +1,10 @@
-import { StyleSheet } from "react-native";
+import { commonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { FormCard } from "@/components/FormCard";
 import { api } from "@/lib/api/client";
-import { theme } from "@/lib/theme";
 import { tastingNoteCreateFields } from "@/lib/fields/tasting-notes";
 import type { TastingNote } from "@cellarboss/types";
 import type { ApiResult } from "@cellarboss/common";
@@ -41,7 +40,7 @@ export default function NewTastingNoteScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader title="New Tasting Note" showBack />
       <FormCard
         mode="create"
@@ -52,10 +51,3 @@ export default function NewTastingNoteScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-});

@@ -1,15 +1,18 @@
 import { useState, useCallback } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
-import { Text, FAB, Icon } from "react-native-paper";
+import { Text } from "react-native-paper";
+import { AddFAB } from "@/components/AddFAB";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { DataList } from "@/components/DataList";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { ScreenHeader } from "@/components/ScreenHeader";
+import { CountBadge } from "@/components/CountBadge";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
+import { commonStyles } from "@/styles/common";
 import { theme } from "@/lib/theme";
 import type { Grape } from "@cellarboss/types";
 
@@ -74,7 +77,7 @@ export default function GrapesScreen() {
   });
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader title="Grapes" showBack />
       <DataList
         data={sortedGrapes}
@@ -112,19 +115,15 @@ export default function GrapesScreen() {
               style={styles.item}
               onPress={() => router.push(`/grapes/${grape.id}`)}
             >
-              <View style={styles.itemRow}>
-                <Text style={styles.itemTitle} numberOfLines={1}>
+              <View style={[commonStyles.listItemRow, styles.row]}>
+                <Text
+                  style={[commonStyles.listItemTitle, styles.title]}
+                  numberOfLines={1}
+                >
                   {grape.name}
                 </Text>
                 {wineCount > 0 && (
-                  <View style={styles.badge}>
-                    <Icon
-                      source="glass-wine"
-                      size={14}
-                      color={theme.colors.onSurfaceVariant}
-                    />
-                    <Text style={styles.badgeText}>{wineCount}</Text>
-                  </View>
+                  <CountBadge icon="glass-wine" count={wineCount} />
                 )}
               </View>
             </Pressable>
@@ -132,12 +131,7 @@ export default function GrapesScreen() {
         }}
       />
 
-      <FAB
-        testID="fab-add"
-        icon="plus"
-        style={styles.fab}
-        onPress={() => router.push("/grapes/new")}
-      />
+      <AddFAB onPress={() => router.push("/grapes/new")} />
 
       <ConfirmDialog
         visible={deleteTarget !== null}
@@ -160,10 +154,6 @@ export default function GrapesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
   item: {
     backgroundColor: theme.colors.surface,
     paddingHorizontal: 16,
@@ -171,36 +161,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.outlineVariant,
   },
-  itemRow: {
-    flexDirection: "row",
-    alignItems: "center",
+  row: {
     justifyContent: "space-between",
   },
-  itemTitle: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
+  title: {
     flex: 1,
     marginRight: 12,
-  },
-  badge: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: theme.colors.surfaceVariant,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    gap: 4,
-  },
-  badgeText: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: theme.colors.onSurfaceVariant,
-  },
-  fab: {
-    position: "absolute",
-    right: 16,
-    bottom: 16,
-    backgroundColor: theme.colors.primary,
   },
 });

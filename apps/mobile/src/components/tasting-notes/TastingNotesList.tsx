@@ -1,5 +1,5 @@
 import { View, Pressable, StyleSheet } from "react-native";
-import { Text } from "react-native-paper";
+import { Text, Icon } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
@@ -7,6 +7,7 @@ import { queryGate } from "@/lib/functions/query-gate";
 import { formatDateTime } from "@/lib/functions/format";
 import { theme, shadows } from "@/lib/theme";
 import { TastingNote, Vintage, Wine } from "@cellarboss/types";
+import { scoreColor } from "@cellarboss/common";
 
 export function WineTastingNotesList({ wine }: { wine: Wine }) {
   const notesQuery = useApiQuery({
@@ -29,21 +30,23 @@ export function VintageTastingNotesList({ vintage }: { vintage: Vintage }) {
   const result = queryGate([notesQuery]);
   if (!result.ready) return result.gate;
 
-  return <TastingNotesList notes={result.data[0]} />;
+  return <TastingNotesList notes={result.data[0]} vintageId={vintage.id} />;
 }
 
-function getScoreColor(score: number): string {
-  if (score >= 9) return "#2e7d32";
-  if (score >= 7) return "#558b2f";
-  if (score >= 5) return "#f9a825";
-  if (score >= 3) return "#ef6c00";
-  return "#c62828";
-}
-
-function TastingNotesList({ notes }: { notes: TastingNote[] }) {
+function TastingNotesList({
+  notes,
+  vintageId,
+}: {
+  notes: TastingNote[];
+  vintageId?: number;
+}) {
   const router = useRouter();
 
   const sorted = [...notes].sort((a, b) => b.date.localeCompare(a.date));
+
+  const newNoteHref = vintageId
+    ? `/tasting-notes/new?vintageId=${vintageId}`
+    : "/tasting-notes/new";
 
   return (
     <View style={styles.section}>
@@ -66,7 +69,7 @@ function TastingNotesList({ notes }: { notes: TastingNote[] }) {
                 <View
                   style={[
                     styles.scoreBadge,
-                    { backgroundColor: getScoreColor(note.score) },
+                    { backgroundColor: scoreColor(note.score) },
                   ]}
                 >
                   <Text style={styles.scoreText}>{note.score}</Text>
@@ -85,6 +88,13 @@ function TastingNotesList({ notes }: { notes: TastingNote[] }) {
           })
         )}
       </View>
+      <Pressable
+        style={styles.addLink}
+        onPress={() => router.push(newNoteHref)}
+      >
+        <Icon source="plus" size={16} color={theme.colors.primary} />
+        <Text style={styles.addText}>Add tasting note</Text>
+      </Pressable>
     </View>
   );
 }
@@ -151,5 +161,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: theme.colors.onSurfaceVariant,
     marginLeft: 12,
+  },
+  addLink: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 4,
+    paddingVertical: 12,
+  },
+  addText: {
+    fontSize: 14,
+    color: theme.colors.primary,
+    fontWeight: "500",
   },
 });

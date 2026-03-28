@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { commonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
@@ -7,7 +7,6 @@ import { FormCard } from "@/components/FormCard";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
-import { theme } from "@/lib/theme";
 import { wineFields, type WineFormData } from "@/lib/fields/wines";
 import type { Wine } from "@cellarboss/types";
 import type { ApiResult } from "@cellarboss/common";
@@ -75,7 +74,7 @@ export default function EditWineScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader title="Edit Wine" showBack />
       <FormCard
         mode="edit"
@@ -86,10 +85,3 @@ export default function EditWineScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-});

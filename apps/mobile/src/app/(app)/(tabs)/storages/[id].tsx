@@ -1,5 +1,6 @@
 import { View, ScrollView, Pressable, StyleSheet } from "react-native";
 import { Text, Icon } from "react-native-paper";
+import { commonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
@@ -113,7 +114,7 @@ export default function ViewStorageScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader
         title={storage.name}
         showBack
@@ -124,7 +125,7 @@ export default function ViewStorageScreen() {
           },
         ]}
       />
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={commonStyles.detailScrollContent}>
         <Text variant="titleSmall" style={styles.heading}>
           Details
         </Text>
@@ -278,13 +279,6 @@ export default function ViewStorageScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  scroll: {
-    padding: 16,
-  },
   heading: {
     color: theme.colors.onSurface,
     marginBottom: 8,
@@ -341,6 +335,8 @@ const styles = StyleSheet.create({
   empty: {
     fontSize: 13,
     color: theme.colors.onSurfaceVariant,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   bottleRow: {
     flexDirection: "row",

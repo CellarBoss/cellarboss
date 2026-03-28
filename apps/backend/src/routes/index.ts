@@ -12,6 +12,7 @@ import { registerWineMakerRoutes } from "./winemakers.routes.js";
 import { registerSettingsRoutes } from "./settings.routes.js";
 import { registerTastingNoteRoutes } from "./tasting-notes.routes.js";
 import { registerUserRoutes } from "./users.routes.js";
+import { registerVersionRoutes } from "./version.routes.js";
 
 export function registerRoutes(app: OpenAPIHono) {
   registerBottleRoutes(app);
@@ -27,4 +28,5 @@ export function registerRoutes(app: OpenAPIHono) {
   registerSettingsRoutes(app);
   registerTastingNoteRoutes(app);
   registerUserRoutes(app);
+  registerVersionRoutes(app);
 }

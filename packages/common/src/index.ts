@@ -19,6 +19,7 @@ export {
   formatBottleSize,
   formatDrinkingWindow,
   formatDrinkingStatus,
+  scoreColor,
   type DrinkingStatus,
 } from "./format";
 

@@ -1,15 +1,18 @@
 import { useState, useCallback } from "react";
-import { Pressable, StyleSheet } from "react-native";
-import { Text, FAB } from "react-native-paper";
+import { View, Pressable, StyleSheet } from "react-native";
+import { Text } from "react-native-paper";
+import { AddFAB } from "@/components/AddFAB";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { DataList } from "@/components/DataList";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { ScreenHeader } from "@/components/ScreenHeader";
+import { CountBadge } from "@/components/CountBadge";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
+import { commonStyles } from "@/styles/common";
 import { theme } from "@/lib/theme";
 import type { Location } from "@cellarboss/types";
 
@@ -29,8 +32,12 @@ export default function LocationsScreen() {
     queryKey: ["locations"],
     queryFn: () => api.locations.getAll(),
   });
+  const storagesQuery = useApiQuery({
+    queryKey: ["storages"],
+    queryFn: () => api.storages.getAll(),
+  });
 
-  const result = queryGate([locationsQuery]);
+  const result = queryGate([locationsQuery, storagesQuery]);
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => api.locations.delete(id),
@@ -48,7 +55,17 @@ export default function LocationsScreen() {
 
   if (!result.ready) return result.gate;
 
-  const [locations] = result.data;
+  const [locations, storages] = result.data;
+
+  const storageCountByLocation = new Map<number, number>();
+  for (const storage of storages) {
+    if (storage.locationId != null) {
+      storageCountByLocation.set(
+        storage.locationId,
+        (storageCountByLocation.get(storage.locationId) ?? 0) + 1,
+      );
+    }
+  }
 
   const sortedLocations = [...locations].sort((a, b) => {
     switch (currentSort) {
@@ -62,7 +79,7 @@ export default function LocationsScreen() {
   });
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader title="Locations" showBack />
       <DataList
         data={sortedLocations}
@@ -93,24 +110,30 @@ export default function LocationsScreen() {
             onPress: () => setDeleteTarget(location),
           },
         ]}
-        renderItem={(location) => (
-          <Pressable
-            style={styles.item}
-            onPress={() => router.push(`/locations/${location.id}`)}
-          >
-            <Text style={styles.itemTitle} numberOfLines={1}>
-              {location.name}
-            </Text>
-          </Pressable>
-        )}
+        renderItem={(location) => {
+          const storageCount = storageCountByLocation.get(location.id) ?? 0;
+          return (
+            <Pressable
+              style={styles.item}
+              onPress={() => router.push(`/locations/${location.id}`)}
+            >
+              <View style={[commonStyles.listItemRow, styles.row]}>
+                <Text
+                  style={[commonStyles.listItemTitle, styles.title]}
+                  numberOfLines={1}
+                >
+                  {location.name}
+                </Text>
+                {storageCount > 0 && (
+                  <CountBadge icon="warehouse" count={storageCount} />
+                )}
+              </View>
+            </Pressable>
+          );
+        }}
       />
 
-      <FAB
-        testID="fab-add"
-        icon="plus"
-        style={styles.fab}
-        onPress={() => router.push("/locations/new")}
-      />
+      <AddFAB onPress={() => router.push("/locations/new")} />
 
       <ConfirmDialog
         visible={deleteTarget !== null}
@@ -133,10 +156,6 @@ export default function LocationsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
   item: {
     backgroundColor: theme.colors.surface,
     paddingHorizontal: 16,
@@ -144,15 +163,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.outlineVariant,
   },
-  itemTitle: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
+  row: {
+    justifyContent: "space-between",
   },
-  fab: {
-    position: "absolute",
-    right: 16,
-    bottom: 16,
-    backgroundColor: theme.colors.primary,
+  title: {
+    flex: 1,
   },
 });
