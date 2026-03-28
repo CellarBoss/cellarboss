@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
+import { useLocalSearchParams } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { FormCard } from "@/components/FormCard";
 import { api } from "@/lib/api/client";
@@ -10,12 +11,15 @@ import type { Storage } from "@cellarboss/types";
 import type { ApiResult } from "@cellarboss/common";
 
 export default function NewStorageScreen() {
+  const { locationId: locationIdParam } = useLocalSearchParams<{
+    locationId?: string;
+  }>();
   const queryClient = useQueryClient();
 
   const defaultData: Storage = {
     id: 0,
     name: "",
-    locationId: null,
+    locationId: locationIdParam ? Number(locationIdParam) : null,
     parent: null,
   };
 
