@@ -1,10 +1,9 @@
-import { StyleSheet } from "react-native";
+import { commonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { FormCard } from "@/components/FormCard";
 import { api } from "@/lib/api/client";
-import { theme } from "@/lib/theme";
 import { countryFields } from "@/lib/fields/countries";
 import type { Country } from "@cellarboss/types";
 import type { ApiResult } from "@cellarboss/common";
@@ -33,7 +32,7 @@ export default function NewCountryScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader title="New Country" showBack />
       <FormCard
         mode="create"
@@ -44,10 +43,3 @@ export default function NewCountryScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-});

@@ -1,11 +1,11 @@
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView } from "react-native";
+import { commonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
-import { theme } from "@/lib/theme";
 import { WineDetailsCard } from "@/components/wine/WineDetailsCard";
 import { WineVintagesList } from "@/components/wine/WineVintagesList";
 import { WineTastingNotesList } from "@/components/tasting-notes/TastingNotesList";
@@ -25,7 +25,7 @@ export default function ViewWineScreen() {
   const [wine] = result.data;
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader
         title={wine.name || "Wine Details"}
         showBack
@@ -36,7 +36,7 @@ export default function ViewWineScreen() {
           },
         ]}
       />
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={commonStyles.detailScrollContent}>
         <WineDetailsCard wine={wine} />
         <WineVintagesList wineId={wine.id} />
         <WineTastingNotesList wine={wine} />
@@ -44,13 +44,3 @@ export default function ViewWineScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  scroll: {
-    padding: 16,
-  },
-});

@@ -11,6 +11,7 @@ import { ScreenHeader } from "@/components/ScreenHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
+import { commonStyles } from "@/styles/common";
 import { theme } from "@/lib/theme";
 import type { Country } from "@cellarboss/types";
 
@@ -63,7 +64,7 @@ export default function CountriesScreen() {
   });
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader title="Countries" showBack />
       <DataList
         data={sortedCountries}
@@ -99,7 +100,7 @@ export default function CountriesScreen() {
             style={styles.item}
             onPress={() => router.push(`/countries/${country.id}`)}
           >
-            <Text style={styles.itemTitle} numberOfLines={1}>
+            <Text style={commonStyles.listItemTitle} numberOfLines={1}>
               {country.name}
             </Text>
           </Pressable>
@@ -129,20 +130,11 @@ export default function CountriesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
   item: {
     backgroundColor: theme.colors.surface,
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.outlineVariant,
-  },
-  itemTitle: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
   },
 });

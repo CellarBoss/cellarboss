@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
-import { Text, Icon } from "react-native-paper";
+import { Text } from "react-native-paper";
 import { AddFAB } from "@/components/AddFAB";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -8,9 +8,11 @@ import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { DataList } from "@/components/DataList";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { ScreenHeader } from "@/components/ScreenHeader";
+import { CountBadge } from "@/components/CountBadge";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
+import { commonStyles } from "@/styles/common";
 import { theme } from "@/lib/theme";
 import type { Location } from "@cellarboss/types";
 
@@ -77,7 +79,7 @@ export default function LocationsScreen() {
   });
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader title="Locations" showBack />
       <DataList
         data={sortedLocations}
@@ -115,19 +117,15 @@ export default function LocationsScreen() {
               style={styles.item}
               onPress={() => router.push(`/locations/${location.id}`)}
             >
-              <View style={styles.itemRow}>
-                <Text style={styles.itemTitle} numberOfLines={1}>
+              <View style={[commonStyles.listItemRow, styles.row]}>
+                <Text
+                  style={[commonStyles.listItemTitle, styles.title]}
+                  numberOfLines={1}
+                >
                   {location.name}
                 </Text>
                 {storageCount > 0 && (
-                  <View style={styles.badge}>
-                    <Icon
-                      source="warehouse"
-                      size={14}
-                      color={theme.colors.onSurfaceVariant}
-                    />
-                    <Text style={styles.badgeText}>{storageCount}</Text>
-                  </View>
+                  <CountBadge icon="warehouse" count={storageCount} />
                 )}
               </View>
             </Pressable>
@@ -158,10 +156,6 @@ export default function LocationsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
   item: {
     backgroundColor: theme.colors.surface,
     paddingHorizontal: 16,
@@ -169,25 +163,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.outlineVariant,
   },
-  itemRow: {
-    flexDirection: "row",
-    alignItems: "center",
+  row: {
     justifyContent: "space-between",
-    gap: 8,
   },
-  itemTitle: {
+  title: {
     flex: 1,
-    fontSize: 15,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-  },
-  badge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  badgeText: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
   },
 });

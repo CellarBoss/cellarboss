@@ -1,5 +1,6 @@
 import { ScrollView, View, Pressable, StyleSheet } from "react-native";
 import { Text, Icon } from "react-native-paper";
+import { commonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
@@ -59,7 +60,7 @@ export default function ViewTastingNoteScreen() {
       : note.date.split("T")[0];
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader
         title={title}
         showBack
@@ -70,7 +71,7 @@ export default function ViewTastingNoteScreen() {
           },
         ]}
       />
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={commonStyles.detailScrollContent}>
         {/* Details card */}
         <Text variant="titleSmall" style={styles.sectionHeading}>
           Details
@@ -146,13 +147,6 @@ export default function ViewTastingNoteScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  scroll: {
-    padding: 16,
-  },
   sectionHeading: {
     color: theme.colors.onSurface,
     marginBottom: 8,

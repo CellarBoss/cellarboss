@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { commonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
@@ -7,7 +7,6 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { bottleFields } from "@/lib/fields/bottles";
-import { theme } from "@/lib/theme";
 import type { Bottle } from "@cellarboss/types";
 
 export default function EditBottleScreen() {
@@ -36,7 +35,7 @@ export default function EditBottleScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader title="Edit Bottle" showBack />
       <FormCard
         mode="edit"
@@ -47,10 +46,3 @@ export default function EditBottleScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-});

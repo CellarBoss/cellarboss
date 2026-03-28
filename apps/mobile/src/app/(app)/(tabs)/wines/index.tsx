@@ -1,18 +1,17 @@
 import { useState, useCallback } from "react";
-import { View, Pressable, StyleSheet } from "react-native";
-import { Text, Icon } from "react-native-paper";
-import { AddFAB } from "@/components/AddFAB";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { DataList } from "@/components/DataList";
+import { AddFAB } from "@/components/AddFAB";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { WineListItem } from "@/components/wine/WineListItem";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
+import { commonStyles } from "@/styles/common";
 import { theme } from "@/lib/theme";
 import type { Wine } from "@cellarboss/types";
-import { WINE_TYPE_COLORS } from "@/lib/constants/wines";
 
 const SORT_OPTIONS = [
   { label: "Name (A-Z)", value: "name-asc" },
@@ -107,51 +106,49 @@ export default function WinesScreen() {
   });
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
-      <View style={styles.content}>
-        <DataList
-          data={sortedWines}
-          keyExtractor={(item) => String(item.id)}
-          searchPlaceholder="Search wines..."
-          searchFilter={(item, query) => {
-            const lower = query.toLowerCase();
-            return (
-              item.name.toLowerCase().includes(lower) ||
-              getWinemakerName(item).toLowerCase().includes(lower)
-            );
-          }}
-          sortOptions={SORT_OPTIONS}
-          onSort={setCurrentSort}
-          currentSort={currentSort}
-          onRefresh={handleRefresh}
-          refreshing={refreshing}
-          emptyIcon="glass-wine"
-          emptyTitle="No wines yet"
-          emptyMessage="Add your first wine to get started"
-          emptyActionLabel="Add Wine"
-          onEmptyAction={() => router.push("/wines/new")}
-          swipeActions={(wine) => [
-            {
-              icon: "pencil",
-              color: theme.colors.primary,
-              onPress: () => router.push(`/wines/${wine.id}/edit`),
-            },
-            {
-              icon: "delete",
-              color: "#dc2626",
-              onPress: () => setDeleteTarget(wine),
-            },
-          ]}
-          renderItem={(wine) => (
-            <WineListItem
-              wine={wine}
-              winemakerName={getWinemakerName(wine)}
-              regionDisplay={getRegionDisplay(wine)}
-              onPress={() => router.push(`/wines/${wine.id}`)}
-            />
-          )}
-        />
-      </View>
+    <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
+      <DataList
+        data={sortedWines}
+        keyExtractor={(item) => String(item.id)}
+        searchPlaceholder="Search wines..."
+        searchFilter={(item, query) => {
+          const lower = query.toLowerCase();
+          return (
+            item.name.toLowerCase().includes(lower) ||
+            getWinemakerName(item).toLowerCase().includes(lower)
+          );
+        }}
+        sortOptions={SORT_OPTIONS}
+        onSort={setCurrentSort}
+        currentSort={currentSort}
+        onRefresh={handleRefresh}
+        refreshing={refreshing}
+        emptyIcon="glass-wine"
+        emptyTitle="No wines yet"
+        emptyMessage="Add your first wine to get started"
+        emptyActionLabel="Add Wine"
+        onEmptyAction={() => router.push("/wines/new")}
+        swipeActions={(wine) => [
+          {
+            icon: "pencil",
+            color: theme.colors.primary,
+            onPress: () => router.push(`/wines/${wine.id}/edit`),
+          },
+          {
+            icon: "delete",
+            color: "#dc2626",
+            onPress: () => setDeleteTarget(wine),
+          },
+        ]}
+        renderItem={(wine) => (
+          <WineListItem
+            wine={wine}
+            winemakerName={getWinemakerName(wine)}
+            regionDisplay={getRegionDisplay(wine)}
+            onPress={() => router.push(`/wines/${wine.id}`)}
+          />
+        )}
+      />
 
       <AddFAB onPress={() => router.push("/wines/new")} />
 
@@ -174,118 +171,3 @@ export default function WinesScreen() {
     </SafeAreaView>
   );
 }
-
-type WineListItemProps = {
-  wine: Wine;
-  winemakerName: string;
-  regionDisplay: string;
-  onPress: () => void;
-};
-
-function WineListItem({
-  wine,
-  winemakerName,
-  regionDisplay,
-  onPress,
-}: WineListItemProps) {
-  return (
-    <Pressable
-      testID={`wine-item-${wine.id}`}
-      style={styles.item}
-      onPress={onPress}
-    >
-      <View style={styles.itemRow}>
-        <View style={styles.itemText}>
-          <Text style={styles.itemTitle} numberOfLines={1}>
-            {wine.name}
-          </Text>
-          {winemakerName && (
-            <View style={styles.detailRow}>
-              <Icon
-                source="account"
-                size={16}
-                color={theme.colors.onSurfaceVariant}
-              />
-              <Text variant="bodyMedium" style={styles.detailText}>
-                {winemakerName}
-              </Text>
-            </View>
-          )}
-          {regionDisplay && (
-            <View style={styles.detailRow}>
-              <Icon
-                source="earth"
-                size={16}
-                color={theme.colors.onSurfaceVariant}
-              />
-              <Text variant="bodyMedium" style={styles.detailText}>
-                {regionDisplay}
-              </Text>
-            </View>
-          )}
-        </View>
-        <Icon
-          source="bottle-wine"
-          size={40}
-          color={WINE_TYPE_COLORS[wine.type]}
-        />
-      </View>
-    </Pressable>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  content: {
-    flex: 1,
-  },
-  item: {
-    backgroundColor: theme.colors.surface,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-  },
-  itemRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  detailRow: {
-    flexDirection: "row" as const,
-    alignItems: "center" as const,
-    gap: 6,
-    marginTop: 2,
-  },
-  detailText: {
-    flex: 1,
-    color: theme.colors.onSurfaceVariant,
-  },
-  itemText: {
-    flex: 1,
-    gap: 2,
-  },
-  typeDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  itemTitle: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-  },
-  typeLabel: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-  },
-  itemSub: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-    marginLeft: 0,
-  },
-});
