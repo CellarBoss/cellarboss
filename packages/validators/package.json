@@ -24,7 +24,7 @@
   "devDependencies": {
     "@cellarboss/types": "workspace:*",
     "@vitest/coverage-v8": "4.1.1",
-    "typescript": "5.9.3",
+    "typescript": "6.0.2",
     "vite": "8.0.2",
     "vitest": "4.1.1"
   }
