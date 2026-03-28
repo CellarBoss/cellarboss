@@ -306,7 +306,7 @@ jobs:
           path: artifacts/
 
       - name: Upload to Google Play (Internal Testing)
-        uses: r0adkll/upload-google-play@v1.1.3
+        uses: r0adkll/upload-google-play@935ef9c68bb393a8e6116b1575626a7f5be3a7fb # v1.1.3
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
           packageName: org.cellarboss.mobile
