@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
-import { Text, FAB, Icon } from "react-native-paper";
+import { Text, Icon } from "react-native-paper";
+import { AddFAB } from "@/components/AddFAB";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -132,12 +133,7 @@ export default function GrapesScreen() {
         }}
       />
 
-      <FAB
-        testID="fab-add"
-        icon="plus"
-        style={styles.fab}
-        onPress={() => router.push("/grapes/new")}
-      />
+      <AddFAB onPress={() => router.push("/grapes/new")} />
 
       <ConfirmDialog
         visible={deleteTarget !== null}
@@ -196,11 +192,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     color: theme.colors.onSurfaceVariant,
-  },
-  fab: {
-    position: "absolute",
-    right: 16,
-    bottom: 16,
-    backgroundColor: theme.colors.primary,
   },
 });

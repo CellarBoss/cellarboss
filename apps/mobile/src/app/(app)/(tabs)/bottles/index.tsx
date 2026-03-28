@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { View, StyleSheet } from "react-native";
-import { FAB } from "react-native-paper";
+import { AddFAB } from "@/components/AddFAB";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
@@ -255,12 +255,7 @@ export default function CellarScreen() {
         />
       </View>
 
-      <FAB
-        testID="fab-add"
-        icon="plus"
-        style={styles.fab}
-        onPress={() => router.push("/bottles/new")}
-      />
+      <AddFAB onPress={() => router.push("/bottles/new")} />
     </SafeAreaView>
   );
 }
@@ -272,11 +267,5 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-  },
-  fab: {
-    position: "absolute",
-    right: 16,
-    bottom: 16,
-    backgroundColor: theme.colors.primary,
   },
 });

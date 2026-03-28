@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { View, Pressable, StyleSheet } from "react-native";
-import { Text, FAB, Icon } from "react-native-paper";
+import { Text, Icon } from "react-native-paper";
+import { AddFAB } from "@/components/AddFAB";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -152,12 +153,7 @@ export default function WinesScreen() {
         />
       </View>
 
-      <FAB
-        testID="fab-add"
-        icon="plus"
-        style={styles.fab}
-        onPress={() => router.push("/wines/new")}
-      />
+      <AddFAB onPress={() => router.push("/wines/new")} />
 
       <ConfirmDialog
         visible={deleteTarget !== null}
@@ -298,11 +294,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: theme.colors.onSurfaceVariant,
     marginLeft: 0,
-  },
-  fab: {
-    position: "absolute",
-    right: 16,
-    bottom: 16,
-    backgroundColor: theme.colors.primary,
   },
 });
