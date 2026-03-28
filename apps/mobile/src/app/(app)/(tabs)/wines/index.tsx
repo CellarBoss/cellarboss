@@ -12,7 +12,7 @@ import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { theme } from "@/lib/theme";
 import type { Wine } from "@cellarboss/types";
-import { WINE_TYPE_COLORS, WINE_TYPE_LABELS } from "@/lib/constants/wines";
+import { WINE_TYPE_COLORS } from "@/lib/constants/wines";
 
 const SORT_OPTIONS = [
   { label: "Name (A-Z)", value: "name-asc" },
@@ -223,13 +223,6 @@ function WineListItem({
               </Text>
             </View>
           )}
-          {/*
-          <Text style={styles.itemSub} numberOfLines={1}>
-            {winemakerName}
-            {winemakerName && regionDisplay ? " · " : ""}
-            {regionDisplay}
-          </Text>
-          */}
         </View>
         <Icon
           source="bottle-wine"
