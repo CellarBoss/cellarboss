@@ -1,13 +1,13 @@
-import { StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
-import { FormCard } from "@/components/FormCard";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { theme } from "@/lib/theme";
-import { locationFields } from "@/lib/fields/locations";
+import { LocationDetailsCard } from "@/components/location/LocationDetailsCard";
+import { LocationStoragesList } from "@/components/location/LocationStoragesList";
 
 export default function ViewLocationScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -35,7 +35,10 @@ export default function ViewLocationScreen() {
           },
         ]}
       />
-      <FormCard mode="view" data={location} fields={locationFields} />
+      <ScrollView contentContainerStyle={styles.scroll}>
+        <LocationDetailsCard location={location} />
+        <LocationStoragesList locationId={location.id} />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -44,5 +47,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
+  },
+  scroll: {
+    padding: 16,
   },
 });

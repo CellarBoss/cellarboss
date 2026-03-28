@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
-import { Pressable, StyleSheet } from "react-native";
-import { Text } from "react-native-paper";
+import { View, Pressable, StyleSheet } from "react-native";
+import { Text, Icon } from "react-native-paper";
 import { AddFAB } from "@/components/AddFAB";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -30,8 +30,12 @@ export default function LocationsScreen() {
     queryKey: ["locations"],
     queryFn: () => api.locations.getAll(),
   });
+  const storagesQuery = useApiQuery({
+    queryKey: ["storages"],
+    queryFn: () => api.storages.getAll(),
+  });
 
-  const result = queryGate([locationsQuery]);
+  const result = queryGate([locationsQuery, storagesQuery]);
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => api.locations.delete(id),
@@ -49,7 +53,17 @@ export default function LocationsScreen() {
 
   if (!result.ready) return result.gate;
 
-  const [locations] = result.data;
+  const [locations, storages] = result.data;
+
+  const storageCountByLocation = new Map<number, number>();
+  for (const storage of storages) {
+    if (storage.locationId != null) {
+      storageCountByLocation.set(
+        storage.locationId,
+        (storageCountByLocation.get(storage.locationId) ?? 0) + 1,
+      );
+    }
+  }
 
   const sortedLocations = [...locations].sort((a, b) => {
     switch (currentSort) {
@@ -94,16 +108,31 @@ export default function LocationsScreen() {
             onPress: () => setDeleteTarget(location),
           },
         ]}
-        renderItem={(location) => (
-          <Pressable
-            style={styles.item}
-            onPress={() => router.push(`/locations/${location.id}`)}
-          >
-            <Text style={styles.itemTitle} numberOfLines={1}>
-              {location.name}
-            </Text>
-          </Pressable>
-        )}
+        renderItem={(location) => {
+          const storageCount = storageCountByLocation.get(location.id) ?? 0;
+          return (
+            <Pressable
+              style={styles.item}
+              onPress={() => router.push(`/locations/${location.id}`)}
+            >
+              <View style={styles.itemRow}>
+                <Text style={styles.itemTitle} numberOfLines={1}>
+                  {location.name}
+                </Text>
+                {storageCount > 0 && (
+                  <View style={styles.badge}>
+                    <Icon
+                      source="warehouse"
+                      size={14}
+                      color={theme.colors.onSurfaceVariant}
+                    />
+                    <Text style={styles.badgeText}>{storageCount}</Text>
+                  </View>
+                )}
+              </View>
+            </Pressable>
+          );
+        }}
       />
 
       <AddFAB onPress={() => router.push("/locations/new")} />
@@ -140,9 +169,25 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.outlineVariant,
   },
+  itemRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
+  },
   itemTitle: {
+    flex: 1,
     fontSize: 15,
     fontWeight: "bold",
     color: theme.colors.onSurface,
+  },
+  badge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  badgeText: {
+    fontSize: 13,
+    color: theme.colors.onSurfaceVariant,
   },
 });
