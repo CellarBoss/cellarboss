@@ -1,14 +1,28 @@
+import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { List, Divider } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/contexts/auth-context";
+import { useApiQuery } from "@/hooks/use-api-query";
+import { api } from "@/lib/api/client";
+import { getApiBaseUrl } from "@/lib/api/base-url";
 import { theme } from "@/lib/theme";
 
 export default function MoreScreen() {
   const router = useRouter();
   const auth = useAuth();
   const user = auth.status === "authenticated" ? auth.user : null;
+  const [apiBaseUrl, setApiBaseUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    getApiBaseUrl().then(setApiBaseUrl);
+  }, []);
+
+  const versionQuery = useApiQuery({
+    queryKey: ["version"],
+    queryFn: () => api.version.get(),
+  });
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -122,6 +136,26 @@ export default function MoreScreen() {
             onPress={() => auth.signOut()}
           />
         </List.Section>
+
+        <Divider />
+        {apiBaseUrl && (
+          <List.Section>
+            <List.Subheader>CellarBoss Server</List.Subheader>
+
+            <List.Item
+              testID="menu-server"
+              title="URL"
+              description={apiBaseUrl}
+              left={(props) => <List.Icon {...props} icon="server-network" />}
+            />
+            <List.Item
+              testID="menu-server-version"
+              title="Version"
+              description={versionQuery.data?.version}
+              left={(props) => <List.Icon {...props} icon="tag-outline" />}
+            />
+          </List.Section>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

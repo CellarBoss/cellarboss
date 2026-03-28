@@ -12,6 +12,7 @@ import { winegrapesResource } from "./resources/winegrapes";
 import { tastingNotesResource } from "./resources/tasting-notes";
 import { settingsResource } from "./resources/settings";
 import { usersResource } from "./resources/users";
+import { versionResource } from "./resources/version";
 
 export type ApiClientConfig = {
   request: RequestFn;
@@ -33,6 +34,7 @@ export function createApiClient(config: ApiClientConfig) {
     tastingNotes: tastingNotesResource(request),
     settings: settingsResource(request),
     users: usersResource(request),
+    version: versionResource(request),
   };
 }
 
