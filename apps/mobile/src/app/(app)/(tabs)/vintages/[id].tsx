@@ -10,6 +10,7 @@ import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { formatDrinkingStatus } from "@/lib/functions/format";
 import { theme, shadows } from "@/lib/theme";
+import { VintageTastingNotesList } from "@/components/tasting-notes/TastingNotesList";
 import type { Storage } from "@cellarboss/types";
 import type { WineType } from "@cellarboss/validators/constants";
 
@@ -128,6 +129,8 @@ export default function ViewVintageScreen() {
             )}
           </View>
         </View>
+
+        <VintageTastingNotesList vintage={vintage} />
       </ScrollView>
     </SafeAreaView>
   );
