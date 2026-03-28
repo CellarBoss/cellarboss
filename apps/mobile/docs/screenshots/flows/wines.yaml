@@ -6,12 +6,12 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "wines-tab"
 - waitForAnimationToEnd
-- takeScreenshot: wines-list
+- takeScreenshot: ${SCREENSHOT_DIR}/wines-list
 
 # Tap on first wine to view detail
 - tapOn: "Château Margaux"
 - waitForAnimationToEnd
-- takeScreenshot: wines-detail
+- takeScreenshot: ${SCREENSHOT_DIR}/wines-detail
 
 # Go back to list
 - pressKey: back
@@ -21,4 +21,4 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "fab-add"
 - waitForAnimationToEnd
-- takeScreenshot: wines-create
+- takeScreenshot: ${SCREENSHOT_DIR}/wines-create

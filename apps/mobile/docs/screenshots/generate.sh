@@ -11,9 +11,10 @@ MOCK_SERVER_URL="http://localhost:5174"
 MOCK_SERVER_PID=""
 
 cleanup() {
-  if [ -n "$MOCK_SERVER_PID" ]; then
+  if [ -n "${MOCK_SERVER_PID:-}" ]; then
     echo "Stopping mock server (PID $MOCK_SERVER_PID)..."
-    kill "$MOCK_SERVER_PID" 2>/dev/null || true
+    # Kill entire process group
+    kill -TERM -"$MOCK_SERVER_PID" 2>/dev/null || true
     wait "$MOCK_SERVER_PID" 2>/dev/null || true
   fi
   rm -rf "$MAESTRO_OUTPUT_DIR"
@@ -30,8 +31,12 @@ mkdir -p "$MAESTRO_OUTPUT_DIR"
 # 1. Start mock server
 echo "Starting mock server..."
 cd "$REPO_ROOT"
+# Start mock server in its own process group
 pnpm --filter @cellarboss/mock-server start &
 MOCK_SERVER_PID=$!
+
+# Ensure it has its own group
+set +m
 
 # 2. Wait for mock server to be ready
 echo "Waiting for mock server..."
@@ -51,6 +56,7 @@ echo ""
 # 3. Run Maestro screenshot flows
 # timeout ensures the script always exits even if Maestro hangs.
 # The || captures the exit code so set -e doesn't abort before copying screenshots.
+export SCREENSHOT_DIR="$MAESTRO_OUTPUT_DIR"
 echo "Running Maestro screenshot flows..."
 cd "$SCRIPT_DIR"
 timeout 900 maestro test --output "$MAESTRO_OUTPUT_DIR" flows/ || MAESTRO_EXIT_CODE=$?
