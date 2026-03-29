@@ -130,6 +130,7 @@ export function DataTable<T>({
     ...(enableRowSelection
       ? {
           enableRowSelection: true,
+          enableSubRowSelection: false,
           onRowSelectionChange: createTableStateUpdater(state.setRowSelection),
         }
       : {}),
@@ -168,7 +169,7 @@ export function DataTable<T>({
   // Get selected rows and bulk action handlers
   const selectedRows = table
     .getSelectedRowModel()
-    .rows.map((r: Row<T>) => r.original);
+    .flatRows.map((r: Row<T>) => r.original);
   const selectedCount = selectedRows.length;
   const bulkActions = useBulkActions(
     selectedRows,
