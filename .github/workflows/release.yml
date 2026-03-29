@@ -322,6 +322,12 @@ jobs:
           name: android-aab
           path: artifacts/
 
+      - name: Generate What's New text
+        run: |
+          mkdir -p whatsnew
+          echo "See what's new in this release: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}" > whatsnew/whatsnew-en-US
+          echo "See what's new in this release: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}" > whatsnew/whatsnew-en-GB
+
       - name: Upload to Google Play (Internal Testing)
         uses: r0adkll/upload-google-play@935ef9c68bb393a8e6116b1575626a7f5be3a7fb # v1.1.3
         with:
@@ -330,6 +336,7 @@ jobs:
           releaseFiles: artifacts/app-release.aab
           track: internal
           status: draft
+          whatsNewDirectory: whatsnew
 
   create-release:
     name: Publish GitHub Release
