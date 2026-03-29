@@ -25,7 +25,7 @@
     "@cellarboss/types": "workspace:*",
     "@vitest/coverage-v8": "4.1.1",
     "typescript": "5.9.3",
-    "vite": "8.0.2",
+    "vite": "8.0.3",
     "vitest": "4.1.1"
   }
 }
