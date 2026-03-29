@@ -35,9 +35,12 @@ pnpm --filter web dev        # port 3000
 cellarboss/
 ├── apps/
 │   ├── backend/      # Hono API server
+│   ├── mobile/       # React Native mobile application
 │   └── web/          # Next.js frontend
 ├── docs/             # Developer documentation
 └── packages/
+    ├── common/       # Shared functions/constants between all applications
+    ├── mock-server/  # A mock backend server used for automated testing
     ├── types/        # Shared type definitions
     └── validators/   # Shared Zod validators
 ```
@@ -48,15 +51,17 @@ Documentation is built and deployed automatically on every release:
 
 - [Backend API reference](https://docs.cellarboss.org/api/)
 - [Web UI user guide](https://docs.cellarboss.org/web/guide/)
+- [Mobile user guide](https://docs.cellarboss.org/mobile/guide/)
 
 ## Developer Notes
 
-| Document                            | Description                                        |
-| ----------------------------------- | -------------------------------------------------- |
-| [Backend](docs/backend.md)          | API server architecture, database support, testing |
-| [Web Frontend](docs/web.md)         | Frontend architecture, unit tests, E2E tests       |
-| [Shared Packages](docs/packages.md) | `@cellarboss/types` and `@cellarboss/validators`   |
-| [CI/CD](docs/ci.md)                 | GitHub Actions workflows, PR checks, releases      |
+| Document                            | Description                                            |
+| ----------------------------------- | ------------------------------------------------------ |
+| [Backend](docs/backend.md)          | API server architecture, database support, testing     |
+| [Web Frontend](docs/web.md)         | Frontend architecture, unit tests, E2E tests           |
+| [Mobile App](docs/mobile.md)        | Mobile application architecture, unit tests, E2E tests |
+| [Shared Packages](docs/packages.md) | Details on all shared packages                         |
+| [CI/CD](docs/ci.md)                 | GitHub Actions workflows, PR checks, releases          |
 
 ## Roadmap
 
@@ -64,7 +69,6 @@ Documentation is built and deployed automatically on every release:
 - Upload images of your collection
 - Import wine details from 3rd party websites (Vivino, Wine Society, Naked Wines etc)
 - i18n
-- Tablet user interface
 - Build & automatically deploy styled wine menus
 
 ## FAQs
@@ -79,6 +83,18 @@ I wouldn't go as far as calling this project 'vibe-coded', but certain elements 
 This will possibly involve future features also being written by AI, but I am also considering automatic PR reviews and the like.
 
 I am very happy to enter into a discussion on the merits of these, respecting my position the current sole developer on the project.
+
+### How do I install the mobile application?
+
+**Android** - The Google Play Store requires a number of testers to use an application before it can be released publically.
+If you're interested in helping test, please [get in touch](mailto:contact@cellarboss.org).
+
+**iOS** - Theoretically the same React Native application can be built for iOS, but I do not currently have any Apple devices to test with.
+If you're interested in helping develop &/or test an iOS build, then please [get in touch](mailto:contact@cellarboss.org).
+
+## Are you planning to offer a hosted version?
+
+No plans at the moment, but if there's enough interest then this is something that could be explored in future.
 
 ### Can I use this commercially?
 
@@ -96,7 +112,7 @@ Any feedback or suggestions are gratefully received via [Issues](https://github.
 
 ### I found a bug!
 
-Great! As above, please raise an [Issue](https://github.com/CellarBoss/cellarboss/issues)
+Great! As above, please raise an [Issue](https://github.com/CellarBoss/cellarboss/issues), or even better - provide a [PR](https://github.com/CellarBoss/cellarboss/pulls) with a fix!
 
 ## License
 
