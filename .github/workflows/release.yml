@@ -161,6 +161,23 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      - name: Start mock server
+        run: pnpm --filter @cellarboss/mock-server start &
+
+      - name: Wait for mock server
+        run: |
+          TIMEOUT=30
+          ELAPSED=0
+          until curl -sf "http://localhost:5174/__test/healthcheck" > /dev/null 2>&1; do
+            if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
+              echo "Mock server did not start within ${TIMEOUT}s"
+              exit 1
+            fi
+            sleep 1
+            ELAPSED=$((ELAPSED + 1))
+          done
+          echo "Mock server is ready."
+
       - name: Generate screenshots
         timeout-minutes: 20
         uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
