@@ -37,7 +37,7 @@
     "expo-status-bar": "55.0.4",
     "lucide-react-native": "0.577.0",
     "react": "catalog:",
-    "react-native": "0.83.2",
+    "react-native": "0.83.4",
     "react-native-gesture-handler": "2.30.0",
     "react-native-paper": "5.15.0",
     "react-native-reanimated": "4.2.1",
