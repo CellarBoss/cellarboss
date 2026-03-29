@@ -11,3 +11,13 @@ export const WINE_TYPE_COLORS: Record<WineType, string> = {
   fortified: "bg-amber-700",
   dessert: "bg-yellow-400",
 };
+
+export const WINE_TYPE_TEXT_COLORS: Record<WineType, string> = {
+  red: "text-red-800",
+  white: "text-amber-200",
+  rose: "text-pink-400",
+  orange: "text-orange-400",
+  sparkling: "text-sky-300",
+  fortified: "text-amber-700",
+  dessert: "text-yellow-400",
+};

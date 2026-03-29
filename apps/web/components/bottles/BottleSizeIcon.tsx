@@ -1,7 +1,7 @@
 import { BottleWine } from "lucide-react";
 import type { BottleSize, WineType } from "@cellarboss/validators/constants";
 import { BOTTLE_SIZES } from "@/lib/constants/bottle-sizes";
-import { WINE_TYPE_COLORS } from "@/lib/constants/wine-colouring";
+import { WINE_TYPE_TEXT_COLORS } from "@/lib/constants/wine-colouring";
 import { formatBottleSize } from "@/lib/functions/format";
 import {
   Tooltip,
@@ -17,7 +17,7 @@ export function BottleSizeIcon({
   wineType: WineType;
 }) {
   const iconSize = BOTTLE_SIZES[size]?.iconSize ?? 16;
-  const colorClass = WINE_TYPE_COLORS[wineType].replace("bg-", "text-");
+  const colorClass = WINE_TYPE_TEXT_COLORS[wineType];
 
   return (
     <Tooltip>
