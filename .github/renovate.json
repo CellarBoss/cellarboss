@@ -90,6 +90,7 @@
     },
     {
       "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["patch", "minor", "digest"],
       "minimumReleaseAge": "3 days",
       "automerge": true,
       "automergeType": "pr",
