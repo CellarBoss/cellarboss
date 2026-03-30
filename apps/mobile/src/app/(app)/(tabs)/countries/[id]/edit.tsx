@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { ScreenHeader } from "@/components/ScreenHeader";
-import { FormCard } from "@/components/FormCard";
+import { FormCard } from "@/components/form/FormCard";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";

@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { ScreenHeader } from "@/components/ScreenHeader";
-import { FormCard } from "@/components/FormCard";
+import { FormCard } from "@/components/form/FormCard";
 import { api } from "@/lib/api/client";
 import { tastingNoteCreateFields } from "@/lib/fields/tasting-notes";
 import type { TastingNote } from "@cellarboss/types";

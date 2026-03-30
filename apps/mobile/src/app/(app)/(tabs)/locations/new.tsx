@@ -2,7 +2,7 @@ import { commonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import { ScreenHeader } from "@/components/ScreenHeader";
-import { FormCard } from "@/components/FormCard";
+import { FormCard } from "@/components/form/FormCard";
 import { api } from "@/lib/api/client";
 import { locationFields } from "@/lib/fields/locations";
 import type { Location } from "@cellarboss/types";
