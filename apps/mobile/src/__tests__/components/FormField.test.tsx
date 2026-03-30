@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react-native";
 import { PaperProvider } from "react-native-paper";
-import { FormField } from "@/components/FormField";
+import { FormField } from "@/components/form/FormField";
 
 function renderField(
   props: Partial<React.ComponentProps<typeof FormField>> = {},

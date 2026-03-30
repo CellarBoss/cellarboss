@@ -1,7 +1,7 @@
 import { commonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScreenHeader } from "@/components/ScreenHeader";
-import { FormCard } from "@/components/FormCard";
+import { FormCard } from "@/components/form/FormCard";
 import { api } from "@/lib/api/client";
 import { bottleFields } from "@/lib/fields/bottles";
 import type { FieldConfig } from "@/lib/types/field";
