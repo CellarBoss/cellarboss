@@ -52,15 +52,6 @@
       "groupName": "non-expo dependencies"
     },
     {
-      "description": "Prevent accidental automerge of Expo/RN",
-      "matchPackagePatterns": [
-        "^expo",
-        "^@expo",
-        "^react-native"
-      ],
-      "automerge": false
-    },
-    {
       "matchUpdateTypes": ["patch", "digest"],
       "minimumReleaseAge": "3 days",
       "automerge": true,
