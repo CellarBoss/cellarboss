@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react-native";
 import * as Haptics from "expo-haptics";
-import { WineGlassRating } from "@/components/WineGlassRating";
+import { WineGlassRating } from "@/components/form/WineGlassRating";
 
 describe("WineGlassRating", () => {
   beforeEach(() => {

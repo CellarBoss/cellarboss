@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { TextInput, HelperText, Menu, Button, Text } from "react-native-paper";
-import { WineGlassRating } from "../WineGlassRating";
+import { WineGlassRating } from "./WineGlassRating";
 import { DateField } from "./DateField";
 import { QuantityStepper } from "./QuantityStepper";
 import { theme } from "@/lib/theme";
