@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { TextInput, HelperText, Menu, Button, Text } from "react-native-paper";
 import { WineGlassRating } from "../WineGlassRating";
+import { DateField } from "./DateField";
 import { QuantityStepper } from "./QuantityStepper";
 import { theme } from "@/lib/theme";
 import type { SelectOption } from "@/lib/types/field";
@@ -104,22 +105,13 @@ export function FormField({
 
   if (type === "date") {
     return (
-      <View style={styles.field}>
-        <TextInput
-          testID={`field-${label.toLowerCase().replace(/\s+/g, "-")}`}
-          label={label}
-          value={value}
-          onChangeText={onChangeValue}
-          mode="outlined"
-          disabled={!editable}
-          error={!!error}
-          placeholder="YYYY-MM-DD"
-          keyboardType="default"
-          outlineColor={theme.colors.outline}
-          activeOutlineColor={theme.colors.primary}
-        />
-        {error && <HelperText type="error">{error}</HelperText>}
-      </View>
+      <DateField
+        label={label}
+        value={value}
+        onChangeValue={onChangeValue}
+        editable={editable}
+        error={error}
+      />
     );
   }
 
