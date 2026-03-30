@@ -1,11 +1,13 @@
 import { api } from "@/lib/api/client";
 import type { FieldConfig } from "@/lib/types/field";
 import type { Storage } from "@cellarboss/types";
+import { storageFormValidators } from "@cellarboss/validators/storages.validator";
 
 export const storageFields: FieldConfig<Storage>[] = [
   {
     key: "name",
     label: "Name",
+    validator: storageFormValidators.name,
   },
   {
     key: "locationId",
@@ -16,6 +18,7 @@ export const storageFields: FieldConfig<Storage>[] = [
       queryFn: () => api.locations.getAll(),
       allowNone: true,
     },
+    validator: storageFormValidators.locationId,
   },
   {
     key: "parent",
@@ -26,5 +29,6 @@ export const storageFields: FieldConfig<Storage>[] = [
       queryFn: () => api.storages.getAll(),
       allowNone: true,
     },
+    validator: storageFormValidators.parent,
   },
 ];

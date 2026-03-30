@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { createWineSchema, updateWineSchema } from "../wines.validator";
+import {
+  createWineSchema,
+  updateWineSchema,
+  wineFormValidators,
+} from "../wines.validator";
 
 describe("createWineSchema", () => {
   it("accepts a valid wine", () => {
@@ -121,5 +125,50 @@ describe("updateWineSchema", () => {
         "At least one field must be provided",
       );
     }
+  });
+});
+
+describe("wineFormValidators", () => {
+  it("coerces string wineMakerId to number", () => {
+    const result = wineFormValidators.wineMakerId.safeParse("5");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe(5);
+  });
+
+  it("rejects non-numeric wineMakerId", () => {
+    expect(wineFormValidators.wineMakerId.safeParse("abc").success).toBe(false);
+  });
+
+  it("rejects zero wineMakerId", () => {
+    expect(wineFormValidators.wineMakerId.safeParse("0").success).toBe(false);
+  });
+
+  it("coerces empty regionId to null", () => {
+    const result = wineFormValidators.regionId.safeParse("");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBeNull();
+  });
+
+  it("coerces string regionId to number", () => {
+    const result = wineFormValidators.regionId.safeParse("3");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe(3);
+  });
+
+  it("coerces null/undefined regionId to null", () => {
+    expect(wineFormValidators.regionId.safeParse(null).success).toBe(true);
+    expect(wineFormValidators.regionId.safeParse(undefined).success).toBe(true);
+  });
+
+  it("validates name as non-empty trimmed string", () => {
+    expect(wineFormValidators.name.safeParse("").success).toBe(false);
+    const result = wineFormValidators.name.safeParse("  Test  ");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe("Test");
+  });
+
+  it("validates wine type enum", () => {
+    expect(wineFormValidators.type.safeParse("red").success).toBe(true);
+    expect(wineFormValidators.type.safeParse("invalid").success).toBe(false);
   });
 });

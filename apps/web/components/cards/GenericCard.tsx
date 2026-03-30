@@ -50,6 +50,7 @@ export function GenericCard<T extends { id: number | string }>({
     defaultValues: stringifyValues(data), // We must stringify to allow proper comparison within Select elements
     validators: {
       onChange: zodSchema,
+      onSubmit: zodSchema,
     },
     onSubmit: async ({ value }) => {
       if (!processSave) {

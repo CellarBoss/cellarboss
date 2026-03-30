@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   createStorageSchema,
   updateStorageSchema,
+  storageFormValidators,
 } from "../storages.validator";
 
 describe("createStorageSchema", () => {
@@ -135,5 +136,45 @@ describe("updateStorageSchema", () => {
   it("rejects empty object", () => {
     const result = updateStorageSchema.safeParse({});
     expect(result.success).toBe(false);
+  });
+});
+
+describe("storageFormValidators", () => {
+  it("coerces empty locationId to null", () => {
+    const result = storageFormValidators.locationId.safeParse("");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBeNull();
+  });
+
+  it("coerces string locationId to number", () => {
+    const result = storageFormValidators.locationId.safeParse("5");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe(5);
+  });
+
+  it("coerces null/undefined locationId to null", () => {
+    expect(storageFormValidators.locationId.safeParse(null).success).toBe(true);
+    expect(storageFormValidators.locationId.safeParse(undefined).success).toBe(
+      true,
+    );
+  });
+
+  it("coerces empty parent to null", () => {
+    const result = storageFormValidators.parent.safeParse("");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBeNull();
+  });
+
+  it("coerces string parent to number", () => {
+    const result = storageFormValidators.parent.safeParse("3");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe(3);
+  });
+
+  it("validates name as non-empty trimmed string", () => {
+    expect(storageFormValidators.name.safeParse("").success).toBe(false);
+    const result = storageFormValidators.name.safeParse("  Rack B  ");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe("Rack B");
   });
 });

@@ -106,6 +106,24 @@ export function FormCard<T extends { id: number | string }>({
             <form.Field
               key={String(field.key)}
               name={String(field.key)}
+              validators={
+                field.validator
+                  ? {
+                      onChange: ({ value }) => {
+                        const result = field.validator!.safeParse(value);
+                        return result.success
+                          ? undefined
+                          : result.error.issues[0]?.message;
+                      },
+                      onSubmit: ({ value }) => {
+                        const result = field.validator!.safeParse(value);
+                        return result.success
+                          ? undefined
+                          : result.error.issues[0]?.message;
+                      },
+                    }
+                  : undefined
+              }
               children={(fieldApi) =>
                 field.type === "wine-vintage" ? (
                   <WineVintageSelector

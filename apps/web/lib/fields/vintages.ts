@@ -1,22 +1,14 @@
-import * as z from "zod";
 import type { Vintage } from "@cellarboss/types";
 import type { FieldConfig } from "@/lib/types/field";
+import { vintageFormValidators } from "@cellarboss/validators/vintages.validator";
 import { getWines } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
-
-function nullableInt(min: number, max: number) {
-  return z.preprocess(
-    (val) =>
-      val === "" || val === null || val === undefined ? null : Number(val),
-    z.number().int().min(min).max(max).nullable(),
-  );
-}
 
 export const vintageFields: FieldConfig<Vintage>[] = [
   {
     key: "year",
     label: "Year",
-    validator: nullableInt(1800, 2100),
+    validator: vintageFormValidators.year,
   },
   {
     key: "wineId",
@@ -31,16 +23,16 @@ export const vintageFields: FieldConfig<Vintage>[] = [
         queryFn: getWinemakers,
       },
     },
-    validator: z.coerce.number().int().positive(),
+    validator: vintageFormValidators.wineId,
   },
   {
     key: "drinkFrom",
     label: "Drink From",
-    validator: nullableInt(1800, 2200),
+    validator: vintageFormValidators.drinkFrom,
   },
   {
     key: "drinkUntil",
     label: "Drink Until",
-    validator: nullableInt(1800, 2200),
+    validator: vintageFormValidators.drinkUntil,
   },
 ];

@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { WINE_TYPES } from "./constants";
+import { WINE_TYPES } from "./constants.js";
+import { nullableId } from "./form-helpers.js";
 
 export const createWineSchema = z.object({
   name: z.string().min(1).max(255).trim().describe("Name of the wine"),
@@ -12,6 +13,13 @@ export const createWineSchema = z.object({
     .describe("ID of the region, or null"),
   type: z.enum(WINE_TYPES).describe("Type of wine"),
 });
+
+export const wineFormValidators = {
+  name: createWineSchema.shape.name,
+  type: z.enum(WINE_TYPES),
+  wineMakerId: z.coerce.number().int().positive("A winemaker must be selected"),
+  regionId: nullableId(),
+} as const;
 
 export const updateWineSchema = createWineSchema
   .partial()

@@ -6,6 +6,16 @@ export const createTastingNoteSchema = z.object({
   notes: z.string().trim(),
 });
 
+export const tastingNoteFormValidators = {
+  vintageId: z.coerce.number().int().positive("A vintage must be selected"),
+  score: z.coerce
+    .number()
+    .int()
+    .min(0, "Score must be 0-10")
+    .max(10, "Score must be 0-10"),
+  notes: z.string().trim(),
+} as const;
+
 export const updateTastingNoteSchema = z
   .object({
     score: z.number().int().min(0).max(10).optional(),

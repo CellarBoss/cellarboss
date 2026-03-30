@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { createRegionSchema, updateRegionSchema } from "../regions.validator";
+import {
+  createRegionSchema,
+  updateRegionSchema,
+  regionFormValidators,
+} from "../regions.validator";
 
 describe("createRegionSchema", () => {
   it("accepts a valid region", () => {
@@ -81,5 +85,28 @@ describe("updateRegionSchema", () => {
   it("rejects empty object", () => {
     const result = updateRegionSchema.safeParse({});
     expect(result.success).toBe(false);
+  });
+});
+
+describe("regionFormValidators", () => {
+  it("coerces string countryId to number", () => {
+    const result = regionFormValidators.countryId.safeParse("3");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe(3);
+  });
+
+  it("rejects non-numeric countryId", () => {
+    expect(regionFormValidators.countryId.safeParse("abc").success).toBe(false);
+  });
+
+  it("rejects zero countryId", () => {
+    expect(regionFormValidators.countryId.safeParse("0").success).toBe(false);
+  });
+
+  it("validates name as non-empty trimmed string", () => {
+    expect(regionFormValidators.name.safeParse("").success).toBe(false);
+    const result = regionFormValidators.name.safeParse("  Bordeaux  ");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe("Bordeaux");
   });
 });

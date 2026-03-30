@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   createTastingNoteSchema,
   updateTastingNoteSchema,
+  tastingNoteFormValidators,
 } from "../tasting-notes.validator";
 
 describe("createTastingNoteSchema", () => {
@@ -125,5 +126,41 @@ describe("updateTastingNoteSchema", () => {
   it("rejects score above 10 on update", () => {
     const result = updateTastingNoteSchema.safeParse({ score: 11 });
     expect(result.success).toBe(false);
+  });
+});
+
+describe("tastingNoteFormValidators", () => {
+  it("coerces string vintageId to number", () => {
+    const result = tastingNoteFormValidators.vintageId.safeParse("5");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe(5);
+  });
+
+  it("rejects non-numeric vintageId", () => {
+    expect(tastingNoteFormValidators.vintageId.safeParse("abc").success).toBe(
+      false,
+    );
+  });
+
+  it("coerces string score to number", () => {
+    const result = tastingNoteFormValidators.score.safeParse("8");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe(8);
+  });
+
+  it("rejects score out of range", () => {
+    expect(tastingNoteFormValidators.score.safeParse("-1").success).toBe(false);
+    expect(tastingNoteFormValidators.score.safeParse("11").success).toBe(false);
+  });
+
+  it("accepts score boundaries", () => {
+    expect(tastingNoteFormValidators.score.safeParse("0").success).toBe(true);
+    expect(tastingNoteFormValidators.score.safeParse("10").success).toBe(true);
+  });
+
+  it("trims notes string", () => {
+    const result = tastingNoteFormValidators.notes.safeParse("  Nice wine  ");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe("Nice wine");
   });
 });
