@@ -8,7 +8,7 @@
   "semanticCommitType": "deps",
   "semanticCommitScope": "",
   "prConcurrentLimit": 4,
-  "branchConcurrentLimit": 2,
+  "branchConcurrentLimit": 4,
   "prHourlyLimit": 2,
   "draftPR": false,
   "dependencyDashboard": true,
