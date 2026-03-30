@@ -30,18 +30,18 @@
   "packageRules": [
     {
       "description": "Block Expo and React Native ecosystem",
-      "matchPackagePatterns": [
-        "^expo",
-        "^@expo",
-        "^react$",
-        "^react-dom$",
-        "^react-native",
-        "^@react-native",
-        "^@react-navigation",
-        "^jest-expo$",
-        "^babel-preset-expo$"
-      ],
-      "enabled": false
+      "enabled": false,
+      "matchPackageNames": [
+        "/^expo/",
+        "/^@expo/",
+        "/^react$/",
+        "/^react-dom$/",
+        "/^react-native/",
+        "/^@react-native/",
+        "/^@react-navigation/",
+        "/^jest-expo$/",
+        "/^babel-preset-expo$/"
+      ]
     },
     {
       "matchUpdateTypes": ["patch", "digest"],
@@ -81,9 +81,11 @@
       "semanticCommitType": "deps"
     },
     {
-      "matchPackagePatterns": ["^@types/"],
       "groupName": "types",
-      "automerge": true
+      "automerge": true,
+      "matchPackageNames": [
+        "/^@types//"
+      ]
     }
   ]
 }
