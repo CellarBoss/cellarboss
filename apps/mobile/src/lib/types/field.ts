@@ -38,4 +38,5 @@ export type FieldConfig<T, K extends keyof T = keyof T> = {
   | { type: "date"; selectorConfig?: never; options?: never }
   | { type: "fixed-list"; options: SelectOption[]; selectorConfig?: never }
   | { type: "wine-rating"; selectorConfig?: never; options?: never }
+  | { type: "quantity-stepper"; selectorConfig?: never; options?: never }
 );

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { TextInput, HelperText, Menu, Button, Text } from "react-native-paper";
 import { WineGlassRating } from "./WineGlassRating";
+import { QuantityStepper } from "./QuantityStepper";
 import { theme } from "@/lib/theme";
 import type { SelectOption } from "@/lib/types/field";
 
@@ -16,7 +17,8 @@ type FormFieldProps = {
     | "number"
     | "date"
     | "fixed-list"
-    | "wine-rating";
+    | "wine-rating"
+    | "quantity-stepper";
   editable?: boolean;
   error?: string;
   options?: SelectOption[];
@@ -85,6 +87,18 @@ export function FormField({
         </Menu>
         {error && <HelperText type="error">{error}</HelperText>}
       </View>
+    );
+  }
+
+  if (type === "quantity-stepper") {
+    return (
+      <QuantityStepper
+        label={label}
+        value={value}
+        onChangeValue={onChangeValue}
+        editable={editable}
+        error={error}
+      />
     );
   }
 

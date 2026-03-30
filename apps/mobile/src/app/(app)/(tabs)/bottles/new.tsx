@@ -15,8 +15,7 @@ const bottleCreateFields: FieldConfig<BottleCreateData>[] = [
   {
     key: "quantity",
     label: "Quantity",
-    type: "number",
-    numberProps: { min: 1, step: 1 },
+    type: "quantity-stepper",
   },
 ];
 
