@@ -34,23 +34,14 @@
         "^expo",
         "^@expo",
         "^react$",
+        "^react-dom$",
         "^react-native",
         "^@react-native",
-        "^@react-navigation"
+        "^@react-navigation",
+        "^jest-expo$",
+        "^babel-preset-expo$"
       ],
       "enabled": false
-    },
-    {
-      "description": "Group non-Expo dependencies",
-      "excludePackagePatterns": [
-        "^expo",
-        "^@expo",
-        "^react$",
-        "^react-native",
-        "^@react-native",
-        "^@react-navigation"
-      ],
-      "groupName": "non-expo dependencies"
     },
     {
       "matchUpdateTypes": ["patch", "digest"],
