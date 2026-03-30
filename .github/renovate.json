@@ -97,10 +97,6 @@
       "semanticCommitType": "deps"
     },
     {
-      "matchPackagePatterns": ["*"],
-      "minimumReleaseAge": "3 days"
-    },
-    {
       "matchPackagePatterns": ["^@types/"],
       "groupName": "types",
       "automerge": true
