@@ -131,6 +131,9 @@ export function FormCard<T extends { id: number | string }>({
                     value={fieldApi.state.value ?? ""}
                     onChange={(v) => fieldApi.handleChange(v)}
                     disabled={!editable || field.editable === false}
+                    error={
+                      fieldApi.state.meta.errors?.[0] as string | undefined
+                    }
                   />
                 ) : field.type === "selector" && field.selectorConfig ? (
                   <DataSelector
