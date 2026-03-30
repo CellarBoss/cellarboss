@@ -2,7 +2,7 @@ import "../helpers/mock-navigation";
 import "../helpers/mock-haptics";
 import { screen, fireEvent, waitFor } from "@testing-library/react-native";
 import * as Haptics from "expo-haptics";
-import { FormCard } from "@/components/FormCard";
+import { FormCard } from "@/components/form/FormCard";
 import { mockRouter } from "../helpers/mock-navigation";
 import { renderWithProviders } from "../helpers/test-utils";
 import type { FieldConfig } from "@/lib/types/field";
