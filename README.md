@@ -92,7 +92,7 @@ If you're interested in helping test, please [get in touch](mailto:contact@cella
 **iOS** - Theoretically the same React Native application can be built for iOS, but I do not currently have any Apple devices to test with.
 If you're interested in helping develop &/or test an iOS build, then please [get in touch](mailto:contact@cellarboss.org).
 
-## Are you planning to offer a hosted version?
+### Are you planning to offer a hosted version?
 
 No plans at the moment, but if there's enough interest then this is something that could be explored in future.
 
