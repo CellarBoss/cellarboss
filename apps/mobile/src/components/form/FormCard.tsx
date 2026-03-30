@@ -149,6 +149,9 @@ export function FormCard<T extends { id: number | string }>({
                     hierarchical={field.selectorConfig.hierarchical}
                     groupBy={field.selectorConfig.groupBy}
                     disabled={!editable || field.editable === false}
+                    error={
+                      fieldApi.state.meta.errors?.[0] as string | undefined
+                    }
                   />
                 ) : (
                   <FormField

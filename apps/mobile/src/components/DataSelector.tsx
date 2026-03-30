@@ -8,6 +8,7 @@ import {
   RadioButton,
   Checkbox,
   IconButton,
+  HelperText,
 } from "react-native-paper";
 import { useQuery } from "@tanstack/react-query";
 import { theme } from "@/lib/theme";
@@ -54,6 +55,7 @@ type DataSelectorProps = {
   hierarchical?: boolean;
   groupBy?: GroupByConfig;
   disabled?: boolean;
+  error?: string;
 };
 
 const NONE_ITEM: GenericType = { id: -1, name: "None" };
@@ -69,6 +71,7 @@ export function DataSelector({
   hierarchical = false,
   groupBy,
   disabled = false,
+  error,
 }: DataSelectorProps) {
   const [visible, setVisible] = useState(false);
   const [search, setSearch] = useState("");
@@ -220,7 +223,11 @@ export function DataSelector({
       <Pressable
         testID={`selector-${label.toLowerCase().replace(/\s+/g, "-")}`}
         onPress={() => !disabled && setVisible(true)}
-        style={[styles.selector, disabled && styles.selectorDisabled]}
+        style={[
+          styles.selector,
+          disabled && styles.selectorDisabled,
+          !!error && styles.selectorError,
+        ]}
       >
         <Text
           style={[
@@ -233,6 +240,7 @@ export function DataSelector({
         </Text>
         <IconButton icon="chevron-down" size={20} />
       </Pressable>
+      {error && <HelperText type="error">{error}</HelperText>}
 
       <Portal>
         <Modal
@@ -351,6 +359,9 @@ const styles = StyleSheet.create({
   },
   selectorDisabled: {
     opacity: 0.5,
+  },
+  selectorError: {
+    borderColor: theme.colors.error,
   },
   selectorText: {
     flex: 1,
