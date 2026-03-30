@@ -45,6 +45,7 @@
       "excludePackagePatterns": [
         "^expo",
         "^@expo",
+        "^react$",
         "^react-native",
         "^@react-native",
         "^@react-navigation"
