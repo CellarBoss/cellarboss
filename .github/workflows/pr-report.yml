@@ -66,35 +66,35 @@ jobs:
 
       - name: Web coverage report
         if: hashFiles('apps/web/coverage/coverage-summary.json') != ''
-        uses: davelosert/vitest-coverage-report-action@2500dafcee7dd64f85ab689c0b83798a8359770e # v2
+        uses: davelosert/vitest-coverage-report-action@bd52af59d9cd548ea7cd405044d2458042e6d888 # v2
         with:
           name: Web
           working-directory: apps/web
 
       - name: Validators coverage report
         if: hashFiles('packages/validators/coverage/coverage-summary.json') != ''
-        uses: davelosert/vitest-coverage-report-action@2500dafcee7dd64f85ab689c0b83798a8359770e # v2
+        uses: davelosert/vitest-coverage-report-action@bd52af59d9cd548ea7cd405044d2458042e6d888 # v2
         with:
           name: Validators
           working-directory: packages/validators
 
       - name: Backend coverage report
         if: hashFiles('apps/backend/coverage/coverage-summary.json') != ''
-        uses: davelosert/vitest-coverage-report-action@2500dafcee7dd64f85ab689c0b83798a8359770e # v2
+        uses: davelosert/vitest-coverage-report-action@bd52af59d9cd548ea7cd405044d2458042e6d888 # v2
         with:
           name: Backend
           working-directory: apps/backend
 
       - name: Common coverage report
         if: hashFiles('packages/common/coverage/coverage-summary.json') != ''
-        uses: davelosert/vitest-coverage-report-action@2500dafcee7dd64f85ab689c0b83798a8359770e # v2
+        uses: davelosert/vitest-coverage-report-action@bd52af59d9cd548ea7cd405044d2458042e6d888 # v2
         with:
           name: Common
           working-directory: packages/common
 
       - name: Mobile coverage report
         if: hashFiles('apps/mobile/coverage/coverage-summary.json') != ''
-        uses: davelosert/vitest-coverage-report-action@2500dafcee7dd64f85ab689c0b83798a8359770e # v2
+        uses: davelosert/vitest-coverage-report-action@bd52af59d9cd548ea7cd405044d2458042e6d888 # v2
         with:
           name: Mobile
           working-directory: apps/mobile
