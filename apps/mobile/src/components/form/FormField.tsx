@@ -3,6 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { TextInput, HelperText, Menu, Button, Text } from "react-native-paper";
 import { WineGlassRating } from "./WineGlassRating";
 import { DateField } from "./DateField";
+import { PriceField } from "./PriceField";
 import { QuantityStepper } from "./QuantityStepper";
 import { theme } from "@/lib/theme";
 import type { SelectOption } from "@/lib/types/field";
@@ -19,6 +20,7 @@ type FormFieldProps = {
     | "date"
     | "fixed-list"
     | "wine-rating"
+    | "price"
     | "quantity-stepper";
   editable?: boolean;
   error?: string;
@@ -94,6 +96,18 @@ export function FormField({
   if (type === "quantity-stepper") {
     return (
       <QuantityStepper
+        label={label}
+        value={value}
+        onChangeValue={onChangeValue}
+        editable={editable}
+        error={error}
+      />
+    );
+  }
+
+  if (type === "price") {
+    return (
+      <PriceField
         label={label}
         value={value}
         onChangeValue={onChangeValue}

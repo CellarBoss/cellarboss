@@ -18,8 +18,7 @@ export const bottleFields: FieldConfig<Bottle>[] = [
   {
     key: "purchasePrice",
     label: "Purchase Price",
-    type: "number",
-    numberProps: { min: 0, step: 0.01 },
+    type: "price",
     validator: bottleFormValidators.purchasePrice,
   },
   {
