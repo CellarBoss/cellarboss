@@ -8,11 +8,17 @@
   "semanticCommitType": "deps",
   "semanticCommitScope": "",
   "prConcurrentLimit": 4,
-  "branchConcurrentLimit": 2,
+  "branchConcurrentLimit": 4,
   "prHourlyLimit": 2,
   "draftPR": false,
   "dependencyDashboard": true,
   "postUpdateOptions": ["pnpmDedupe"],
+  "ignorePaths": [
+    "**/dist/**",
+    "**/build/**",
+    "**/.next/**",
+    "**/coverage/**"
+  ],
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
@@ -21,28 +27,24 @@
     "schedule": ["before 5am on monday"],
     "prConcurrentLimit": 1
   },
-  "ignorePaths": [
-    "**/dist/**",
-    "**/build/**",
-    "**/.next/**",
-    "**/coverage/**"
-  ],
   "packageRules": [
     {
-      "enabled": false,
-      "matchPackageNames": [
-        "/^expo/",
-        "/^@expo/",
-        "/^react-native/",
-        "/^react$/",
-        "/^@react-navigation/"
-      ]
+      "description": "Block Expo and React Native ecosystem",
+      "matchPackagePatterns": [
+        "^expo",
+        "^@expo",
+        "^react$",
+        "^react-dom$",
+        "^react-native",
+        "^@react-native",
+        "^@react-navigation",
+        "^jest-expo$",
+        "^babel-preset-expo$"
+      ],
+      "enabled": false
     },
     {
-      "matchUpdateTypes": [
-        "patch",
-        "digest"
-      ],
+      "matchUpdateTypes": ["patch", "digest"],
       "minimumReleaseAge": "3 days",
       "automerge": true,
       "automergeType": "pr",
@@ -50,27 +52,20 @@
       "semanticCommitType": "deps"
     },
     {
-      "matchUpdateTypes": [
-        "minor"
-      ],
+      "matchUpdateTypes": ["minor"],
       "minimumReleaseAge": "3 days",
       "automerge": true,
       "automergeType": "pr",
       "semanticCommitType": "deps"
     },
     {
-      "matchUpdateTypes": [
-        "major"
-      ],
+      "matchUpdateTypes": ["major"],
       "minimumReleaseAge": "7 days",
       "automerge": false,
       "semanticCommitType": "deps"
     },
     {
-      "matchUpdateTypes": [
-        "lockFileMaintenance",
-        "pin"
-      ],
+      "matchUpdateTypes": ["lockFileMaintenance", "pin"],
       "automerge": true,
       "automergeType": "pr",
       "labels": ["skip-changelog"],
@@ -78,11 +73,17 @@
     },
     {
       "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["patch", "minor", "digest"],
       "minimumReleaseAge": "3 days",
       "automerge": true,
       "automergeType": "pr",
       "labels": ["skip-changelog"],
       "semanticCommitType": "deps"
+    },
+    {
+      "matchPackagePatterns": ["^@types/"],
+      "groupName": "types",
+      "automerge": true
     }
   ]
 }
