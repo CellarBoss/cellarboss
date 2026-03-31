@@ -42,7 +42,10 @@
         "/^jest-expo$/",
         "/^babel-preset-expo$/",
         "/^jest$/",
-        "/^@types\\/jest$/"
+        "/^@types\\/jest$/",
+        "/^react-test-renderer$/",
+        "/^@testing-library\\/react-native$/",
+        "/^lucide-react-native$/"
       ]
     },
     {
