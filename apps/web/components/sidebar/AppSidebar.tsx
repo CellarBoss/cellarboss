@@ -226,12 +226,14 @@ export function AppSidebar() {
                       Profile
                     </a>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <a href="/settings">
-                      <Settings className="size-4" />
-                      Settings
-                    </a>
-                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <DropdownMenuItem asChild>
+                      <a href="/settings">
+                        <Settings className="size-4" />
+                        Settings
+                      </a>
+                    </DropdownMenuItem>
+                  )}
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
