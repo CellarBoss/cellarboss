@@ -5,8 +5,14 @@ import { mockApi } from "../../helpers/mock-api-client";
 import { mockOk, mockError } from "../../helpers/mock-api";
 import { screen, waitFor, fireEvent } from "@testing-library/react-native";
 import { renderWithProviders } from "../../helpers/test-utils";
+import { selectDataSelectorItem } from "../../helpers/form-helpers";
 
 import NewWineScreen from "@/app/(app)/(tabs)/wines/new";
+
+async function fillRequiredFields() {
+  fireEvent.changeText(screen.getByTestId("field-name"), "Test Wine");
+  await selectDataSelectorItem("Winemaker", "Domaine de la Romanée-Conti");
+}
 
 describe("NewWineScreen", () => {
   beforeEach(() => {
@@ -36,6 +42,7 @@ describe("NewWineScreen", () => {
 
     renderWithProviders(<NewWineScreen />);
 
+    await fillRequiredFields();
     fireEvent.press(screen.getByText("Save"));
 
     await waitFor(() => {
@@ -48,6 +55,7 @@ describe("NewWineScreen", () => {
 
     renderWithProviders(<NewWineScreen />);
 
+    await fillRequiredFields();
     fireEvent.press(screen.getByText("Save"));
 
     await waitFor(() => {

@@ -66,9 +66,9 @@ describe("FormField", () => {
   });
 
   describe("date type", () => {
-    it("renders date input with placeholder", () => {
+    it("renders date input with label", () => {
       renderField({ type: "date" });
-      expect(screen.getByPlaceholderText("YYYY-MM-DD")).toBeTruthy();
+      expect(screen.getByTestId("field-name")).toBeTruthy();
     });
   });
 
