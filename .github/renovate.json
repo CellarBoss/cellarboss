@@ -40,7 +40,9 @@
         "/^@react-native/",
         "/^@react-navigation/",
         "/^jest-expo$/",
-        "/^babel-preset-expo$/"
+        "/^babel-preset-expo$/",
+        "/^jest$/",
+        "/^@types\\/jest$/"
       ]
     },
     {
