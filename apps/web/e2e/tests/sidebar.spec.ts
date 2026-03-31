@@ -15,10 +15,12 @@ test.describe("Sidebar", () => {
       const sidebar = page.locator("[data-state][data-collapsible]");
       await expect(sidebar).toHaveAttribute("data-state", "expanded");
 
-      await page.getByRole("button", { name: "Toggle sidebar" }).click();
+      await page.getByRole("button", { name: "User menu" }).click();
+      await page.getByRole("menuitem", { name: "Collapse sidebar" }).click();
       await expect(sidebar).toHaveAttribute("data-state", "collapsed");
 
-      await page.getByRole("button", { name: "Toggle sidebar" }).click();
+      await page.getByRole("button", { name: "User menu" }).click();
+      await page.getByRole("menuitem", { name: "Expand sidebar" }).click();
       await expect(sidebar).toHaveAttribute("data-state", "expanded");
     });
 
@@ -30,8 +32,9 @@ test.describe("Sidebar", () => {
 
       const sidebar = page.locator("[data-state][data-collapsible]");
 
-      // Collapse the sidebar
-      await page.getByRole("button", { name: "Toggle sidebar" }).click();
+      // Collapse the sidebar via user menu
+      await page.getByRole("button", { name: "User menu" }).click();
+      await page.getByRole("menuitem", { name: "Collapse sidebar" }).click();
       await expect(sidebar).toHaveAttribute("data-state", "collapsed");
 
       // Navigate to another page
@@ -45,8 +48,9 @@ test.describe("Sidebar", () => {
       const page = await adminContext.newPage();
       await page.goto("/wines");
 
-      // Collapse the sidebar
-      await page.getByRole("button", { name: "Toggle sidebar" }).click();
+      // Collapse the sidebar via user menu
+      await page.getByRole("button", { name: "User menu" }).click();
+      await page.getByRole("menuitem", { name: "Collapse sidebar" }).click();
       const sidebar = page.locator("[data-state][data-collapsible]");
       await expect(sidebar).toHaveAttribute("data-state", "collapsed");
 
@@ -71,12 +75,14 @@ test.describe("Sidebar", () => {
       // Should start without dark class
       await expect(html).not.toHaveClass(/dark/);
 
-      // Toggle dark mode
-      await page.getByRole("button", { name: "Toggle dark mode" }).click();
+      // Open user menu and toggle dark mode
+      await page.getByRole("button", { name: "User menu" }).click();
+      await page.getByRole("menuitem", { name: "Toggle theme" }).click();
       await expect(html).toHaveClass(/dark/);
 
-      // Toggle back to light mode
-      await page.getByRole("button", { name: "Toggle dark mode" }).click();
+      // Open user menu again and toggle back to light mode
+      await page.getByRole("button", { name: "User menu" }).click();
+      await page.getByRole("menuitem", { name: "Toggle theme" }).click();
       await expect(html).not.toHaveClass(/dark/);
     });
   });

@@ -19,20 +19,27 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const sidebarOpen = cookieStore.get("sidebar_state")?.value !== "false";
+  const isLoggedIn = !!cookieStore.get("better-auth.session_token")?.value;
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="bg-background text-foreground">
         <Providers sidebarDefaultOpen={sidebarOpen}>
-          <div className="flex min-h-screen w-full">
-            <AppSidebar />
-            <main className="flex-1 p-4 md:p-10 bg-muted">
-              <MobileHeader />
-              <div className="w-full bg-card shadow-sm rounded-lg p-4 md:p-10">
-                <Suspense fallback={<LoadingCard />}>{children}</Suspense>
-              </div>
-            </main>
-          </div>
+          {isLoggedIn ? (
+            <div className="flex min-h-screen w-full">
+              <AppSidebar />
+              <main className="flex-1 p-4 md:p-10 bg-muted">
+                <MobileHeader />
+                <div className="w-full bg-card shadow-sm rounded-lg p-4 md:p-10">
+                  <Suspense fallback={<LoadingCard />}>{children}</Suspense>
+                </div>
+              </main>
+            </div>
+          ) : (
+            <div className="flex min-h-screen w-full items-center justify-center bg-muted">
+              <Suspense fallback={<LoadingCard />}>{children}</Suspense>
+            </div>
+          )}
         </Providers>
       </body>
     </html>

@@ -11,10 +11,8 @@ test.describe("Authentication", () => {
 
   test("login page has correct elements", async ({ page }) => {
     await page.goto("/login");
-    await expect(
-      page.getByRole("heading", { name: "Sign in to CellarBoss" }),
-    ).toBeVisible();
-    await expect(page.getByText("Username")).toBeVisible();
+    await expect(page.getByText("CellarBoss").first()).toBeVisible();
+    await expect(page.getByText("Email")).toBeVisible();
     await expect(page.getByText("Password")).toBeVisible();
     await expect(page.getByRole("button", { name: "Sign in" })).toBeVisible();
   });
@@ -65,8 +63,9 @@ test.describe("Authentication", () => {
     await page.goto("/wines");
     await expect(page).not.toHaveURL(/\/login/);
 
-    // Click the logout button in the sidebar
-    await page.getByRole("button", { name: "Log out" }).click();
+    // Open the user menu in the sidebar, then click Log out
+    await page.getByRole("button", { name: "User menu" }).click();
+    await page.getByRole("menuitem", { name: "Log out" }).click();
 
     // Should redirect to the login page
     await expect(page).toHaveURL(/\/login/);
