@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { BOTTLE_STATUSES, BOTTLE_SIZES } from "./constants.js";
-import { nullableId } from "./form-helpers.js";
+import { BOTTLE_STATUSES, BOTTLE_SIZES } from "./constants";
+import { nullableId } from "./form-helpers";
 
 export const createBottleSchema = z.object({
   purchaseDate: z.iso

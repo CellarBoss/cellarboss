@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { WINE_TYPES } from "./constants.js";
-import { nullableId } from "./form-helpers.js";
+import { WINE_TYPES } from "./constants";
+import { nullableId } from "./form-helpers";
 
 export const createWineSchema = z.object({
   name: z.string().min(1).max(255).trim().describe("Name of the wine"),

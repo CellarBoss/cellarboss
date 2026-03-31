@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { nullableInt } from "./form-helpers.js";
+import { nullableInt } from "./form-helpers";
 
 export const createVintageSchema = z.object({
   year: z
