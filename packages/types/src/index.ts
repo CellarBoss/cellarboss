@@ -1,25 +1,17 @@
-export type { GenericType } from "./generic.js";
-export type { Bottle, CreateBottle, UpdateBottle } from "./bottle.js";
-export type { Country, CreateCountry, UpdateCountry } from "./country.js";
-export type { Grape, CreateGrape, UpdateGrape } from "./grape.js";
-export type { Location, CreateLocation, UpdateLocation } from "./location.js";
-export type { Region, CreateRegion, UpdateRegion } from "./region.js";
-export type { Storage, CreateStorage, UpdateStorage } from "./storage.js";
-export type { Vintage, CreateVintage, UpdateVintage } from "./vintage.js";
-export type { Wine, CreateWine, UpdateWine } from "./wine.js";
-export type {
-  WineGrape,
-  CreateWineGrape,
-  UpdateWineGrape,
-} from "./winegrape.js";
-export type {
-  WineMaker,
-  CreateWineMaker,
-  UpdateWineMaker,
-} from "./winemaker.js";
-export type { Setting, UpdateSetting } from "./setting.js";
+export type { GenericType } from "./generic";
+export type { Bottle, CreateBottle, UpdateBottle } from "./bottle";
+export type { Country, CreateCountry, UpdateCountry } from "./country";
+export type { Grape, CreateGrape, UpdateGrape } from "./grape";
+export type { Location, CreateLocation, UpdateLocation } from "./location";
+export type { Region, CreateRegion, UpdateRegion } from "./region";
+export type { Storage, CreateStorage, UpdateStorage } from "./storage";
+export type { Vintage, CreateVintage, UpdateVintage } from "./vintage";
+export type { Wine, CreateWine, UpdateWine } from "./wine";
+export type { WineGrape, CreateWineGrape, UpdateWineGrape } from "./winegrape";
+export type { WineMaker, CreateWineMaker, UpdateWineMaker } from "./winemaker";
+export type { Setting, UpdateSetting } from "./setting";
 export type {
   TastingNote,
   CreateTastingNote,
   UpdateTastingNote,
-} from "./tasting-note.js";
+} from "./tasting-note";

@@ -7,7 +7,7 @@ import {
   createTestVintage,
   createTestWine,
   createTestWineMaker,
-} from "./setup.js";
+} from "./setup";
 import { registerBottleRoutes } from "@routes/bottles.routes.js";
 import { db } from "@utils/database.js";
 

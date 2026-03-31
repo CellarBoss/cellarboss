@@ -1,6 +1,6 @@
 import { createRoute, type z } from "@hono/zod-openapi";
 import type { ZodType } from "zod";
-import { errorSchema, idParamSchema, successSchema } from "./schemas.js";
+import { errorSchema, idParamSchema, successSchema } from "./schemas";
 
 const authSecurity = [{ cookieAuth: [] }];
 const adminSecurity = [{ cookieAuth: [] }];

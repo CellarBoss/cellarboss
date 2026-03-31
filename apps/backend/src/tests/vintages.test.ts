@@ -9,7 +9,7 @@ import {
   createTestRegion,
   createTestCountry,
   createTestUser,
-} from "./setup.js";
+} from "./setup";
 import { registerVintageRoutes } from "@routes/vintages.routes.js";
 import { db } from "@utils/database.js";
 

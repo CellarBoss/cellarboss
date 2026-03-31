@@ -5,7 +5,7 @@ import {
   createTestAppWithAuth,
   runMigrations,
   createTestCountry,
-} from "./setup.js";
+} from "./setup";
 import { registerRegionRoutes } from "@routes/regions.routes.js";
 import { db } from "@utils/database.js";
 

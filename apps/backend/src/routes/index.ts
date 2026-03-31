@@ -1,18 +1,18 @@
 import type { OpenAPIHono } from "@hono/zod-openapi";
-import { registerBottleRoutes } from "./bottles.routes.js";
-import { registerCountryRoutes } from "./countries.routes.js";
-import { registerGrapeRoutes } from "./grapes.routes.js";
-import { registerLocationRoutes } from "./locations.routes.js";
-import { registerRegionRoutes } from "./regions.routes.js";
-import { registerStorageRoutes } from "./storages.routes.js";
-import { registerVintageRoutes } from "./vintages.routes.js";
-import { registerWineRoutes } from "./wines.routes.js";
-import { registerWineGrapeRoutes } from "./winegrapes.routes.js";
-import { registerWineMakerRoutes } from "./winemakers.routes.js";
-import { registerSettingsRoutes } from "./settings.routes.js";
-import { registerTastingNoteRoutes } from "./tasting-notes.routes.js";
-import { registerUserRoutes } from "./users.routes.js";
-import { registerVersionRoutes } from "./version.routes.js";
+import { registerBottleRoutes } from "./bottles.routes";
+import { registerCountryRoutes } from "./countries.routes";
+import { registerGrapeRoutes } from "./grapes.routes";
+import { registerLocationRoutes } from "./locations.routes";
+import { registerRegionRoutes } from "./regions.routes";
+import { registerStorageRoutes } from "./storages.routes";
+import { registerVintageRoutes } from "./vintages.routes";
+import { registerWineRoutes } from "./wines.routes";
+import { registerWineGrapeRoutes } from "./winegrapes.routes";
+import { registerWineMakerRoutes } from "./winemakers.routes";
+import { registerSettingsRoutes } from "./settings.routes";
+import { registerTastingNoteRoutes } from "./tasting-notes.routes";
+import { registerUserRoutes } from "./users.routes";
+import { registerVersionRoutes } from "./version.routes";
 
 export function registerRoutes(app: OpenAPIHono) {
   registerBottleRoutes(app);

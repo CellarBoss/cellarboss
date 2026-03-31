@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { admin, bearer } from "better-auth/plugins";
 import { getDialect } from "@db";
-import { env } from "./env.js";
+import { env } from "./env";
 
 export const auth = betterAuth({
   basePath: "/api/auth",

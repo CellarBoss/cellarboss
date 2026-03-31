@@ -1,7 +1,7 @@
 #!/usr/bin/env ts-node
 
 import type { Database } from "@schema/database.js";
-import { db } from "./database.js";
+import { db } from "./database";
 import { execSync } from "child_process";
 import process from "process";
 import { sql, type Kysely } from "kysely";

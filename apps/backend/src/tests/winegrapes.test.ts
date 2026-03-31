@@ -7,7 +7,7 @@ import {
   createTestWine,
   createTestWineMaker,
   createTestGrape,
-} from "./setup.js";
+} from "./setup";
 import { registerWineGrapeRoutes } from "@routes/winegrapes.routes.js";
 import { db } from "@utils/database.js";
 

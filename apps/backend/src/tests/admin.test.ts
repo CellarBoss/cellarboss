@@ -4,7 +4,7 @@ import {
   createTestAppWithAuth,
   createTestAppWithNonAdmin,
   runMigrations,
-} from "./setup.js";
+} from "./setup";
 import { registerSettingsRoutes } from "@routes/settings.routes.js";
 import { db } from "@utils/database.js";
 
