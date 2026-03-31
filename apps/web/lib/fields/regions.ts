@@ -1,14 +1,13 @@
-import * as z from "zod";
 import type { Region } from "@cellarboss/types";
 import type { FieldConfig } from "@/lib/types/field";
-import { createRegionSchema } from "@cellarboss/validators/regions.validator";
+import { regionFormValidators } from "@cellarboss/validators/regions.validator";
 import { getCountries } from "@/lib/api/countries";
 
 export const regionFields: FieldConfig<Region>[] = [
   {
     key: "name",
     label: "Name",
-    validator: createRegionSchema.shape.name,
+    validator: regionFormValidators.name,
   },
   {
     key: "countryId",
@@ -18,7 +17,6 @@ export const regionFields: FieldConfig<Region>[] = [
       queryKey: "countries",
       queryFn: getCountries,
     },
-    // Coercion needed because GenericCard stringifies all form values
-    validator: z.coerce.number().int().positive(),
+    validator: regionFormValidators.countryId,
   },
 ];

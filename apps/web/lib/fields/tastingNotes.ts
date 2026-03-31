@@ -1,6 +1,6 @@
-import * as z from "zod";
 import type { TastingNote } from "@cellarboss/types";
 import type { FieldConfig } from "@/lib/types/field";
+import { tastingNoteFormValidators } from "@cellarboss/validators/tasting-notes.validator";
 
 // Fields for creating a tasting note (vintageId pre-populated from URL, score + notes editable)
 export const tastingNoteCreateFields: FieldConfig<TastingNote>[] = [
@@ -8,19 +8,19 @@ export const tastingNoteCreateFields: FieldConfig<TastingNote>[] = [
     key: "vintageId",
     label: "Vintage",
     type: "wine-vintage",
-    validator: z.coerce.number().int().positive(),
+    validator: tastingNoteFormValidators.vintageId,
   },
   {
     key: "score",
     label: "Score",
     type: "wine-rating",
-    validator: z.coerce.number().int().min(0).max(10),
+    validator: tastingNoteFormValidators.score,
   },
   {
     key: "notes",
     label: "Notes",
     type: "textarea",
-    validator: z.string(),
+    validator: tastingNoteFormValidators.notes,
   },
 ];
 
@@ -30,12 +30,12 @@ export const tastingNoteEditFields: FieldConfig<TastingNote>[] = [
     key: "score",
     label: "Score",
     type: "wine-rating",
-    validator: z.coerce.number().int().min(0).max(10),
+    validator: tastingNoteFormValidators.score,
   },
   {
     key: "notes",
     label: "Notes",
     type: "textarea",
-    validator: z.string(),
+    validator: tastingNoteFormValidators.notes,
   },
 ];

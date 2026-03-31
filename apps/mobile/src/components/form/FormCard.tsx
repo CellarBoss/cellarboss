@@ -106,6 +106,24 @@ export function FormCard<T extends { id: number | string }>({
             <form.Field
               key={String(field.key)}
               name={String(field.key)}
+              validators={
+                field.validator
+                  ? {
+                      onChange: ({ value }) => {
+                        const result = field.validator!.safeParse(value);
+                        return result.success
+                          ? undefined
+                          : result.error.issues[0]?.message;
+                      },
+                      onSubmit: ({ value }) => {
+                        const result = field.validator!.safeParse(value);
+                        return result.success
+                          ? undefined
+                          : result.error.issues[0]?.message;
+                      },
+                    }
+                  : undefined
+              }
               children={(fieldApi) =>
                 field.type === "wine-vintage" ? (
                   <WineVintageSelector
@@ -113,6 +131,9 @@ export function FormCard<T extends { id: number | string }>({
                     value={fieldApi.state.value ?? ""}
                     onChange={(v) => fieldApi.handleChange(v)}
                     disabled={!editable || field.editable === false}
+                    error={
+                      fieldApi.state.meta.errors?.[0] as string | undefined
+                    }
                   />
                 ) : field.type === "selector" && field.selectorConfig ? (
                   <DataSelector
@@ -128,6 +149,9 @@ export function FormCard<T extends { id: number | string }>({
                     hierarchical={field.selectorConfig.hierarchical}
                     groupBy={field.selectorConfig.groupBy}
                     disabled={!editable || field.editable === false}
+                    error={
+                      fieldApi.state.meta.errors?.[0] as string | undefined
+                    }
                   />
                 ) : (
                   <FormField

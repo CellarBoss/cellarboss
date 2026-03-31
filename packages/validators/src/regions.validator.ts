@@ -9,6 +9,11 @@ export const createRegionSchema = z.object({
     .describe("ID of the country this region belongs to"),
 });
 
+export const regionFormValidators = {
+  name: createRegionSchema.shape.name,
+  countryId: z.coerce.number().int().positive("A country must be selected"),
+} as const;
+
 export const updateRegionSchema = createRegionSchema
   .partial()
   .refine((data) => Object.keys(data).length > 0, {

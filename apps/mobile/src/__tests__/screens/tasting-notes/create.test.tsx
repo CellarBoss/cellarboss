@@ -5,8 +5,13 @@ import { mockApi } from "../../helpers/mock-api-client";
 import { mockOk, mockError } from "../../helpers/mock-api";
 import { screen, waitFor, fireEvent } from "@testing-library/react-native";
 import { renderWithProviders } from "../../helpers/test-utils";
+import { selectWineVintage } from "../../helpers/form-helpers";
 
 import NewTastingNoteScreen from "@/app/(app)/(tabs)/tasting-notes/new";
+
+async function fillRequiredFields() {
+  await selectWineVintage("Romanée-Conti Grand Cru", "2015");
+}
 
 describe("NewTastingNoteScreen", () => {
   beforeEach(() => {
@@ -36,6 +41,7 @@ describe("NewTastingNoteScreen", () => {
 
     renderWithProviders(<NewTastingNoteScreen />);
 
+    await fillRequiredFields();
     fireEvent.press(screen.getByText("Save"));
 
     await waitFor(() => {
@@ -58,6 +64,7 @@ describe("NewTastingNoteScreen", () => {
 
     renderWithProviders(<NewTastingNoteScreen />);
 
+    await fillRequiredFields();
     fireEvent.press(screen.getByText("Save"));
 
     await waitFor(() => {
@@ -72,6 +79,7 @@ describe("NewTastingNoteScreen", () => {
 
     renderWithProviders(<NewTastingNoteScreen />);
 
+    await fillRequiredFields();
     fireEvent.press(screen.getByText("Save"));
 
     await waitFor(() => {

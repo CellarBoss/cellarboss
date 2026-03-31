@@ -114,6 +114,7 @@ describe("Reference Data Screens", () => {
       );
       renderWithProviders(<NewCountryScreen />);
 
+      fireEvent.changeText(screen.getByTestId("field-name"), "Spain");
       fireEvent.press(screen.getByText("Save"));
 
       await waitFor(() => {
@@ -125,6 +126,7 @@ describe("Reference Data Screens", () => {
       mockApi.countries.create.mockResolvedValue(mockError("Name is required"));
       renderWithProviders(<NewCountryScreen />);
 
+      fireEvent.changeText(screen.getByTestId("field-name"), "Spain");
       fireEvent.press(screen.getByText("Save"));
 
       await waitFor(() => {
@@ -199,6 +201,7 @@ describe("Reference Data Screens", () => {
       );
       renderWithProviders(<NewWinemakerScreen />);
 
+      fireEvent.changeText(screen.getByTestId("field-name"), "Test Winemaker");
       fireEvent.press(screen.getByText("Save"));
 
       await waitFor(() => {

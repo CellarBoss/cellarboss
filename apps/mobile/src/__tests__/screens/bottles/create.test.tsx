@@ -5,8 +5,13 @@ import { mockApi } from "../../helpers/mock-api-client";
 import { mockOk, mockError } from "../../helpers/mock-api";
 import { screen, waitFor, fireEvent } from "@testing-library/react-native";
 import { renderWithProviders } from "../../helpers/test-utils";
+import { selectWineVintage } from "../../helpers/form-helpers";
 
 import NewBottleScreen from "@/app/(app)/(tabs)/bottles/new";
+
+async function fillRequiredFields() {
+  await selectWineVintage("Romanée-Conti Grand Cru", "2015");
+}
 
 describe("NewBottleScreen", () => {
   beforeEach(() => {
@@ -42,6 +47,7 @@ describe("NewBottleScreen", () => {
 
     renderWithProviders(<NewBottleScreen />);
 
+    await fillRequiredFields();
     fireEvent.press(screen.getByText("Save"));
 
     await waitFor(() => {
@@ -55,7 +61,7 @@ describe("NewBottleScreen", () => {
         id: 7,
         purchaseDate: "2025-01-15",
         purchasePrice: 0,
-        vintageId: 0,
+        vintageId: 1,
         storageId: null,
         status: "ordered",
         size: "standard",
@@ -64,6 +70,7 @@ describe("NewBottleScreen", () => {
 
     renderWithProviders(<NewBottleScreen />);
 
+    await fillRequiredFields();
     fireEvent.press(screen.getByText("Save"));
 
     await waitFor(() => {
@@ -78,6 +85,7 @@ describe("NewBottleScreen", () => {
 
     renderWithProviders(<NewBottleScreen />);
 
+    await fillRequiredFields();
     fireEvent.press(screen.getByText("Save"));
 
     await waitFor(() => {

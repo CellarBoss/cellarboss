@@ -8,6 +8,7 @@ import {
   RadioButton,
   IconButton,
   Divider,
+  HelperText,
 } from "react-native-paper";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api/client";
@@ -19,6 +20,7 @@ type WineVintageSelectorProps = {
   value: string;
   onChange: (vintageId: string) => void;
   disabled?: boolean;
+  error?: string;
 };
 
 export function WineVintageSelector({
@@ -26,6 +28,7 @@ export function WineVintageSelector({
   value,
   onChange,
   disabled = false,
+  error,
 }: WineVintageSelectorProps) {
   const [wineModalVisible, setWineModalVisible] = useState(false);
   const [vintageModalVisible, setVintageModalVisible] = useState(false);
@@ -176,6 +179,8 @@ export function WineVintageSelector({
           <IconButton icon="chevron-down" size={20} />
         </Pressable>
       )}
+
+      {error && <HelperText type="error">{error}</HelperText>}
 
       {/* Wine modal — grouped by winemaker */}
       <Portal>

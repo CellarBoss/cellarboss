@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   createVintageSchema,
   updateVintageSchema,
+  vintageFormValidators,
 } from "../vintages.validator";
 
 describe("createVintageSchema", () => {
@@ -75,5 +76,51 @@ describe("updateVintageSchema", () => {
   it("rejects an empty object", () => {
     const result = updateVintageSchema.safeParse({});
     expect(result.success).toBe(false);
+  });
+});
+
+describe("vintageFormValidators", () => {
+  it("coerces string wineId to number", () => {
+    const result = vintageFormValidators.wineId.safeParse("5");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe(5);
+  });
+
+  it("rejects non-numeric wineId", () => {
+    expect(vintageFormValidators.wineId.safeParse("abc").success).toBe(false);
+  });
+
+  it("coerces empty year to null", () => {
+    const result = vintageFormValidators.year.safeParse("");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBeNull();
+  });
+
+  it("coerces string year to number", () => {
+    const result = vintageFormValidators.year.safeParse("2020");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe(2020);
+  });
+
+  it("rejects year out of range", () => {
+    expect(vintageFormValidators.year.safeParse("1799").success).toBe(false);
+    expect(vintageFormValidators.year.safeParse("2101").success).toBe(false);
+  });
+
+  it("coerces empty drinkFrom/drinkUntil to null", () => {
+    expect(vintageFormValidators.drinkFrom.safeParse("").success).toBe(true);
+    expect(vintageFormValidators.drinkUntil.safeParse("").success).toBe(true);
+  });
+
+  it("coerces string drinkFrom to number", () => {
+    const result = vintageFormValidators.drinkFrom.safeParse("2025");
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe(2025);
+  });
+
+  it("rejects drinkUntil out of range", () => {
+    expect(vintageFormValidators.drinkUntil.safeParse("2201").success).toBe(
+      false,
+    );
   });
 });

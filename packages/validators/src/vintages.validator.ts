@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { nullableInt } from "./form-helpers";
 
 export const createVintageSchema = z.object({
   year: z
@@ -24,6 +25,13 @@ export const createVintageSchema = z.object({
     .nullable()
     .describe("Latest recommended drinking year, or null"),
 });
+
+export const vintageFormValidators = {
+  wineId: z.coerce.number().int().positive("A wine must be selected"),
+  year: nullableInt(1800, 2100),
+  drinkFrom: nullableInt(1800, 2200),
+  drinkUntil: nullableInt(1800, 2200),
+} as const;
 
 export const updateVintageSchema = createVintageSchema
   .partial()

@@ -40,6 +40,7 @@
     "react-native": "0.83.4",
     "react-native-gesture-handler": "2.30.0",
     "react-native-paper": "5.15.0",
+    "react-native-paper-dates": "^0.23.5",
     "react-native-reanimated": "4.2.1",
     "react-native-safe-area-context": "5.6.2",
     "react-native-screens": "4.23.0",
@@ -62,7 +63,7 @@
   "jest": {
     "preset": "jest-expo",
     "transformIgnorePatterns": [
-      "node_modules/(?!(.pnpm|((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|@cellarboss/.*))"
+      "node_modules/(?!(.pnpm|((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|color|color-string|@cellarboss/.*))"
     ],
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"

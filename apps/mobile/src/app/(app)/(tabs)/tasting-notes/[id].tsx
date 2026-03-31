@@ -4,7 +4,7 @@ import { commonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
-import { WineGlassRating } from "@/components/WineGlassRating";
+import { WineGlassRating } from "@/components/form/WineGlassRating";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useSetting } from "@/hooks/use-settings";
 import { api } from "@/lib/api/client";

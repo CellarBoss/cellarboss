@@ -1,7 +1,7 @@
 import * as z from "zod";
 import type { Wine } from "@cellarboss/types";
 import type { FieldConfig } from "@/lib/types/field";
-import { createWineSchema } from "@cellarboss/validators/wines.validator";
+import { wineFormValidators } from "@cellarboss/validators/wines.validator";
 import { WINE_TYPES } from "@cellarboss/validators/constants";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { getRegions } from "@/lib/api/regions";
@@ -15,14 +15,14 @@ export const wineFields: FieldConfig<WineFormData>[] = [
   {
     key: "name",
     label: "Name",
-    validator: createWineSchema.shape.name,
+    validator: wineFormValidators.name,
   },
   {
     key: "type",
     label: "Type",
     type: "fixed-list",
     options: WINE_TYPES.map((t) => ({ value: t, label: formatWineType(t) })),
-    validator: z.enum(WINE_TYPES),
+    validator: wineFormValidators.type,
   },
   {
     key: "wineMakerId",
@@ -32,7 +32,7 @@ export const wineFields: FieldConfig<WineFormData>[] = [
       queryKey: "winemakers",
       queryFn: getWinemakers,
     },
-    validator: z.coerce.number().int().positive(),
+    validator: wineFormValidators.wineMakerId,
   },
   {
     key: "regionId",
@@ -47,11 +47,7 @@ export const wineFields: FieldConfig<WineFormData>[] = [
         queryFn: getCountries,
       },
     },
-    validator: z.preprocess(
-      (val) =>
-        val === "" || val === null || val === undefined ? null : Number(val),
-      z.number().int().positive().nullable(),
-    ),
+    validator: wineFormValidators.regionId,
   },
   {
     key: "grapeIds",
