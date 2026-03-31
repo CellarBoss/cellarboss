@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   BottleWine,
@@ -89,7 +88,6 @@ function getInitials(name: string) {
 }
 
 export function AppSidebar() {
-  const router = useRouter();
   const { toggleSidebar, state, isMobile } = useSidebar();
   const { theme, setTheme } = useTheme();
   const session = authClient.useSession();
@@ -98,7 +96,7 @@ export function AppSidebar() {
 
   const handleLogout = async () => {
     await fetch("/logout", { method: "POST" });
-    router.push("/login");
+    window.location.href = "/login";
   };
 
   const sections = [
