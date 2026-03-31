@@ -19,7 +19,7 @@
     "@cellarboss/types": "workspace:*",
     "@cellarboss/validators": "workspace:*",
     "@hono/node-server": "1.19.11",
-    "@hono/zod-openapi": "1.2.3",
+    "@hono/zod-openapi": "1.2.4",
     "@hono/zod-validator": "0.7.6",
     "@scalar/hono-api-reference": "0.10.5",
     "better-auth": "1.5.6",
