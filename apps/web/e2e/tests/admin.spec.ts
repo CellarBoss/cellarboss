@@ -92,9 +92,12 @@ test.describe("Admin access control", () => {
     const page = await adminContext.newPage();
     await page.goto("/wines");
 
-    // The sidebar footer shows user.name or user.email
+    await page.getByRole("button", { name: "User menu" }).click();
     await expect(
-      page.getByText("Test Admin").or(page.getByText("admin@cellarboss.test")),
+      page
+        .getByText("Test Admin")
+        .or(page.getByText("admin@cellarboss.test"))
+        .first(),
     ).toBeVisible();
   });
 
@@ -104,8 +107,12 @@ test.describe("Admin access control", () => {
     const page = await userContext.newPage();
     await page.goto("/wines");
 
+    await page.getByRole("button", { name: "User menu" }).click();
     await expect(
-      page.getByText("Test User").or(page.getByText("user@cellarboss.test")),
+      page
+        .getByText("Test User")
+        .or(page.getByText("user@cellarboss.test"))
+        .first(),
     ).toBeVisible();
   });
 });

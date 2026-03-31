@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   BottleWine,
@@ -18,9 +17,22 @@ import {
   Users,
   PanelLeftClose,
   PanelLeftOpen,
+  ChevronsUpDown,
+  Moon,
+  Sun,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import { authClient } from "@/lib/auth-client";
-import { ThemeToggleButton } from "@/components/buttons/ThemeToggleButton";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import {
   Sidebar,
@@ -33,7 +45,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
@@ -67,16 +78,25 @@ const settingsItems = [
 
 const adminItems = [{ title: "Users", url: "/users", icon: Users }];
 
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
 export function AppSidebar() {
-  const router = useRouter();
-  const { toggleSidebar, state } = useSidebar();
+  const { toggleSidebar, state, isMobile } = useSidebar();
+  const { theme, setTheme } = useTheme();
   const session = authClient.useSession();
   const user = session.data?.user;
   const isAdmin = user?.role === "admin";
 
   const handleLogout = async () => {
     await fetch("/logout", { method: "POST" });
-    router.push("/login");
+    window.location.href = "/login";
   };
 
   const sections = [
@@ -131,44 +151,100 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <div className="flex items-center gap-2 px-2 py-1 min-w-0 group-data-[collapsible=icon]:justify-center">
-          <UserCircle className="h-5 w-5 shrink-0 text-muted-foreground" />
-          <span className="truncate text-sm text-muted-foreground group-data-[collapsible=icon]:hidden">
-            {user?.name || user?.email}
-          </span>
-        </div>
-        <SidebarSeparator className="group-data-[collapsible=icon]:hidden" />
-        <div className="flex items-center justify-center gap-2 px-2 py-1 group-data-[collapsible=icon]:flex-col">
-          <ThemeToggleButton />
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => toggleSidebar()}
-                className="flex items-center text-muted-foreground hover:text-foreground cursor-pointer"
-                aria-label="Toggle sidebar"
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  aria-label="User menu"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                >
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarFallback className="rounded-lg">
+                      {getInitials(user?.name || user?.email || "?")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">{user?.name}</span>
+                    <span className="truncate text-xs">{user?.email}</span>
+                  </div>
+                  <ChevronsUpDown className="ml-auto size-4" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+                side={isMobile ? "bottom" : "right"}
+                align="end"
+                sideOffset={4}
               >
-                {state === "expanded" ? (
-                  <PanelLeftClose className="h-4 w-4" />
-                ) : (
-                  <PanelLeftOpen className="h-4 w-4" />
-                )}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>Toggle sidebar</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={handleLogout}
-                className="flex items-center text-muted-foreground hover:text-foreground cursor-pointer"
-                aria-label="Log out"
-              >
-                <LogOut className="h-4 w-4" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>Log out</TooltipContent>
-          </Tooltip>
-        </div>
+                <DropdownMenuLabel className="p-0 font-normal">
+                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                    <Avatar className="h-8 w-8 rounded-lg">
+                      <AvatarFallback className="rounded-lg">
+                        {getInitials(user?.name || user?.email || "?")}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-medium">{user?.name}</span>
+                      <span className="truncate text-xs">{user?.email}</span>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem
+                    onClick={() =>
+                      setTheme(theme === "dark" ? "light" : "dark")
+                    }
+                  >
+                    {theme === "dark" ? (
+                      <Sun className="size-4" />
+                    ) : (
+                      <Moon className="size-4" />
+                    )}
+                    Toggle theme
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => toggleSidebar()}>
+                    {state === "expanded" ? (
+                      <>
+                        <PanelLeftClose className="size-4" />
+                        Collapse sidebar
+                      </>
+                    ) : (
+                      <>
+                        <PanelLeftOpen className="size-4" />
+                        Expand sidebar
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem asChild>
+                    <a href="/profile">
+                      <UserCircle className="size-4" />
+                      Profile
+                    </a>
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <DropdownMenuItem asChild>
+                      <a href="/settings">
+                        <Settings className="size-4" />
+                        Settings
+                      </a>
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="size-4" />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );

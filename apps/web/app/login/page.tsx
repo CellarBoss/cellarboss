@@ -2,6 +2,16 @@
 import { authClient } from "@/lib/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, Suspense, useTransition } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 function LoginForm() {
   const router = useRouter();
@@ -25,27 +35,12 @@ function LoginForm() {
     startTransition(async () => {
       const { error } = await authClient.signIn.email(
         {
-          /**
-           * The user email
-           */
           email: username,
-          /**
-           * The user password
-           */
           password,
-          /**
-           * A URL to redirect to after the user verifies their email (optional)
-           */
           callbackURL: callbackUrl,
-          /**
-           * remember the user session after the browser is closed.
-           * @default true
-           */
           rememberMe: false,
         },
-        {
-          //callbacks
-        },
+        {},
       );
 
       if (error) {
@@ -58,54 +53,52 @@ function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-md rounded-xl bg-card p-8 shadow">
-      <h1 className="mb-6 text-2xl font-bold text-center">
-        Sign in to CellarBoss
-      </h1>
+    <Card className="w-full max-w-sm">
+      <CardHeader className="text-center">
+        <CardTitle className="text-2xl">CellarBoss</CardTitle>
+        <CardDescription>Sign in to your account to continue</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="username">Email</Label>
+            <Input
+              id="username"
+              type="text"
+              required
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              autoComplete="email"
+            />
+          </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Username</label>
-          <input
-            type="text"
-            required
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full rounded-md border px-3 py-2 focus:outline-none focus:ring"
-          />
-        </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+            />
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Password</label>
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-md border px-3 py-2 focus:outline-none focus:ring"
-          />
-        </div>
+          {error && <p className="text-sm text-destructive">{error}</p>}
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-md bg-primary py-2 text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-        >
-          {loading ? "Signing in…" : "Sign in"}
-        </button>
-      </form>
-    </div>
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? "Signing in…" : "Sign in"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
 
 export default function LoginPage() {
   return (
-    <section>
-      <Suspense>
-        <LoginForm />
-      </Suspense>
-    </section>
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }
