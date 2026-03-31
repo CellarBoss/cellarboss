@@ -208,11 +208,16 @@ export function AppSidebar() {
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => toggleSidebar()}>
                     {state === "expanded" ? (
-                      <PanelLeftClose className="size-4" />
+                      <>
+                        <PanelLeftClose className="size-4" />
+                        Collapse sidebar
+                      </>
                     ) : (
-                      <PanelLeftOpen className="size-4" />
+                      <>
+                        <PanelLeftOpen className="size-4" />
+                        Expand sidebar
+                      </>
                     )}
-                    Collapse sidebar
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
