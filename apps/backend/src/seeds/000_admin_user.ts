@@ -1,6 +1,6 @@
 import "dotenv/config";
 import type { Kysely } from "kysely";
-import { auth } from "../utils/auth.js";
+import { auth } from "../utils/auth";
 
 const ADMIN_EMAIL = "admin@cellarboss.org";
 const ADMIN_PASSWORD = "adminpassword";

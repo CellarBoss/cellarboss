@@ -5,7 +5,7 @@ import {
   createTestAppWithAuth,
   runMigrations,
   createTestLocation,
-} from "./setup.js";
+} from "./setup";
 import { registerStorageRoutes } from "@routes/storages.routes.js";
 import { db } from "@utils/database.js";
 

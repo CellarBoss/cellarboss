@@ -8,7 +8,7 @@ import {
   type Migration,
   type MigrationProvider,
 } from "kysely";
-import { getDialect } from "./database.js";
+import { getDialect } from "./database";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const migrationsDir = path.resolve(__dirname, "../migrations");

@@ -1,4 +1,4 @@
-import type { GenericType } from "./generic.js";
+import type { GenericType } from "./generic";
 
 export interface Storage extends GenericType {
   locationId: number | null;

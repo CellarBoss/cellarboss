@@ -1,10 +1,6 @@
 import { describe, it, expect, beforeEach, beforeAll } from "vitest";
 import type { OpenAPIHono } from "@hono/zod-openapi";
-import {
-  createTestApp,
-  createTestAppWithAuth,
-  runMigrations,
-} from "./setup.js";
+import { createTestApp, createTestAppWithAuth, runMigrations } from "./setup";
 import { registerWineMakerRoutes } from "@routes/winemakers.routes.js";
 import { db } from "@utils/database.js";
 

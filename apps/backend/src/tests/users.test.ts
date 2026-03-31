@@ -6,7 +6,7 @@ import {
   createTestAppWithAuth,
   createTestAppWithNonAdmin,
   runMigrations,
-} from "./setup.js";
+} from "./setup";
 import { registerUserRoutes } from "@routes/users.routes.js";
 import { db } from "@utils/database.js";
 

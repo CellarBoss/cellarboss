@@ -9,7 +9,7 @@ import {
   createTestCountry,
   createTestGrape,
   createTestVintage,
-} from "./setup.js";
+} from "./setup";
 import { registerWineRoutes } from "@routes/wines.routes.js";
 import { db } from "@utils/database.js";
 

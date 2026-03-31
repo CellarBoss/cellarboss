@@ -1,4 +1,4 @@
-import type { GenericType } from "./generic.js";
+import type { GenericType } from "./generic";
 
 export interface Wine extends GenericType {
   wineMakerId: number;

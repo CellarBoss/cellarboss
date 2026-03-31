@@ -8,7 +8,7 @@ import {
   createTestVintage,
   createTestWine,
   createTestWineMaker,
-} from "./setup.js";
+} from "./setup";
 import { registerTastingNoteRoutes } from "@routes/tasting-notes.routes.js";
 import { db } from "@utils/database.js";
 
