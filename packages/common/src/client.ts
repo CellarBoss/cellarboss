@@ -13,6 +13,7 @@ import { tastingNotesResource } from "./resources/tasting-notes";
 import { settingsResource } from "./resources/settings";
 import { usersResource } from "./resources/users";
 import { versionResource } from "./resources/version";
+import { imagesResource } from "./resources/images";
 
 export type ApiClientConfig = {
   request: RequestFn;
@@ -35,6 +36,7 @@ export function createApiClient(config: ApiClientConfig) {
     settings: settingsResource(request),
     users: usersResource(request),
     version: versionResource(request),
+    images: imagesResource(request),
   };
 }
 

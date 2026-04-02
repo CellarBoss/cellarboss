@@ -23,3 +23,8 @@ export type RequestFn = <T>(
   method: "GET" | "POST" | "PUT" | "DELETE",
   body?: string,
 ) => Promise<ApiResult<T>>;
+
+export type UploadFn = <T>(
+  path: string,
+  formData: FormData,
+) => Promise<ApiResult<T>>;
