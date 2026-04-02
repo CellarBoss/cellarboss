@@ -12,6 +12,8 @@ import { queryGate } from "@/lib/functions/query-gate";
 import { formatDrinkingStatus } from "@/lib/functions/format";
 import { theme, shadows } from "@/lib/theme";
 import { VintageTastingNotesList } from "@/components/tasting-notes/TastingNotesList";
+import { ImageGallery } from "@/components/images/ImageGallery";
+import { ImageUpload } from "@/components/images/ImageUpload";
 import type { Storage } from "@cellarboss/types";
 import type { WineType } from "@cellarboss/validators/constants";
 
@@ -132,6 +134,16 @@ export default function ViewVintageScreen() {
         </View>
 
         <VintageTastingNotesList vintage={vintage} />
+
+        <View style={styles.section}>
+          <Text variant="titleSmall" style={styles.heading}>
+            Images
+          </Text>
+          <View style={styles.imagesCard}>
+            <ImageGallery vintageId={vintage.id} />
+          </View>
+          <ImageUpload vintageId={vintage.id} />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -150,6 +162,12 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     borderRadius: 12,
     overflow: "hidden" as const,
+    ...shadows.card,
+  },
+  imagesCard: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: 12,
+    padding: 8,
     ...shadows.card,
   },
   empty: {
