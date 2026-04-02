@@ -15,3 +15,4 @@ export type {
   CreateTastingNote,
   UpdateTastingNote,
 } from "./tasting-note";
+export type { Image } from "./image";
