@@ -3,6 +3,7 @@ import type {
   Bottle,
   Country,
   Grape,
+  Image,
   Location,
   Region,
   Storage,
@@ -59,6 +60,10 @@ export interface TastingNoteTable extends Omit<TastingNote, "id" | "author"> {
   id: Generated<number>;
 }
 
+export interface ImageTable extends Omit<Image, "id"> {
+  id: Generated<number>;
+}
+
 export interface SettingTable extends Setting {}
 
 // Better Auth managed table - only fields needed for joins
@@ -81,6 +86,7 @@ export interface Database {
   winegrape: WineGrapeTable;
   winemaker: WineMakerTable;
   tastingNote: TastingNoteTable;
+  image: ImageTable;
   setting: SettingTable;
   user: UserTable;
 }

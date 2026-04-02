@@ -13,6 +13,7 @@ import {
   createWineMakerSchema,
   createWineSchema,
 } from "@cellarboss/validators";
+export { imageResponseSchema } from "@cellarboss/validators";
 
 // Shared error/success responses
 export const errorSchema = z.object({

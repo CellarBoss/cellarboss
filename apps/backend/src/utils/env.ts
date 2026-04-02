@@ -7,5 +7,6 @@ export const env = z
     DATABASE_TYPE: z.enum(["sqlite", "postgres", "mysql"]),
     BETTER_AUTH_SECRET: z.string(),
     CORS: z.string().optional(),
+    UPLOAD_DIR: z.string().optional(),
   })
   .parse(process.env);
