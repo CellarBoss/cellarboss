@@ -28,8 +28,11 @@ services:
       DATABASE_URL: 'cellarboss.db'
       NODE_ENV: development
       CORS: http://localhost:3000
+      UPLOAD_DIR: /app/uploads
     ports:
       - "5000:5000"
+    volumes:
+      - uploads:/app/uploads
     depends_on:
       db:
         condition: service_healthy
@@ -49,3 +52,4 @@ services:
 
 volumes:
   pgdata:
+  uploads:
