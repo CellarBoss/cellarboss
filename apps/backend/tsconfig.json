@@ -12,7 +12,6 @@
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
     "outDir": "./dist",
-    "baseUrl": "./src",
     "paths": {
       "@cellarboss/types": [
         "../../packages/types/src/index.ts"
@@ -21,25 +20,25 @@
         "../../packages/validators/src/index.ts"
       ],
       "@controllers/*": [
-        "controllers/*"
+        "./src/controllers/*"
       ],
       "@middleware/*": [
-        "middleware/*"
+        "./src/middleware/*"
       ],
       "@utils/*": [
-        "utils/*"
+        "./src/utils/*"
       ],
       "@db": [
-        "utils/database.ts"
+        "./src/utils/database.ts"
       ],
       "@routes/*": [
-        "routes/*"
+        "./src/routes/*"
       ],
       "@schema/*": [
-        "schema/*"
+        "./src/schema/*"
       ],
       "@openapi/*": [
-        "openapi/*"
+        "./src/openapi/*"
       ]
     }
   },
