@@ -1,6 +1,5 @@
 import {
   View,
-  Image,
   FlatList,
   Pressable,
   Modal,
@@ -8,6 +7,7 @@ import {
   Alert,
   Dimensions,
 } from "react-native";
+import { Image } from "expo-image";
 import { Text, ActivityIndicator } from "react-native-paper";
 import { useQueryClient } from "@tanstack/react-query";
 import { useApiQuery } from "@/hooks/use-api-query";
@@ -105,7 +105,7 @@ export function ImageGallery({ vintageId }: Props) {
             <Image
               source={thumbUrl(item.id)}
               style={styles.thumbImage}
-              resizeMode="cover"
+              contentFit="cover"
             />
           </Pressable>
         )}
@@ -123,7 +123,7 @@ export function ImageGallery({ vintageId }: Props) {
               <Image
                 source={imageUrl(lightboxImage.id)}
                 style={styles.fullImage}
-                resizeMode="contain"
+                contentFit="contain"
               />
               <View style={styles.overlayActions}>
                 <Pressable
