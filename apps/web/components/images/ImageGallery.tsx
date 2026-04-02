@@ -7,6 +7,16 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { getImagesByVintageId, deleteImage } from "@/lib/api/images";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { X, Trash2 } from "lucide-react";
 
 type Props = { vintageId: number };
@@ -15,6 +25,7 @@ export function ImageGallery({ vintageId }: Props) {
   const queryClient = useQueryClient();
   const [lightboxImage, setLightboxImage] = useState<Image | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Image | null>(null);
 
   const imagesQuery = useApiQuery<Image[]>({
     queryKey: ["images", vintageId],
@@ -23,16 +34,21 @@ export function ImageGallery({ vintageId }: Props) {
 
   const images = imagesQuery.data ?? [];
 
-  async function handleDelete(image: Image, e: React.MouseEvent) {
+  function promptDelete(image: Image, e: React.MouseEvent) {
     e.stopPropagation();
-    if (!confirm(`Delete this image?`)) return;
-    setDeletingId(image.id);
+    setDeleteTarget(image);
+  }
+
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+    setDeletingId(deleteTarget.id);
     try {
-      await deleteImage(image.id);
+      await deleteImage(deleteTarget.id);
       queryClient.invalidateQueries({ queryKey: ["images", vintageId] });
-      if (lightboxImage?.id === image.id) setLightboxImage(null);
+      if (lightboxImage?.id === deleteTarget.id) setLightboxImage(null);
     } finally {
       setDeletingId(null);
+      setDeleteTarget(null);
     }
   }
 
@@ -50,11 +66,11 @@ export function ImageGallery({ vintageId }: Props) {
 
   return (
     <>
-      <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+      <div className="flex flex-wrap gap-2">
         {images.map((image) => (
           <div
             key={image.id}
-            className="relative group aspect-square rounded-md overflow-hidden cursor-pointer border border-border"
+            className="relative group aspect-square rounded-md overflow-hidden cursor-pointer border border-border w-[150px] h-[150px]"
             onClick={() => setLightboxImage(image)}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -64,7 +80,7 @@ export function ImageGallery({ vintageId }: Props) {
               className="w-full h-full object-cover"
             />
             <button
-              onClick={(e) => handleDelete(image, e)}
+              onClick={(e) => promptDelete(image, e)}
               disabled={deletingId === image.id}
               className="absolute top-1 right-1 p-1 rounded bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 disabled:opacity-40"
               aria-label="Delete image"
@@ -93,7 +109,7 @@ export function ImageGallery({ vintageId }: Props) {
                 <Button
                   size="sm"
                   variant="destructive"
-                  onClick={(e) => handleDelete(lightboxImage, e)}
+                  onClick={(e) => promptDelete(lightboxImage, e)}
                   disabled={deletingId === lightboxImage.id}
                 >
                   <Trash2 className="w-4 h-4 mr-1" />
@@ -111,6 +127,27 @@ export function ImageGallery({ vintageId }: Props) {
           )}
         </DialogContent>
       </Dialog>
+
+      <AlertDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete image</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this image? This action cannot be
+              undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete}>
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
