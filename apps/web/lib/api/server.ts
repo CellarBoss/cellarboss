@@ -33,13 +33,19 @@ export async function makeServerRequest<T>(
     });
 
     const text = await res.text();
-    const data = text ? JSON.parse(text) : null;
 
     if (!res.ok) {
+      let data: any = null;
+      try {
+        data = text ? JSON.parse(text) : null;
+      } catch {
+        // Non-JSON error body (e.g. Hono's default "404 Not Found")
+      }
       const error = processBackendError(res, data);
       return { ok: false, error };
     }
 
+    const data = text ? JSON.parse(text) : null;
     return { ok: true, data };
   } catch (err: unknown) {
     console.error(err);
