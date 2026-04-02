@@ -5,7 +5,7 @@ import { db } from "./database";
 import { execSync } from "child_process";
 import process from "process";
 import { sql, type Kysely } from "kysely";
-import { cleanupOrphanedFiles } from "./upload.js";
+import { cleanupOrphanedFiles, ensureUploadDirs } from "./upload.js";
 
 const RETRY_INTERVAL = Number(process.env.DB_RETRY_INTERVAL) || 2000;
 const MAX_RETRIES = Number(process.env.DB_MAX_RETRIES) || 30;
@@ -106,6 +106,7 @@ async function main() {
   const db = await waitForDb();
   await runMigrations();
   await checkAndSeed(db);
+  await ensureUploadDirs();
   await cleanupImages(db);
   startServer();
 }
