@@ -11,7 +11,12 @@ import {
   unsetImageFavourite,
 } from "@/lib/api/images";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -114,6 +119,9 @@ export function ImageGallery({ vintageId }: Props) {
       >
         <DialogContent className="max-w-3xl p-0 overflow-hidden">
           <DialogTitle className="sr-only">Image preview</DialogTitle>
+          <DialogDescription className="sr-only">
+            Full size image preview
+          </DialogDescription>
           {lightboxImage && (
             <div className="relative">
               <NextImage
