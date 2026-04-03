@@ -59,15 +59,6 @@ export async function removeByVintageId(vintageId: number) {
   }
 }
 
-export async function updateSortOrder(id: number, sortOrder: number) {
-  return await db
-    .updateTable("image")
-    .set({ sortOrder })
-    .where("id", "=", id)
-    .returningAll()
-    .executeTakeFirstOrThrow();
-}
-
 export async function getAllFilenames(): Promise<Set<string>> {
   const rows = await db.selectFrom("image").select("filename").execute();
   return new Set(rows.map((r) => r.filename));

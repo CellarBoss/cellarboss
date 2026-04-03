@@ -25,10 +25,6 @@ const idParamSchema = z.object({
   id: z.string().openapi({ description: "Image ID", example: "1" }),
 });
 
-const sortBodySchema = z.object({
-  sortOrder: z.number().int().min(0).openapi({ description: "New sort order" }),
-});
-
 const listByVintageRoute = createRoute({
   method: "get",
   path: "/vintage/{vintageId}",
@@ -99,24 +95,6 @@ const deleteRoute = createRoute({
   responses: {
     200: jsonContent(successSchema, "Successfully deleted"),
     400: jsonContent(errorSchema, "Invalid ID"),
-    401: jsonContent(errorSchema, "Unauthorized"),
-    404: jsonContent(errorSchema, "Not found"),
-  },
-});
-
-const sortRoute = createRoute({
-  method: "put",
-  path: "/{id}/sort",
-  tags: ["Images"],
-  security: authSecurity,
-  summary: "Update sort order of an image",
-  request: {
-    params: idParamSchema,
-    body: jsonContent(sortBodySchema, "Sort order"),
-  },
-  responses: {
-    200: jsonContent(imageResponseSchema, "Updated image record"),
-    400: jsonContent(errorSchema, "Invalid ID or body"),
     401: jsonContent(errorSchema, "Unauthorized"),
     404: jsonContent(errorSchema, "Not found"),
   },
@@ -228,18 +206,6 @@ export function registerImageRoutes(app: OpenAPIHono) {
 
     await imagesController.remove(id);
     return c.json({ success: true }, 200);
-  });
-
-  image.openapi(sortRoute, async (c) => {
-    const id = parseId(c.req.param("id"));
-    if (id === null) return c.json({ error: "Invalid ID" }, 400);
-
-    const record = await imagesController.getById(id);
-    if (!record) return c.json({ error: "Not found" }, 404);
-
-    const { sortOrder } = c.req.valid("json") as { sortOrder: number };
-    const updated = await imagesController.updateSortOrder(id, sortOrder);
-    return c.json(updated, 200);
   });
 
   app.route("/image", image);

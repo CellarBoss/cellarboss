@@ -87,11 +87,6 @@ describe("Image API", () => {
       const res = await app.request("/image/1", { method: "DELETE" });
       expect(res.status).toBe(401);
     });
-
-    it("PUT /image/:id/sort returns 401", async () => {
-      const res = await app.request("/image/1/sort", { method: "PUT" });
-      expect(res.status).toBe(401);
-    });
   });
 
   describe("authenticated operations", () => {
@@ -222,26 +217,6 @@ describe("Image API", () => {
       it("returns 404 when deleting non-existent image", async () => {
         const res = await app.request("/image/999999", { method: "DELETE" });
         expect(res.status).toBe(404);
-      });
-    });
-
-    describe("PUT /image/:id/sort", () => {
-      it("updates sort order and returns updated record", async () => {
-        const formData = makeFormData();
-        formData.append("vintageId", String(testVintageId));
-        const uploadRes2 = await app.request("/image", {
-          method: "POST",
-          body: formData,
-        });
-        const { id } = (await uploadRes2.json()) as { id: number };
-
-        const res = await app.request(`/image/${id}/sort`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sortOrder: 5 }),
-        });
-        expect(res.status).toBe(200);
-        expect((await res.json()).sortOrder).toBe(5);
       });
     });
 
