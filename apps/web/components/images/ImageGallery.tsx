@@ -28,6 +28,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { X, Trash2, Star } from "lucide-react";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import NextImage from "next/image";
 import { ImageLoadingCell } from "./ImageLoadingCell";
 import { ImageEmptyCell } from "./ImageEmptyCell";
@@ -133,41 +138,59 @@ export function ImageGallery({ vintageId }: Props) {
                 className="w-full h-auto max-h-[80vh] object-contain"
               />
               <div className="absolute top-2 right-2 flex gap-2">
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={(e) =>
-                    handleToggleFavourite(
-                      images.find((i) => i.id === lightboxImage.id) ??
-                        lightboxImage,
-                      e,
-                    )
-                  }
-                  disabled={togglingFavouriteId === lightboxImage.id}
-                >
-                  <Star
-                    className="w-4 h-4 mr-1"
-                    fill={lightboxImage.isFavourite ? "gold" : "none"}
-                    stroke={lightboxImage.isFavourite ? "gold" : "currentColor"}
-                  />
-                  {lightboxImage.isFavourite ? "Unfavourite" : "Favourite"}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={(e) => promptDelete(lightboxImage, e)}
-                  disabled={deletingId === lightboxImage.id}
-                >
-                  <Trash2 className="w-4 h-4 mr-1" />
-                  Delete
-                </Button>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => setLightboxId(null)}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={(e) =>
+                        handleToggleFavourite(
+                          images.find((i) => i.id === lightboxImage.id) ??
+                            lightboxImage,
+                          e,
+                        )
+                      }
+                      disabled={togglingFavouriteId === lightboxImage.id}
+                    >
+                      <Star
+                        className="w-4 h-4"
+                        fill={lightboxImage.isFavourite ? "gold" : "none"}
+                        stroke={
+                          lightboxImage.isFavourite ? "gold" : "currentColor"
+                        }
+                      />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {lightboxImage.isFavourite ? "Unfavourite" : "Favourite"}
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      className="dark:bg-destructive"
+                      onClick={(e) => promptDelete(lightboxImage, e)}
+                      disabled={deletingId === lightboxImage.id}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Delete</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => setLightboxId(null)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Close</TooltipContent>
+                </Tooltip>
               </div>
             </div>
           )}
