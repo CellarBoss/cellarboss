@@ -100,6 +100,36 @@ const deleteRoute = createRoute({
   },
 });
 
+const setFavouriteRoute = createRoute({
+  method: "put",
+  path: "/{id}/favourite",
+  tags: ["Images"],
+  security: authSecurity,
+  summary: "Set an image as the favourite for its vintage",
+  request: { params: idParamSchema },
+  responses: {
+    200: jsonContent(imageResponseSchema, "The updated image record"),
+    400: jsonContent(errorSchema, "Invalid ID"),
+    401: jsonContent(errorSchema, "Unauthorized"),
+    404: jsonContent(errorSchema, "Not found"),
+  },
+});
+
+const unsetFavouriteRoute = createRoute({
+  method: "delete",
+  path: "/{id}/favourite",
+  tags: ["Images"],
+  security: authSecurity,
+  summary: "Remove the favourite status from an image",
+  request: { params: idParamSchema },
+  responses: {
+    200: jsonContent(imageResponseSchema, "The updated image record"),
+    400: jsonContent(errorSchema, "Invalid ID"),
+    401: jsonContent(errorSchema, "Unauthorized"),
+    404: jsonContent(errorSchema, "Not found"),
+  },
+});
+
 export function registerImageRoutes(app: OpenAPIHono) {
   const image = new OpenAPIHono();
 
@@ -149,7 +179,6 @@ export function registerImageRoutes(app: OpenAPIHono) {
       vintageId,
       filename,
       size,
-      sortOrder: 0,
       createdBy: user.id,
       createdAt: new Date().toISOString(),
     });
@@ -206,6 +235,28 @@ export function registerImageRoutes(app: OpenAPIHono) {
 
     await imagesController.remove(id);
     return c.json({ success: true }, 200);
+  });
+
+  image.openapi(setFavouriteRoute, async (c) => {
+    const id = parseId(c.req.param("id"));
+    if (id === null) return c.json({ error: "Invalid ID" }, 400);
+
+    const record = await imagesController.getById(id);
+    if (!record) return c.json({ error: "Not found" }, 404);
+
+    const updated = await imagesController.setFavourite(id, record.vintageId);
+    return c.json(updated, 200);
+  });
+
+  image.openapi(unsetFavouriteRoute, async (c) => {
+    const id = parseId(c.req.param("id"));
+    if (id === null) return c.json({ error: "Invalid ID" }, 400);
+
+    const record = await imagesController.getById(id);
+    if (!record) return c.json({ error: "Not found" }, 404);
+
+    const updated = await imagesController.unsetFavourite(id);
+    return c.json(updated, 200);
   });
 
   app.route("/image", image);

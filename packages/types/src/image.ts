@@ -3,7 +3,7 @@ export interface Image {
   vintageId: number;
   filename: string;
   size: number;
-  sortOrder: number;
+  isFavourite: boolean;
   createdBy: string; // FK to user.id, set server-side
   createdAt: string; // ISO 8601
 }

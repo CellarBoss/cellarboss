@@ -4,7 +4,12 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Image } from "@cellarboss/types";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { getImagesByVintageId, deleteImage } from "@/lib/api/images";
+import {
+  getImagesByVintageId,
+  deleteImage,
+  setImageFavourite,
+  unsetImageFavourite,
+} from "@/lib/api/images";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
@@ -17,7 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { X, Trash2 } from "lucide-react";
+import { X, Trash2, Star } from "lucide-react";
 import { ImageLoadingCell } from "./ImageLoadingCell";
 import { ImageEmptyCell } from "./ImageEmptyCell";
 import { ImageThumbnailCell } from "./ImageThumbnailCell";
@@ -27,9 +32,12 @@ type Props = { vintageId: number };
 
 export function ImageGallery({ vintageId }: Props) {
   const queryClient = useQueryClient();
-  const [lightboxImage, setLightboxImage] = useState<Image | null>(null);
+  const [lightboxId, setLightboxId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Image | null>(null);
+  const [togglingFavouriteId, setTogglingFavouriteId] = useState<number | null>(
+    null,
+  );
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   const imagesQuery = useApiQuery<Image[]>({
@@ -38,6 +46,7 @@ export function ImageGallery({ vintageId }: Props) {
   });
 
   const images = imagesQuery.data ?? [];
+  const lightboxImage = images.find((i) => i.id === lightboxId) ?? null;
 
   function promptDelete(image: Image, e: React.MouseEvent) {
     e.stopPropagation();
@@ -50,10 +59,25 @@ export function ImageGallery({ vintageId }: Props) {
     try {
       await deleteImage(deleteTarget.id);
       queryClient.invalidateQueries({ queryKey: ["images", vintageId] });
-      if (lightboxImage?.id === deleteTarget.id) setLightboxImage(null);
+      if (lightboxImage?.id === deleteTarget.id) setLightboxId(null);
     } finally {
       setDeletingId(null);
       setDeleteTarget(null);
+    }
+  }
+
+  async function handleToggleFavourite(image: Image, e: React.MouseEvent) {
+    e.stopPropagation();
+    setTogglingFavouriteId(image.id);
+    try {
+      if (image.isFavourite) {
+        await unsetImageFavourite(image.id);
+      } else {
+        await setImageFavourite(image.id);
+      }
+      queryClient.invalidateQueries({ queryKey: ["images", vintageId] });
+    } finally {
+      setTogglingFavouriteId(null);
     }
   }
 
@@ -68,9 +92,11 @@ export function ImageGallery({ vintageId }: Props) {
           <ImageThumbnailCell
             key={image.id}
             image={image}
-            onClick={() => setLightboxImage(image)}
+            onClick={() => setLightboxId(image.id)}
             onDelete={(e) => promptDelete(image, e)}
+            onToggleFavourite={(e) => handleToggleFavourite(image, e)}
             isDeleting={deletingId === image.id}
+            isTogglingFavourite={togglingFavouriteId === image.id}
           />
         ))}
 
@@ -83,7 +109,7 @@ export function ImageGallery({ vintageId }: Props) {
 
       <Dialog
         open={!!lightboxImage}
-        onOpenChange={(open) => !open && setLightboxImage(null)}
+        onOpenChange={(open) => !open && setLightboxId(null)}
       >
         <DialogContent className="max-w-3xl p-0 overflow-hidden">
           <DialogTitle className="sr-only">Image preview</DialogTitle>
@@ -98,6 +124,25 @@ export function ImageGallery({ vintageId }: Props) {
               <div className="absolute top-2 right-2 flex gap-2">
                 <Button
                   size="sm"
+                  variant="secondary"
+                  onClick={(e) =>
+                    handleToggleFavourite(
+                      images.find((i) => i.id === lightboxImage.id) ??
+                        lightboxImage,
+                      e,
+                    )
+                  }
+                  disabled={togglingFavouriteId === lightboxImage.id}
+                >
+                  <Star
+                    className="w-4 h-4 mr-1"
+                    fill={lightboxImage.isFavourite ? "gold" : "none"}
+                    stroke={lightboxImage.isFavourite ? "gold" : "currentColor"}
+                  />
+                  {lightboxImage.isFavourite ? "Unfavourite" : "Favourite"}
+                </Button>
+                <Button
+                  size="sm"
                   variant="destructive"
                   onClick={(e) => promptDelete(lightboxImage, e)}
                   disabled={deletingId === lightboxImage.id}
@@ -108,7 +153,7 @@ export function ImageGallery({ vintageId }: Props) {
                 <Button
                   size="sm"
                   variant="secondary"
-                  onClick={() => setLightboxImage(null)}
+                  onClick={() => setLightboxId(null)}
                 >
                   <X className="w-4 h-4" />
                 </Button>

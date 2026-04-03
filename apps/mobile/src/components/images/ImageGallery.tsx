@@ -17,7 +17,7 @@ import { getToken } from "@/lib/auth/secure-store";
 import { theme } from "@/lib/theme";
 import type { Image as ImageType } from "@cellarboss/types";
 import { useState, useEffect } from "react";
-import { X, Trash2 } from "lucide-react-native";
+import { X, Trash2, Star } from "lucide-react-native";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const THUMB_SIZE = (SCREEN_WIDTH - 48) / 3; // 3 columns with padding
@@ -77,6 +77,24 @@ export function ImageGallery({ vintageId }: Props) {
     ]);
   }
 
+  async function handleToggleFavourite(image: ImageType) {
+    if (image.isFavourite) {
+      const result = await api.images.unsetFavourite(image.id);
+      if (result.ok) {
+        queryClient.invalidateQueries({ queryKey: ["images", vintageId] });
+        if (lightboxImage?.id === image.id)
+          setLightboxImage({ ...image, isFavourite: false });
+      }
+    } else {
+      const result = await api.images.setFavourite(image.id);
+      if (result.ok) {
+        queryClient.invalidateQueries({ queryKey: ["images", vintageId] });
+        if (lightboxImage?.id === image.id)
+          setLightboxImage({ ...image, isFavourite: true });
+      }
+    }
+  }
+
   if (imagesQuery.isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -107,6 +125,11 @@ export function ImageGallery({ vintageId }: Props) {
               style={styles.thumbImage}
               contentFit="cover"
             />
+            {item.isFavourite && (
+              <View style={styles.favouriteBadge}>
+                <Star size={10} color="gold" fill="gold" />
+              </View>
+            )}
           </Pressable>
         )}
       />
@@ -126,6 +149,19 @@ export function ImageGallery({ vintageId }: Props) {
                 contentFit="contain"
               />
               <View style={styles.overlayActions}>
+                <Pressable
+                  style={[
+                    styles.actionBtn,
+                    lightboxImage.isFavourite && styles.favouriteActiveBtn,
+                  ]}
+                  onPress={() => handleToggleFavourite(lightboxImage)}
+                >
+                  <Star
+                    size={18}
+                    color={lightboxImage.isFavourite ? "gold" : "#fff"}
+                    fill={lightboxImage.isFavourite ? "gold" : "none"}
+                  />
+                </Pressable>
                 <Pressable
                   style={[styles.actionBtn, styles.deleteBtn]}
                   onPress={() => handleDelete(lightboxImage)}
@@ -172,6 +208,14 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
+  favouriteBadge: {
+    position: "absolute",
+    top: 4,
+    left: 4,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    borderRadius: 10,
+    padding: 2,
+  },
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.9)",
@@ -196,5 +240,8 @@ const styles = StyleSheet.create({
   },
   deleteBtn: {
     backgroundColor: "rgba(180,30,30,0.8)",
+  },
+  favouriteActiveBtn: {
+    backgroundColor: "rgba(0,0,0,0.6)",
   },
 });

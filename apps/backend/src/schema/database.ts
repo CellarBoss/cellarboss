@@ -1,4 +1,4 @@
-import type { Generated } from "kysely";
+import type { ColumnType, Generated } from "kysely";
 import type {
   Bottle,
   Country,
@@ -60,8 +60,10 @@ export interface TastingNoteTable extends Omit<TastingNote, "id" | "author"> {
   id: Generated<number>;
 }
 
-export interface ImageTable extends Omit<Image, "id"> {
+export interface ImageTable extends Omit<Image, "id" | "isFavourite"> {
   id: Generated<number>;
+  // SQLite stores as 0/1; coerced to boolean in the controller. Optional on insert (DB default 0).
+  isFavourite: ColumnType<number, number | undefined, number>;
 }
 
 export interface SettingTable extends Setting {}

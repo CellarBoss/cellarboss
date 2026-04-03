@@ -87,11 +87,31 @@ describe("Image API", () => {
       const res = await app.request("/image/1", { method: "DELETE" });
       expect(res.status).toBe(401);
     });
+
+    it("PUT /image/:id/favourite returns 401", async () => {
+      const res = await app.request("/image/1/favourite", { method: "PUT" });
+      expect(res.status).toBe(401);
+    });
+
+    it("DELETE /image/:id/favourite returns 401", async () => {
+      const res = await app.request("/image/1/favourite", { method: "DELETE" });
+      expect(res.status).toBe(401);
+    });
   });
 
   describe("authenticated operations", () => {
     let app: OpenAPIHono;
     let testVintageId: number;
+
+    async function uploadImage() {
+      const formData = makeFormData();
+      formData.append("vintageId", String(testVintageId));
+      const res = await app.request("/image", {
+        method: "POST",
+        body: formData,
+      });
+      return (await res.json()) as { id: number; isFavourite: boolean };
+    }
 
     beforeEach(async () => {
       const maker = await createTestWineMaker(db, "Image Test Winery");
@@ -134,7 +154,7 @@ describe("Image API", () => {
         expect(data.filename).toMatch(/\.jpg$/);
         expect(data.createdBy).toBe("test-user-1");
         expect(data).toHaveProperty("createdAt");
-        expect(data.sortOrder).toBe(0);
+        expect(data.isFavourite).toBe(false);
       });
 
       it("returns 400 when file field is missing", async () => {
@@ -217,6 +237,86 @@ describe("Image API", () => {
       it("returns 404 when deleting non-existent image", async () => {
         const res = await app.request("/image/999999", { method: "DELETE" });
         expect(res.status).toBe(404);
+      });
+    });
+
+    describe("PUT /image/:id/favourite", () => {
+      it("sets the image as favourite and returns isFavourite: true", async () => {
+        const { id } = await uploadImage();
+
+        const res = await app.request(`/image/${id}/favourite`, {
+          method: "PUT",
+        });
+        expect(res.status).toBe(200);
+        expect((await res.json()).isFavourite).toBe(true);
+      });
+
+      it("clears the previous favourite when a new one is set", async () => {
+        const first = await uploadImage();
+        const second = await uploadImage();
+
+        await app.request(`/image/${first.id}/favourite`, { method: "PUT" });
+        await app.request(`/image/${second.id}/favourite`, { method: "PUT" });
+
+        const listRes = await app.request(`/image/vintage/${testVintageId}`);
+        const images = (await listRes.json()) as {
+          id: number;
+          isFavourite: boolean;
+        }[];
+
+        expect(images.find((i) => i.id === first.id)?.isFavourite).toBe(false);
+        expect(images.find((i) => i.id === second.id)?.isFavourite).toBe(true);
+      });
+
+      it("returns 404 for non-existent image", async () => {
+        const res = await app.request("/image/999999/favourite", {
+          method: "PUT",
+        });
+        expect(res.status).toBe(404);
+      });
+
+      it("returns 400 for invalid ID", async () => {
+        const res = await app.request("/image/abc/favourite", {
+          method: "PUT",
+        });
+        expect(res.status).toBe(400);
+      });
+    });
+
+    describe("DELETE /image/:id/favourite", () => {
+      it("removes favourite status and returns isFavourite: false", async () => {
+        const { id } = await uploadImage();
+        await app.request(`/image/${id}/favourite`, { method: "PUT" });
+
+        const res = await app.request(`/image/${id}/favourite`, {
+          method: "DELETE",
+        });
+        expect(res.status).toBe(200);
+        expect((await res.json()).isFavourite).toBe(false);
+      });
+
+      it("is a no-op when image was not already a favourite", async () => {
+        const { id } = await uploadImage();
+
+        const res = await app.request(`/image/${id}/favourite`, {
+          method: "DELETE",
+        });
+        expect(res.status).toBe(200);
+        expect((await res.json()).isFavourite).toBe(false);
+      });
+
+      it("returns 404 for non-existent image", async () => {
+        const res = await app.request("/image/999999/favourite", {
+          method: "DELETE",
+        });
+        expect(res.status).toBe(404);
+      });
+
+      it("returns 400 for invalid ID", async () => {
+        const res = await app.request("/image/abc/favourite", {
+          method: "DELETE",
+        });
+        expect(res.status).toBe(400);
       });
     });
 

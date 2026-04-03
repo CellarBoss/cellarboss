@@ -9,7 +9,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     )
     .addColumn("filename", "text", (col) => col.notNull())
     .addColumn("size", "integer", (col) => col.notNull())
-    .addColumn("sortOrder", "integer", (col) => col.notNull().defaultTo(0))
+    .addColumn("isFavourite", "integer", (col) => col.notNull().defaultTo(0))
     .addColumn("createdBy", "text", (col) =>
       col.notNull().references("user.id").onDelete("cascade"),
     )
