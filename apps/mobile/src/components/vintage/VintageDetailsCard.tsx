@@ -1,21 +1,19 @@
 import { View, Pressable, StyleSheet } from "react-native";
 import { Text, Icon } from "react-native-paper";
-import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { theme, shadows } from "@/lib/theme";
 import { useApiQuery } from "@/hooks/use-api-query";
-import { useImageSource } from "@/hooks/use-image-source";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import {
   formatDrinkingWindow,
   formatDrinkingStatus,
 } from "@/lib/functions/format";
-import { WINE_TYPE_COLORS } from "@/lib/constants/wines";
 import {
   DRINKING_STATUS_COLORS,
   DRINKING_STATUS_ICONS,
 } from "@/lib/constants/drinking-status";
+import { WineThumbnail } from "@/components/wine/WineThumbnail";
 
 type VintageDetailsCardProps = {
   vintageId: number;
@@ -27,7 +25,6 @@ export function VintageDetailsCard({
   onPress,
 }: VintageDetailsCardProps) {
   const router = useRouter();
-  const { thumbSource } = useImageSource();
 
   const imagesQuery = useApiQuery({
     queryKey: ["images", vintageId],
@@ -78,9 +75,6 @@ export function VintageDetailsCard({
     : undefined;
 
   const wineType = wine?.type;
-  const bottleColor = wineType
-    ? WINE_TYPE_COLORS[wineType]
-    : theme.colors.onSurfaceVariant;
 
   const currentYear = new Date().getFullYear();
   const drinkingStatus = formatDrinkingStatus(
@@ -158,15 +152,10 @@ export function VintageDetailsCard({
               </View>
             )}
           </View>
-          {thumbnailImage ? (
-            <Image
-              source={thumbSource(thumbnailImage.id)}
-              style={styles.thumbnail}
-              contentFit="cover"
-            />
-          ) : (
-            <Icon source="bottle-wine" size={40} color={bottleColor} />
-          )}
+          <WineThumbnail
+            imageId={thumbnailImage?.id}
+            wineType={wineType ?? "red"}
+          />
         </View>
       </Pressable>
     </>
@@ -206,10 +195,5 @@ const styles = StyleSheet.create({
   },
   linkText: {
     color: theme.colors.primary,
-  },
-  thumbnail: {
-    width: 80,
-    height: 80,
-    borderRadius: 6,
   },
 });
