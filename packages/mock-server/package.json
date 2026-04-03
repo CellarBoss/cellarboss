@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@cellarboss/validators": "workspace:*",
-    "@hono/node-server": "1.19.11",
+    "@hono/node-server": "1.19.12",
     "hono": "4.12.9"
   },
   "devDependencies": {
