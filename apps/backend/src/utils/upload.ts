@@ -2,7 +2,6 @@ import { promises as fs } from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
 import sharp from "sharp";
-import { env } from "./env.js";
 
 const ALLOWED_MIME_TYPES = new Set([
   "image/jpeg",
@@ -15,8 +14,8 @@ const ALLOWED_MIME_TYPES = new Set([
 export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 export function getUploadDir(): string {
-  // Read from process.env at call time so tests can override before importing
-  return process.env.UPLOAD_DIR ?? env.UPLOAD_DIR ?? "./uploads";
+  // Read from process.env at call time so tests can override after module import
+  return process.env.UPLOAD_DIR ?? "./uploads";
 }
 
 function getImagesDir(): string {

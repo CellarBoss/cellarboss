@@ -43,7 +43,7 @@ api.doc("/openapi.json", {
   openapi: "3.1.0",
   info: {
     title: "Cellarboss API",
-    version: process.env.APP_VERSION || "development",
+    version: env.APP_VERSION,
     description: "Wine cellar management API",
   },
 });

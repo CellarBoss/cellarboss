@@ -1,3 +1,4 @@
+import { existsSync } from "fs";
 import { z } from "zod";
 
 export const env = z
@@ -7,6 +8,15 @@ export const env = z
     DATABASE_TYPE: z.enum(["sqlite", "postgres", "mysql"]),
     BETTER_AUTH_SECRET: z.string(),
     CORS: z.string().optional(),
-    UPLOAD_DIR: z.string().optional(),
+    APP_VERSION: z.string().default("development"),
+    PORT: z.string().default("4000"),
+    DB_RETRY_INTERVAL: z.coerce.number().default(2000),
+    DB_MAX_RETRIES: z.coerce.number().default(30),
+    UPLOAD_DIR: z
+      .string()
+      .refine((p) => existsSync(p), {
+        message: "UPLOAD_DIR path does not exist",
+      })
+      .optional(),
   })
   .parse(process.env);
