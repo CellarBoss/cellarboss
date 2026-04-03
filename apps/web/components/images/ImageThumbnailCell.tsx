@@ -1,5 +1,6 @@
 import type { Image } from "@cellarboss/types";
 import { Trash2, Star } from "lucide-react";
+import NextImage from "next/image";
 
 type Props = {
   image: Image;
@@ -23,11 +24,12 @@ export function ImageThumbnailCell({
       className="relative group aspect-square rounded-md overflow-hidden cursor-pointer border border-border w-[150px] h-[150px]"
       onClick={onClick}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <NextImage
         src={`/api/image/${image.id}/thumb`}
         alt="Vintage image"
-        className="w-full h-full object-cover"
+        fill
+        unoptimized
+        className="object-cover"
       />
       <button
         onClick={onToggleFavourite}

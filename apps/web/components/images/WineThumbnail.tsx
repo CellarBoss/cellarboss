@@ -7,6 +7,7 @@ import { ApiQueryError } from "@cellarboss/common";
 import { getImagesByVintageId } from "@/lib/api/images";
 import { Wine as WineIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import NextImage from "next/image";
 
 type Props = {
   vintages: Vintage[];
@@ -52,15 +53,16 @@ export function WineThumbnail({ vintages, className }: Props) {
   return (
     <>
       <div
-        className={`flex items-center justify-center rounded-lg bg-muted overflow-hidden ${className ?? ""} ${image ? "cursor-pointer" : ""}`}
+        className={`relative flex items-center justify-center rounded-lg bg-muted overflow-hidden ${className ?? ""} ${image ? "cursor-pointer" : ""}`}
         onClick={() => image && setLightboxOpen(true)}
       >
         {image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <NextImage
             src={`/api/image/${image.id}/thumb`}
             alt="Wine image"
-            className="w-full h-full object-cover"
+            fill
+            unoptimized
+            className="object-cover"
           />
         ) : (
           <WineIcon className="w-10 h-10" />
@@ -71,10 +73,12 @@ export function WineThumbnail({ vintages, className }: Props) {
         <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
           <DialogContent className="max-w-3xl p-0 overflow-hidden">
             <DialogTitle className="sr-only">Image preview</DialogTitle>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <NextImage
               src={`/api/image/${image.id}/file`}
               alt="Wine image full size"
+              width={0}
+              height={0}
+              unoptimized
               className="w-full h-auto max-h-[80vh] object-contain"
             />
           </DialogContent>

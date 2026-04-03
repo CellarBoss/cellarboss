@@ -23,6 +23,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { X, Trash2, Star } from "lucide-react";
+import NextImage from "next/image";
 import { ImageLoadingCell } from "./ImageLoadingCell";
 import { ImageEmptyCell } from "./ImageEmptyCell";
 import { ImageThumbnailCell } from "./ImageThumbnailCell";
@@ -115,10 +116,12 @@ export function ImageGallery({ vintageId }: Props) {
           <DialogTitle className="sr-only">Image preview</DialogTitle>
           {lightboxImage && (
             <div className="relative">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <NextImage
                 src={`/api/image/${lightboxImage.id}/file`}
                 alt="Vintage image full size"
+                width={0}
+                height={0}
+                unoptimized
                 className="w-full h-auto max-h-[80vh] object-contain"
               />
               <div className="absolute top-2 right-2 flex gap-2">
