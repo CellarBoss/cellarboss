@@ -1,4 +1,4 @@
-import { ExpoConfig, ConfigContext } from "expo/config";
+import type { ExpoConfig, ConfigContext } from "expo/config";
 
 const appVersion = process.env.APP_VERSION?.replace(/^v/, "") || "0.0.0";
 
