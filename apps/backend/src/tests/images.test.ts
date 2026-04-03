@@ -64,7 +64,7 @@ describe("Image API", () => {
     });
 
     it("POST /image returns 401", async () => {
-      const res = await app.request("/image", { method: "POST" });
+      const res = await app.request("/image/upload", { method: "POST" });
       expect(res.status).toBe(401);
     });
 
@@ -106,7 +106,7 @@ describe("Image API", () => {
     async function uploadImage() {
       const formData = makeFormData();
       formData.append("vintageId", String(testVintageId));
-      const res = await app.request("/image", {
+      const res = await app.request("/image/upload", {
         method: "POST",
         body: formData,
       });
@@ -142,7 +142,7 @@ describe("Image API", () => {
         const formData = makeFormData();
         formData.append("vintageId", String(testVintageId));
 
-        const res = await app.request("/image", {
+        const res = await app.request("/image/upload", {
           method: "POST",
           body: formData,
         });
@@ -161,7 +161,7 @@ describe("Image API", () => {
         const formData = new FormData();
         formData.append("vintageId", String(testVintageId));
 
-        const res = await app.request("/image", {
+        const res = await app.request("/image/upload", {
           method: "POST",
           body: formData,
         });
@@ -172,7 +172,7 @@ describe("Image API", () => {
         const formData = makeFormData();
         formData.append("vintageId", "notanumber");
 
-        const res = await app.request("/image", {
+        const res = await app.request("/image/upload", {
           method: "POST",
           body: formData,
         });
@@ -183,7 +183,7 @@ describe("Image API", () => {
         const formData = makeFormData("image/gif", "test.gif");
         formData.append("vintageId", String(testVintageId));
 
-        const res = await app.request("/image", {
+        const res = await app.request("/image/upload", {
           method: "POST",
           body: formData,
         });
@@ -196,7 +196,7 @@ describe("Image API", () => {
       it("returns image binary with correct content-type after upload", async () => {
         const formData = makeFormData();
         formData.append("vintageId", String(testVintageId));
-        const uploadRes = await app.request("/image", {
+        const uploadRes = await app.request("/image/upload", {
           method: "POST",
           body: formData,
         });
@@ -221,7 +221,7 @@ describe("Image API", () => {
       it("deletes the record, returns success, and subsequent fetch returns 404", async () => {
         const formData = makeFormData();
         formData.append("vintageId", String(testVintageId));
-        const uploadRes2 = await app.request("/image", {
+        const uploadRes2 = await app.request("/image/upload", {
           method: "POST",
           body: formData,
         });
