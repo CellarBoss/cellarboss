@@ -18,7 +18,27 @@ From a wine's detail screen, tap **Add Vintage**.
 
 ## Viewing a Vintage
 
-Tap a vintage to see its full details, including associated [bottles](/resources/bottles) and [tasting notes](/resources/tasting-notes).
+Tap a vintage to see its full details, including associated [bottles](/resources/bottles), [tasting notes](/resources/tasting-notes), and images.
+
+## Images
+
+Each vintage has an image gallery on its detail screen, displayed as a 3-column grid of thumbnails.
+
+### Uploading images
+
+Tap **Take Photo** to capture a new photo with the camera, or **Choose from Library** to pick one or more existing photos. The app will ask for the relevant permission the first time. Supported formats: JPEG, PNG, WebP, HEIC — maximum 10 MB per file.
+
+### Viewing images
+
+Tap any thumbnail to open a full-screen lightbox.
+
+### Favourite image
+
+Each vintage can have one favourite image, used as its representative image elsewhere in the app. To set a favourite, open the lightbox and tap the **star** icon. To remove it, tap the star again. The favourite thumbnail is marked with a gold star badge in the gallery.
+
+### Deleting images
+
+Open the lightbox and tap the **trash** icon. You will be asked to confirm before deletion.
 
 ## Editing a Vintage
 
@@ -29,5 +49,5 @@ Tap **Edit** on the vintage detail screen to modify.
 Tap **Delete** on the detail screen. You will be asked to confirm.
 
 ::: warning
-Deleting a vintage will also remove all associated bottles and tasting notes.
+Deleting a vintage will also remove all associated bottles, tasting notes, and images.
 :::
