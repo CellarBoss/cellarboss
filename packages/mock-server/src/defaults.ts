@@ -86,6 +86,7 @@ export const defaultState: MockState = {
     { wineId: 1, grapeId: 1 },
     { wineId: 2, grapeId: 2 },
   ],
+  images: [],
   tastingNotes: [
     {
       id: 1,
