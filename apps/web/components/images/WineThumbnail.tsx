@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import type { Vintage, Image } from "@cellarboss/types";
 import { useQueries } from "@tanstack/react-query";
 import { ApiQueryError } from "@cellarboss/common";
 import { getImagesByVintageId } from "@/lib/api/images";
 import { Wine as WineIcon } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 type Props = {
   vintages: Vintage[];
@@ -12,6 +14,8 @@ type Props = {
 };
 
 export function WineThumbnail({ vintages, className }: Props) {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+
   const sortedVintages = [...vintages].sort(
     (a, b) => (b.year ?? -Infinity) - (a.year ?? -Infinity),
   );
@@ -46,19 +50,36 @@ export function WineThumbnail({ vintages, className }: Props) {
   })();
 
   return (
-    <div
-      className={`flex items-center justify-center rounded-lg bg-muted overflow-hidden ${className ?? ""}`}
-    >
-      {image ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={`/api/image/${image.id}/thumb`}
-          alt="Wine image"
-          className="w-full h-full object-cover"
-        />
-      ) : (
-        <WineIcon className="w-10 h-10" />
+    <>
+      <div
+        className={`flex items-center justify-center rounded-lg bg-muted overflow-hidden ${className ?? ""} ${image ? "cursor-pointer" : ""}`}
+        onClick={() => image && setLightboxOpen(true)}
+      >
+        {image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={`/api/image/${image.id}/thumb`}
+            alt="Wine image"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <WineIcon className="w-10 h-10" />
+        )}
+      </div>
+
+      {image && (
+        <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+          <DialogContent className="max-w-3xl p-0 overflow-hidden">
+            <DialogTitle className="sr-only">Image preview</DialogTitle>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`/api/image/${image.id}/file`}
+              alt="Wine image full size"
+              className="w-full h-auto max-h-[80vh] object-contain"
+            />
+          </DialogContent>
+        </Dialog>
       )}
-    </div>
+    </>
   );
 }
