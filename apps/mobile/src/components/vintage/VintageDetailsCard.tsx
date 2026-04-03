@@ -1,8 +1,10 @@
 import { View, Pressable, StyleSheet } from "react-native";
 import { Text, Icon } from "react-native-paper";
+import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { theme, shadows } from "@/lib/theme";
 import { useApiQuery } from "@/hooks/use-api-query";
+import { useImageSource } from "@/hooks/use-image-source";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import {
@@ -25,6 +27,12 @@ export function VintageDetailsCard({
   onPress,
 }: VintageDetailsCardProps) {
   const router = useRouter();
+  const { thumbSource } = useImageSource();
+
+  const imagesQuery = useApiQuery({
+    queryKey: ["images", vintageId],
+    queryFn: () => api.images.getByVintageId(vintageId),
+  });
 
   const vintageQuery = useApiQuery({
     queryKey: ["vintages", vintageId],
@@ -89,6 +97,10 @@ export function VintageDetailsCard({
   const wineName = wine?.name ?? "Unknown Wine";
   const yearLabel = vintage.year != null ? String(vintage.year) : "NV";
 
+  const images = imagesQuery.data ?? [];
+  const thumbnailImage =
+    images.find((i) => i.isFavourite) ?? images[images.length - 1];
+
   return (
     <>
       <Text variant="titleSmall" style={styles.heading}>
@@ -146,7 +158,15 @@ export function VintageDetailsCard({
               </View>
             )}
           </View>
-          <Icon source="bottle-wine" size={40} color={bottleColor} />
+          {thumbnailImage ? (
+            <Image
+              source={thumbSource(thumbnailImage.id)}
+              style={styles.thumbnail}
+              contentFit="cover"
+            />
+          ) : (
+            <Icon source="bottle-wine" size={40} color={bottleColor} />
+          )}
         </View>
       </Pressable>
     </>
@@ -186,5 +206,10 @@ const styles = StyleSheet.create({
   },
   linkText: {
     color: theme.colors.primary,
+  },
+  thumbnail: {
+    width: 80,
+    height: 80,
+    borderRadius: 6,
   },
 });

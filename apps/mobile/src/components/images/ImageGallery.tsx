@@ -11,12 +11,11 @@ import { Image } from "expo-image";
 import { Text, ActivityIndicator } from "react-native-paper";
 import { useQueryClient } from "@tanstack/react-query";
 import { useApiQuery } from "@/hooks/use-api-query";
+import { useImageSource } from "@/hooks/use-image-source";
 import { api } from "@/lib/api/client";
-import { getApiBaseUrl } from "@/lib/api/base-url";
-import { getToken } from "@/lib/auth/secure-store";
 import { theme } from "@/lib/theme";
 import type { Image as ImageType } from "@cellarboss/types";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { X, Trash2, Star } from "lucide-react-native";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -27,17 +26,7 @@ type Props = { vintageId: number };
 export function ImageGallery({ vintageId }: Props) {
   const queryClient = useQueryClient();
   const [lightboxImage, setLightboxImage] = useState<ImageType | null>(null);
-  const [authHeaders, setAuthHeaders] = useState<Record<string, string>>({});
-  const [baseUrl, setBaseUrl] = useState<string>("");
-
-  useEffect(() => {
-    async function loadAuth() {
-      const [url, token] = await Promise.all([getApiBaseUrl(), getToken()]);
-      if (url) setBaseUrl(url);
-      if (token) setAuthHeaders({ Authorization: `Bearer ${token}` });
-    }
-    loadAuth();
-  }, []);
+  const { thumbSource, fullSource } = useImageSource();
 
   const imagesQuery = useApiQuery({
     queryKey: ["images", vintageId],
@@ -45,20 +34,6 @@ export function ImageGallery({ vintageId }: Props) {
   });
 
   const images = imagesQuery.data ?? [];
-
-  function imageUrl(id: number) {
-    return {
-      uri: `${baseUrl}/api/${api.images.getImageUrl(id)}`,
-      headers: authHeaders,
-    };
-  }
-
-  function thumbUrl(id: number) {
-    return {
-      uri: `${baseUrl}/api/${api.images.getThumbUrl(id)}`,
-      headers: authHeaders,
-    };
-  }
 
   async function handleDelete(image: ImageType) {
     Alert.alert("Delete Image", "Are you sure you want to delete this image?", [
@@ -121,7 +96,7 @@ export function ImageGallery({ vintageId }: Props) {
             onPress={() => setLightboxImage(item)}
           >
             <Image
-              source={thumbUrl(item.id)}
+              source={thumbSource(item.id)}
               style={styles.thumbImage}
               contentFit="cover"
             />
@@ -144,7 +119,7 @@ export function ImageGallery({ vintageId }: Props) {
           {lightboxImage && (
             <>
               <Image
-                source={imageUrl(lightboxImage.id)}
+                source={fullSource(lightboxImage.id)}
                 style={styles.fullImage}
                 contentFit="contain"
               />
