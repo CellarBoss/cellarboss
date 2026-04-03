@@ -65,6 +65,29 @@ serve(
     port: env.PORT,
   },
   (info) => {
-    console.log(`Server running on http://localhost:${info.port}`);
+    const lines = [
+      ``,
+      `  ╔══════════════════════════════════════╗`,
+      `  ║          Cellarboss Backend          ║`,
+      `  ╚══════════════════════════════════════╝`,
+      ``,
+      `  Version   : ${env.APP_VERSION}`,
+      `  Env       : ${env.NODE_ENV}`,
+      `  URL       : http://localhost:${info.port}`,
+      ``,
+      `  Database  : ${env.DATABASE_TYPE}`,
+      `  DB URL    : ${(() => {
+        try {
+          const u = new URL(env.DATABASE_URL);
+          u.password = u.password ? "***" : "";
+          return u.toString();
+        } catch {
+          return env.DATABASE_URL;
+        }
+      })()}`,
+      `  Uploads   : ${env.UPLOAD_DIR ?? "(not configured)"}`,
+      ``,
+    ];
+    console.log(lines.join("\n"));
   },
 );
