@@ -15,7 +15,6 @@ async function proxyToBackend(
 
   const backendPath = pathSegments.join("/");
   const backendUrl = `${webEnv.CELLARBOSS_SERVER}/api/image/${backendPath}`;
-  console.log(`[image-proxy] ${req.method} ${backendUrl}`);
 
   const reqHeaders = new Headers();
   reqHeaders.set("cookie", cookie);
@@ -48,9 +47,6 @@ async function proxyToBackend(
   }
 
   const data = await backendRes.text();
-  console.log(
-    `[image-proxy] backend responded ${backendRes.status}: ${data.substring(0, 200)}`,
-  );
   return new NextResponse(data, {
     status: backendRes.status,
     headers: { "content-type": "application/json" },
