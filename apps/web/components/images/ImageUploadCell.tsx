@@ -3,23 +3,24 @@
 import { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ImagePlus, Loader2 } from "lucide-react";
+import { CELL } from "./image-cell-class";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
-type Props = { vintageId: number };
+type Props = {
+  vintageId: number;
+  onError: (message: string) => void;
+};
 
-export function ImageUpload({ vintageId }: Props) {
+export function ImageUploadCell({ vintageId, onError }: Props) {
   const queryClient = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   async function handleFiles(files: FileList) {
-    setError(null);
-
     for (const file of Array.from(files)) {
       if (file.size > MAX_FILE_SIZE) {
-        setError(`${file.name} exceeds the 10MB limit.`);
+        onError(`${file.name} exceeds the 10MB limit.`);
         return;
       }
     }
@@ -43,40 +44,30 @@ export function ImageUpload({ vintageId }: Props) {
       }
       queryClient.invalidateQueries({ queryKey: ["images", vintageId] });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed");
+      onError(err instanceof Error ? err.message : "Upload failed");
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";
     }
   }
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.files?.length) handleFiles(e.target.files);
-  }
-
-  function handleDrop(e: React.DragEvent) {
-    e.preventDefault();
-    if (e.dataTransfer.files?.length) handleFiles(e.dataTransfer.files);
-  }
-
   return (
-    <div className="mt-3">
+    <>
       <div
-        onDrop={handleDrop}
+        onDrop={(e) => {
+          e.preventDefault();
+          if (e.dataTransfer.files?.length) handleFiles(e.dataTransfer.files);
+        }}
         onDragOver={(e) => e.preventDefault()}
         onClick={() => !uploading && inputRef.current?.click()}
-        className="flex flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-border p-6 text-sm text-muted-foreground cursor-pointer hover:border-primary hover:text-primary transition-colors"
+        className={`${CELL} flex-col gap-1 border-dashed border-2 text-muted-foreground cursor-pointer hover:border-primary hover:text-primary transition-colors text-xs text-center px-2`}
       >
         {uploading ? (
-          <>
-            <Loader2 className="w-6 h-6 animate-spin" />
-            <span>Uploading...</span>
-          </>
+          <Loader2 className="w-5 h-5 animate-spin" />
         ) : (
           <>
-            <ImagePlus className="w-6 h-6" />
-            <span>Click or drag images here to upload</span>
-            <span className="text-xs">JPEG, PNG, WebP, HEIC · max 10MB</span>
+            <ImagePlus className="w-5 h-5" />
+            <span>Upload</span>
           </>
         )}
       </div>
@@ -86,9 +77,10 @@ export function ImageUpload({ vintageId }: Props) {
         accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
         multiple
         className="hidden"
-        onChange={handleChange}
+        onChange={(e) => {
+          if (e.target.files?.length) handleFiles(e.target.files);
+        }}
       />
-      {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
-    </div>
+    </>
   );
 }

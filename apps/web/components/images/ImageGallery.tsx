@@ -18,6 +18,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { X, Trash2 } from "lucide-react";
+import { ImageLoadingCell } from "./ImageLoadingCell";
+import { ImageEmptyCell } from "./ImageEmptyCell";
+import { ImageThumbnailCell } from "./ImageThumbnailCell";
+import { ImageUploadCell } from "./ImageUploadCell";
 
 type Props = { vintageId: number };
 
@@ -26,6 +30,7 @@ export function ImageGallery({ vintageId }: Props) {
   const [lightboxImage, setLightboxImage] = useState<Image | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Image | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const imagesQuery = useApiQuery<Image[]>({
     queryKey: ["images", vintageId],
@@ -52,44 +57,29 @@ export function ImageGallery({ vintageId }: Props) {
     }
   }
 
-  if (imagesQuery.isLoading) {
-    return (
-      <p className="text-muted-foreground italic text-sm">Loading images...</p>
-    );
-  }
-
-  if (images.length === 0) {
-    return (
-      <p className="text-muted-foreground italic text-sm">No images yet.</p>
-    );
-  }
-
   return (
     <>
       <div className="flex flex-wrap gap-2">
+        {imagesQuery.isLoading && <ImageLoadingCell />}
+
+        {!imagesQuery.isLoading && images.length === 0 && <ImageEmptyCell />}
+
         {images.map((image) => (
-          <div
+          <ImageThumbnailCell
             key={image.id}
-            className="relative group aspect-square rounded-md overflow-hidden cursor-pointer border border-border w-[150px] h-[150px]"
+            image={image}
             onClick={() => setLightboxImage(image)}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`/api/image/${image.id}/thumb`}
-              alt="Vintage image"
-              className="w-full h-full object-cover"
-            />
-            <button
-              onClick={(e) => promptDelete(image, e)}
-              disabled={deletingId === image.id}
-              className="absolute top-1 right-1 p-1 rounded bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 disabled:opacity-40"
-              aria-label="Delete image"
-            >
-              <Trash2 className="w-3 h-3" />
-            </button>
-          </div>
+            onDelete={(e) => promptDelete(image, e)}
+            isDeleting={deletingId === image.id}
+          />
         ))}
+
+        <ImageUploadCell vintageId={vintageId} onError={setUploadError} />
       </div>
+
+      {uploadError && (
+        <p className="mt-2 text-sm text-destructive">{uploadError}</p>
+      )}
 
       <Dialog
         open={!!lightboxImage}
