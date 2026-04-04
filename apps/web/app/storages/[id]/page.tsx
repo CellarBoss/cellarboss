@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  Warehouse,
+  Refrigerator,
   MapPin,
   FolderTree,
   BottleWine,
@@ -170,7 +170,7 @@ export default function ViewStoragePage() {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <DetailCard heading="Details" icon={Warehouse}>
+        <DetailCard heading="Details" icon={Refrigerator}>
           {hierarchyPath.length > 0 && (
             <div className="flex items-center gap-1 flex-wrap text-sm mb-1">
               {hierarchyPath.map((ancestor, i) => (
@@ -224,7 +224,7 @@ export default function ViewStoragePage() {
             <RelatedResourceItem
               key={child.id}
               href={`/storages/${child.id}`}
-              icon={Warehouse}
+              icon={Refrigerator}
               badge={
                 <Badge variant="secondary">
                   {bottleCountByStorage.get(child.id) ?? 0} bottles

@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { MapPin, Warehouse } from "lucide-react";
+import { MapPin, Refrigerator } from "lucide-react";
 import { getLocationById, deleteLocation } from "@/lib/api/locations";
 import { getStorages } from "@/lib/api/storages";
 import { getBottles } from "@/lib/api/bottles";
@@ -81,7 +81,7 @@ export default function ViewLocationPage() {
 
       <DetailCard heading="Details" icon={MapPin}>
         <h3 className="text-lg font-semibold">{location.name}</h3>
-        <DetailRow icon={Warehouse}>
+        <DetailRow icon={Refrigerator}>
           {storages.length} {storages.length === 1 ? "storage" : "storages"}
         </DetailRow>
       </DetailCard>
@@ -97,7 +97,7 @@ export default function ViewLocationPage() {
           <RelatedResourceItem
             key={storage.id}
             href={`/storages/${storage.id}`}
-            icon={Warehouse}
+            icon={Refrigerator}
             badge={
               <Badge variant="secondary">
                 {bottleCountByStorage.get(storage.id) ?? 0} bottles

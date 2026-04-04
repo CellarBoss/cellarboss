@@ -4,13 +4,13 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   User,
-  Globe,
+  Earth,
   Clock,
-  Wine as WineIcon,
+  Barrel,
   CircleDot,
   Calendar,
   DollarSign,
-  Warehouse,
+  Refrigerator,
   MapPin,
   ChevronRight,
   BottleWine,
@@ -198,7 +198,7 @@ export default function ViewBottlePage() {
         }
       />
 
-      <DetailCard heading="Wine" icon={WineIcon}>
+      <DetailCard heading="Wine" icon={Barrel}>
         <h3 className="text-lg font-semibold">
           {wine ? (
             <Link href={`/wines/${wine.id}`} className="hover:underline">
@@ -227,7 +227,7 @@ export default function ViewBottlePage() {
           </DetailRow>
         )}
         {(region || country) && (
-          <DetailRow icon={Globe}>
+          <DetailRow icon={Earth}>
             {[region?.name, country?.name].filter(Boolean).join(", ")}
           </DetailRow>
         )}
@@ -264,7 +264,7 @@ export default function ViewBottlePage() {
 
       {storagePath.length > 0 && (
         <div className="mt-4">
-          <DetailCard heading="Storage" icon={Warehouse}>
+          <DetailCard heading="Storage" icon={Refrigerator}>
             <div className="flex items-center gap-1 flex-wrap text-sm">
               {storagePath.map((segment, i) => (
                 <span key={segment.id} className="flex items-center gap-1">

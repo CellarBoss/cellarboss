@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { Globe, MapPin } from "lucide-react";
+import { Earth, Flag } from "lucide-react";
 import { getCountryById, deleteCountry } from "@/lib/api/countries";
 import { getRegions } from "@/lib/api/regions";
 import { getWines } from "@/lib/api/wines";
@@ -79,9 +79,9 @@ export default function ViewCountryPage() {
         }
       />
 
-      <DetailCard heading="Details" icon={Globe}>
+      <DetailCard heading="Details" icon={Earth}>
         <h3 className="text-lg font-semibold">{country.name}</h3>
-        <DetailRow icon={MapPin}>
+        <DetailRow icon={Flag}>
           {regions.length} {regions.length === 1 ? "region" : "regions"}
         </DetailRow>
       </DetailCard>
@@ -97,7 +97,7 @@ export default function ViewCountryPage() {
           <RelatedResourceItem
             key={region.id}
             href={`/regions/${region.id}`}
-            icon={MapPin}
+            icon={Flag}
             badge={
               <Badge variant="secondary">
                 {wineCountByRegion.get(region.id) ?? 0} wines

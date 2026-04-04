@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { User, Wine } from "lucide-react";
+import { User, Barrel } from "lucide-react";
 import { getWinemakerById, deleteWinemaker } from "@/lib/api/winemakers";
 import { getWines } from "@/lib/api/wines";
 import { getRegions } from "@/lib/api/regions";
@@ -92,7 +92,7 @@ export default function ViewWinemakerPage() {
 
       <DetailCard heading="Details" icon={User}>
         <h3 className="text-lg font-semibold">{winemaker.name}</h3>
-        <DetailRow icon={Wine}>
+        <DetailRow icon={Barrel}>
           {wines.length} {wines.length === 1 ? "wine" : "wines"}
         </DetailRow>
       </DetailCard>

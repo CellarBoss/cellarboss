@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { User, Globe, Clock, Wine as WineIcon } from "lucide-react";
+import { User, Earth, Clock, Barrel } from "lucide-react";
 import { getVintageById, deleteVintage } from "@/lib/api/vintages";
 import { getWines } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
@@ -154,7 +154,7 @@ export default function ViewVintagePage() {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <DetailCard heading="Wine" icon={WineIcon}>
+        <DetailCard heading="Wine" icon={Barrel}>
           <h3 className="text-lg font-semibold">
             {wine ? (
               <Link href={`/wines/${wine.id}`} className="hover:underline">
@@ -176,7 +176,7 @@ export default function ViewVintagePage() {
             </DetailRow>
           )}
           {(region || country) && (
-            <DetailRow icon={Globe}>
+            <DetailRow icon={Earth}>
               {[region?.name, country?.name].filter(Boolean).join(", ")}
             </DetailRow>
           )}

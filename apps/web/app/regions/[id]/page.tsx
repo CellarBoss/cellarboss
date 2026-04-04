@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Globe, MapPin, Wine } from "lucide-react";
+import { Earth, Flag, Barrel } from "lucide-react";
 import { getRegionById, deleteRegion } from "@/lib/api/regions";
 import { getCountries } from "@/lib/api/countries";
 import { getWines } from "@/lib/api/wines";
@@ -84,10 +84,10 @@ export default function ViewRegionPage() {
         }
       />
 
-      <DetailCard heading="Details" icon={MapPin}>
+      <DetailCard heading="Details" icon={Flag}>
         <h3 className="text-lg font-semibold">{region.name}</h3>
         {country && (
-          <DetailRow icon={Globe}>
+          <DetailRow icon={Earth}>
             <Link
               href={`/countries/${country.id}`}
               className="hover:underline text-primary"
@@ -96,7 +96,7 @@ export default function ViewRegionPage() {
             </Link>
           </DetailRow>
         )}
-        <DetailRow icon={Wine}>
+        <DetailRow icon={Barrel}>
           {wines.length} {wines.length === 1 ? "wine" : "wines"}
         </DetailRow>
       </DetailCard>

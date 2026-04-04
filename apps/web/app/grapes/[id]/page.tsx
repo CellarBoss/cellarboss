@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { Grape, Wine } from "lucide-react";
+import { Grape, Barrel } from "lucide-react";
 import { getGrapeById, deleteGrape } from "@/lib/api/grapes";
 import { getWines } from "@/lib/api/wines";
 import { getWineGrapes } from "@/lib/api/winegrapes";
@@ -87,7 +87,7 @@ export default function ViewGrapePage() {
 
       <DetailCard heading="Details" icon={Grape}>
         <h3 className="text-lg font-semibold">{grape.name}</h3>
-        <DetailRow icon={Wine}>
+        <DetailRow icon={Barrel}>
           {wines.length} {wines.length === 1 ? "wine" : "wines"}
         </DetailRow>
       </DetailCard>

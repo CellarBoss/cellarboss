@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { User, Globe, Grape, Wine as WineIcon, BottleWine } from "lucide-react";
+import { User, Earth, Grape, Barrel, BottleWine } from "lucide-react";
 import { getWineById, deleteWine } from "@/lib/api/wines";
 import { getWineGrapes } from "@/lib/api/winegrapes";
 import { getVintagesByWineId } from "@/lib/api/vintages";
@@ -149,7 +149,7 @@ export default function ViewWinePage() {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <DetailCard heading="Details" icon={WineIcon}>
+        <DetailCard heading="Details" icon={Barrel}>
           <h3 className="text-lg font-semibold">{wine.name}</h3>
           <DetailRow icon={User}>
             {winemaker ? (
@@ -164,7 +164,7 @@ export default function ViewWinePage() {
             )}
           </DetailRow>
           {(region || country) && (
-            <DetailRow icon={Globe}>
+            <DetailRow icon={Earth}>
               {region && (
                 <Link
                   href={`/regions/${region.id}`}
@@ -195,7 +195,7 @@ export default function ViewWinePage() {
               </span>
             </DetailRow>
           )}
-          <DetailRow icon={WineIcon}>
+          <DetailRow icon={Barrel}>
             <Badge
               className={`${WINE_TYPE_COLORS[wine.type]} text-white border-0`}
             >
