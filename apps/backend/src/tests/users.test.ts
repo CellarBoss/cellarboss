@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, beforeAll } from "vitest";
-import type { Hono } from "hono";
+import type { OpenAPIHono } from "@hono/zod-openapi";
 import { sql, Kysely } from "kysely";
 import {
   createTestApp,
@@ -54,7 +54,7 @@ describe("User API", () => {
   });
 
   describe("without auth", () => {
-    let app: Hono;
+    let app: OpenAPIHono;
 
     beforeEach(() => {
       app = createTestApp();
@@ -73,7 +73,7 @@ describe("User API", () => {
   });
 
   describe("non-admin user", () => {
-    let app: Hono;
+    let app: OpenAPIHono;
 
     beforeEach(() => {
       app = createTestAppWithNonAdmin();
@@ -96,7 +96,7 @@ describe("User API", () => {
   });
 
   describe("admin operations", () => {
-    let app: Hono;
+    let app: OpenAPIHono;
 
     beforeEach(() => {
       app = createTestAppWithAuth();
