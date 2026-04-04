@@ -39,47 +39,49 @@ export function TastingNoteCard({
   deleteDescription,
   standalone = false,
 }: TastingNoteCardProps) {
-  const content = (
-    <>
-      <div className="flex items-center gap-2 text-sm">
-        <Badge
-          style={{
-            backgroundColor: scoreColor(note.score),
-            color: "white",
-          }}
-        >
-          {note.score}/10
+  const header = (
+    <div className="flex items-center gap-2 text-sm">
+      <Badge
+        style={{
+          backgroundColor: scoreColor(note.score),
+          color: "white",
+        }}
+      >
+        {note.score}/10
+      </Badge>
+      <span className="font-medium">{note.author}</span>
+      <span className="text-muted-foreground text-xs">
+        {datetimeFormat ? formatDateTime(note.date, datetimeFormat) : note.date}
+      </span>
+      {vintageContext && (
+        <Badge variant="outline" asChild>
+          <Link href={`/vintages/${vintageContext.vintageId}`}>
+            <Calendar className="w-3 h-3" />
+            {vintageContext.label}
+          </Link>
         </Badge>
-        <span className="font-medium">{note.author}</span>
-        <span className="text-muted-foreground text-xs">
-          {datetimeFormat
-            ? formatDateTime(note.date, datetimeFormat)
-            : note.date}
+      )}
+      {(onEdit || onDelete) && (
+        <span className="ml-auto inline-flex items-center gap-1">
+          {onEdit && <EditButton onEdit={onEdit} />}
+          {onDelete && (
+            <DeleteButton
+              itemDescription={
+                deleteDescription ?? `tasting note by ${note.author}`
+              }
+              onDelete={onDelete}
+            />
+          )}
         </span>
-        {vintageContext && (
-          <Badge variant="outline" asChild>
-            <Link href={`/vintages/${vintageContext.vintageId}`}>
-              <Calendar className="w-3 h-3" />
-              {vintageContext.label}
-            </Link>
-          </Badge>
-        )}
-        {(onEdit || onDelete) && (
-          <span className="ml-auto inline-flex items-center gap-1">
-            {onEdit && <EditButton onEdit={onEdit} />}
-            {onDelete && (
-              <DeleteButton
-                itemDescription={
-                  deleteDescription ?? `tasting note by ${note.author}`
-                }
-                onDelete={onDelete}
-              />
-            )}
-          </span>
-        )}
-      </div>
-      {wineContext && (
-        <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
+      )}
+    </div>
+  );
+
+  const content = wineContext ? (
+    <>
+      {header}
+      <div className="flex gap-6 mt-2">
+        <div className="flex flex-col gap-1.5 text-sm text-muted-foreground shrink-0 min-w-40 border-r pr-6">
           <span className="inline-flex items-center gap-1.5">
             <Barrel className="h-3.5 w-3.5 shrink-0" />
             <Link
@@ -108,7 +110,16 @@ export function TastingNoteCard({
             </Link>
           </span>
         </div>
-      )}
+        {note.notes && (
+          <p className="text-sm whitespace-pre-wrap flex-1 min-w-0">
+            {note.notes}
+          </p>
+        )}
+      </div>
+    </>
+  ) : (
+    <>
+      {header}
       {note.notes && (
         <p className="text-sm whitespace-pre-wrap mt-2">{note.notes}</p>
       )}
