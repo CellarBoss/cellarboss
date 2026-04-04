@@ -40,9 +40,9 @@ import { ImageEmptyCell } from "./ImageEmptyCell";
 import { ImageThumbnailCell } from "./ImageThumbnailCell";
 import { ImageUploadCell } from "./ImageUploadCell";
 
-type Props = { vintageId: number };
+type Props = { vintageId: number; className?: string };
 
-export function ImageGallery({ vintageId }: Props) {
+export function ImageGallery({ vintageId, className = "mt-6" }: Props) {
   const queryClient = useQueryClient();
   const [lightboxId, setLightboxId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -95,7 +95,7 @@ export function ImageGallery({ vintageId }: Props) {
 
   return (
     <>
-      <div className="mt-6">
+      <div className={className}>
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-sm font-semibold text-muted-foreground">
             Images
