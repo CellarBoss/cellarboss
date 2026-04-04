@@ -20,6 +20,7 @@ import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { Badge } from "@/components/ui/badge";
 import { TastingNotesSection } from "@/components/tasting-notes/TastingNotesSection";
+import { WineImageGallery } from "@/components/images/WineImageGallery";
 import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
@@ -202,6 +203,8 @@ export default function ViewWinePage() {
             </Badge>
           </DetailRow>
         </DetailCard>
+
+        <WineImageGallery vintageIds={vintages.map((v) => v.id)} className="" />
 
         <RelatedResourceSection
           className=""

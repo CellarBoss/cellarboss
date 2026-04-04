@@ -20,7 +20,7 @@ import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
 import { TastingNotesSection } from "@/components/tasting-notes/TastingNotesSection";
-import { ImageGallery } from "@/components/images/ImageGallery";
+import { VintageImageGallery } from "@/components/images/VintageImageGallery";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
 import type { WineType } from "@cellarboss/validators/constants";
@@ -188,7 +188,7 @@ export default function ViewVintagePage() {
           </DetailRow>
         </DetailCard>
 
-        <ImageGallery vintageId={vintageId} className="" />
+        <VintageImageGallery vintageId={vintageId} className="" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
