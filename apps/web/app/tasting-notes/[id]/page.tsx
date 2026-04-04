@@ -56,14 +56,10 @@ export default function ViewTastingNotePage() {
   const [note, vintage, wine, winemaker] = result.data;
   const datetimeFormat = settings.get("datetime") as string | undefined;
 
-  const title = wine
-    ? `${wine.name} ${vintage.year ?? "NV"} — Tasting Note`
-    : "Tasting Note";
-
   return (
     <section>
       <PageHeader
-        title={title}
+        title="Tasting Note"
         actions={
           <>
             <EditButton

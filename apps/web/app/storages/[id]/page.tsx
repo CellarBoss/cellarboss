@@ -149,7 +149,7 @@ export default function ViewStoragePage() {
   return (
     <section>
       <PageHeader
-        title={storage.name}
+        title="Storage Details"
         actions={
           <>
             <EditButton

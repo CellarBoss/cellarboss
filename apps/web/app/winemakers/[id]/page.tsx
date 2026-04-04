@@ -70,7 +70,7 @@ export default function ViewWinemakerPage() {
   return (
     <section>
       <PageHeader
-        title={winemaker.name}
+        title="Winemaker Details"
         actions={
           <>
             <EditButton

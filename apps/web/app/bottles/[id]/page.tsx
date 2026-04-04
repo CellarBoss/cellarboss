@@ -159,7 +159,7 @@ export default function ViewBottlePage() {
   return (
     <section>
       <PageHeader
-        title={title}
+        title="Bottle Details"
         actions={
           <>
             <ChangeStatusButton

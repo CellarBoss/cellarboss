@@ -135,7 +135,7 @@ export default function ViewVintagePage() {
   return (
     <section>
       <PageHeader
-        title={title}
+        title="Vintage Details"
         actions={
           <>
             <EditButton

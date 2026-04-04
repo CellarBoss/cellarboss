@@ -59,7 +59,7 @@ export default function ViewCountryPage() {
   return (
     <section>
       <PageHeader
-        title={country.name}
+        title="Country Details"
         actions={
           <>
             <EditButton

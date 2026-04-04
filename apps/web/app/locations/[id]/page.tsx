@@ -59,7 +59,7 @@ export default function ViewLocationPage() {
   return (
     <section>
       <PageHeader
-        title={location.name}
+        title="Location Details"
         actions={
           <>
             <EditButton

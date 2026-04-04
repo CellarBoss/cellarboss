@@ -65,7 +65,7 @@ export default function ViewGrapePage() {
   return (
     <section>
       <PageHeader
-        title={grape.name}
+        title="Grape Details"
         actions={
           <>
             <EditButton

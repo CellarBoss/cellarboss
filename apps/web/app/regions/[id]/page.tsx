@@ -64,7 +64,7 @@ export default function ViewRegionPage() {
   return (
     <section>
       <PageHeader
-        title={region.name}
+        title="Region Details"
         actions={
           <>
             <EditButton

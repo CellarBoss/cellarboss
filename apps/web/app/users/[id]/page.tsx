@@ -31,7 +31,7 @@ export default function ViewUserPage() {
   return (
     <section>
       <PageHeader
-        title={user.name}
+        title="User Details"
         actions={
           <>
             <EditButton
