@@ -11,16 +11,18 @@ import { getWinemakerById } from "@/lib/api/winemakers";
 import { TastingNoteCard } from "@/components/tasting-notes/TastingNoteCard";
 import { useSettingsContext } from "@/contexts/settings-context";
 import { BackButton } from "@/components/buttons/BackButton";
+import { EditButton } from "@/components/buttons/EditButton";
+import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { PageHeader } from "@/components/page/PageHeader";
 
 export default function ViewTastingNotePage() {
   const params = useParams();
   const router = useRouter();
-  const tastingNoteId = params.id;
+  const tastingNoteId = Number(params.id);
 
   const tastingNoteQuery = useApiQuery({
     queryKey: ["tasting-note", tastingNoteId],
-    queryFn: () => getTastingNoteById(Number(tastingNoteId)),
+    queryFn: () => getTastingNoteById(tastingNoteId),
     enabled: !!tastingNoteId,
   });
   const settings = useSettingsContext();
@@ -54,12 +56,37 @@ export default function ViewTastingNotePage() {
   const [note, vintage, wine, winemaker] = result.data;
   const datetimeFormat = settings.get("datetime") as string | undefined;
 
+  const title = wine
+    ? `${wine.name} ${vintage.year ?? "NV"} — Tasting Note`
+    : "Tasting Note";
+
   return (
     <section>
-      <PageHeader title={`Tasting Note`} />
+      <PageHeader
+        title={title}
+        actions={
+          <>
+            <EditButton
+              onEdit={async () => {
+                router.push(`/tasting-notes/${note.id}/edit`);
+              }}
+            />
+            <DeleteButton
+              onDelete={async () => {
+                const result = await deleteTastingNote(note.id);
+                if (!result.ok) throw new Error(result.error.message);
+                router.push("/tasting-notes");
+                return true;
+              }}
+              itemDescription={`tasting note by ${note.author}`}
+            />
+          </>
+        }
+      />
       <TastingNoteCard
         key={note.id}
         note={note}
+        standalone
         datetimeFormat={datetimeFormat}
         wineContext={{
           wineName: wine.name,
@@ -69,16 +96,6 @@ export default function ViewTastingNotePage() {
           vintageId: vintage.id,
           wineMakerId: wine.wineMakerId,
         }}
-        onEdit={async () => {
-          router.push(`/tasting-notes/${note.id}/edit`);
-        }}
-        onDelete={async () => {
-          const result = await deleteTastingNote(note.id);
-          if (!result.ok) throw new Error(result.error.message);
-          router.push("/tasting-notes");
-          return true;
-        }}
-        deleteDescription={`tasting note by ${note.author}`}
       />
       <span className="flex items-center gap-4 mt-4">
         <BackButton />
