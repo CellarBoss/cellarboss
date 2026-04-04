@@ -155,39 +155,43 @@ export default function ViewVintagePage() {
         }
       />
 
-      <DetailCard heading="Wine" icon={WineIcon}>
-        <h3 className="text-lg font-semibold">
-          {wine ? (
-            <Link href={`/wines/${wine.id}`} className="hover:underline">
-              {wine.name}
-            </Link>
-          ) : (
-            "Unknown wine"
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <DetailCard heading="Wine" icon={WineIcon}>
+          <h3 className="text-lg font-semibold">
+            {wine ? (
+              <Link href={`/wines/${wine.id}`} className="hover:underline">
+                {wine.name}
+              </Link>
+            ) : (
+              "Unknown wine"
+            )}
+            <span className="text-muted-foreground ml-2">{yearDisplay}</span>
+          </h3>
+          {winemaker && (
+            <DetailRow icon={User}>
+              <Link
+                href={`/winemakers/${winemaker.id}`}
+                className="hover:underline text-primary"
+              >
+                {winemaker.name}
+              </Link>
+            </DetailRow>
           )}
-          <span className="text-muted-foreground ml-2">{yearDisplay}</span>
-        </h3>
-        {winemaker && (
-          <DetailRow icon={User}>
-            <Link
-              href={`/winemakers/${winemaker.id}`}
-              className="hover:underline text-primary"
-            >
-              {winemaker.name}
-            </Link>
+          {(region || country) && (
+            <DetailRow icon={Globe}>
+              {[region?.name, country?.name].filter(Boolean).join(", ")}
+            </DetailRow>
+          )}
+          <DetailRow icon={Clock}>
+            <DrinkingWindowDisplay
+              drinkFrom={vintage.drinkFrom}
+              drinkUntil={vintage.drinkUntil}
+            />
           </DetailRow>
-        )}
-        {(region || country) && (
-          <DetailRow icon={Globe}>
-            {[region?.name, country?.name].filter(Boolean).join(", ")}
-          </DetailRow>
-        )}
-        <DetailRow icon={Clock}>
-          <DrinkingWindowDisplay
-            drinkFrom={vintage.drinkFrom}
-            drinkUntil={vintage.drinkUntil}
-          />
-        </DetailRow>
-      </DetailCard>
+        </DetailCard>
+
+        <ImageGallery vintageId={vintageId} className="" />
+      </div>
 
       <RelatedResourceSection
         heading="Bottles"
@@ -215,8 +219,6 @@ export default function ViewVintagePage() {
       </RelatedResourceSection>
 
       <TastingNotesSection vintageId={vintageId} />
-
-      <ImageGallery vintageId={vintageId} />
     </section>
   );
 }
