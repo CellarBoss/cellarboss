@@ -147,91 +147,94 @@ export default function ViewWinePage() {
         }
       />
 
-      <DetailCard heading="Details" icon={WineIcon}>
-        <h3 className="text-lg font-semibold">{wine.name}</h3>
-        <DetailRow icon={User}>
-          {winemaker ? (
-            <Link
-              href={`/winemakers/${winemaker.id}`}
-              className="hover:underline text-primary"
-            >
-              {winemaker.name}
-            </Link>
-          ) : (
-            <span>Unknown winemaker</span>
-          )}
-        </DetailRow>
-        {(region || country) && (
-          <DetailRow icon={Globe}>
-            {region && (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <DetailCard heading="Details" icon={WineIcon}>
+          <h3 className="text-lg font-semibold">{wine.name}</h3>
+          <DetailRow icon={User}>
+            {winemaker ? (
               <Link
-                href={`/regions/${region.id}`}
+                href={`/winemakers/${winemaker.id}`}
                 className="hover:underline text-primary"
               >
-                {region.name}
+                {winemaker.name}
               </Link>
-            )}
-            {region && country && ", "}
-            {country && (
-              <Link
-                href={`/countries/${country.id}`}
-                className="hover:underline text-primary"
-              >
-                {country.name}
-              </Link>
+            ) : (
+              <span>Unknown winemaker</span>
             )}
           </DetailRow>
-        )}
-        {grapes.length > 0 && (
-          <DetailRow icon={Grape}>
-            <span className="flex flex-wrap gap-1">
-              {grapes.map((g) => (
-                <Link key={g.id} href={`/grapes/${g.id}`}>
-                  <Badge variant="secondary">{g.name}</Badge>
+          {(region || country) && (
+            <DetailRow icon={Globe}>
+              {region && (
+                <Link
+                  href={`/regions/${region.id}`}
+                  className="hover:underline text-primary"
+                >
+                  {region.name}
                 </Link>
-              ))}
-            </span>
-          </DetailRow>
-        )}
-        <DetailRow icon={WineIcon}>
-          <Badge
-            className={`${WINE_TYPE_COLORS[wine.type]} text-white border-0`}
-          >
-            {formatWineType(wine.type)}
-          </Badge>
-        </DetailRow>
-      </DetailCard>
-
-      <RelatedResourceSection
-        heading="Vintages"
-        count={sortedVintages.length}
-        addHref={`/vintages/new?wineId=${wineId}`}
-        addLabel="Add vintage"
-        emptyMessage="No vintages yet"
-      >
-        {sortedVintages.map((vintage) => (
-          <RelatedResourceItem
-            key={vintage.id}
-            href={`/vintages/${vintage.id}`}
-            badge={
-              <span className="flex items-center gap-3">
-                <DrinkingWindowDisplay
-                  drinkFrom={vintage.drinkFrom}
-                  drinkUntil={vintage.drinkUntil}
-                />
-                <Badge variant="secondary">
-                  <BottleWine className="h-3 w-3 mr-1" />
-                  {bottleCountByVintage.get(vintage.id) ?? 0}
-                </Badge>
+              )}
+              {region && country && ", "}
+              {country && (
+                <Link
+                  href={`/countries/${country.id}`}
+                  className="hover:underline text-primary"
+                >
+                  {country.name}
+                </Link>
+              )}
+            </DetailRow>
+          )}
+          {grapes.length > 0 && (
+            <DetailRow icon={Grape}>
+              <span className="flex flex-wrap gap-1">
+                {grapes.map((g) => (
+                  <Link key={g.id} href={`/grapes/${g.id}`}>
+                    <Badge variant="secondary">{g.name}</Badge>
+                  </Link>
+                ))}
               </span>
-            }
-          >
-            <span className="font-medium">
-              {vintage.year !== null ? vintage.year : "NV"}
-            </span>
-          </RelatedResourceItem>
-        ))}
-      </RelatedResourceSection>
+            </DetailRow>
+          )}
+          <DetailRow icon={WineIcon}>
+            <Badge
+              className={`${WINE_TYPE_COLORS[wine.type]} text-white border-0`}
+            >
+              {formatWineType(wine.type)}
+            </Badge>
+          </DetailRow>
+        </DetailCard>
+
+        <RelatedResourceSection
+          className=""
+          heading="Vintages"
+          count={sortedVintages.length}
+          addHref={`/vintages/new?wineId=${wineId}`}
+          addLabel="Add vintage"
+          emptyMessage="No vintages yet"
+        >
+          {sortedVintages.map((vintage) => (
+            <RelatedResourceItem
+              key={vintage.id}
+              href={`/vintages/${vintage.id}`}
+              badge={
+                <span className="flex items-center gap-3">
+                  <DrinkingWindowDisplay
+                    drinkFrom={vintage.drinkFrom}
+                    drinkUntil={vintage.drinkUntil}
+                  />
+                  <Badge variant="secondary">
+                    <BottleWine className="h-3 w-3 mr-1" />
+                    {bottleCountByVintage.get(vintage.id) ?? 0}
+                  </Badge>
+                </span>
+              }
+            >
+              <span className="font-medium">
+                {vintage.year !== null ? vintage.year : "NV"}
+              </span>
+            </RelatedResourceItem>
+          ))}
+        </RelatedResourceSection>
+      </div>
 
       <TastingNotesSection wineId={wineId} vintages={vintages} />
     </section>
