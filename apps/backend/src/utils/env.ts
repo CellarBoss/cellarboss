@@ -12,6 +12,9 @@ export const env = z
     PORT: z.number().default(5000),
     DB_RETRY_INTERVAL: z.coerce.number().default(2000),
     DB_MAX_RETRIES: z.coerce.number().default(30),
+    LOG_LEVEL: z
+      .enum(["trace", "debug", "info", "warn", "error"])
+      .default("info"),
     UPLOAD_DIR: z
       .string()
       .refine((p) => existsSync(p), {

@@ -1,4 +1,5 @@
 import { auth } from "@utils/auth.js";
+import { logger } from "@utils/logger.js";
 import type { Context, Next } from "hono";
 
 export async function requireAuth(c: Context, next: Next) {
@@ -12,7 +13,8 @@ export async function requireAuth(c: Context, next: Next) {
     c.set("user", session.user);
     c.set("session", session.session);
     await next();
-  } catch {
+  } catch (err) {
+    logger.withError(err as Error).warn("Auth session check failed");
     return c.json({ error: "Unauthorized" }, 401);
   }
 }
