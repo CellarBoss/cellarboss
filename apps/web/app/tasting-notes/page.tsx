@@ -137,7 +137,7 @@ function TastingNotesPageContent({
       {notes.length === 0 ? (
         <p className="text-muted-foreground italic">No tasting notes yet.</p>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2 divide-y">
           {visibleItems.map((note) => (
             <TastingNoteCard
               key={note.id}

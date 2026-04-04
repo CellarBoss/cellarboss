@@ -1,33 +1,113 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { getCountryById } from "@/lib/api/countries";
-import type { Country } from "@cellarboss/types";
-import { GenericCard } from "@/components/cards/GenericCard";
-import { countryFields } from "@/lib/fields/countries";
+import { useParams, useRouter } from "next/navigation";
+import { Earth, Flag } from "lucide-react";
+import { getCountryById, deleteCountry } from "@/lib/api/countries";
+import { getRegions } from "@/lib/api/regions";
+import { getWines } from "@/lib/api/wines";
 import { PageHeader } from "@/components/page/PageHeader";
+import { DetailCard } from "@/components/detail/DetailCard";
+import { DetailRow } from "@/components/detail/DetailRow";
+import { RelatedResourceSection } from "@/components/detail/RelatedResourceSection";
+import { RelatedResourceItem } from "@/components/detail/RelatedResourceItem";
+import { EditButton } from "@/components/buttons/EditButton";
+import { DeleteButton } from "@/components/buttons/DeleteButton";
+import { Badge } from "@/components/ui/badge";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
 
 export default function ViewCountryPage() {
   const params = useParams();
-  const countryId = params.id;
+  const router = useRouter();
+  const countryId = Number(params.id);
 
   const countryQuery = useApiQuery({
     queryKey: ["country", countryId],
-    queryFn: () => getCountryById(Number(countryId)),
+    queryFn: () => getCountryById(countryId),
     enabled: !!countryId,
   });
 
-  const result = queryGate([countryQuery]);
+  const regionsQuery = useApiQuery({
+    queryKey: ["regions"],
+    queryFn: getRegions,
+  });
+
+  const winesQuery = useApiQuery({
+    queryKey: ["wines"],
+    queryFn: getWines,
+  });
+
+  const result = queryGate([countryQuery, regionsQuery, winesQuery]);
   if (!result.ready) return result.gate;
 
-  const [country] = result.data;
+  const [country, allRegions, allWines] = result.data;
+
+  const regions = allRegions
+    .filter((r) => r.countryId === countryId)
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const wineCountByRegion = new Map<number, number>();
+  for (const wine of allWines) {
+    if (wine.regionId !== null) {
+      wineCountByRegion.set(
+        wine.regionId,
+        (wineCountByRegion.get(wine.regionId) ?? 0) + 1,
+      );
+    }
+  }
 
   return (
     <section>
-      <PageHeader title={`View Country - ${country.name}`} />
-      <GenericCard<Country> mode="view" data={country} fields={countryFields} />
+      <PageHeader
+        title="Country Details"
+        actions={
+          <>
+            <EditButton
+              onEdit={async () => {
+                router.push(`/countries/${countryId}/edit`);
+              }}
+            />
+            <DeleteButton
+              onDelete={async () => {
+                const result = await deleteCountry(countryId);
+                if (result.ok) router.push("/countries");
+                return result.ok;
+              }}
+              itemDescription={country.name}
+            />
+          </>
+        }
+      />
+
+      <DetailCard heading="Details" icon={Earth}>
+        <h3 className="text-lg font-semibold">{country.name}</h3>
+        <DetailRow icon={Flag}>
+          {regions.length} {regions.length === 1 ? "region" : "regions"}
+        </DetailRow>
+      </DetailCard>
+
+      <RelatedResourceSection
+        heading="Regions"
+        count={regions.length}
+        addHref={`/regions/new?countryId=${countryId}`}
+        addLabel="Add region"
+        emptyMessage="No regions yet"
+      >
+        {regions.map((region) => (
+          <RelatedResourceItem
+            key={region.id}
+            href={`/regions/${region.id}`}
+            icon={Flag}
+            badge={
+              <Badge variant="secondary">
+                {wineCountByRegion.get(region.id) ?? 0} wines
+              </Badge>
+            }
+          >
+            {region.name}
+          </RelatedResourceItem>
+        ))}
+      </RelatedResourceSection>
     </section>
   );
 }

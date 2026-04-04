@@ -3,14 +3,13 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Image } from "@cellarboss/types";
-import { useApiQuery } from "@/hooks/use-api-query";
 import {
-  getImagesByVintageId,
   deleteImage,
   setImageFavourite,
   unsetImageFavourite,
 } from "@/lib/api/images";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -39,9 +38,23 @@ import { ImageEmptyCell } from "./ImageEmptyCell";
 import { ImageThumbnailCell } from "./ImageThumbnailCell";
 import { ImageUploadCell } from "./ImageUploadCell";
 
-type Props = { vintageId: number };
+type Props = {
+  images: Image[];
+  isLoading: boolean;
+  className?: string;
+  readOnly?: boolean;
+  vintageId?: number;
+  invalidateQueryKeys?: unknown[][];
+};
 
-export function ImageGallery({ vintageId }: Props) {
+export function ImageGallery({
+  images,
+  isLoading,
+  className = "mt-6",
+  readOnly = false,
+  vintageId,
+  invalidateQueryKeys = [],
+}: Props) {
   const queryClient = useQueryClient();
   const [lightboxId, setLightboxId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -51,13 +64,13 @@ export function ImageGallery({ vintageId }: Props) {
   );
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  const imagesQuery = useApiQuery<Image[]>({
-    queryKey: ["images", vintageId],
-    queryFn: () => getImagesByVintageId(vintageId),
-  });
-
-  const images = imagesQuery.data ?? [];
   const lightboxImage = images.find((i) => i.id === lightboxId) ?? null;
+
+  function invalidateAll() {
+    for (const key of invalidateQueryKeys) {
+      queryClient.invalidateQueries({ queryKey: key });
+    }
+  }
 
   function promptDelete(image: Image, e: React.MouseEvent) {
     e.stopPropagation();
@@ -69,7 +82,7 @@ export function ImageGallery({ vintageId }: Props) {
     setDeletingId(deleteTarget.id);
     try {
       await deleteImage(deleteTarget.id);
-      queryClient.invalidateQueries({ queryKey: ["images", vintageId] });
+      invalidateAll();
       if (lightboxImage?.id === deleteTarget.id) setLightboxId(null);
     } finally {
       setDeletingId(null);
@@ -86,7 +99,7 @@ export function ImageGallery({ vintageId }: Props) {
       } else {
         await setImageFavourite(image.id);
       }
-      queryClient.invalidateQueries({ queryKey: ["images", vintageId] });
+      invalidateAll();
     } finally {
       setTogglingFavouriteId(null);
     }
@@ -94,29 +107,62 @@ export function ImageGallery({ vintageId }: Props) {
 
   return (
     <>
-      <div className="flex flex-wrap gap-2">
-        {imagesQuery.isLoading && <ImageLoadingCell />}
+      <div className={className}>
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-sm font-semibold text-muted-foreground">
+            Images
+            {!isLoading && <span className="ml-1">({images.length})</span>}
+          </h2>
+        </div>
+        <Card>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {isLoading && <ImageLoadingCell />}
 
-        {!imagesQuery.isLoading && images.length === 0 && <ImageEmptyCell />}
+              {!isLoading && images.length === 0 && <ImageEmptyCell />}
 
-        {images.map((image) => (
-          <ImageThumbnailCell
-            key={image.id}
-            image={image}
-            onClick={() => setLightboxId(image.id)}
-            onDelete={(e) => promptDelete(image, e)}
-            onToggleFavourite={(e) => handleToggleFavourite(image, e)}
-            isDeleting={deletingId === image.id}
-            isTogglingFavourite={togglingFavouriteId === image.id}
-          />
-        ))}
+              {images.map((image) =>
+                readOnly ? (
+                  <div
+                    key={image.id}
+                    className="relative aspect-square rounded-md overflow-hidden cursor-pointer border border-border w-[150px] h-[150px]"
+                    onClick={() => setLightboxId(image.id)}
+                  >
+                    <NextImage
+                      src={`/api/image/${image.id}/thumb`}
+                      alt="Wine image"
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <ImageThumbnailCell
+                    key={image.id}
+                    image={image}
+                    onClick={() => setLightboxId(image.id)}
+                    onDelete={(e) => promptDelete(image, e)}
+                    onToggleFavourite={(e) => handleToggleFavourite(image, e)}
+                    isDeleting={deletingId === image.id}
+                    isTogglingFavourite={togglingFavouriteId === image.id}
+                  />
+                ),
+              )}
 
-        <ImageUploadCell vintageId={vintageId} onError={setUploadError} />
+              {!readOnly && vintageId !== undefined && (
+                <ImageUploadCell
+                  vintageId={vintageId}
+                  onError={setUploadError}
+                />
+              )}
+            </div>
+
+            {uploadError && (
+              <p className="mt-2 text-sm text-destructive">{uploadError}</p>
+            )}
+          </CardContent>
+        </Card>
       </div>
-
-      {uploadError && (
-        <p className="mt-2 text-sm text-destructive">{uploadError}</p>
-      )}
 
       <Dialog
         open={!!lightboxImage}
@@ -131,54 +177,62 @@ export function ImageGallery({ vintageId }: Props) {
             <div className="relative">
               <NextImage
                 src={`/api/image/${lightboxImage.id}/file`}
-                alt="Vintage image full size"
+                alt="Image full size"
                 width={0}
                 height={0}
                 unoptimized
                 className="w-full h-auto max-h-[80vh] object-contain"
               />
               <div className="absolute top-2 right-2 flex gap-2">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={(e) =>
-                        handleToggleFavourite(
-                          images.find((i) => i.id === lightboxImage.id) ??
-                            lightboxImage,
-                          e,
-                        )
-                      }
-                      disabled={togglingFavouriteId === lightboxImage.id}
-                    >
-                      <Star
-                        className="w-4 h-4"
-                        fill={lightboxImage.isFavourite ? "gold" : "none"}
-                        stroke={
-                          lightboxImage.isFavourite ? "gold" : "currentColor"
-                        }
-                      />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {lightboxImage.isFavourite ? "Unfavourite" : "Favourite"}
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      className="dark:bg-destructive"
-                      onClick={(e) => promptDelete(lightboxImage, e)}
-                      disabled={deletingId === lightboxImage.id}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Delete</TooltipContent>
-                </Tooltip>
+                {!readOnly && (
+                  <>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={(e) =>
+                            handleToggleFavourite(
+                              images.find((i) => i.id === lightboxImage.id) ??
+                                lightboxImage,
+                              e,
+                            )
+                          }
+                          disabled={togglingFavouriteId === lightboxImage.id}
+                        >
+                          <Star
+                            className="w-4 h-4"
+                            fill={lightboxImage.isFavourite ? "gold" : "none"}
+                            stroke={
+                              lightboxImage.isFavourite
+                                ? "gold"
+                                : "currentColor"
+                            }
+                          />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {lightboxImage.isFavourite
+                          ? "Unfavourite"
+                          : "Favourite"}
+                      </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="dark:bg-destructive"
+                          onClick={(e) => promptDelete(lightboxImage, e)}
+                          disabled={deletingId === lightboxImage.id}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Delete</TooltipContent>
+                    </Tooltip>
+                  </>
+                )}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
@@ -197,26 +251,28 @@ export function ImageGallery({ vintageId }: Props) {
         </DialogContent>
       </Dialog>
 
-      <AlertDialog
-        open={!!deleteTarget}
-        onOpenChange={(open) => !open && setDeleteTarget(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete image</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this image? This action cannot be
-              undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete}>
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {!readOnly && (
+        <AlertDialog
+          open={!!deleteTarget}
+          onOpenChange={(open) => !open && setDeleteTarget(null)}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete image</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete this image? This action cannot
+                be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmDelete}>
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </>
   );
 }

@@ -1,15 +1,20 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { getUserById, type AdminUser } from "@/lib/api/users";
-import { GenericCard } from "@/components/cards/GenericCard";
+import { useParams, useRouter } from "next/navigation";
+import { User, Mail, Shield, Calendar } from "lucide-react";
+import { getUserById, deleteUser } from "@/lib/api/users";
 import { PageHeader } from "@/components/page/PageHeader";
-import { viewUserFields } from "@/lib/fields/users";
+import { DetailCard } from "@/components/detail/DetailCard";
+import { DetailRow } from "@/components/detail/DetailRow";
+import { EditButton } from "@/components/buttons/EditButton";
+import { DeleteButton } from "@/components/buttons/DeleteButton";
+import { Badge } from "@/components/ui/badge";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
 
 export default function ViewUserPage() {
   const params = useParams();
+  const router = useRouter();
   const userId = params.id as string;
 
   const userQuery = useApiQuery({
@@ -25,8 +30,42 @@ export default function ViewUserPage() {
 
   return (
     <section>
-      <PageHeader title={`View User — ${user.name}`} />
-      <GenericCard<AdminUser> mode="view" data={user} fields={viewUserFields} />
+      <PageHeader
+        title="User Details"
+        actions={
+          <>
+            <EditButton
+              onEdit={async () => {
+                router.push(`/users/${userId}/edit`);
+              }}
+            />
+            <DeleteButton
+              onDelete={async () => {
+                const result = await deleteUser(userId);
+                if (result.ok) router.push("/users");
+                return result.ok;
+              }}
+              itemDescription={user.name}
+            />
+          </>
+        }
+      />
+
+      <DetailCard heading="User Details" icon={User}>
+        <h3 className="text-lg font-semibold">{user.name}</h3>
+        <DetailRow icon={Mail}>{user.email}</DetailRow>
+        <DetailRow icon={Shield}>
+          <Badge variant="secondary">{user.role}</Badge>
+        </DetailRow>
+        <DetailRow icon={Calendar}>
+          Joined {new Date(user.createdAt).toLocaleDateString()}
+        </DetailRow>
+        {user.banned && (
+          <Badge variant="destructive" className="mt-2">
+            Banned{user.banReason ? `: ${user.banReason}` : ""}
+          </Badge>
+        )}
+      </DetailCard>
     </section>
   );
 }
