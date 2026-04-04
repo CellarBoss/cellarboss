@@ -86,6 +86,9 @@ importers:
       pg:
         specifier: 8.20.0
         version: 8.20.0
+      sharp:
+        specifier: ^0.34.5
+        version: 0.34.5
       zod:
         specifier: 4.3.6
         version: 4.3.6
@@ -156,6 +159,12 @@ importers:
       expo-haptics:
         specifier: 55.0.11
         version: 55.0.11(expo@55.0.11)
+      expo-image:
+        specifier: 55.0.8
+        version: 55.0.8(expo@55.0.11)(react-native@0.83.4(@babel/core@7.29.0)(@react-native/metro-config@0.84.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
+      expo-image-picker:
+        specifier: 55.0.16
+        version: 55.0.16(expo@55.0.11)
       expo-linking:
         specifier: 55.0.11
         version: 55.0.11(expo@55.0.11)(react-native@0.83.4(@babel/core@7.29.0)(@react-native/metro-config@0.84.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
@@ -1633,6 +1642,9 @@ packages:
 
   '@expo/image-utils@0.8.12':
     resolution: {integrity: sha512-3KguH7kyKqq7pNwLb9j6BBdD/bjmNwXZG/HPWT6GWIXbwrvAJt2JNyYTP5agWJ8jbbuys1yuCzmkX+TU6rmI7A==}
+
+  '@expo/json-file@10.0.12':
+    resolution: {integrity: sha512-inbDycp1rMAelAofg7h/mMzIe+Owx6F7pur3XdQ3EPTy00tme+4P6FWgHKUcjN8dBSrnbRNpSyh5/shzHyVCyQ==}
 
   '@expo/json-file@10.0.13':
     resolution: {integrity: sha512-pX/XjQn7tgNw6zuuV2ikmegmwe/S7uiwhrs2wXrANMkq7ozrA+JcZwgW9Q/8WZgciBzfAhNp5hnackHcrmapQA==}
@@ -5197,6 +5209,16 @@ packages:
 
   expo-haptics@55.0.11:
     resolution: {integrity: sha512-cvayByobLtoS5Yt2JFqcBPH+1mnLHkz+Rr+H1EOCZDdTVo5T6aaAHMOZrbRBZBhxrUevAPxfz0bfyhVZj3XHzA==}
+    peerDependencies:
+      expo: '*'
+
+  expo-image-loader@55.0.0:
+    resolution: {integrity: sha512-NOjp56wDrfuA5aiNAybBIjqIn1IxKeGJ8CECWZncQ/GzjZfyTYAHTCyeApYkdKkMBLHINzI4BbTGSlbCa0fXXQ==}
+    peerDependencies:
+      expo: '*'
+
+  expo-image-picker@55.0.16:
+    resolution: {integrity: sha512-V0SMNlEdopFlt8drPDuIDcjHab0J+VD73MsTGuz0E/9zoWR6sozZPtTycPTwLifu23zJksG7pppkqFQoID1eFA==}
     peerDependencies:
       expo: '*'
 
@@ -9788,7 +9810,7 @@ snapshots:
   '@expo/config-plugins@55.0.7':
     dependencies:
       '@expo/config-types': 55.0.5
-      '@expo/json-file': 10.0.13
+      '@expo/json-file': 10.0.12
       '@expo/plist': 0.5.2
       '@expo/sdk-runtime-versions': 1.0.0
       chalk: 4.1.2
@@ -9875,6 +9897,11 @@ snapshots:
       parse-png: 2.1.0
       resolve-from: 5.0.0
       semver: 7.7.4
+
+  '@expo/json-file@10.0.12':
+    dependencies:
+      '@babel/code-frame': 7.29.0
+      json5: 2.2.3
 
   '@expo/json-file@10.0.13':
     dependencies:
@@ -10099,8 +10126,7 @@ snapshots:
 
   '@iconify/types@2.0.0': {}
 
-  '@img/colour@1.1.0':
-    optional: true
+  '@img/colour@1.1.0': {}
 
   '@img/sharp-darwin-arm64@0.34.5':
     optionalDependencies:
@@ -11317,9 +11343,7 @@ snapshots:
       metro-runtime: 0.83.5
     transitivePeerDependencies:
       - '@babel/core'
-      - bufferutil
       - supports-color
-      - utf-8-validate
     optional: true
 
   '@react-native/normalize-colors@0.83.4': {}
@@ -13857,6 +13881,15 @@ snapshots:
   expo-haptics@55.0.11(expo@55.0.11):
     dependencies:
       expo: 55.0.11(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.9)(expo-router@55.0.10)(react-dom@19.2.4(react@19.2.0))(react-native@0.83.4(@babel/core@7.29.0)(@react-native/metro-config@0.84.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
+
+  expo-image-loader@55.0.0(expo@55.0.11):
+    dependencies:
+      expo: 55.0.11(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.9)(expo-router@55.0.10)(react-dom@19.2.4(react@19.2.0))(react-native@0.83.4(@babel/core@7.29.0)(@react-native/metro-config@0.84.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
+
+  expo-image-picker@55.0.16(expo@55.0.11):
+    dependencies:
+      expo: 55.0.11(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.9)(expo-router@55.0.10)(react-dom@19.2.4(react@19.2.0))(react-native@0.83.4(@babel/core@7.29.0)(@react-native/metro-config@0.84.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
+      expo-image-loader: 55.0.0(expo@55.0.11)
 
   expo-image@55.0.8(expo@55.0.11)(react-native@0.83.4(@babel/core@7.29.0)(@react-native/metro-config@0.84.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.0))(react@19.2.0):
     dependencies:
@@ -16670,7 +16703,6 @@ snapshots:
       '@img/sharp-win32-arm64': 0.34.5
       '@img/sharp-win32-ia32': 0.34.5
       '@img/sharp-win32-x64': 0.34.5
-    optional: true
 
   shebang-command@2.0.0:
     dependencies:

@@ -298,6 +298,7 @@ export const docsSeedData: Omit<MockState, "session"> = {
         "Absolutely stunning. Layers of dark fruit, spice, and oak. Perfect balance and an unforgettable finish.",
     },
   ],
+  images: [],
   settings: [
     { key: "currency", value: "USD" },
     { key: "date", value: "yyyy-MM-dd" },

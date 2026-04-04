@@ -1,6 +1,7 @@
 import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
 import type { CreateVintage, UpdateVintage } from "@cellarboss/types";
 import * as vintagesController from "@controllers/vintages.controller.js";
+import * as imagesController from "@controllers/images.controller.js";
 import {
   createVintageSchema,
   updateVintageSchema,
@@ -81,6 +82,8 @@ export function registerVintageRoutes(app: OpenAPIHono) {
   vintage.openapi(crudRoutes.remove, async (c) => {
     const id = parseId(c.req.param("id"));
     if (id === null) return c.json({ error: "Invalid ID" }, 400);
+    // Remove associated images (files + DB rows) before vintage deletion
+    await imagesController.removeByVintageId(id);
     await vintagesController.remove(id);
     return c.json({ success: true }, 200);
   });

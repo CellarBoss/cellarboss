@@ -27,6 +27,26 @@ Click the name of the vintage to view the vintage's details.
 
 ![Vintage detail](/screenshots/vintages-detail.png)
 
+## Images
+
+Each vintage has an image gallery, shown on the vintage detail page.
+
+### Uploading images
+
+Click the **Upload** tile (the dashed cell with a plus icon) to open a file picker, or drag and drop image files directly onto it. Multiple files can be selected at once. Supported formats: JPEG, PNG, WebP, HEIC — maximum 10 MB per file.
+
+### Viewing images
+
+Click any thumbnail to open a full-size lightbox view.
+
+### Favourite image
+
+Each vintage can have one favourite image, shown wherever a representative image is needed (e.g. wine and vintage detail cards). To set a favourite, hover over a thumbnail and click the **star** icon, or use the star button in the lightbox. To remove the favourite, click the star again.
+
+### Deleting images
+
+Hover over a thumbnail and click the **trash** icon, or use the **Delete** button in the lightbox. You will be asked to confirm before deletion.
+
 ## Editing a Vintage
 
 Click the **Edit** button to modify the vintage's information.
@@ -36,5 +56,5 @@ Click the **Edit** button to modify the vintage's information.
 Click the **Delete** button to remove the vintage. You will be asked to confirm before deletion.
 
 ::: warning
-Deleting a vintage will also remove all associated bottles. This action cannot be undone.
+Deleting a vintage will also remove all associated bottles and images. This action cannot be undone.
 :::

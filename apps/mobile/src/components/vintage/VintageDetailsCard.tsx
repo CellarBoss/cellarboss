@@ -9,11 +9,11 @@ import {
   formatDrinkingWindow,
   formatDrinkingStatus,
 } from "@/lib/functions/format";
-import { WINE_TYPE_COLORS } from "@/lib/constants/wines";
 import {
   DRINKING_STATUS_COLORS,
   DRINKING_STATUS_ICONS,
 } from "@/lib/constants/drinking-status";
+import { WineThumbnail } from "@/components/wine/WineThumbnail";
 
 type VintageDetailsCardProps = {
   vintageId: number;
@@ -25,6 +25,11 @@ export function VintageDetailsCard({
   onPress,
 }: VintageDetailsCardProps) {
   const router = useRouter();
+
+  const imagesQuery = useApiQuery({
+    queryKey: ["images", vintageId],
+    queryFn: () => api.images.getByVintageId(vintageId),
+  });
 
   const vintageQuery = useApiQuery({
     queryKey: ["vintages", vintageId],
@@ -70,9 +75,6 @@ export function VintageDetailsCard({
     : undefined;
 
   const wineType = wine?.type;
-  const bottleColor = wineType
-    ? WINE_TYPE_COLORS[wineType]
-    : theme.colors.onSurfaceVariant;
 
   const currentYear = new Date().getFullYear();
   const drinkingStatus = formatDrinkingStatus(
@@ -88,6 +90,10 @@ export function VintageDetailsCard({
 
   const wineName = wine?.name ?? "Unknown Wine";
   const yearLabel = vintage.year != null ? String(vintage.year) : "NV";
+
+  const images = imagesQuery.data ?? [];
+  const thumbnailImage =
+    images.find((i) => i.isFavourite) ?? images[images.length - 1];
 
   return (
     <>
@@ -146,7 +152,10 @@ export function VintageDetailsCard({
               </View>
             )}
           </View>
-          <Icon source="bottle-wine" size={40} color={bottleColor} />
+          <WineThumbnail
+            imageId={thumbnailImage?.id}
+            wineType={wineType ?? "red"}
+          />
         </View>
       </Pressable>
     </>

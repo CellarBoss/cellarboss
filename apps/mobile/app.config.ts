@@ -45,6 +45,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ["expo-router", { root: "./src/app" }],
     "expo-secure-store",
     "./plugins/with-network-security-config",
+    "expo-image",
   ],
   extra: {
     apiBaseUrl: process.env.API_BASE_URL ?? "http://localhost:5000",

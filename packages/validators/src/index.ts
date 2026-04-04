@@ -13,3 +13,4 @@ export * from "./winemakers.validator";
 export * from "./wines.validator";
 export * from "./settings.validator";
 export * from "./tasting-notes.validator";
+export * from "./images.validator";

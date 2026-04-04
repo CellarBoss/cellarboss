@@ -24,8 +24,10 @@ services:
       - DATABASE_URL=/config/cellarboss.sqlite
       - NODE_ENV=production
       - CORS=http://localhost:3000
+      - UPLOAD_DIR=/uploads
     volumes:
       - ./data:/config
+      - ./uploads:/uploads
     restart: unless-stopped
     networks:
       - internal

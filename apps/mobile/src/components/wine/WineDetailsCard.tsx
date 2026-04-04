@@ -1,13 +1,46 @@
 import { View, StyleSheet } from "react-native";
+import { useQuery } from "@tanstack/react-query";
 import { theme, shadows } from "@/lib/theme";
 import { Wine } from "@cellarboss/types";
 import { Icon, Text } from "react-native-paper";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
-import { WINE_TYPE_COLORS } from "@/lib/constants/wines";
+import { WineThumbnail } from "./WineThumbnail";
 
 export function WineDetailsCard({ wine }: { wine: Wine }) {
+  const thumbnailQuery = useQuery({
+    queryKey: ["wine-thumbnail", wine.id],
+    queryFn: async () => {
+      const vintagesResult = await api.vintages.getByWineId(wine.id);
+      if (!vintagesResult.ok) return null;
+
+      const sorted = [...vintagesResult.data].sort(
+        (a, b) => (b.year ?? 0) - (a.year ?? 0),
+      );
+
+      const imageResults = await Promise.all(
+        sorted.map((v) => api.images.getByVintageId(v.id)),
+      );
+
+      const vintageImages = sorted.map((v, i) => ({
+        vintage: v,
+        images: imageResults[i].ok ? imageResults[i].data : [],
+      }));
+
+      for (const { images } of vintageImages) {
+        const fav = images.find((img) => img.isFavourite);
+        if (fav) return fav;
+      }
+
+      for (const { images } of vintageImages) {
+        if (images.length > 0) return images[images.length - 1];
+      }
+
+      return null;
+    },
+  });
+
   const winemakerQuery = useApiQuery({
     queryKey: ["winemakers"],
     queryFn: () => api.winemakers.getAll(),
@@ -91,10 +124,9 @@ export function WineDetailsCard({ wine }: { wine: Wine }) {
               </View>
             )}
           </View>
-          <Icon
-            source="bottle-wine"
-            size={40}
-            color={WINE_TYPE_COLORS[wine.type]}
+          <WineThumbnail
+            imageId={thumbnailQuery.data?.id}
+            wineType={wine.type}
           />
         </View>
       </View>

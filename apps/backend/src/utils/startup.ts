@@ -5,10 +5,8 @@ import { db } from "./database";
 import { execSync } from "child_process";
 import process from "process";
 import { sql, type Kysely } from "kysely";
-
-const RETRY_INTERVAL = Number(process.env.DB_RETRY_INTERVAL) || 2000;
-const MAX_RETRIES = Number(process.env.DB_MAX_RETRIES) || 30;
-const PORT = process.env.PORT || "4000";
+import { cleanupOrphanedFiles, ensureUploadDirs } from "./upload.js";
+import { env } from "./env.js";
 
 async function waitForDb() {
   let retries = 0;
@@ -20,12 +18,14 @@ async function waitForDb() {
       return db;
     } catch (err) {
       retries += 1;
-      if (retries > MAX_RETRIES) {
+      if (retries > env.DB_MAX_RETRIES) {
         console.error("Database not available after max retries:", err);
         process.exit(1);
       }
       console.log(`Waiting for database... retry ${retries}`);
-      await new Promise((resolve) => setTimeout(resolve, RETRY_INTERVAL));
+      await new Promise((resolve) =>
+        setTimeout(resolve, env.DB_RETRY_INTERVAL),
+      );
     }
   }
 }
@@ -73,7 +73,7 @@ async function runMigrations() {
 }
 
 function startServer() {
-  console.log(`Starting API server on port ${PORT}...`);
+  console.log(`Starting API server on port ${env.PORT}...`);
   try {
     execSync(`node dist/src/index.js`, { stdio: "inherit" });
   } catch (err) {
@@ -82,10 +82,31 @@ function startServer() {
   }
 }
 
+async function cleanupImages(db: Kysely<Database>) {
+  try {
+    const rows = await (db as Kysely<any>)
+      .selectFrom("image")
+      .select("filename")
+      .execute();
+    const validFilenames = new Set<string>(
+      rows.map((r: { filename: string }) => r.filename),
+    );
+    await cleanupOrphanedFiles(validFilenames);
+  } catch (err) {
+    // image table may not exist yet on first run — migrations will create it
+    console.warn(
+      "Image orphan cleanup skipped:",
+      err instanceof Error ? err.message : err,
+    );
+  }
+}
+
 async function main() {
   const db = await waitForDb();
   await runMigrations();
   await checkAndSeed(db);
+  await ensureUploadDirs();
+  await cleanupImages(db);
   startServer();
 }
 

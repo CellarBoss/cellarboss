@@ -9,6 +9,7 @@ import { vintageFields } from "@/lib/fields/vintages";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
 import { TastingNotesSection } from "@/components/tasting-notes/TastingNotesSection";
+import { ImageGallery } from "@/components/images/ImageGallery";
 
 export default function ViewVintagePage() {
   const params = useParams();
@@ -30,6 +31,10 @@ export default function ViewVintagePage() {
       <PageHeader title={`View Vintage - ${vintage.year ?? "NV"}`} />
       <GenericCard<Vintage> mode="view" data={vintage} fields={vintageFields} />
       <TastingNotesSection vintageId={vintageId} />
+      <div className="mt-6">
+        <h2 className="text-lg font-semibold mb-3">Images</h2>
+        <ImageGallery vintageId={vintageId} />
+      </div>
     </section>
   );
 }

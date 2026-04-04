@@ -15,6 +15,7 @@ import { registerSettingsRoutes } from "./routes/settings";
 import { registerUserRoutes } from "./routes/users";
 import { registerWinegrapeRoutes } from "./routes/winegrapes";
 import { registerTastingNoteRoutes } from "./routes/tasting-notes";
+import { registerImageRoutes } from "./routes/images";
 import { defaultState } from "./defaults";
 
 export type SessionPayload = {
@@ -46,6 +47,7 @@ export type MockState = {
   users: any[];
   wineGrapes: any[];
   tastingNotes: any[];
+  images: any[];
 };
 
 let server: ServerType | null = null;
@@ -106,6 +108,7 @@ export async function startMockServer(port: number): Promise<ServerType> {
   registerSettingsRoutes(app, state);
   registerWinegrapeRoutes(app, state);
   registerTastingNoteRoutes(app, state);
+  registerImageRoutes(app, state);
 
   return new Promise((resolve) => {
     server = serve({ fetch: app.fetch, port }, () => {

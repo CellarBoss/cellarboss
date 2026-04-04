@@ -8,7 +8,9 @@ An open-source wine cellar inventory manager. Track your collection by country, 
 
 - Wine database with detailed attributes (country, region, grape, winemaker, vintage)
 - Bottle inventory with per-bottle storage location tracking
+- Store images of your collection
 - Drinking window tracking per vintage
+- Tasting notes & ratings
 
 ## Quick Start
 
@@ -66,7 +68,8 @@ Documentation is built and deployed automatically on every release:
 ## Roadmap
 
 - Multi-database support. Currently limited to Sqlite, with MySQL and Postgres in the works
-- Upload images of your collection
+- ~~Upload images of your collection~~
+- ~~Tasting notes~~
 - Import wine details from 3rd party websites (Vivino, Wine Society, Naked Wines etc)
 - i18n
 - Build & automatically deploy styled wine menus

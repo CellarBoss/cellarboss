@@ -12,7 +12,7 @@ import { getVintagesByWineId, deleteVintage } from "@/lib/api/vintages";
 import { Badge } from "@/components/ui/badge";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
-import { Earth, User, Grape, Wine as WineIcon } from "lucide-react";
+import { Earth, User, Grape } from "lucide-react";
 import {
   WINE_TYPE_COLORS,
   WINE_TYPE_LABELS,
@@ -20,6 +20,7 @@ import {
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { WineThumbnail } from "@/components/images/WineThumbnail";
 import { BottleButton } from "@/components/buttons/BottleButton";
 import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
 import { BottleCountDisplay } from "@/components/vintage/BottleCountDisplay";
@@ -76,14 +77,13 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
     <div className="flex gap-4">
       <div
         className={`w-1 self-stretch rounded-full shrink-0 ${WINE_TYPE_COLORS[wine.type]}`}
+        title={WINE_TYPE_LABELS[wine.type]}
       />
       <div className="grid grid-cols-[auto_1fr_1fr] gap-6 flex-1">
-        <div
-          className="flex items-center justify-center w-24 h-32 rounded-lg bg-muted"
-          title={WINE_TYPE_LABELS[wine.type]}
-        >
-          <WineIcon className={`w-10 h-10`} />
-        </div>
+        <WineThumbnail
+          vintages={vintageQuery.data ?? []}
+          className="w-24 h-32"
+        />
 
         <div className="flex flex-col gap-2 text-sm">
           <Link
