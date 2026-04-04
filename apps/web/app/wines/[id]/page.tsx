@@ -202,24 +202,6 @@ export default function ViewWinePage() {
         </DetailRow>
       </DetailCard>
 
-      {/* Stats row */}
-      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <div className="rounded-lg border bg-card p-3 text-center">
-          <p className="text-2xl font-bold">{vintages.length}</p>
-          <p className="text-xs text-muted-foreground">Vintages</p>
-        </div>
-        <div className="rounded-lg border bg-card p-3 text-center">
-          <p className="text-2xl font-bold">{totalStoredBottles}</p>
-          <p className="text-xs text-muted-foreground">Bottles stored</p>
-        </div>
-        <div className="rounded-lg border bg-card p-3 text-center hidden sm:block">
-          <p className="text-2xl font-bold">
-            {grapes.length > 0 ? grapes.map((g) => g.name).join(", ") : "-"}
-          </p>
-          <p className="text-xs text-muted-foreground">Grapes</p>
-        </div>
-      </div>
-
       <RelatedResourceSection
         heading="Vintages"
         count={sortedVintages.length}
