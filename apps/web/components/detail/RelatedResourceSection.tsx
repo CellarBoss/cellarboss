@@ -8,6 +8,7 @@ type RelatedResourceSectionProps = {
   addHref?: string;
   addLabel?: string;
   emptyMessage?: string;
+  className?: string;
   children?: React.ReactNode;
 };
 
@@ -17,13 +18,14 @@ export function RelatedResourceSection({
   addHref,
   addLabel = "Add",
   emptyMessage = "None yet",
+  className = "mt-6",
   children,
 }: RelatedResourceSectionProps) {
   const isEmpty =
     !children || (Array.isArray(children) && children.length === 0);
 
   return (
-    <div className="mt-6">
+    <div className={className}>
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-sm font-semibold text-muted-foreground">
           {heading}
