@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -12,8 +13,11 @@ import {
 } from "@/lib/api/tastingNotes";
 import { Plus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useSettingsContext } from "@/contexts/settings-context";
 import { TastingNoteCard } from "./TastingNoteCard";
+
+const PAGE_SIZE = 10;
 
 type TastingNotesSectionProps = (
   | { vintageId: number; wineId?: never; vintages?: never }
@@ -30,6 +34,7 @@ export function TastingNotesSection({
     | string
     | undefined;
 
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const isVintageMode = props.vintageId !== undefined;
 
   const notesQuery = useApiQuery<TastingNote[]>({
@@ -97,33 +102,47 @@ export function TastingNotesSection({
               No tasting notes yet.
             </p>
           ) : (
-            <div className="divide-y">
-              {sortedNotes.map((note) => (
-                <TastingNoteCard
-                  key={note.id}
-                  note={note}
-                  datetimeFormat={datetimeFormat}
-                  vintageContext={
-                    !isVintageMode
-                      ? {
-                          label: getVintageLabel(note.vintageId),
-                          vintageId: note.vintageId,
-                        }
-                      : undefined
-                  }
-                  onEdit={async () => {
-                    router.push(`/tasting-notes/${note.id}/edit`);
-                  }}
-                  onDelete={async () => {
-                    const result = await deleteTastingNote(note.id);
-                    if (!result.ok) throw new Error(result.error.message);
-                    invalidateNotes();
-                    return true;
-                  }}
-                  deleteDescription={`tasting note by ${note.author}`}
-                />
-              ))}
-            </div>
+            <>
+              <div className="divide-y">
+                {sortedNotes.slice(0, visibleCount).map((note) => (
+                  <TastingNoteCard
+                    key={note.id}
+                    note={note}
+                    datetimeFormat={datetimeFormat}
+                    vintageContext={
+                      !isVintageMode
+                        ? {
+                            label: getVintageLabel(note.vintageId),
+                            vintageId: note.vintageId,
+                          }
+                        : undefined
+                    }
+                    onEdit={async () => {
+                      router.push(`/tasting-notes/${note.id}/edit`);
+                    }}
+                    onDelete={async () => {
+                      const result = await deleteTastingNote(note.id);
+                      if (!result.ok) throw new Error(result.error.message);
+                      invalidateNotes();
+                      return true;
+                    }}
+                    deleteDescription={`tasting note by ${note.author}`}
+                  />
+                ))}
+              </div>
+              {visibleCount < sortedNotes.length && (
+                <div className="px-4 py-2 text-center border-t">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="cursor-pointer"
+                    onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+                  >
+                    View more ({sortedNotes.length - visibleCount} remaining)
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </CardContent>
       </Card>
