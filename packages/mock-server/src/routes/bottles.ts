@@ -9,6 +9,12 @@ export function registerBottleRoutes(app: Hono, state: MockState) {
     return c.json(state.bottles);
   });
 
+  app.get("/api/bottle/vintage/:vintageId", (c) => {
+    const vintageId = Number(c.req.param("vintageId"));
+    const bottles = state.bottles.filter((b) => b.vintageId === vintageId);
+    return c.json(bottles);
+  });
+
   app.get("/api/bottle/vintage/:vintageId/counts", (c) => {
     const vintageId = Number(c.req.param("vintageId"));
     const bottles = state.bottles.filter((b) => b.vintageId === vintageId);
