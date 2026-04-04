@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { logger } from "./logger.js";
 import * as path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { promises as fs } from "node:fs";
@@ -42,13 +43,13 @@ async function run() {
   let result;
 
   if (command === "latest") {
-    console.log("Running migrations to latest...");
+    logger.info("Running migrations to latest");
     result = await migrator.migrateToLatest();
   } else if (command === "down") {
-    console.log("Reverting last migration...");
+    logger.info("Reverting last migration");
     result = await migrator.migrateDown();
   } else {
-    console.error(`Unknown command: ${command}`);
+    logger.withContext({ command }).error("Unknown migrate command");
     await db.destroy();
     process.exit(1);
   }
@@ -57,25 +58,29 @@ async function run() {
 
   results?.forEach((r) => {
     if (r.status === "Success") {
-      console.log(`✓ ${r.direction} "${r.migrationName}"`);
+      logger
+        .withContext({ direction: r.direction, migration: r.migrationName })
+        .info("Migration applied");
     } else if (r.status === "Error") {
-      console.error(`✗ Failed "${r.migrationName}"`);
+      logger
+        .withContext({ migration: r.migrationName })
+        .error("Migration failed");
     }
   });
 
   if (!results?.length) {
-    console.log("No migrations to run.");
+    logger.info("No migrations to run");
   }
 
   await db.destroy();
 
   if (error) {
-    console.error("Migration failed:", error);
+    logger.withError(error as Error).error("Migration failed");
     process.exit(1);
   }
 }
 
 run().catch((err) => {
-  console.error(err);
+  logger.withError(err).error("Unexpected error during migration");
   process.exit(1);
 });
