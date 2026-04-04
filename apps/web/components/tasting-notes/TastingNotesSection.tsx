@@ -15,11 +15,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useSettingsContext } from "@/contexts/settings-context";
 import { TastingNoteCard } from "./TastingNoteCard";
 
-type TastingNotesSectionProps =
+type TastingNotesSectionProps = (
   | { vintageId: number; wineId?: never; vintages?: never }
-  | { wineId: number; vintages: Vintage[]; vintageId?: never };
+  | { wineId: number; vintages: Vintage[]; vintageId?: never }
+) & { className?: string };
 
-export function TastingNotesSection(props: TastingNotesSectionProps) {
+export function TastingNotesSection({
+  className = "mt-6",
+  ...props
+}: TastingNotesSectionProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const datetimeFormat = useSettingsContext().get("datetime") as
@@ -66,7 +70,7 @@ export function TastingNotesSection(props: TastingNotesSectionProps) {
   );
 
   return (
-    <div className="mt-6">
+    <div className={className}>
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-sm font-semibold text-muted-foreground">
           Tasting Notes
