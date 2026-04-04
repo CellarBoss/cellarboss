@@ -54,7 +54,7 @@ registerRoutes(api);
 api.doc("/openapi.json", {
   openapi: "3.1.0",
   info: {
-    title: "Cellarboss API",
+    title: "CellarBoss API",
     version: env.APP_VERSION,
     description: "Wine cellar management API",
   },
