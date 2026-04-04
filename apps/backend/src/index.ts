@@ -93,6 +93,7 @@ serve(
         version: env.APP_VERSION,
         env: env.NODE_ENV,
         url: `http://localhost:${info.port}`,
+        cors: env.CORS || "(not configured)",
         database: env.DATABASE_TYPE,
         dbUrl,
         uploads: env.UPLOAD_DIR ?? "(not configured)",
