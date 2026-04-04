@@ -15,7 +15,7 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { DetailCard } from "@/components/detail/DetailCard";
 import { DetailRow } from "@/components/detail/DetailRow";
 import { RelatedResourceSection } from "@/components/detail/RelatedResourceSection";
-import { BottleListItem } from "@/components/detail/BottleListItem";
+import { VintageBottleListItem } from "@/components/detail/VintageBottleListItem";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
@@ -23,7 +23,6 @@ import { TastingNotesSection } from "@/components/tasting-notes/TastingNotesSect
 import { ImageGallery } from "@/components/images/ImageGallery";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
-import { formatDrinkingStatus } from "@/lib/functions/format";
 import type { WineType } from "@cellarboss/validators/constants";
 
 export default function ViewVintagePage() {
@@ -109,7 +108,6 @@ export default function ViewVintagePage() {
 
   const storageMap = new Map(allStorages.map((s) => [s.id, s]));
   const locationMap = new Map(allLocations.map((l) => [l.id, l]));
-  const currentYear = new Date().getFullYear();
 
   function getStoragePath(storageId: number | null): string {
     if (storageId === null) return "";
@@ -193,32 +191,36 @@ export default function ViewVintagePage() {
         <ImageGallery vintageId={vintageId} className="" />
       </div>
 
-      <RelatedResourceSection
-        heading="Bottles"
-        count={bottles.length}
-        addHref={`/bottles/new?vintageId=${vintageId}`}
-        addLabel="Add bottle"
-        emptyMessage="No bottles yet"
-      >
-        {sortedBottles.map((bottle) => (
-          <BottleListItem
-            key={bottle.id}
-            bottle={bottle}
-            wineName={wine?.name ?? "Unknown"}
-            wineYear={yearDisplay}
-            winemakerName={winemaker?.name ?? ""}
-            wineType={wine?.type as WineType | undefined}
-            drinkingStatus={formatDrinkingStatus(
-              vintage.drinkFrom,
-              vintage.drinkUntil,
-              currentYear,
-            )}
-            storagePath={getStoragePath(bottle.storageId)}
-          />
-        ))}
-      </RelatedResourceSection>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+        <RelatedResourceSection
+          className=""
+          heading="Bottles"
+          count={bottles.length}
+          addHref={`/bottles/new?vintageId=${vintageId}`}
+          addLabel="Add bottle"
+          emptyMessage="No bottles yet"
+        >
+          {sortedBottles.map((bottle) => {
+            const storage = bottle.storageId
+              ? storageMap.get(bottle.storageId)
+              : undefined;
+            const location = storage?.locationId
+              ? locationMap.get(storage.locationId)
+              : undefined;
+            return (
+              <VintageBottleListItem
+                key={bottle.id}
+                bottle={bottle}
+                wineType={wine?.type as WineType | undefined}
+                locationName={location?.name}
+                storagePath={getStoragePath(bottle.storageId)}
+              />
+            );
+          })}
+        </RelatedResourceSection>
 
-      <TastingNotesSection vintageId={vintageId} />
+        <TastingNotesSection className="" vintageId={vintageId} />
+      </div>
     </section>
   );
 }

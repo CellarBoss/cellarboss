@@ -234,9 +234,9 @@ export default function ViewWinePage() {
             </RelatedResourceItem>
           ))}
         </RelatedResourceSection>
-      </div>
 
-      <TastingNotesSection wineId={wineId} vintages={vintages} />
+        <TastingNotesSection className="" wineId={wineId} vintages={vintages} />
+      </div>
     </section>
   );
 }
