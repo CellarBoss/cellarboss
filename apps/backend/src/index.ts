@@ -98,6 +98,6 @@ serve(
         uploads: env.UPLOAD_DIR ?? "(not configured)",
         logLevel: env.LOG_LEVEL,
       })
-      .info("Cellarboss backend started");
+      .info("CellarBoss backend started");
   },
 );
