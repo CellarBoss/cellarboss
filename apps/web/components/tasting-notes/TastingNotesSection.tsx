@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import type { TastingNote, Vintage } from "@cellarboss/types";
@@ -9,8 +10,8 @@ import {
   getTastingNotesByWineId,
   deleteTastingNote,
 } from "@/lib/api/tastingNotes";
-import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { useSettingsContext } from "@/contexts/settings-context";
 import { TastingNoteCard } from "./TastingNoteCard";
 
@@ -56,64 +57,72 @@ export function TastingNotesSection(props: TastingNotesSectionProps) {
     });
   }
 
+  const addHref = isVintageMode
+    ? `/tasting-notes/new?vintageId=${props.vintageId}`
+    : `/tasting-notes/new?wineId=${props.wineId}`;
+
+  const sortedNotes = [...notes].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  );
+
   return (
     <div className="mt-6">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-semibold">Tasting Notes</h2>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() =>
-            router.push(
-              isVintageMode
-                ? `/tasting-notes/new?vintageId=${props.vintageId}`
-                : `/tasting-notes/new?wineId=${props.wineId}`,
-            )
-          }
-          className="cursor-pointer"
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-sm font-semibold text-muted-foreground">
+          Tasting Notes
+          {!notesQuery.isLoading && (
+            <span className="ml-1">({notes.length})</span>
+          )}
+        </h2>
+        <Link
+          href={addHref}
+          className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
         >
-          <Plus className="w-4 h-4 mr-1" />
-          Add Note
-        </Button>
+          <Plus className="h-4 w-4" />
+          Add note
+        </Link>
       </div>
-
-      {notesQuery.isLoading ? (
-        <p className="text-muted-foreground italic">Loading...</p>
-      ) : notes.length === 0 ? (
-        <p className="text-muted-foreground italic">No tasting notes yet.</p>
-      ) : (
-        <div className="flex flex-col gap-4">
-          {[...notes]
-            .sort(
-              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-            )
-            .map((note) => (
-              <TastingNoteCard
-                key={note.id}
-                note={note}
-                datetimeFormat={datetimeFormat}
-                vintageContext={
-                  !isVintageMode
-                    ? {
-                        label: getVintageLabel(note.vintageId),
-                        vintageId: note.vintageId,
-                      }
-                    : undefined
-                }
-                onEdit={async () => {
-                  router.push(`/tasting-notes/${note.id}/edit`);
-                }}
-                onDelete={async () => {
-                  const result = await deleteTastingNote(note.id);
-                  if (!result.ok) throw new Error(result.error.message);
-                  invalidateNotes();
-                  return true;
-                }}
-                deleteDescription={`tasting note by ${note.author}`}
-              />
-            ))}
-        </div>
-      )}
+      <Card>
+        <CardContent className="p-0">
+          {notesQuery.isLoading ? (
+            <p className="text-sm text-muted-foreground px-4 py-3">
+              Loading...
+            </p>
+          ) : sortedNotes.length === 0 ? (
+            <p className="text-sm text-muted-foreground px-4 py-3">
+              No tasting notes yet.
+            </p>
+          ) : (
+            <div className="divide-y">
+              {sortedNotes.map((note) => (
+                <TastingNoteCard
+                  key={note.id}
+                  note={note}
+                  datetimeFormat={datetimeFormat}
+                  vintageContext={
+                    !isVintageMode
+                      ? {
+                          label: getVintageLabel(note.vintageId),
+                          vintageId: note.vintageId,
+                        }
+                      : undefined
+                  }
+                  onEdit={async () => {
+                    router.push(`/tasting-notes/${note.id}/edit`);
+                  }}
+                  onDelete={async () => {
+                    const result = await deleteTastingNote(note.id);
+                    if (!result.ok) throw new Error(result.error.message);
+                    invalidateNotes();
+                    return true;
+                  }}
+                  deleteDescription={`tasting note by ${note.author}`}
+                />
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
