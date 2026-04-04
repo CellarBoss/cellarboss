@@ -11,6 +11,7 @@ import {
   unsetImageFavourite,
 } from "@/lib/api/images";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -94,29 +95,45 @@ export function ImageGallery({ vintageId }: Props) {
 
   return (
     <>
-      <div className="flex flex-wrap gap-2">
-        {imagesQuery.isLoading && <ImageLoadingCell />}
+      <div className="mt-6">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-sm font-semibold text-muted-foreground">
+            Images
+            {!imagesQuery.isLoading && (
+              <span className="ml-1">({images.length})</span>
+            )}
+          </h2>
+        </div>
+        <Card>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {imagesQuery.isLoading && <ImageLoadingCell />}
 
-        {!imagesQuery.isLoading && images.length === 0 && <ImageEmptyCell />}
+              {!imagesQuery.isLoading && images.length === 0 && (
+                <ImageEmptyCell />
+              )}
 
-        {images.map((image) => (
-          <ImageThumbnailCell
-            key={image.id}
-            image={image}
-            onClick={() => setLightboxId(image.id)}
-            onDelete={(e) => promptDelete(image, e)}
-            onToggleFavourite={(e) => handleToggleFavourite(image, e)}
-            isDeleting={deletingId === image.id}
-            isTogglingFavourite={togglingFavouriteId === image.id}
-          />
-        ))}
+              {images.map((image) => (
+                <ImageThumbnailCell
+                  key={image.id}
+                  image={image}
+                  onClick={() => setLightboxId(image.id)}
+                  onDelete={(e) => promptDelete(image, e)}
+                  onToggleFavourite={(e) => handleToggleFavourite(image, e)}
+                  isDeleting={deletingId === image.id}
+                  isTogglingFavourite={togglingFavouriteId === image.id}
+                />
+              ))}
 
-        <ImageUploadCell vintageId={vintageId} onError={setUploadError} />
+              <ImageUploadCell vintageId={vintageId} onError={setUploadError} />
+            </div>
+
+            {uploadError && (
+              <p className="mt-2 text-sm text-destructive">{uploadError}</p>
+            )}
+          </CardContent>
+        </Card>
       </div>
-
-      {uploadError && (
-        <p className="mt-2 text-sm text-destructive">{uploadError}</p>
-      )}
 
       <Dialog
         open={!!lightboxImage}
