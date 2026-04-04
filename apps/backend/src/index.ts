@@ -7,10 +7,22 @@ import { auth } from "@utils/auth.js";
 import { env } from "@utils/env.js";
 import { registerRoutes } from "@routes/index.js";
 import { errorHandler } from "@middleware/error.middleware.js";
+import { honoLogLayer, type HonoLogLayerVariables } from "@loglayer/hono";
+import { logger } from "@utils/logger.js";
+import { log } from "console";
 
-const app = new OpenAPIHono();
+const app = new OpenAPIHono<{ Variables: HonoLogLayerVariables }>();
 
 app.onError(errorHandler);
+app.use(
+  honoLogLayer({
+    instance: logger,
+    autoLogging: {
+      request: { logLevel: "debug" },
+      response: { logLevel: "info" },
+    },
+  }),
+);
 
 // CORS
 app.use(
@@ -65,29 +77,27 @@ serve(
     port: env.PORT,
   },
   (info) => {
-    const lines = [
-      ``,
-      `  ╔══════════════════════════════════════╗`,
-      `  ║          Cellarboss Backend          ║`,
-      `  ╚══════════════════════════════════════╝`,
-      ``,
-      `  Version   : ${env.APP_VERSION}`,
-      `  Env       : ${env.NODE_ENV}`,
-      `  URL       : http://localhost:${info.port}`,
-      ``,
-      `  Database  : ${env.DATABASE_TYPE}`,
-      `  DB URL    : ${(() => {
-        try {
-          const u = new URL(env.DATABASE_URL);
-          u.password = u.password ? "***" : "";
-          return u.toString();
-        } catch {
-          return env.DATABASE_URL;
-        }
-      })()}`,
-      `  Uploads   : ${env.UPLOAD_DIR ?? "(not configured)"}`,
-      ``,
-    ];
-    console.log(lines.join("\n"));
+    const dbUrl = (() => {
+      try {
+        const u = new URL(env.DATABASE_URL);
+        u.password = u.password ? "***" : "";
+        return u.toString();
+      } catch {
+        return env.DATABASE_URL;
+      }
+    })();
+
+    logger
+      .child()
+      .withContext({
+        version: env.APP_VERSION,
+        env: env.NODE_ENV,
+        url: `http://localhost:${info.port}`,
+        database: env.DATABASE_TYPE,
+        dbUrl,
+        uploads: env.UPLOAD_DIR ?? "(not configured)",
+        logLevel: env.LOG_LEVEL,
+      })
+      .info("Cellarboss backend started");
   },
 );

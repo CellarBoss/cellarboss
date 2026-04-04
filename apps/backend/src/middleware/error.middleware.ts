@@ -12,7 +12,7 @@ function isUniqueConstraintError(err: any): boolean {
 }
 
 export function errorHandler(err: Error, c: Context) {
-  console.error(`[${c.req.method}] ${c.req.path}:`, err.message);
+  c.var.logger?.withError(err).error(`[${c.req.method}] ${c.req.path}`);
 
   if (err instanceof NoResultError) {
     return c.json({ error: "Not found" }, 404);
