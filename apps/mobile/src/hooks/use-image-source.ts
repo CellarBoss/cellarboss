@@ -6,8 +6,8 @@ import { api } from "@/lib/api/client";
 type ImageSource = { uri: string; headers: Record<string, string> };
 
 type UseImageSourceResult = {
-  thumbSource: (id: number) => ImageSource;
-  fullSource: (id: number) => ImageSource;
+  thumbSource: (id: number) => ImageSource | null;
+  fullSource: (id: number) => ImageSource | null;
 };
 
 export function useImageSource(): UseImageSourceResult {
@@ -24,13 +24,19 @@ export function useImageSource(): UseImageSourceResult {
   }, []);
 
   return {
-    thumbSource: (id: number) => ({
-      uri: `${baseUrl}/api/${api.images.getThumbUrl(id)}`,
-      headers: authHeaders,
-    }),
-    fullSource: (id: number) => ({
-      uri: `${baseUrl}/api/${api.images.getImageUrl(id)}`,
-      headers: authHeaders,
-    }),
+    thumbSource: (id: number) =>
+      baseUrl
+        ? {
+            uri: `${baseUrl}/api/${api.images.getThumbUrl(id)}`,
+            headers: authHeaders,
+          }
+        : null,
+    fullSource: (id: number) =>
+      baseUrl
+        ? {
+            uri: `${baseUrl}/api/${api.images.getImageUrl(id)}`,
+            headers: authHeaders,
+          }
+        : null,
   };
 }
