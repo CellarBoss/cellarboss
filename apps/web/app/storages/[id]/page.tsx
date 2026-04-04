@@ -169,54 +169,56 @@ export default function ViewStoragePage() {
         }
       />
 
-      <DetailCard heading="Details" icon={Warehouse}>
-        {hierarchyPath.length > 0 && (
-          <div className="flex items-center gap-1 flex-wrap text-sm mb-1">
-            {hierarchyPath.map((ancestor, i) => (
-              <span key={ancestor.id} className="flex items-center gap-1">
-                {i > 0 && (
-                  <ChevronRight className="h-3 w-3 text-muted-foreground" />
-                )}
-                <Link
-                  href={`/storages/${ancestor.id}`}
-                  className="hover:underline text-primary"
-                >
-                  {ancestor.name}
-                </Link>
-              </span>
-            ))}
-            <ChevronRight className="h-3 w-3 text-muted-foreground" />
-          </div>
-        )}
-        <h3 className="text-lg font-semibold">{storage.name}</h3>
-        {location && (
-          <DetailRow icon={MapPin}>
-            <Link
-              href={`/locations/${location.id}`}
-              className="hover:underline text-primary"
-            >
-              {location.name}
-            </Link>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <DetailCard heading="Details" icon={Warehouse}>
+          {hierarchyPath.length > 0 && (
+            <div className="flex items-center gap-1 flex-wrap text-sm mb-1">
+              {hierarchyPath.map((ancestor, i) => (
+                <span key={ancestor.id} className="flex items-center gap-1">
+                  {i > 0 && (
+                    <ChevronRight className="h-3 w-3 text-muted-foreground" />
+                  )}
+                  <Link
+                    href={`/storages/${ancestor.id}`}
+                    className="hover:underline text-primary"
+                  >
+                    {ancestor.name}
+                  </Link>
+                </span>
+              ))}
+              <ChevronRight className="h-3 w-3 text-muted-foreground" />
+            </div>
+          )}
+          <h3 className="text-lg font-semibold">{storage.name}</h3>
+          {location && (
+            <DetailRow icon={MapPin}>
+              <Link
+                href={`/locations/${location.id}`}
+                className="hover:underline text-primary"
+              >
+                {location.name}
+              </Link>
+            </DetailRow>
+          )}
+          {childStorages.length > 0 && (
+            <DetailRow icon={FolderTree}>
+              {childStorages.length}{" "}
+              {childStorages.length === 1 ? "sub-storage" : "sub-storages"}
+            </DetailRow>
+          )}
+          <DetailRow icon={BottleWine}>
+            {storedBottles.length}{" "}
+            {storedBottles.length === 1 ? "bottle" : "bottles"} stored
           </DetailRow>
-        )}
-        {childStorages.length > 0 && (
-          <DetailRow icon={FolderTree}>
-            {childStorages.length}{" "}
-            {childStorages.length === 1 ? "sub-storage" : "sub-storages"}
-          </DetailRow>
-        )}
-        <DetailRow icon={BottleWine}>
-          {storedBottles.length}{" "}
-          {storedBottles.length === 1 ? "bottle" : "bottles"} stored
-        </DetailRow>
-      </DetailCard>
+        </DetailCard>
 
-      {childStorages.length > 0 && (
         <RelatedResourceSection
+          className=""
           heading="Sub-storages"
           count={childStorages.length}
           addHref={`/storages/new?parentId=${storageId}`}
           addLabel="Add sub-storage"
+          emptyMessage="No sub-storages"
         >
           {childStorages.map((child) => (
             <RelatedResourceItem
@@ -233,7 +235,7 @@ export default function ViewStoragePage() {
             </RelatedResourceItem>
           ))}
         </RelatedResourceSection>
-      )}
+      </div>
 
       <RelatedResourceSection
         heading="Bottles"
