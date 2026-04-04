@@ -13,6 +13,7 @@ export async function listByVintageId(vintageId: number): Promise<Image[]> {
     .selectFrom("image")
     .selectAll()
     .where("vintageId", "=", vintageId)
+    .orderBy("createdAt", "asc")
     .execute();
   return rows.map(toImage);
 }
