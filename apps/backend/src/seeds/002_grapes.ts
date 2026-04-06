@@ -160,11 +160,11 @@ const grapes = [
 
 export async function seed(db: Kysely<any>): Promise<void> {
   for (const name of grapes) {
-    await db
-      .insertInto("grape")
-      .values({ name })
-      .onConflict((oc) => oc.column("name").doNothing())
-      .execute();
+    try {
+      await db.insertInto("grape").values({ name }).execute();
+    } catch {
+      // duplicate, skip
+    }
   }
 
   console.log(`Seeded ${grapes.length} grapes`);

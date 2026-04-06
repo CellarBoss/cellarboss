@@ -60,11 +60,11 @@ const countries = [
 
 export async function seed(db: Kysely<any>): Promise<void> {
   for (const name of countries) {
-    await db
-      .insertInto("country")
-      .values({ name })
-      .onConflict((oc) => oc.column("name").doNothing())
-      .execute();
+    try {
+      await db.insertInto("country").values({ name }).execute();
+    } catch {
+      // duplicate, skip
+    }
   }
 
   console.log(`Seeded ${countries.length} countries`);
