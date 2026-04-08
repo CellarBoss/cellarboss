@@ -27,8 +27,9 @@ jobs:
       - name: Create PR
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PR_TOKEN }}
           commit-message: "Auto sync Expo dependencies"
           title: "deps: Sync Expo dependencies"
+          labels: "skip-changelog"
           body: "Automated from workflow, generated with `pnpx expo install --fix`"
           branch: expo-dependency-sync
