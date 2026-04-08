@@ -24,12 +24,23 @@ jobs:
         working-directory: apps/mobile
         run: pnpx expo install --fix
 
+      - name: Dedupe dependencies
+        run: pnpm dedupe
+
       - name: Create PR
+        id: cpr
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.PR_TOKEN }}
           commit-message: "Auto sync Expo dependencies"
+          delete-branch: true
           title: "deps: Sync Expo dependencies"
           labels: "skip-changelog"
           body: "Automated from workflow, generated with `pnpx expo install --fix`"
           branch: expo-dependency-sync
+
+      - name: Enable Pull Request Automerge
+        if: steps.cpr.outputs.pull-request-number
+        run: gh pr merge --merge --auto "${{ steps.cpr.outputs.pull-request-number }}"
+        env:
+          GH_TOKEN: ${{ secrets.PR_TOKEN }}
