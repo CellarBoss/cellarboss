@@ -1,9 +1,8 @@
 import type { Kysely } from "kysely";
+import { addIdColumn } from "@utils/migration-helpers.js";
 
 export async function up(db: Kysely<any>): Promise<void> {
-  await db.schema
-    .createTable("winegrape")
-    .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
+  await addIdColumn(db.schema.createTable("winegrape"))
     .addColumn("wineId", "integer", (col) =>
       col.notNull().references("wine.id"),
     )

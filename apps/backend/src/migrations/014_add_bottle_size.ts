@@ -1,9 +1,13 @@
 import type { Kysely } from "kysely";
+import { shortText } from "@utils/migration-helpers.js";
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable("bottle")
-    .addColumn("size", "text", (col) => col.notNull().defaultTo("standard"))
+    // shortText (not longText) — MySQL TEXT columns cannot have a default.
+    .addColumn("size", shortText(), (col) =>
+      col.notNull().defaultTo("standard"),
+    )
     .execute();
 }
 
