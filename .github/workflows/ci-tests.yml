@@ -11,7 +11,10 @@ on:
         description: 'Run test:coverage instead of test and upload coverage artifacts'
         type: boolean
         default: false
-        
+
+permissions:
+  contents: read
+
 jobs:
   changes:
     name: Detect Changes
