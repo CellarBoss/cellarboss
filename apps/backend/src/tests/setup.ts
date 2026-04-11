@@ -2,7 +2,6 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import {
   Kysely,
   Migrator,
-  sql,
   type Migration,
   type MigrationProvider,
 } from "kysely";
@@ -12,6 +11,7 @@ import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import type { Database } from "@schema/database.js";
 import { auth } from "@utils/auth.js";
+import { shortText } from "@utils/migration-helpers.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -169,10 +169,12 @@ export async function createTestWineMaker(
   db: Kysely<Database>,
   name: string = "Test WineMaker",
 ) {
+  await db.insertInto("winemaker").values({ name }).execute();
   return await db
-    .insertInto("winemaker")
-    .values({ name })
-    .returning("id")
+    .selectFrom("winemaker")
+    .select("id")
+    .where("name", "=", name)
+    .orderBy("id", "desc")
     .executeTakeFirstOrThrow();
 }
 
@@ -199,10 +201,15 @@ export async function createTestStorage(
   locationId: number | null = null,
   name: string = "Test Storage",
 ) {
-  return await db
+  await db
     .insertInto("storage")
     .values({ name, locationId, parent: null })
-    .returning("id")
+    .execute();
+  return await db
+    .selectFrom("storage")
+    .select("id")
+    .where("name", "=", name)
+    .orderBy("id", "desc")
     .executeTakeFirstOrThrow();
 }
 
@@ -212,10 +219,16 @@ export async function createTestWine(
   regionId: number | null = null,
   name: string = "Test Wine",
 ) {
-  return await db
+  await db
     .insertInto("wine")
     .values({ name, wineMakerId, regionId, type: "red" })
-    .returning("id")
+    .execute();
+  return await db
+    .selectFrom("wine")
+    .select("id")
+    .where("name", "=", name)
+    .where("wineMakerId", "=", wineMakerId)
+    .orderBy("id", "desc")
     .executeTakeFirstOrThrow();
 }
 
@@ -224,10 +237,16 @@ export async function createTestVintage(
   wineId: number,
   year: number | null = 2020,
 ) {
-  return await db
+  await db
     .insertInto("vintage")
     .values({ wineId, year, drinkFrom: null, drinkUntil: null })
-    .returning("id")
+    .execute();
+  return await db
+    .selectFrom("vintage")
+    .select("id")
+    .where("wineId", "=", wineId)
+    .where("year", "=", year)
+    .orderBy("id", "desc")
     .executeTakeFirstOrThrow();
 }
 
@@ -238,21 +257,21 @@ export async function createTestUser(
   name: string = "Test User",
   email: string = "test@example.com",
 ) {
-  await sql`
-    CREATE TABLE IF NOT EXISTS "user" (
-      "id" TEXT PRIMARY KEY,
-      "name" TEXT NOT NULL,
-      "email" TEXT NOT NULL UNIQUE,
-      "emailVerified" INTEGER NOT NULL DEFAULT 0,
-      "image" TEXT,
-      "createdAt" TEXT NOT NULL,
-      "updatedAt" TEXT NOT NULL,
-      "role" TEXT DEFAULT 'user',
-      "banned" INTEGER,
-      "banReason" TEXT,
-      "banExpires" TEXT
-    )
-  `.execute(db);
+  await db.schema
+    .createTable("user")
+    .ifNotExists()
+    .addColumn("id", shortText(), (col) => col.primaryKey())
+    .addColumn("name", shortText(), (col) => col.notNull())
+    .addColumn("email", shortText(), (col) => col.notNull().unique())
+    .addColumn("emailVerified", "integer", (col) => col.notNull().defaultTo(0))
+    .addColumn("image", shortText())
+    .addColumn("createdAt", shortText(), (col) => col.notNull())
+    .addColumn("updatedAt", shortText(), (col) => col.notNull())
+    .addColumn("role", shortText(), (col) => col.defaultTo("user"))
+    .addColumn("banned", "integer")
+    .addColumn("banReason", shortText())
+    .addColumn("banExpires", shortText())
+    .execute();
 
   await (db as Kysely<any>)
     .insertInto("user")
