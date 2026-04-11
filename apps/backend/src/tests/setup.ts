@@ -2,6 +2,7 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import {
   Kysely,
   Migrator,
+  sql,
   type Migration,
   type MigrationProvider,
 } from "kysely";
@@ -52,6 +53,33 @@ export async function runMigrations(db: Kysely<Database>): Promise<void> {
   if (error) {
     console.error("Failed to run test migrations:", error);
     throw error;
+  }
+}
+
+// Clean all table data (FK-safe order: children first)
+export async function cleanDatabase(db: Kysely<Database>): Promise<void> {
+  const tables = [
+    "tastingNote",
+    "bottle",
+    "winegrape",
+    "image",
+    "vintage",
+    "wine",
+    "winemaker",
+    "storage",
+    "region",
+    "country",
+    "grape",
+    "location",
+    "setting",
+    "user", // created by createTestUser, not migrations
+  ];
+  for (const table of tables) {
+    try {
+      await sql`delete from ${sql.table(table)}`.execute(db);
+    } catch {
+      // Table may not exist yet (e.g. user table on first run)
+    }
   }
 }
 
