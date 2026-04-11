@@ -4,6 +4,7 @@ import {
   createTestApp,
   createTestAppWithAuth,
   runMigrations,
+  cleanDatabase,
   createTestUser,
   createTestVintage,
   createTestWine,
@@ -18,6 +19,7 @@ describe("Tasting Note API", () => {
 
   beforeAll(async () => {
     await runMigrations(db);
+    await cleanDatabase(db);
     await createTestUser(db);
   });
 

@@ -8,6 +8,7 @@ import {
   createTestApp,
   createTestAppWithAuth,
   runMigrations,
+  cleanDatabase,
   createTestUser,
   createTestVintage,
   createTestWine,
@@ -39,6 +40,7 @@ beforeAll(async () => {
   );
 
   await runMigrations(db);
+  await cleanDatabase(db);
   await createTestUser(db);
 });
 

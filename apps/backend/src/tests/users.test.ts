@@ -7,6 +7,7 @@ import {
   createTestAppWithNonAdmin,
   createTestUser,
   runMigrations,
+  cleanDatabase,
 } from "./setup";
 import { registerUserRoutes } from "@routes/users.routes.js";
 import { db } from "@utils/database.js";
@@ -18,6 +19,7 @@ describe("User API", () => {
 
   beforeAll(async () => {
     await runMigrations(db);
+    await cleanDatabase(db);
     await createTestUser(
       db,
       "user-for-test",

@@ -1,12 +1,18 @@
 import { describe, it, expect, beforeEach, beforeAll } from "vitest";
 import type { OpenAPIHono } from "@hono/zod-openapi";
-import { createTestApp, createTestAppWithAuth, runMigrations } from "./setup";
+import {
+  createTestApp,
+  createTestAppWithAuth,
+  runMigrations,
+  cleanDatabase,
+} from "./setup";
 import { registerCountryRoutes } from "@routes/countries.routes.js";
 import { db } from "@utils/database.js";
 
 describe("Country API", () => {
   beforeAll(async () => {
     await runMigrations(db);
+    await cleanDatabase(db);
   });
   describe("without auth", () => {
     let app: OpenAPIHono;

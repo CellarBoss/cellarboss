@@ -4,6 +4,7 @@ import {
   createTestAppWithAuth,
   createTestAppWithNonAdmin,
   runMigrations,
+  cleanDatabase,
 } from "./setup";
 import { registerSettingsRoutes } from "@routes/settings.routes.js";
 import { db } from "@utils/database.js";
@@ -11,6 +12,7 @@ import { db } from "@utils/database.js";
 describe("Admin middleware", () => {
   beforeAll(async () => {
     await runMigrations(db);
+    await cleanDatabase(db);
 
     // Seed a test setting
     await db
