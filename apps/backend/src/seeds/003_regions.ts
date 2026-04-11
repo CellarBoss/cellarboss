@@ -301,14 +301,11 @@ export async function seed(db: Kysely<any>): Promise<void> {
     }
 
     for (const regionName of regions) {
-      try {
-        await db
-          .insertInto("region")
-          .values({ name: regionName, countryId: country.id })
-          .execute();
-      } catch {
-        // duplicate, skip
-      }
+      await db
+        .insertInto("region")
+        .values({ name: regionName, countryId: country.id })
+        .onConflict((oc) => oc.columns(["name", "countryId"]).doNothing())
+        .execute();
       regionCount++;
     }
   }
