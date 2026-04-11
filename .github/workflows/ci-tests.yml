@@ -118,10 +118,54 @@ jobs:
           retention-days: 1
 
   test-backend:
-    name: Test Backend
+    name: Test Backend (${{ matrix.db }})
     runs-on: ubuntu-latest
     needs: changes
     if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.structure == 'true'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - db: sqlite
+            DATABASE_TYPE: sqlite
+            DATABASE_URL: ':memory:'
+          - db: postgres
+            DATABASE_TYPE: postgres
+            DATABASE_URL: 'postgresql://cellar:cellar@localhost:5432/cellartest'
+          - db: mysql
+            DATABASE_TYPE: mysql
+            DATABASE_URL: 'mysql://cellar:cellar@localhost:3306/cellartest'
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: cellar
+          POSTGRES_PASSWORD: cellar
+          POSTGRES_DB: cellartest
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U cellar"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      mysql:
+        image: mysql:9
+        env:
+          MYSQL_ROOT_PASSWORD: cellar
+          MYSQL_USER: cellar
+          MYSQL_PASSWORD: cellar
+          MYSQL_DATABASE: cellartest
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: ./.github/actions/setup-node
@@ -130,10 +174,10 @@ jobs:
         run: pnpm --filter backend build
 
       - name: Run backend tests
-        run: pnpm --filter backend ${{ inputs.upload-coverage && 'test:coverage' || 'test' }}
+        run: pnpm --filter backend ${{ inputs.upload-coverage && 'test:coverage' || 'test' }} -- ${{ matrix.db != 'sqlite' && '--no-file-parallelism' || '' }}
         env:
-          DATABASE_TYPE: sqlite
-          DATABASE_URL: ':memory:'
+          DATABASE_TYPE: ${{ matrix.DATABASE_TYPE }}
+          DATABASE_URL: ${{ matrix.DATABASE_URL }}
           NODE_ENV: test
           BETTER_AUTH_URL: http://localhost:3000
           BETTER_AUTH_SECRET: ci-test-placeholder
@@ -142,7 +186,7 @@ jobs:
         if: inputs.upload-coverage
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
-          name: coverage-backend
+          name: coverage-backend-${{ matrix.db }}
           path: apps/backend/coverage/
           retention-days: 1
 
