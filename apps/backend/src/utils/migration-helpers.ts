@@ -11,6 +11,10 @@ import { env } from "./env.js";
  * other concerns differ. Centralise the differences here so individual
  * migrations stay declarative.
  *
+ * Every helper accepts an optional `dialect` parameter that defaults to the
+ * current DATABASE_TYPE env var. Pass it explicitly when you need to generate
+ * schema for a specific dialect (e.g. in tests or migration tooling).
+ *
  * Usage:
  *   import { addIdColumn, shortText, decimal } from "@utils/migration-helpers.js";
  *
@@ -18,9 +22,25 @@ import { env } from "./env.js";
  *     .addColumn("name", shortText(), (col) => col.notNull())
  *     .addColumn("price", decimal(), (col) => col.notNull())
  *     .execute();
+ *
+ * ## Coercion rules (read-side)
+ *
+ * Several column types return different JS shapes depending on the database
+ * driver. Application code MUST coerce values when reading these columns.
+ * Coercion utilities are in `@utils/query-helpers.js`.
+ *
+ * | Column helper | SQLite         | PostgreSQL      | MySQL           | Coerce with        |
+ * |---------------|----------------|-----------------|-----------------|--------------------|
+ * | boolean()     | number (0/1)   | boolean         | number (0/1)    | toBool(value)      |
+ * | decimal()     | number         | string          | string          | toNumber(value)    |
+ * | timestamp()   | string (ISO)   | Date            | Date            | toISOString(value) |
+ * | json()        | string         | object          | object          | JSON.parse if str  |
+ *
+ * Columns using shortText() / longText() / "integer" are consistent across all
+ * dialects and do not require coercion.
  */
 
-type Dialect = "sqlite" | "postgres" | "mysql";
+export type Dialect = "sqlite" | "postgres" | "mysql";
 
 export const dialect: Dialect = env.DATABASE_TYPE;
 
@@ -38,8 +58,9 @@ export const dialect: Dialect = env.DATABASE_TYPE;
 export function addIdColumn<TB extends string, C extends string = never>(
   table: CreateTableBuilder<TB, C>,
   name = "id",
+  d: Dialect = dialect,
 ): CreateTableBuilder<TB, C | "id"> {
-  if (dialect === "postgres") {
+  if (d === "postgres") {
     return table.addColumn(name, "serial", (col) =>
       col.primaryKey(),
     ) as CreateTableBuilder<TB, C | "id">;
@@ -62,8 +83,8 @@ export function addIdColumn<TB extends string, C extends string = never>(
  * Use for names, codes, statuses, slugs, ISO date strings, and any column
  * that participates in an index, unique constraint, or has a default value.
  */
-export function shortText() {
-  return dialect === "mysql" ? sql`varchar(255)` : sql`text`;
+export function shortText(d: Dialect = dialect) {
+  return d === "mysql" ? sql`varchar(255)` : sql`text`;
 }
 
 /**
@@ -89,9 +110,9 @@ export function longText() {
  * the driver. Schema types should reflect this (e.g. `ColumnType<number,
  * number | undefined, number>`).
  */
-export function boolean() {
-  if (dialect === "postgres") return sql`boolean`;
-  if (dialect === "mysql") return sql`tinyint(1)`;
+export function boolean(d: Dialect = dialect) {
+  if (d === "postgres") return sql`boolean`;
+  if (d === "mysql") return sql`tinyint(1)`;
   return sql`integer`;
 }
 
@@ -118,9 +139,9 @@ export function decimal(precision = 12, scale = 2) {
  * shape across dialects, store ISO strings in a {@link shortText} column
  * instead.
  */
-export function timestamp() {
-  if (dialect === "postgres") return sql`timestamptz`;
-  if (dialect === "mysql") return sql`datetime(3)`;
+export function timestamp(d: Dialect = dialect) {
+  if (d === "postgres") return sql`timestamptz`;
+  if (d === "mysql") return sql`datetime(3)`;
   return sql`text`;
 }
 
@@ -131,9 +152,9 @@ export function timestamp() {
  * - mysql:    json
  * - sqlite:   text (caller must JSON.parse / JSON.stringify)
  */
-export function json() {
-  if (dialect === "postgres") return sql`jsonb`;
-  if (dialect === "mysql") return sql`json`;
+export function json(d: Dialect = dialect) {
+  if (d === "postgres") return sql`jsonb`;
+  if (d === "mysql") return sql`json`;
   return sql`text`;
 }
 

@@ -1,12 +1,16 @@
 import { db } from "@utils/database.js";
-import { insertReturning, updateReturning } from "@utils/query-helpers.js";
+import {
+  insertReturning,
+  updateReturning,
+  toNumber,
+} from "@utils/query-helpers.js";
 import type { Bottle, CreateBottle, UpdateBottle } from "@cellarboss/types";
 
 // node-pg and mysql2 return DECIMAL columns as strings; coerce to number
 function toBottle<T extends { purchasePrice: number | string }>(
   row: T,
 ): T & { purchasePrice: number } {
-  return { ...row, purchasePrice: Number(row.purchasePrice) };
+  return { ...row, purchasePrice: toNumber(row.purchasePrice) };
 }
 
 export async function list(): Promise<Bottle[]> {

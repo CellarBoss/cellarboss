@@ -20,6 +20,24 @@ export function toBool(value: boolean | number): boolean {
 }
 
 /**
+ * Coerce a database timestamp value to an ISO 8601 string.
+ * PostgreSQL and MySQL return Date objects; SQLite returns strings.
+ * Use this when reading timestamp() columns to get a consistent string shape.
+ */
+export function toISOString(value: Date | string): string {
+  return value instanceof Date ? value.toISOString() : value;
+}
+
+/**
+ * Coerce a database decimal value to a JS number.
+ * PostgreSQL (node-pg) and MySQL (mysql2) return DECIMAL/NUMERIC columns as
+ * strings; SQLite returns numbers. Use this when reading decimal() columns.
+ */
+export function toNumber(value: number | string): number {
+  return typeof value === "string" ? Number(value) : value;
+}
+
+/**
  * Insert a row and return the full inserted record.
  * SQLite/PostgreSQL use native RETURNING; MySQL does insert + select-by-insertId.
  *
