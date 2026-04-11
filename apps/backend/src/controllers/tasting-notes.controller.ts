@@ -48,6 +48,8 @@ export async function create(
   >;
 }
 
+// Uses manual update + getById (not updateReturning) because the response
+// includes a JOIN to resolve the author name from the user table.
 export async function update(id: number, data: UpdateTastingNote) {
   await db
     .updateTable("tastingNote")
