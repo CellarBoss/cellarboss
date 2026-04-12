@@ -174,7 +174,7 @@ jobs:
         run: pnpm --filter backend build
 
       - name: Run backend tests
-        run: pnpm --filter backend ${{ inputs.upload-coverage && 'test:coverage' || 'test' }} -- ${{ matrix.db != 'sqlite' && '--no-file-parallelism' || '' }}
+        run: pnpm --filter backend ${{ inputs.upload-coverage && 'test:coverage' || 'test' }}
         env:
           DATABASE_TYPE: ${{ matrix.DATABASE_TYPE }}
           DATABASE_URL: ${{ matrix.DATABASE_URL }}
