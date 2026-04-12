@@ -1,11 +1,13 @@
 import { describe, it, expect, beforeEach, beforeAll } from "vitest";
 import type { OpenAPIHono } from "@hono/zod-openapi";
-import { sql, Kysely } from "kysely";
+import { Kysely } from "kysely";
 import {
   createTestApp,
   createTestAppWithAuth,
   createTestAppWithNonAdmin,
+  createTestUser,
   runMigrations,
+  cleanDatabase,
 } from "./setup";
 import { registerUserRoutes } from "@routes/users.routes.js";
 import { db } from "@utils/database.js";
@@ -17,37 +19,19 @@ describe("User API", () => {
 
   beforeAll(async () => {
     await runMigrations(db);
+    await cleanDatabase(db);
+    await createTestUser(
+      db,
+      "user-for-test",
+      "Test User",
+      "usertest@example.com",
+    );
 
-    // Create the user table (normally managed by better-auth, not by Kysely migrations)
-    await sql`
-      CREATE TABLE IF NOT EXISTS "user" (
-        "id" TEXT PRIMARY KEY,
-        "name" TEXT NOT NULL,
-        "email" TEXT NOT NULL UNIQUE,
-        "emailVerified" INTEGER NOT NULL DEFAULT 0,
-        "image" TEXT,
-        "createdAt" TEXT NOT NULL,
-        "updatedAt" TEXT NOT NULL,
-        "role" TEXT DEFAULT 'user',
-        "banned" INTEGER,
-        "banReason" TEXT,
-        "banExpires" TEXT
-      )
-    `.execute(userDb);
-
-    // Seed a test user
+    // Override role to 'user' (createTestUser defaults to 'admin')
     await userDb
-      .insertInto("user")
-      .values({
-        id: "user-for-test",
-        name: "Test User",
-        email: "usertest@example.com",
-        emailVerified: 1,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        role: "user",
-      })
-      .onConflict((oc) => oc.column("id").doNothing())
+      .updateTable("user")
+      .set({ role: "user" })
+      .where("id", "=", "user-for-test")
       .execute();
 
     testUserId = "user-for-test";

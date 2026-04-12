@@ -6,6 +6,13 @@ export default defineConfig({
     globals: true,
     environment: "node",
     setupFiles: ["./src/tests/env-setup.ts"],
+    // Disable file parallelism for real databases — concurrent migrations and
+    // cleanDatabase calls on the same DB cause lock contention and timeouts.
+    fileParallelism:
+      !process.env.DATABASE_TYPE || process.env.DATABASE_TYPE === "sqlite",
+    // Running 16 migrations against MySQL/Postgres in beforeAll can exceed the
+    // default 10 s hook timeout on CI runners.
+    hookTimeout: 30_000,
     coverage: {
       provider: "v8",
       reporter: ["text", "json-summary", "json"],

@@ -16,10 +16,15 @@ export async function update(
   id: string,
   data: { name?: string; email?: string },
 ) {
-  return await userDb
+  const values = { ...data, updatedAt: new Date().toISOString() };
+  await userDb
     .updateTable("user")
-    .set({ ...data, updatedAt: new Date().toISOString() })
+    .set(values)
     .where("id", "=", id)
-    .returningAll()
+    .executeTakeFirstOrThrow();
+  return await userDb
+    .selectFrom("user")
+    .selectAll()
+    .where("id", "=", id)
     .executeTakeFirstOrThrow();
 }

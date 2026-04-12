@@ -87,19 +87,22 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropIndex("idx_region_countryId").execute();
-  await db.schema.dropIndex("idx_wine_wineMakerId").execute();
-  await db.schema.dropIndex("idx_wine_regionId").execute();
-  await db.schema.dropIndex("idx_storage_locationId").execute();
-  await db.schema.dropIndex("idx_storage_parent").execute();
-  await db.schema.dropIndex("idx_winegrape_wineId").execute();
-  await db.schema.dropIndex("idx_winegrape_grapeId").execute();
-  await db.schema.dropIndex("idx_vintage_wineId").execute();
-  await db.schema.dropIndex("idx_bottle_vintageId").execute();
-  await db.schema.dropIndex("idx_bottle_storageId").execute();
-  await db.schema.dropIndex("idx_country_name").execute();
-  await db.schema.dropIndex("idx_grape_name").execute();
-  await db.schema.dropIndex("idx_location_name").execute();
-  await db.schema.dropIndex("idx_winegrape_wine_grape").execute();
-  await db.schema.dropIndex("idx_region_name_countryId").execute();
+  await db.schema.dropIndex("idx_region_countryId").on("region").execute();
+  await db.schema.dropIndex("idx_wine_wineMakerId").on("wine").execute();
+  await db.schema.dropIndex("idx_wine_regionId").on("wine").execute();
+  await db.schema.dropIndex("idx_storage_locationId").on("storage").execute();
+  await db.schema.dropIndex("idx_storage_parent").on("storage").execute();
+  await db.schema.dropIndex("idx_winegrape_wineId").on("winegrape").execute();
+  await db.schema.dropIndex("idx_winegrape_grapeId").on("winegrape").execute();
+  await db.schema.dropIndex("idx_vintage_wineId").on("vintage").execute();
+  await db.schema.dropIndex("idx_bottle_vintageId").on("bottle").execute();
+  await db.schema.dropIndex("idx_bottle_storageId").on("bottle").execute();
+  await db.schema.dropIndex("idx_country_name").on("country").execute();
+  await db.schema.dropIndex("idx_grape_name").on("grape").execute();
+  await db.schema.dropIndex("idx_location_name").on("location").execute();
+  await db.schema
+    .dropIndex("idx_winegrape_wine_grape")
+    .on("winegrape")
+    .execute();
+  await db.schema.dropIndex("idx_region_name_countryId").on("region").execute();
 }

@@ -4,6 +4,7 @@ import {
   createTestApp,
   createTestAppWithAuth,
   runMigrations,
+  cleanDatabase,
   createTestWine,
   createTestWineMaker,
   createTestRegion,
@@ -18,6 +19,7 @@ describe("Vintage API", () => {
 
   beforeAll(async () => {
     await runMigrations(db);
+    await cleanDatabase(db);
   });
 
   describe("without auth", () => {

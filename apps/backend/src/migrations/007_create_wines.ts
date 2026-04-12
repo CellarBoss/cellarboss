@@ -1,11 +1,10 @@
 import type { Kysely } from "kysely";
+import { addIdColumn, shortText } from "@utils/migration-helpers.js";
 
 export async function up(db: Kysely<any>): Promise<void> {
-  await db.schema
-    .createTable("wine")
-    .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
-    .addColumn("name", "text", (col) => col.notNull())
-    .addColumn("type", "text", (col) => col.notNull())
+  await addIdColumn(db.schema.createTable("wine"))
+    .addColumn("name", shortText(), (col) => col.notNull())
+    .addColumn("type", shortText(), (col) => col.notNull())
     .addColumn("wineMakerId", "integer", (col) =>
       col.notNull().references("winemaker.id"),
     )

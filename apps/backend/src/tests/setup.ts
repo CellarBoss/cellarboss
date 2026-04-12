@@ -12,6 +12,8 @@ import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import type { Database } from "@schema/database.js";
 import { auth } from "@utils/auth.js";
+import { shortText } from "@utils/migration-helpers.js";
+import { env } from "@utils/env.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,6 +42,12 @@ class CustomMigrationProvider implements MigrationProvider {
 
 // Run migrations on a test database
 export async function runMigrations(db: Kysely<Database>): Promise<void> {
+  // The "user" table is managed by Better Auth, not by app migrations, but
+  // migrations 013/015 declare FK references to user.id. PostgreSQL and MySQL
+  // validate FK targets at DDL time, so the table must exist before those
+  // migrations run.
+  await ensureUserTable(db);
+
   const migrationFolder = path.resolve(__dirname, "../migrations");
 
   const migrator = new Migrator({
@@ -52,6 +60,33 @@ export async function runMigrations(db: Kysely<Database>): Promise<void> {
   if (error) {
     console.error("Failed to run test migrations:", error);
     throw error;
+  }
+}
+
+// Clean all table data (FK-safe order: children first)
+export async function cleanDatabase(db: Kysely<Database>): Promise<void> {
+  const tables = [
+    "tastingNote",
+    "bottle",
+    "winegrape",
+    "image",
+    "vintage",
+    "wine",
+    "winemaker",
+    "storage",
+    "region",
+    "country",
+    "grape",
+    "location",
+    "setting",
+    "user", // created by createTestUser, not migrations
+  ];
+  for (const table of tables) {
+    try {
+      await sql`delete from ${sql.table(table)}`.execute(db);
+    } catch {
+      // Table may not exist yet (e.g. user table on first run)
+    }
   }
 }
 
@@ -121,11 +156,12 @@ export async function createTestCountry(
   db: Kysely<Database>,
   name: string = "Test Country",
 ) {
-  await db
-    .insertInto("country")
-    .values({ name })
-    .onConflict((oc) => oc.column("name").doNothing())
-    .execute();
+  const query = db.insertInto("country").values({ name });
+  await (
+    env.DATABASE_TYPE === "mysql"
+      ? query.ignore()
+      : query.onConflict((oc) => oc.column("name").doNothing())
+  ).execute();
   return await db
     .selectFrom("country")
     .select("id")
@@ -137,11 +173,12 @@ export async function createTestLocation(
   db: Kysely<Database>,
   name: string = "Test Location",
 ) {
-  await db
-    .insertInto("location")
-    .values({ name })
-    .onConflict((oc) => oc.column("name").doNothing())
-    .execute();
+  const query = db.insertInto("location").values({ name });
+  await (
+    env.DATABASE_TYPE === "mysql"
+      ? query.ignore()
+      : query.onConflict((oc) => oc.column("name").doNothing())
+  ).execute();
   return await db
     .selectFrom("location")
     .select("id")
@@ -153,11 +190,12 @@ export async function createTestGrape(
   db: Kysely<Database>,
   name: string = "Test Grape",
 ) {
-  await db
-    .insertInto("grape")
-    .values({ name })
-    .onConflict((oc) => oc.column("name").doNothing())
-    .execute();
+  const query = db.insertInto("grape").values({ name });
+  await (
+    env.DATABASE_TYPE === "mysql"
+      ? query.ignore()
+      : query.onConflict((oc) => oc.column("name").doNothing())
+  ).execute();
   return await db
     .selectFrom("grape")
     .select("id")
@@ -169,10 +207,12 @@ export async function createTestWineMaker(
   db: Kysely<Database>,
   name: string = "Test WineMaker",
 ) {
+  await db.insertInto("winemaker").values({ name }).execute();
   return await db
-    .insertInto("winemaker")
-    .values({ name })
-    .returning("id")
+    .selectFrom("winemaker")
+    .select("id")
+    .where("name", "=", name)
+    .orderBy("id", "desc")
     .executeTakeFirstOrThrow();
 }
 
@@ -181,11 +221,12 @@ export async function createTestRegion(
   countryId: number,
   name: string = "Test Region",
 ) {
-  await db
-    .insertInto("region")
-    .values({ name, countryId })
-    .onConflict((oc) => oc.columns(["name", "countryId"]).doNothing())
-    .execute();
+  const query = db.insertInto("region").values({ name, countryId });
+  await (
+    env.DATABASE_TYPE === "mysql"
+      ? query.ignore()
+      : query.onConflict((oc) => oc.columns(["name", "countryId"]).doNothing())
+  ).execute();
   return await db
     .selectFrom("region")
     .select("id")
@@ -199,10 +240,15 @@ export async function createTestStorage(
   locationId: number | null = null,
   name: string = "Test Storage",
 ) {
-  return await db
+  await db
     .insertInto("storage")
     .values({ name, locationId, parent: null })
-    .returning("id")
+    .execute();
+  return await db
+    .selectFrom("storage")
+    .select("id")
+    .where("name", "=", name)
+    .orderBy("id", "desc")
     .executeTakeFirstOrThrow();
 }
 
@@ -212,10 +258,16 @@ export async function createTestWine(
   regionId: number | null = null,
   name: string = "Test Wine",
 ) {
-  return await db
+  await db
     .insertInto("wine")
     .values({ name, wineMakerId, regionId, type: "red" })
-    .returning("id")
+    .execute();
+  return await db
+    .selectFrom("wine")
+    .select("id")
+    .where("name", "=", name)
+    .where("wineMakerId", "=", wineMakerId)
+    .orderBy("id", "desc")
     .executeTakeFirstOrThrow();
 }
 
@@ -224,47 +276,59 @@ export async function createTestVintage(
   wineId: number,
   year: number | null = 2020,
 ) {
-  return await db
+  await db
     .insertInto("vintage")
     .values({ wineId, year, drinkFrom: null, drinkUntil: null })
-    .returning("id")
+    .execute();
+  return await db
+    .selectFrom("vintage")
+    .select("id")
+    .where("wineId", "=", wineId)
+    .where("year", "=", year)
+    .orderBy("id", "desc")
     .executeTakeFirstOrThrow();
 }
 
-/** Create the Better Auth user table (not managed by app migrations) and seed a test user */
+/** Create the Better Auth user table schema (not managed by app migrations) */
+async function ensureUserTable(db: Kysely<Database>): Promise<void> {
+  await db.schema
+    .createTable("user")
+    .ifNotExists()
+    .addColumn("id", shortText(), (col) => col.primaryKey())
+    .addColumn("name", shortText(), (col) => col.notNull())
+    .addColumn("email", shortText(), (col) => col.notNull().unique())
+    .addColumn("emailVerified", "integer", (col) => col.notNull().defaultTo(0))
+    .addColumn("image", shortText())
+    .addColumn("createdAt", shortText(), (col) => col.notNull())
+    .addColumn("updatedAt", shortText(), (col) => col.notNull())
+    .addColumn("role", shortText(), (col) => col.defaultTo("user"))
+    .addColumn("banned", "integer")
+    .addColumn("banReason", shortText())
+    .addColumn("banExpires", shortText())
+    .execute();
+}
+
+/** Create the Better Auth user table (if needed) and seed a test user */
 export async function createTestUser(
   db: Kysely<Database>,
   id: string = "test-user-1",
   name: string = "Test User",
   email: string = "test@example.com",
 ) {
-  await sql`
-    CREATE TABLE IF NOT EXISTS "user" (
-      "id" TEXT PRIMARY KEY,
-      "name" TEXT NOT NULL,
-      "email" TEXT NOT NULL UNIQUE,
-      "emailVerified" INTEGER NOT NULL DEFAULT 0,
-      "image" TEXT,
-      "createdAt" TEXT NOT NULL,
-      "updatedAt" TEXT NOT NULL,
-      "role" TEXT DEFAULT 'user',
-      "banned" INTEGER,
-      "banReason" TEXT,
-      "banExpires" TEXT
-    )
-  `.execute(db);
+  await ensureUserTable(db);
 
-  await (db as Kysely<any>)
-    .insertInto("user")
-    .values({
-      id,
-      name,
-      email,
-      emailVerified: 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      role: "admin",
-    })
-    .onConflict((oc) => oc.column("id").doNothing())
-    .execute();
+  const query = (db as Kysely<any>).insertInto("user").values({
+    id,
+    name,
+    email,
+    emailVerified: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    role: "admin",
+  });
+  await (
+    env.DATABASE_TYPE === "mysql"
+      ? query.ignore()
+      : query.onConflict((oc: any) => oc.column("id").doNothing())
+  ).execute();
 }

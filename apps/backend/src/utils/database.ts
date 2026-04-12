@@ -8,7 +8,7 @@ import { PostgresDialect } from "kysely";
 import pg from "pg";
 
 import { MysqlDialect } from "kysely";
-import mysql from "mysql2/promise";
+import { createPool as createMysqlPool } from "mysql2";
 
 import { env } from "@utils/env.js";
 import type { Database } from "@schema/database.js";
@@ -31,10 +31,21 @@ export function getDialect(): Dialect {
         pool: new pg.Pool({ connectionString: env.DATABASE_URL }),
       });
 
-    case "mysql":
+    case "mysql": {
+      const url = new URL(env.DATABASE_URL);
       return new MysqlDialect({
-        pool: mysql.createPool({ uri: env.DATABASE_URL }),
+        pool: createMysqlPool({
+          host: url.hostname,
+          port: parseInt(url.port) || 3306,
+          user: decodeURIComponent(url.username),
+          password: decodeURIComponent(url.password),
+          database: url.pathname.slice(1),
+          // MySQL 9 removed mysql_native_password; caching_sha2_password
+          // requires a secure channel for full authentication.
+          ssl: { rejectUnauthorized: false },
+        }),
       });
+    }
 
     default:
       throw new Error(`Unsupported DATABASE_TYPE: ${env.DATABASE_TYPE}`);

@@ -24,8 +24,8 @@ services:
     environment:
       BETTER_AUTH_SECRET: supersecretkeythatshouldnotbeusedinproduction
       BETTER_AUTH_URL: http://backend:5000
-      DATABASE_TYPE: sqlite
-      DATABASE_URL: 'cellarboss.db'
+      DATABASE_TYPE: postgres
+      DATABASE_URL: 'postgresql://cbuser:secret@db:5432/cellarboss'
       NODE_ENV: development
       CORS: http://localhost:3000
       UPLOAD_DIR: /app/uploads

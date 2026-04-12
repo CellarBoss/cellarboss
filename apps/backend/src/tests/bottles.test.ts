@@ -4,6 +4,7 @@ import {
   createTestApp,
   createTestAppWithAuth,
   runMigrations,
+  cleanDatabase,
   createTestVintage,
   createTestWine,
   createTestWineMaker,
@@ -16,6 +17,7 @@ describe("Bottle API", () => {
 
   beforeAll(async () => {
     await runMigrations(db);
+    await cleanDatabase(db);
   });
 
   describe("without auth", () => {

@@ -1,4 +1,5 @@
 import { db } from "@utils/database.js";
+import { insertReturning, updateReturning } from "@utils/query-helpers.js";
 import type { CreateRegion, UpdateRegion } from "@cellarboss/types";
 
 export async function list() {
@@ -14,20 +15,11 @@ export async function getById(id: number) {
 }
 
 export async function create(data: CreateRegion) {
-  return await db
-    .insertInto("region")
-    .values(data)
-    .returningAll()
-    .executeTakeFirstOrThrow();
+  return await insertReturning(db, "region", data);
 }
 
 export async function update(id: number, data: UpdateRegion) {
-  return await db
-    .updateTable("region")
-    .set(data)
-    .where("id", "=", id)
-    .returningAll()
-    .executeTakeFirstOrThrow();
+  return await updateReturning(db, "region", id, data);
 }
 
 export async function remove(id: number) {

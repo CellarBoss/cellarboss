@@ -4,6 +4,7 @@ import {
   createTestApp,
   createTestAppWithAuth,
   runMigrations,
+  cleanDatabase,
   createTestLocation,
 } from "./setup";
 import { registerStorageRoutes } from "@routes/storages.routes.js";
@@ -14,6 +15,7 @@ describe("Storage API", () => {
 
   beforeAll(async () => {
     await runMigrations(db);
+    await cleanDatabase(db);
   });
 
   describe("without auth", () => {

@@ -1,11 +1,16 @@
 import { db } from "@utils/database.js";
+import {
+  insertReturning,
+  updateReturning,
+  toBool,
+} from "@utils/query-helpers.js";
 import { deleteImage } from "@utils/upload.js";
 import type { Image } from "@cellarboss/types";
 
-type DbRow = Omit<Image, "isFavourite"> & { isFavourite: number };
+type DbRow = Omit<Image, "isFavourite"> & { isFavourite: number | boolean };
 
 function toImage(row: DbRow): Image {
-  return { ...row, isFavourite: row.isFavourite === 1 };
+  return { ...row, isFavourite: toBool(row.isFavourite) };
 }
 
 export async function listByVintageId(vintageId: number): Promise<Image[]> {
@@ -34,11 +39,7 @@ export async function create(data: {
   createdBy: string;
   createdAt: string;
 }): Promise<Image> {
-  const row = await db
-    .insertInto("image")
-    .values(data)
-    .returningAll()
-    .executeTakeFirstOrThrow();
+  const row = await insertReturning(db, "image", data);
   return toImage(row);
 }
 
@@ -72,29 +73,21 @@ export async function setFavourite(
   id: number,
   vintageId: number,
 ): Promise<Image> {
-  await db
-    .updateTable("image")
-    .set({ isFavourite: 0 })
-    .where("vintageId", "=", vintageId)
-    .where("isFavourite", "=", 1)
-    .execute();
+  return await db.transaction().execute(async (trx) => {
+    await trx
+      .updateTable("image")
+      .set({ isFavourite: 0 })
+      .where("vintageId", "=", vintageId)
+      .where("isFavourite", "=", 1)
+      .execute();
 
-  const row = await db
-    .updateTable("image")
-    .set({ isFavourite: 1 })
-    .where("id", "=", id)
-    .returningAll()
-    .executeTakeFirstOrThrow();
-  return toImage(row);
+    const row = await updateReturning(trx, "image", id, { isFavourite: 1 });
+    return toImage(row);
+  });
 }
 
 export async function unsetFavourite(id: number): Promise<Image> {
-  const row = await db
-    .updateTable("image")
-    .set({ isFavourite: 0 })
-    .where("id", "=", id)
-    .returningAll()
-    .executeTakeFirstOrThrow();
+  const row = await updateReturning(db, "image", id, { isFavourite: 0 });
   return toImage(row);
 }
 

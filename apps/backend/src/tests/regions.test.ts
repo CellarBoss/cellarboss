@@ -4,6 +4,7 @@ import {
   createTestApp,
   createTestAppWithAuth,
   runMigrations,
+  cleanDatabase,
   createTestCountry,
 } from "./setup";
 import { registerRegionRoutes } from "@routes/regions.routes.js";
@@ -14,6 +15,7 @@ describe("Region API", () => {
 
   beforeAll(async () => {
     await runMigrations(db);
+    await cleanDatabase(db);
   });
 
   describe("without auth", () => {

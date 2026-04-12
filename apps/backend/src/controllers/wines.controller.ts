@@ -1,4 +1,5 @@
 import { db } from "@utils/database.js";
+import { insertReturning, updateReturning } from "@utils/query-helpers.js";
 import type { CreateWine, UpdateWine } from "@cellarboss/types";
 
 export async function list() {
@@ -14,20 +15,11 @@ export async function getById(id: number) {
 }
 
 export async function create(data: CreateWine) {
-  return await db
-    .insertInto("wine")
-    .values(data)
-    .returningAll()
-    .executeTakeFirstOrThrow();
+  return await insertReturning(db, "wine", data);
 }
 
 export async function update(id: number, data: UpdateWine) {
-  return await db
-    .updateTable("wine")
-    .set(data)
-    .where("id", "=", id)
-    .returningAll()
-    .executeTakeFirstOrThrow();
+  return await updateReturning(db, "wine", id, data);
 }
 
 export async function remove(id: number) {

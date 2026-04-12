@@ -1,4 +1,5 @@
 import { db } from "@utils/database.js";
+import { updateReturning } from "@utils/query-helpers.js";
 import type { UpdateSetting } from "@cellarboss/types";
 
 export async function list() {
@@ -14,10 +15,5 @@ export async function getByKey(key: string) {
 }
 
 export async function update(key: string, data: UpdateSetting) {
-  return await db
-    .updateTable("setting")
-    .set(data)
-    .where("key", "=", key)
-    .returningAll()
-    .executeTakeFirstOrThrow();
+  return await updateReturning(db, "setting", key, data, "key");
 }

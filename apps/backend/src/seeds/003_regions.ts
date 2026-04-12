@@ -1,4 +1,5 @@
 import type { Kysely } from "kysely";
+import { env } from "@utils/env.js";
 
 const regionsByCountry: Record<string, string[]> = {
   France: [
@@ -301,11 +302,16 @@ export async function seed(db: Kysely<any>): Promise<void> {
     }
 
     for (const regionName of regions) {
-      await db
+      const query = db
         .insertInto("region")
-        .values({ name: regionName, countryId: country.id })
-        .onConflict((oc) => oc.doNothing())
-        .execute();
+        .values({ name: regionName, countryId: country.id });
+      await (
+        env.DATABASE_TYPE === "mysql"
+          ? query.ignore()
+          : query.onConflict((oc) =>
+              oc.columns(["name", "countryId"]).doNothing(),
+            )
+      ).execute();
       regionCount++;
     }
   }
