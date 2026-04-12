@@ -33,7 +33,7 @@ export function getDialect(): Dialect {
 
     case "mysql":
       return new MysqlDialect({
-        pool: mysql.createPool({ uri: env.DATABASE_URL }),
+        pool: mysql.createPool(env.DATABASE_URL),
       });
 
     default:
