@@ -67,7 +67,7 @@ Documentation is built and deployed automatically on every release:
 
 ## Roadmap
 
-- Multi-database support. Currently limited to Sqlite, with MySQL and Postgres in the works
+- ~~Multi-database support (SQLite, PostgreSQL, MySQL)~~
 - ~~Upload images of your collection~~
 - ~~Tasting notes~~
 - Import wine details from 3rd party websites (Vivino, Wine Society, Naked Wines etc)

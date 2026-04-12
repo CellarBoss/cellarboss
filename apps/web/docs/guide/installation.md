@@ -58,9 +58,76 @@ If you wish to configure a reverse proxy, note that the `CORS` environment varia
 
 ## Database
 
-Currently, only `sqlite` databases are supported, with additional database engine support on the roadmap.
+CellarBoss supports three database engines: **SQLite**, **PostgreSQL**, and **MySQL**. Set the `DATABASE_TYPE` and `DATABASE_URL` environment variables on the backend container to configure your chosen engine.
 
-You should ensure that the `DATABASE_URL` path points to a directory which is persisted between Docker restarts, as in the example above.
+| Engine     | `DATABASE_TYPE` | `DATABASE_URL` example                      |
+| ---------- | --------------- | ------------------------------------------- |
+| SQLite     | `sqlite`        | `/config/cellarboss.sqlite`                 |
+| PostgreSQL | `postgres`      | `postgresql://user:pass@db:5432/cellarboss` |
+| MySQL      | `mysql`         | `mysql://user:pass@db:3306/cellarboss`      |
+
+### SQLite
+
+SQLite is the simplest option — no additional services are required. Ensure the `DATABASE_URL` path points to a directory which is persisted between Docker restarts, as in the example above.
+
+### PostgreSQL
+
+To use PostgreSQL, add a PostgreSQL service to your Docker Compose file and point the backend at it:
+
+```yaml
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: cellarboss
+      POSTGRES_PASSWORD: <your-db-password>
+      POSTGRES_DB: cellarboss
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  backend:
+    image: ghcr.io/cellarboss/cellarboss-backend:latest
+    environment:
+      DATABASE_TYPE: postgres
+      DATABASE_URL: postgresql://cellarboss:<your-db-password>@db:5432/cellarboss
+      # ... other env vars as above
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
+```
+
+### MySQL
+
+To use MySQL, add a MySQL service to your Docker Compose file and point the backend at it:
+
+```yaml
+services:
+  db:
+    image: mysql:9
+    environment:
+      MYSQL_ROOT_PASSWORD: <your-root-password>
+      MYSQL_USER: cellarboss
+      MYSQL_PASSWORD: <your-db-password>
+      MYSQL_DATABASE: cellarboss
+    volumes:
+      - mysqldata:/var/lib/mysql
+    restart: unless-stopped
+
+  backend:
+    image: ghcr.io/cellarboss/cellarboss-backend:latest
+    environment:
+      DATABASE_TYPE: mysql
+      DATABASE_URL: mysql://cellarboss:<your-db-password>@db:3306/cellarboss
+      # ... other env vars as above
+    depends_on:
+      - db
+
+volumes:
+  mysqldata:
+```
 
 ## First Run
 
