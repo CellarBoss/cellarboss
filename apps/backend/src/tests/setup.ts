@@ -41,6 +41,12 @@ class CustomMigrationProvider implements MigrationProvider {
 
 // Run migrations on a test database
 export async function runMigrations(db: Kysely<Database>): Promise<void> {
+  // The "user" table is managed by Better Auth, not by app migrations, but
+  // migrations 013/015 declare FK references to user.id. PostgreSQL and MySQL
+  // validate FK targets at DDL time, so the table must exist before those
+  // migrations run.
+  await ensureUserTable(db);
+
   const migrationFolder = path.resolve(__dirname, "../migrations");
 
   const migrator = new Migrator({
@@ -278,13 +284,8 @@ export async function createTestVintage(
     .executeTakeFirstOrThrow();
 }
 
-/** Create the Better Auth user table (not managed by app migrations) and seed a test user */
-export async function createTestUser(
-  db: Kysely<Database>,
-  id: string = "test-user-1",
-  name: string = "Test User",
-  email: string = "test@example.com",
-) {
+/** Create the Better Auth user table schema (not managed by app migrations) */
+async function ensureUserTable(db: Kysely<Database>): Promise<void> {
   await db.schema
     .createTable("user")
     .ifNotExists()
@@ -300,6 +301,16 @@ export async function createTestUser(
     .addColumn("banReason", shortText())
     .addColumn("banExpires", shortText())
     .execute();
+}
+
+/** Create the Better Auth user table (if needed) and seed a test user */
+export async function createTestUser(
+  db: Kysely<Database>,
+  id: string = "test-user-1",
+  name: string = "Test User",
+  email: string = "test@example.com",
+) {
+  await ensureUserTable(db);
 
   await (db as Kysely<any>)
     .insertInto("user")
