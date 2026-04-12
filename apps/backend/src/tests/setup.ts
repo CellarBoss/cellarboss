@@ -13,6 +13,7 @@ import { fileURLToPath, pathToFileURL } from "url";
 import type { Database } from "@schema/database.js";
 import { auth } from "@utils/auth.js";
 import { shortText } from "@utils/migration-helpers.js";
+import { env } from "@utils/env.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -155,11 +156,12 @@ export async function createTestCountry(
   db: Kysely<Database>,
   name: string = "Test Country",
 ) {
-  await db
-    .insertInto("country")
-    .values({ name })
-    .onConflict((oc) => oc.column("name").doNothing())
-    .execute();
+  const query = db.insertInto("country").values({ name });
+  await (
+    env.DATABASE_TYPE === "mysql"
+      ? query.ignore()
+      : query.onConflict((oc) => oc.column("name").doNothing())
+  ).execute();
   return await db
     .selectFrom("country")
     .select("id")
@@ -171,11 +173,12 @@ export async function createTestLocation(
   db: Kysely<Database>,
   name: string = "Test Location",
 ) {
-  await db
-    .insertInto("location")
-    .values({ name })
-    .onConflict((oc) => oc.column("name").doNothing())
-    .execute();
+  const query = db.insertInto("location").values({ name });
+  await (
+    env.DATABASE_TYPE === "mysql"
+      ? query.ignore()
+      : query.onConflict((oc) => oc.column("name").doNothing())
+  ).execute();
   return await db
     .selectFrom("location")
     .select("id")
@@ -187,11 +190,12 @@ export async function createTestGrape(
   db: Kysely<Database>,
   name: string = "Test Grape",
 ) {
-  await db
-    .insertInto("grape")
-    .values({ name })
-    .onConflict((oc) => oc.column("name").doNothing())
-    .execute();
+  const query = db.insertInto("grape").values({ name });
+  await (
+    env.DATABASE_TYPE === "mysql"
+      ? query.ignore()
+      : query.onConflict((oc) => oc.column("name").doNothing())
+  ).execute();
   return await db
     .selectFrom("grape")
     .select("id")
@@ -217,11 +221,12 @@ export async function createTestRegion(
   countryId: number,
   name: string = "Test Region",
 ) {
-  await db
-    .insertInto("region")
-    .values({ name, countryId })
-    .onConflict((oc) => oc.columns(["name", "countryId"]).doNothing())
-    .execute();
+  const query = db.insertInto("region").values({ name, countryId });
+  await (
+    env.DATABASE_TYPE === "mysql"
+      ? query.ignore()
+      : query.onConflict((oc) => oc.columns(["name", "countryId"]).doNothing())
+  ).execute();
   return await db
     .selectFrom("region")
     .select("id")
@@ -312,17 +317,18 @@ export async function createTestUser(
 ) {
   await ensureUserTable(db);
 
-  await (db as Kysely<any>)
-    .insertInto("user")
-    .values({
-      id,
-      name,
-      email,
-      emailVerified: 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      role: "admin",
-    })
-    .onConflict((oc) => oc.column("id").doNothing())
-    .execute();
+  const query = (db as Kysely<any>).insertInto("user").values({
+    id,
+    name,
+    email,
+    emailVerified: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    role: "admin",
+  });
+  await (
+    env.DATABASE_TYPE === "mysql"
+      ? query.ignore()
+      : query.onConflict((oc: any) => oc.column("id").doNothing())
+  ).execute();
 }

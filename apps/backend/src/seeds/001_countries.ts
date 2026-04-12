@@ -1,4 +1,5 @@
 import type { Kysely } from "kysely";
+import { env } from "@utils/env.js";
 
 const countries = [
   "Albania",
@@ -60,11 +61,12 @@ const countries = [
 
 export async function seed(db: Kysely<any>): Promise<void> {
   for (const name of countries) {
-    await db
-      .insertInto("country")
-      .values({ name })
-      .onConflict((oc) => oc.column("name").doNothing())
-      .execute();
+    const query = db.insertInto("country").values({ name });
+    await (
+      env.DATABASE_TYPE === "mysql"
+        ? query.ignore()
+        : query.onConflict((oc) => oc.column("name").doNothing())
+    ).execute();
   }
 
   console.log(`Seeded ${countries.length} countries`);

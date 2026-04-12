@@ -8,6 +8,7 @@ import {
 } from "./setup";
 import { registerSettingsRoutes } from "@routes/settings.routes.js";
 import { db } from "@utils/database.js";
+import { env } from "@utils/env.js";
 
 describe("Admin middleware", () => {
   beforeAll(async () => {
@@ -15,11 +16,16 @@ describe("Admin middleware", () => {
     await cleanDatabase(db);
 
     // Seed a test setting
-    await db
+    const query = db
       .insertInto("setting")
-      .values({ key: "admin-test", value: "original" })
-      .onConflict((oc) => oc.column("key").doUpdateSet({ value: "original" }))
-      .execute();
+      .values({ key: "admin-test", value: "original" });
+    await (
+      env.DATABASE_TYPE === "mysql"
+        ? query.onDuplicateKeyUpdate({ value: "original" })
+        : query.onConflict((oc) =>
+            oc.column("key").doUpdateSet({ value: "original" }),
+          )
+    ).execute();
   });
 
   describe("non-admin user", () => {

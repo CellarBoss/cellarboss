@@ -8,6 +8,7 @@ import {
 } from "./setup";
 import { registerSettingsRoutes } from "@routes/settings.routes.js";
 import { db } from "@utils/database.js";
+import { env } from "@utils/env.js";
 
 describe("Settings API", () => {
   beforeAll(async () => {
@@ -23,11 +24,16 @@ describe("Settings API", () => {
       registerSettingsRoutes(app);
 
       // Seed a test setting
-      await db
+      const query = db
         .insertInto("setting")
-        .values({ key: "theme", value: "dark" })
-        .onConflict((oc) => oc.column("key").doUpdateSet({ value: "dark" }))
-        .execute();
+        .values({ key: "theme", value: "dark" });
+      await (
+        env.DATABASE_TYPE === "mysql"
+          ? query.onDuplicateKeyUpdate({ value: "dark" })
+          : query.onConflict((oc) =>
+              oc.column("key").doUpdateSet({ value: "dark" }),
+            )
+      ).execute();
     });
 
     it("GET /settings returns 200 with settings list", async () => {
@@ -69,11 +75,16 @@ describe("Settings API", () => {
       registerSettingsRoutes(app);
 
       // Seed a test setting
-      await db
+      const query = db
         .insertInto("setting")
-        .values({ key: "currency", value: "USD" })
-        .onConflict((oc) => oc.column("key").doUpdateSet({ value: "USD" }))
-        .execute();
+        .values({ key: "currency", value: "USD" });
+      await (
+        env.DATABASE_TYPE === "mysql"
+          ? query.onDuplicateKeyUpdate({ value: "USD" })
+          : query.onConflict((oc) =>
+              oc.column("key").doUpdateSet({ value: "USD" }),
+            )
+      ).execute();
     });
 
     it("PUT /settings/:key updates a setting", async () => {
