@@ -8,7 +8,7 @@ import { PostgresDialect } from "kysely";
 import pg from "pg";
 
 import { MysqlDialect } from "kysely";
-import mysql from "mysql2/promise";
+import { createPool as createMysqlPool } from "mysql2";
 
 import { env } from "@utils/env.js";
 import type { Database } from "@schema/database.js";
@@ -34,7 +34,7 @@ export function getDialect(): Dialect {
     case "mysql": {
       const url = new URL(env.DATABASE_URL);
       return new MysqlDialect({
-        pool: mysql.createPool({
+        pool: createMysqlPool({
           host: url.hostname,
           port: parseInt(url.port) || 3306,
           user: decodeURIComponent(url.username),
