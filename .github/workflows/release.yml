@@ -44,7 +44,7 @@ jobs:
           APP_VERSION: ${{ github.ref_name }}
 
       - name: Upload API docs artifact
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: api-docs
           path: apps/backend/docs/
@@ -87,7 +87,7 @@ jobs:
         run: pnpm --filter @cellarboss/web docs:build
 
       - name: Upload user docs artifact
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: webui-user-docs
           path: apps/web/docs/.vitepress/dist/
@@ -201,7 +201,7 @@ jobs:
         run: pnpm --filter @cellarboss/mobile docs:build
 
       - name: Upload mobile docs artifact
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: mobile-user-docs
           path: apps/mobile/docs/.vitepress/dist/
@@ -304,7 +304,7 @@ jobs:
             -Pandroid.injected.signing.key.password="${{ secrets.ANDROID_KEY_PASSWORD }}"
 
       - name: Upload Android AAB artifact
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: android-aab
           path: apps/mobile/android/app/build/outputs/bundle/release/app-release.aab
