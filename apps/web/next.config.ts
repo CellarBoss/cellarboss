@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
+  env: {
+    NEXT_PUBLIC_APP_VERSION: process.env.APP_VERSION ?? "development",
+  },
   output: "standalone",
   // Trace files from the monorepo root so workspace packages (packages/*)
   // are included in the standalone bundle.

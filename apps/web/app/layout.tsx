@@ -5,6 +5,7 @@ import "./globals.css";
 import { AppSidebar } from "@/components/sidebar/AppSidebar";
 import { MobileHeader } from "@/components/sidebar/MobileHeader";
 import { LoadingCard } from "@/components/cards/LoadingCard";
+import { VersionMismatchBanner } from "@/components/page/VersionMismatchBanner";
 import Providers from "@/app/providers";
 
 export const metadata: Metadata = {
@@ -30,6 +31,7 @@ export default async function RootLayout({
               <AppSidebar />
               <main className="flex-1 p-4 md:p-10 bg-muted">
                 <MobileHeader />
+                <VersionMismatchBanner />
                 <div className="w-full bg-card shadow-sm rounded-lg p-4 md:p-10">
                   <Suspense fallback={<LoadingCard />}>{children}</Suspense>
                 </div>
