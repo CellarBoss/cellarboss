@@ -4,6 +4,7 @@ const KEYS = {
   TOKEN: "cellarboss_auth_token",
   SERVER_URL: "cellarboss_server_url",
   EMAIL: "cellarboss_email",
+  THEME_PREFERENCE: "cellarboss_theme_preference",
 } as const;
 
 // --- Auth token ---
@@ -46,6 +47,24 @@ export async function setSavedEmail(email: string): Promise<void> {
 
 export async function clearSavedEmail(): Promise<void> {
   await SecureStore.deleteItemAsync(KEYS.EMAIL);
+}
+
+// --- Theme preference ---
+
+export type ThemePreference = "light" | "dark" | "system";
+
+export async function getThemePreference(): Promise<ThemePreference | null> {
+  const value = await SecureStore.getItemAsync(KEYS.THEME_PREFERENCE);
+  if (value === "light" || value === "dark" || value === "system") {
+    return value;
+  }
+  return null;
+}
+
+export async function setThemePreference(
+  preference: ThemePreference,
+): Promise<void> {
+  await SecureStore.setItemAsync(KEYS.THEME_PREFERENCE, preference);
 }
 
 // --- Clear all ---
