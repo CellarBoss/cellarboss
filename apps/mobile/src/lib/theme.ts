@@ -1,6 +1,6 @@
-import { MD3LightTheme } from "react-native-paper";
+import { MD3LightTheme, MD3DarkTheme } from "react-native-paper";
 
-export const theme = {
+export const lightTheme = {
   ...MD3LightTheme,
   colors: {
     ...MD3LightTheme.colors,
@@ -30,7 +30,40 @@ export const theme = {
   },
 };
 
-export type AppTheme = typeof theme;
+export const darkTheme = {
+  ...MD3DarkTheme,
+  colors: {
+    ...MD3DarkTheme.colors,
+    primary: "#D4899B",
+    primaryContainer: "#5D1D2E",
+    secondary: "#C4889A",
+    secondaryContainer: "#6B3347",
+    tertiary: "#E8B4C0",
+    tertiaryContainer: "#4A1524",
+    error: "#FFB4AB",
+    errorContainer: "#93000A",
+    background: "#1C1B1B",
+    surface: "#252323",
+    surfaceVariant: "#352F30",
+    onPrimary: "#3A0F1C",
+    onPrimaryContainer: "#F5E6EA",
+    onSecondary: "#3A0F1C",
+    onSecondaryContainer: "#F8E8EC",
+    onTertiary: "#2D0A17",
+    onError: "#690005",
+    onErrorContainer: "#FFDAD6",
+    onBackground: "#E6E1E1",
+    onSurface: "#E6E1E1",
+    onSurfaceVariant: "#D8C2C4",
+    outline: "#A08C8E",
+    outlineVariant: "#524344",
+  },
+};
+
+/** @deprecated Use `useAppTheme()` hook instead of importing this static theme */
+export const theme = lightTheme;
+
+export type AppTheme = typeof lightTheme;
 
 export const shadows = {
   card: {
