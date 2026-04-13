@@ -5,12 +5,13 @@ import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { Camera, Images } from "lucide-react-native";
 import { uploadRequest } from "@/lib/api/upload";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import type { Image as ImageType } from "@cellarboss/types";
 
 type Props = { vintageId: number };
 
 export function ImageUpload({ vintageId }: Props) {
+  const theme = useAppTheme();
   const queryClient = useQueryClient();
   const [uploading, setUploading] = useState(false);
 
@@ -77,6 +78,42 @@ export function ImageUpload({ vintageId }: Props) {
     }
   }
 
+  const styles = StyleSheet.create({
+    container: {
+      flexDirection: "row",
+      gap: 8,
+      marginTop: 12,
+    },
+    btn: {
+      flex: 1,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 6,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: theme.colors.primary,
+    },
+    btnText: {
+      fontSize: 13,
+      color: theme.colors.primary,
+      fontWeight: "500",
+    },
+    uploading: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+      marginTop: 12,
+      paddingVertical: 10,
+    },
+    uploadingText: {
+      fontSize: 13,
+      color: theme.colors.onSurfaceVariant,
+    },
+  });
+
   if (uploading) {
     return (
       <View style={styles.uploading}>
@@ -99,39 +136,3 @@ export function ImageUpload({ vintageId }: Props) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    gap: 8,
-    marginTop: 12,
-  },
-  btn: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: theme.colors.primary,
-  },
-  btnText: {
-    fontSize: 13,
-    color: theme.colors.primary,
-    fontWeight: "500",
-  },
-  uploading: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 12,
-    paddingVertical: 10,
-  },
-  uploadingText: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-  },
-});

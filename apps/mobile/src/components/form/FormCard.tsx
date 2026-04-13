@@ -13,7 +13,8 @@ import * as Haptics from "expo-haptics";
 import { FormField } from "./FormField";
 import { DataSelector } from "../DataSelector";
 import { WineVintageSelector } from "../WineVintageSelector";
-import { theme, shadows } from "@/lib/theme";
+import { shadows } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import type { ApiResult } from "@cellarboss/common";
 import type { FieldConfig } from "@/lib/types/field";
 
@@ -45,6 +46,7 @@ export function FormCard<T extends { id: number | string }>({
   onSuccess,
 }: FormCardProps<T>) {
   const { goBack } = useNavigationHistory();
+  const theme = useAppTheme();
   const editable = mode !== "view";
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -89,6 +91,42 @@ export function FormCard<T extends { id: number | string }>({
       } finally {
         setIsProcessing(false);
       }
+    },
+  });
+
+  const styles = StyleSheet.create({
+    flex: {
+      flex: 1,
+    },
+    scroll: {
+      padding: 16,
+    },
+    card: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      padding: 16,
+      ...shadows.card,
+    },
+    error: {
+      color: theme.colors.error,
+      fontSize: 14,
+      marginTop: 12,
+      textAlign: "center",
+    },
+    success: {
+      color: "#16a34a",
+      fontSize: 14,
+      marginTop: 12,
+      textAlign: "center",
+    },
+    actions: {
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      gap: 12,
+      marginTop: 16,
+    },
+    actionButton: {
+      minWidth: 100,
     },
   });
 
@@ -203,39 +241,3 @@ export function FormCard<T extends { id: number | string }>({
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-  },
-  scroll: {
-    padding: 16,
-  },
-  card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    ...shadows.card,
-  },
-  error: {
-    color: theme.colors.error,
-    fontSize: 14,
-    marginTop: 12,
-    textAlign: "center",
-  },
-  success: {
-    color: "#16a34a",
-    fontSize: 14,
-    marginTop: 12,
-    textAlign: "center",
-  },
-  actions: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    gap: 12,
-    marginTop: 16,
-  },
-  actionButton: {
-    minWidth: 100,
-  },
-});

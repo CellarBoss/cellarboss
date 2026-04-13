@@ -1,7 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import { TextInput, HelperText } from "react-native-paper";
 import { useSetting } from "@/hooks/use-settings";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 type PriceFieldProps = {
   label: string;
@@ -34,6 +34,7 @@ export function PriceField({
   editable = true,
   error,
 }: PriceFieldProps) {
+  const theme = useAppTheme();
   const currencySetting = useSetting("currency");
   const currency = (currencySetting.data as string) || "USD";
   const symbol = getCurrencySymbol(currency);

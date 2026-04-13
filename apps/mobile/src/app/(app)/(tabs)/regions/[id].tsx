@@ -1,5 +1,5 @@
 import { ScrollView } from "react-native";
-import { commonStyles } from "@/styles/common";
+import { useCommonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
@@ -10,6 +10,7 @@ import { RegionDetailsCard } from "@/components/region/RegionDetailsCard";
 import { RegionWinesList } from "@/components/region/RegionWinesList";
 
 export default function ViewRegionScreen() {
+  const commonStyles = useCommonStyles();
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
 

@@ -1,4 +1,4 @@
-import { commonStyles } from "@/styles/common";
+import { useCommonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
@@ -10,6 +10,7 @@ import type { Storage } from "@cellarboss/types";
 import type { ApiResult } from "@cellarboss/common";
 
 export default function NewStorageScreen() {
+  const commonStyles = useCommonStyles();
   const { locationId: locationIdParam } = useLocalSearchParams<{
     locationId?: string;
   }>();

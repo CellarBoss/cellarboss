@@ -5,7 +5,7 @@ import { WineGlassRating } from "./WineGlassRating";
 import { DateField } from "./DateField";
 import { PriceField } from "./PriceField";
 import { QuantityStepper } from "./QuantityStepper";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import type { SelectOption } from "@/lib/types/field";
 
 type FormFieldProps = {
@@ -38,7 +38,25 @@ export function FormField({
   options,
   numberProps,
 }: FormFieldProps) {
+  const theme = useAppTheme();
   const [menuVisible, setMenuVisible] = useState(false);
+
+  const styles = StyleSheet.create({
+    field: {
+      marginBottom: 16,
+    },
+    label: {
+      fontSize: 12,
+      color: theme.colors.onSurfaceVariant,
+      marginBottom: 4,
+    },
+    menuButton: {
+      borderColor: theme.colors.outline,
+    },
+    menuButtonContent: {
+      justifyContent: "flex-start",
+    },
+  });
 
   if (type === "wine-rating") {
     return (
@@ -150,20 +168,3 @@ export function FormField({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  field: {
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-    marginBottom: 4,
-  },
-  menuButton: {
-    borderColor: theme.colors.outline,
-  },
-  menuButtonContent: {
-    justifyContent: "flex-start",
-  },
-});

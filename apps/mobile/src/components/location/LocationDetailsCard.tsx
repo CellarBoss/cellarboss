@@ -1,12 +1,15 @@
 import { View, StyleSheet } from "react-native";
 import { Text, Icon } from "react-native-paper";
-import { theme, shadows } from "@/lib/theme";
+import { shadows } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import type { Location } from "@cellarboss/types";
 
 export function LocationDetailsCard({ location }: { location: Location }) {
+  const theme = useAppTheme();
+
   const storagesQuery = useApiQuery({
     queryKey: ["storages"],
     queryFn: () => api.storages.getAll(),
@@ -19,6 +22,39 @@ export function LocationDetailsCard({ location }: { location: Location }) {
   const storageCount = storages.filter(
     (s) => s.locationId === location.id,
   ).length;
+
+  const styles = StyleSheet.create({
+    heading: {
+      color: theme.colors.onSurface,
+      marginBottom: 8,
+      paddingHorizontal: 4,
+    },
+    row: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: 12,
+    },
+    details: {
+      flex: 1,
+      gap: 4,
+    },
+    detailRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      marginTop: 2,
+    },
+    detailText: {
+      flex: 1,
+      color: theme.colors.onSurfaceVariant,
+    },
+    card: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      padding: 16,
+      ...shadows.card,
+    },
+  });
 
   return (
     <>
@@ -50,36 +86,3 @@ export function LocationDetailsCard({ location }: { location: Location }) {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  heading: {
-    color: theme.colors.onSurface,
-    marginBottom: 8,
-    paddingHorizontal: 4,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 12,
-  },
-  details: {
-    flex: 1,
-    gap: 4,
-  },
-  detailRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginTop: 2,
-  },
-  detailText: {
-    flex: 1,
-    color: theme.colors.onSurfaceVariant,
-  },
-  card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    ...shadows.card,
-  },
-});

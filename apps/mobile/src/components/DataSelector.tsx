@@ -11,7 +11,7 @@ import {
   HelperText,
 } from "react-native-paper";
 import { useQuery } from "@tanstack/react-query";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import type { GenericType } from "@cellarboss/types";
 import type { ApiResult } from "@cellarboss/common";
 
@@ -73,6 +73,7 @@ export function DataSelector({
   disabled = false,
   error,
 }: DataSelectorProps) {
+  const theme = useAppTheme();
   const [visible, setVisible] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -217,6 +218,121 @@ export function DataSelector({
     }
   }
 
+  const styles = StyleSheet.create({
+    field: {
+      marginBottom: 16,
+    },
+    label: {
+      fontSize: 12,
+      color: theme.colors.onSurfaceVariant,
+      marginBottom: 4,
+    },
+    selector: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      borderWidth: 1,
+      borderColor: theme.colors.outline,
+      borderRadius: 4,
+      paddingLeft: 12,
+      minHeight: 48,
+    },
+    selectorDisabled: {
+      opacity: 0.5,
+    },
+    selectorError: {
+      borderColor: theme.colors.error,
+    },
+    selectorText: {
+      flex: 1,
+      fontSize: 16,
+      color: theme.colors.onSurface,
+    },
+    placeholderText: {
+      color: theme.colors.onSurfaceVariant,
+    },
+    modal: {
+      backgroundColor: theme.colors.surface,
+      margin: 24,
+      borderRadius: 12,
+      maxHeight: "80%",
+      overflow: "hidden",
+    },
+    modalHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingLeft: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outlineVariant,
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: "bold",
+      color: theme.colors.onSurface,
+    },
+    searchbar: {
+      margin: 12,
+      height: 40,
+    },
+    loadingText: {
+      padding: 24,
+      textAlign: "center",
+      color: theme.colors.onSurfaceVariant,
+    },
+    list: {
+      maxHeight: 300,
+    },
+    item: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingVertical: 4,
+      paddingHorizontal: 8,
+    },
+    itemSelected: {
+      backgroundColor: theme.colors.primaryContainer,
+    },
+    groupHeader: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      backgroundColor: theme.colors.surfaceVariant,
+    },
+    groupHeaderText: {
+      fontSize: 13,
+      fontWeight: "bold",
+      color: theme.colors.onSurfaceVariant,
+      textTransform: "uppercase",
+      letterSpacing: 0.5,
+    },
+    depthIndicator: {
+      fontSize: 14,
+      color: theme.colors.onSurfaceVariant,
+      marginRight: 2,
+    },
+    itemText: {
+      fontSize: 16,
+      color: theme.colors.onSurface,
+      flex: 1,
+    },
+    modalActions: {
+      padding: 12,
+      borderTopWidth: 1,
+      borderTopColor: theme.colors.outlineVariant,
+      alignItems: "flex-end",
+    },
+    doneButton: {
+      backgroundColor: theme.colors.primary,
+      paddingHorizontal: 24,
+      paddingVertical: 10,
+      borderRadius: 8,
+    },
+    doneButtonText: {
+      color: "#fff",
+      fontWeight: "600",
+      fontSize: 14,
+    },
+  });
+
   return (
     <View style={styles.field}>
       <Text style={styles.label}>{label}</Text>
@@ -337,118 +453,3 @@ export function DataSelector({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  field: {
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-    marginBottom: 4,
-  },
-  selector: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    borderColor: theme.colors.outline,
-    borderRadius: 4,
-    paddingLeft: 12,
-    minHeight: 48,
-  },
-  selectorDisabled: {
-    opacity: 0.5,
-  },
-  selectorError: {
-    borderColor: theme.colors.error,
-  },
-  selectorText: {
-    flex: 1,
-    fontSize: 16,
-    color: theme.colors.onSurface,
-  },
-  placeholderText: {
-    color: theme.colors.onSurfaceVariant,
-  },
-  modal: {
-    backgroundColor: theme.colors.surface,
-    margin: 24,
-    borderRadius: 12,
-    maxHeight: "80%",
-    overflow: "hidden",
-  },
-  modalHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingLeft: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-  },
-  searchbar: {
-    margin: 12,
-    height: 40,
-  },
-  loadingText: {
-    padding: 24,
-    textAlign: "center",
-    color: theme.colors.onSurfaceVariant,
-  },
-  list: {
-    maxHeight: 300,
-  },
-  item: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-  },
-  itemSelected: {
-    backgroundColor: theme.colors.primaryContainer,
-  },
-  groupHeader: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: theme.colors.surfaceVariant,
-  },
-  groupHeaderText: {
-    fontSize: 13,
-    fontWeight: "bold",
-    color: theme.colors.onSurfaceVariant,
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-  },
-  depthIndicator: {
-    fontSize: 14,
-    color: theme.colors.onSurfaceVariant,
-    marginRight: 2,
-  },
-  itemText: {
-    fontSize: 16,
-    color: theme.colors.onSurface,
-    flex: 1,
-  },
-  modalActions: {
-    padding: 12,
-    borderTopWidth: 1,
-    borderTopColor: theme.colors.outlineVariant,
-    alignItems: "flex-end",
-  },
-  doneButton: {
-    backgroundColor: theme.colors.primary,
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  doneButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 14,
-  },
-});

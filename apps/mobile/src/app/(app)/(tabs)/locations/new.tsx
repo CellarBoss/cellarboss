@@ -1,4 +1,4 @@
-import { commonStyles } from "@/styles/common";
+import { useCommonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import { ScreenHeader } from "@/components/ScreenHeader";
@@ -9,6 +9,7 @@ import type { Location } from "@cellarboss/types";
 import type { ApiResult } from "@cellarboss/common";
 
 export default function NewLocationScreen() {
+  const commonStyles = useCommonStyles();
   const queryClient = useQueryClient();
 
   const defaultData: Location = {

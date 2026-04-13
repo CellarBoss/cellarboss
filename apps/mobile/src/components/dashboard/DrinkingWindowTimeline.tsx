@@ -1,7 +1,7 @@
 import { View, StyleSheet, ScrollView } from "react-native";
 import { Card, Text } from "react-native-paper";
 import type { Bottle, Vintage } from "@cellarboss/types";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 type DrinkingWindowTimelineProps = {
   bottles: Bottle[];
@@ -16,6 +16,7 @@ export function DrinkingWindowTimeline({
   bottles,
   vintages,
 }: DrinkingWindowTimelineProps) {
+  const theme = useAppTheme();
   const currentYear = new Date().getFullYear();
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const storedBottles = bottles.filter((b) => b.status === "stored");
@@ -50,6 +51,58 @@ export function DrinkingWindowTimeline({
   );
 
   const BAR_MAX_HEIGHT = 80;
+
+  const styles = StyleSheet.create({
+    card: {
+      backgroundColor: theme.colors.surface,
+    },
+    chartContainer: {
+      flexDirection: "row",
+      alignItems: "flex-end",
+      gap: 6,
+      paddingBottom: 4,
+    },
+    barColumn: {
+      alignItems: "center",
+      width: 28,
+    },
+    barWrapper: {
+      width: 22,
+      justifyContent: "flex-end",
+    },
+    stackedBar: {
+      width: 22,
+      overflow: "hidden",
+      borderRadius: 2,
+    },
+    segment: {
+      width: "100%",
+    },
+    yearLabel: {
+      fontSize: 10,
+      color: theme.colors.onSurfaceVariant,
+      marginTop: 4,
+    },
+    legend: {
+      flexDirection: "row",
+      gap: 16,
+      marginTop: 12,
+    },
+    legendItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+    },
+    legendDot: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+    },
+    legendText: {
+      fontSize: 12,
+      color: theme.colors.onSurfaceVariant,
+    },
+  });
 
   return (
     <Card style={styles.card}>
@@ -128,55 +181,3 @@ export function DrinkingWindowTimeline({
     </Card>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: theme.colors.surface,
-  },
-  chartContainer: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    gap: 6,
-    paddingBottom: 4,
-  },
-  barColumn: {
-    alignItems: "center",
-    width: 28,
-  },
-  barWrapper: {
-    width: 22,
-    justifyContent: "flex-end",
-  },
-  stackedBar: {
-    width: 22,
-    overflow: "hidden",
-    borderRadius: 2,
-  },
-  segment: {
-    width: "100%",
-  },
-  yearLabel: {
-    fontSize: 10,
-    color: theme.colors.onSurfaceVariant,
-    marginTop: 4,
-  },
-  legend: {
-    flexDirection: "row",
-    gap: 16,
-    marginTop: 12,
-  },
-  legendItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  legendDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  legendText: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-  },
-});

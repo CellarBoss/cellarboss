@@ -5,13 +5,15 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { formatDrinkingStatus } from "@/lib/functions/format";
-import { theme, shadows } from "@/lib/theme";
+import { shadows } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import {
-  DRINKING_STATUS_COLORS,
+  getDrinkingStatusColors,
   DRINKING_STATUS_LABELS,
 } from "@/lib/constants/drinking-status";
 
 export function WineVintagesList({ wineId }: { wineId: number }) {
+  const theme = useAppTheme();
   const router = useRouter();
 
   const vintageQuery = useApiQuery({
@@ -41,6 +43,71 @@ export function WineVintagesList({ wineId }: { wineId: number }) {
   }
 
   const sorted = [...vintages].sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
+
+  const styles = StyleSheet.create({
+    section: {
+      marginTop: 16,
+    },
+    heading: {
+      color: theme.colors.onSurface,
+      marginBottom: 8,
+      paddingHorizontal: 4,
+    },
+    card: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      ...shadows.card,
+      overflow: "hidden",
+    },
+    empty: {
+      fontSize: 13,
+      color: theme.colors.onSurfaceVariant,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    row: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outlineVariant,
+    },
+    rowLast: {
+      borderBottomWidth: 0,
+    },
+    year: {
+      fontSize: 15,
+      fontWeight: "bold",
+      color: theme.colors.onSurface,
+      width: 48,
+    },
+    status: {
+      flex: 1,
+      fontSize: 13,
+    },
+    bottles: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+    },
+    bottleCount: {
+      fontSize: 13,
+      color: theme.colors.onSurfaceVariant,
+    },
+    addLink: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+      paddingHorizontal: 4,
+      paddingVertical: 12,
+    },
+    addText: {
+      fontSize: 14,
+      color: theme.colors.primary,
+      fontWeight: "500",
+    },
+  });
 
   return (
     <View style={styles.section}>
@@ -72,7 +139,7 @@ export function WineVintagesList({ wineId }: { wineId: number }) {
                 <Text
                   style={[
                     styles.status,
-                    { color: DRINKING_STATUS_COLORS[status] },
+                    { color: getDrinkingStatusColors(theme)[status] },
                   ]}
                   numberOfLines={1}
                 >
@@ -101,68 +168,3 @@ export function WineVintagesList({ wineId }: { wineId: number }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  section: {
-    marginTop: 16,
-  },
-  heading: {
-    color: theme.colors.onSurface,
-    marginBottom: 8,
-    paddingHorizontal: 4,
-  },
-  card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    ...shadows.card,
-    overflow: "hidden",
-  },
-  empty: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-  },
-  rowLast: {
-    borderBottomWidth: 0,
-  },
-  year: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-    width: 48,
-  },
-  status: {
-    flex: 1,
-    fontSize: 13,
-  },
-  bottles: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  bottleCount: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-  },
-  addLink: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    paddingHorizontal: 4,
-    paddingVertical: 12,
-  },
-  addText: {
-    fontSize: 14,
-    color: theme.colors.primary,
-    fontWeight: "500",
-  },
-});

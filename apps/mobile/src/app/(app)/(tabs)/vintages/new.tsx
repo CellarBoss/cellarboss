@@ -1,4 +1,4 @@
-import { commonStyles } from "@/styles/common";
+import { useCommonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
@@ -10,6 +10,7 @@ import type { Vintage } from "@cellarboss/types";
 import type { ApiResult } from "@cellarboss/common";
 
 export default function NewVintageScreen() {
+  const commonStyles = useCommonStyles();
   const queryClient = useQueryClient();
   const { wineId } = useLocalSearchParams<{ wineId?: string }>();
 

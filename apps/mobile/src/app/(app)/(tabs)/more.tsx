@@ -1,19 +1,31 @@
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
-import { List, Divider } from "react-native-paper";
+import { List, Divider, Dialog, Portal, RadioButton } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/contexts/auth-context";
+import { useThemePreference } from "@/contexts/theme-context";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { getApiBaseUrl } from "@/lib/api/base-url";
-import { theme } from "@/lib/theme";
+import type { ThemePreference } from "@/lib/auth/secure-store";
+
+const themeLabels: Record<ThemePreference, string> = {
+  light: "Light",
+  dark: "Dark",
+  system: "System default",
+};
 
 export default function MoreScreen() {
   const router = useRouter();
   const auth = useAuth();
+  const theme = useAppTheme();
+  const { preference, setPreference } = useThemePreference();
   const user = auth.status === "authenticated" ? auth.user : null;
+  const styles = useStyles();
   const [apiBaseUrl, setApiBaseUrl] = useState<string | null>(null);
+  const [themeDialogVisible, setThemeDialogVisible] = useState(false);
 
   useEffect(() => {
     getApiBaseUrl().then(setApiBaseUrl);
@@ -138,6 +150,42 @@ export default function MoreScreen() {
         </List.Section>
 
         <Divider />
+
+        <List.Section>
+          <List.Subheader>Appearance</List.Subheader>
+          <List.Item
+            testID="menu-appearance"
+            title="Theme"
+            description={themeLabels[preference]}
+            left={(props) => <List.Icon {...props} icon="theme-light-dark" />}
+            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            onPress={() => setThemeDialogVisible(true)}
+          />
+        </List.Section>
+
+        <Portal>
+          <Dialog
+            visible={themeDialogVisible}
+            onDismiss={() => setThemeDialogVisible(false)}
+          >
+            <Dialog.Title>Theme</Dialog.Title>
+            <Dialog.Content>
+              <RadioButton.Group
+                value={preference}
+                onValueChange={(value) => {
+                  setPreference(value as ThemePreference);
+                  setThemeDialogVisible(false);
+                }}
+              >
+                <RadioButton.Item label="Light" value="light" />
+                <RadioButton.Item label="Dark" value="dark" />
+                <RadioButton.Item label="System default" value="system" />
+              </RadioButton.Group>
+            </Dialog.Content>
+          </Dialog>
+        </Portal>
+
+        <Divider />
         {apiBaseUrl && (
           <List.Section>
             <List.Subheader>CellarBoss Server</List.Subheader>
@@ -161,9 +209,12 @@ export default function MoreScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-});
+function useStyles() {
+  const theme = useAppTheme();
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+  });
+}

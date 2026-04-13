@@ -1,13 +1,15 @@
 import { View, Pressable, StyleSheet } from "react-native";
 import { Text, Icon } from "react-native-paper";
 import { useRouter } from "expo-router";
-import { theme, shadows } from "@/lib/theme";
+import { shadows } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import type { Storage } from "@cellarboss/types";
 
 export function StorageDetailsCard({ storageId }: { storageId: number }) {
+  const theme = useAppTheme();
   const router = useRouter();
 
   const storagesQuery = useApiQuery({
@@ -46,6 +48,54 @@ export function StorageDetailsCard({ storageId }: { storageId: number }) {
     storage.locationId != null
       ? locationMap.get(storage.locationId)
       : undefined;
+
+  const styles = StyleSheet.create({
+    heading: {
+      color: theme.colors.onSurface,
+      marginBottom: 8,
+      paddingHorizontal: 4,
+    },
+    card: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      padding: 16,
+      ...shadows.card,
+    },
+    row: {
+      flexDirection: "row" as const,
+      alignItems: "flex-start" as const,
+      gap: 12,
+    },
+    details: {
+      flex: 1,
+      gap: 4,
+    },
+    detailRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 6,
+      marginTop: 2,
+    },
+    detailText: {
+      flex: 1,
+      color: theme.colors.onSurfaceVariant,
+    },
+    hierarchyRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      flexWrap: "wrap" as const,
+      marginBottom: 2,
+    },
+    hierarchySegment: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+    },
+    hierarchyText: {
+      fontSize: 14,
+      fontWeight: "bold" as const,
+      color: theme.colors.primary,
+    },
+  });
 
   return (
     <>
@@ -90,51 +140,3 @@ export function StorageDetailsCard({ storageId }: { storageId: number }) {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  heading: {
-    color: theme.colors.onSurface,
-    marginBottom: 8,
-    paddingHorizontal: 4,
-  },
-  card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    ...shadows.card,
-  },
-  row: {
-    flexDirection: "row" as const,
-    alignItems: "flex-start" as const,
-    gap: 12,
-  },
-  details: {
-    flex: 1,
-    gap: 4,
-  },
-  detailRow: {
-    flexDirection: "row" as const,
-    alignItems: "center" as const,
-    gap: 6,
-    marginTop: 2,
-  },
-  detailText: {
-    flex: 1,
-    color: theme.colors.onSurfaceVariant,
-  },
-  hierarchyRow: {
-    flexDirection: "row" as const,
-    alignItems: "center" as const,
-    flexWrap: "wrap" as const,
-    marginBottom: 2,
-  },
-  hierarchySegment: {
-    flexDirection: "row" as const,
-    alignItems: "center" as const,
-  },
-  hierarchyText: {
-    fontSize: 14,
-    fontWeight: "bold" as const,
-    color: theme.colors.primary,
-  },
-});

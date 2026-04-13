@@ -15,7 +15,7 @@ import {
 import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
 import type { BottleStatus } from "@cellarboss/validators/constants";
 import { formatStatus } from "@/lib/functions/format";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 type StatusPickerModalProps = {
   visible: boolean;
@@ -30,11 +30,76 @@ export function StatusPickerModal({
   onConfirm,
   onDismiss,
 }: StatusPickerModalProps) {
+  const theme = useAppTheme();
   const [draft, setDraft] = useState<BottleStatus>(currentStatus);
 
   useEffect(() => {
     if (visible) setDraft(currentStatus);
   }, [visible, currentStatus]);
+
+  const styles = StyleSheet.create({
+    modal: {
+      backgroundColor: theme.colors.surface,
+      margin: 24,
+      borderRadius: 12,
+      maxHeight: "80%",
+      overflow: "hidden",
+    },
+    header: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingLeft: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outlineVariant,
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: "bold",
+      color: theme.colors.onSurface,
+    },
+    option: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingVertical: 4,
+      paddingHorizontal: 16,
+      gap: 12,
+    },
+    optionText: {
+      flex: 1,
+      fontSize: 16,
+      color: theme.colors.onSurface,
+    },
+    actions: {
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      padding: 12,
+      gap: 12,
+      borderTopWidth: 1,
+      borderTopColor: theme.colors.outlineVariant,
+    },
+    cancelButton: {
+      paddingHorizontal: 24,
+      paddingVertical: 10,
+      borderRadius: 8,
+    },
+    cancelButtonText: {
+      fontSize: 14,
+      fontWeight: "600",
+      color: theme.colors.onSurfaceVariant,
+    },
+    okButton: {
+      backgroundColor: theme.colors.primary,
+      paddingHorizontal: 24,
+      paddingVertical: 10,
+      borderRadius: 8,
+    },
+    okButtonText: {
+      color: "#fff",
+      fontWeight: "600",
+      fontSize: 14,
+    },
+  });
 
   return (
     <Portal>
@@ -78,67 +143,3 @@ export function StatusPickerModal({
     </Portal>
   );
 }
-
-const styles = StyleSheet.create({
-  modal: {
-    backgroundColor: theme.colors.surface,
-    margin: 24,
-    borderRadius: 12,
-    maxHeight: "80%",
-    overflow: "hidden",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingLeft: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-  },
-  option: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 4,
-    paddingHorizontal: 16,
-    gap: 12,
-  },
-  optionText: {
-    flex: 1,
-    fontSize: 16,
-    color: theme.colors.onSurface,
-  },
-  actions: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    padding: 12,
-    gap: 12,
-    borderTopWidth: 1,
-    borderTopColor: theme.colors.outlineVariant,
-  },
-  cancelButton: {
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  cancelButtonText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: theme.colors.onSurfaceVariant,
-  },
-  okButton: {
-    backgroundColor: theme.colors.primary,
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  okButtonText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 14,
-  },
-});

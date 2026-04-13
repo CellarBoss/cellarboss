@@ -9,8 +9,8 @@ import { WineListItem } from "@/components/wine/WineListItem";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
-import { commonStyles } from "@/styles/common";
-import { theme } from "@/lib/theme";
+import { useCommonStyles } from "@/styles/common";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import type { Wine } from "@cellarboss/types";
 
 const SORT_OPTIONS = [
@@ -22,6 +22,8 @@ const SORT_OPTIONS = [
 ];
 
 export default function WinesScreen() {
+  const commonStyles = useCommonStyles();
+  const theme = useAppTheme();
   const router = useRouter();
   const queryClient = useQueryClient();
   const [currentSort, setCurrentSort] = useState("name-asc");

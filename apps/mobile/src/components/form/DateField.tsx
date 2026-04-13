@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 import { TextInput, HelperText } from "react-native-paper";
 import { DatePickerModal } from "react-native-paper-dates";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 type DateFieldProps = {
   label: string;
@@ -19,6 +19,7 @@ export function DateField({
   editable = true,
   error,
 }: DateFieldProps) {
+  const theme = useAppTheme();
   const [open, setOpen] = useState(false);
   const dateValue = value ? new Date(value + "T00:00:00") : undefined;
 

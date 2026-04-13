@@ -1,7 +1,7 @@
 import { View, Pressable, StyleSheet } from "react-native";
 import { Text, Icon } from "react-native-paper";
-import { commonStyles } from "@/styles/common";
-import { theme } from "@/lib/theme";
+import { useCommonStyles } from "@/styles/common";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import { WINE_TYPE_COLORS } from "@/lib/constants/wines";
 import type { Wine } from "@cellarboss/types";
 
@@ -18,6 +18,32 @@ export function WineListItem({
   regionDisplay,
   onPress,
 }: WineListItemProps) {
+  const commonStyles = useCommonStyles();
+  const theme = useAppTheme();
+
+  const styles = StyleSheet.create({
+    row: {
+      gap: 12,
+    },
+    text: {
+      flex: 1,
+      gap: 2,
+    },
+    title: {
+      flex: 1,
+    },
+    detailRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      marginTop: 2,
+    },
+    detailText: {
+      flex: 1,
+      color: theme.colors.onSurfaceVariant,
+    },
+  });
+
   return (
     <Pressable
       testID={`wine-item-${wine.id}`}
@@ -66,26 +92,3 @@ export function WineListItem({
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  row: {
-    gap: 12,
-  },
-  text: {
-    flex: 1,
-    gap: 2,
-  },
-  title: {
-    flex: 1,
-  },
-  detailRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginTop: 2,
-  },
-  detailText: {
-    flex: 1,
-    color: theme.colors.onSurfaceVariant,
-  },
-});

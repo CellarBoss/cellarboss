@@ -1,7 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import { Card, Text } from "react-native-paper";
 import type { Bottle, Vintage, Wine } from "@cellarboss/types";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 type WineTypeBreakdownProps = {
   bottles: Bottle[];
@@ -34,6 +34,7 @@ export function WineTypeBreakdown({
   vintages,
   wines,
 }: WineTypeBreakdownProps) {
+  const theme = useAppTheme();
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w) => [w.id, w]));
 
@@ -50,6 +51,53 @@ export function WineTypeBreakdown({
 
   const total = Object.values(counts).reduce((s, n) => s + n, 0);
   const types = Object.entries(counts).sort(([, a], [, b]) => b - a);
+
+  const styles = StyleSheet.create({
+    card: {
+      backgroundColor: theme.colors.surface,
+    },
+    empty: {
+      color: theme.colors.onSurfaceVariant,
+      textAlign: "center",
+      paddingVertical: 16,
+    },
+    bar: {
+      flexDirection: "row",
+      height: 16,
+      borderRadius: 8,
+      overflow: "hidden",
+      marginBottom: 16,
+    },
+    barSegment: {
+      height: "100%",
+    },
+    legend: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 8,
+    },
+    legendItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+      minWidth: "28%",
+    },
+    legendDot: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+    },
+    legendLabel: {
+      fontSize: 12,
+      color: theme.colors.onSurface,
+      flex: 1,
+    },
+    legendCount: {
+      fontSize: 12,
+      fontWeight: "600",
+      color: theme.colors.onSurfaceVariant,
+    },
+  });
 
   if (total === 0) {
     return (
@@ -100,50 +148,3 @@ export function WineTypeBreakdown({
     </Card>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: theme.colors.surface,
-  },
-  empty: {
-    color: theme.colors.onSurfaceVariant,
-    textAlign: "center",
-    paddingVertical: 16,
-  },
-  bar: {
-    flexDirection: "row",
-    height: 16,
-    borderRadius: 8,
-    overflow: "hidden",
-    marginBottom: 16,
-  },
-  barSegment: {
-    height: "100%",
-  },
-  legend: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  legendItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    minWidth: "28%",
-  },
-  legendDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  legendLabel: {
-    fontSize: 12,
-    color: theme.colors.onSurface,
-    flex: 1,
-  },
-  legendCount: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: theme.colors.onSurfaceVariant,
-  },
-});

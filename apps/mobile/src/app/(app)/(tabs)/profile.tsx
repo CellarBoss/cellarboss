@@ -3,9 +3,40 @@ import { Text, Button, Divider } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { useAuth } from "@/contexts/auth-context";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 export default function ProfileScreen() {
+  const theme = useAppTheme();
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    content: {
+      flex: 1,
+    },
+    section: {
+      backgroundColor: theme.colors.surface,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+    },
+    label: {
+      fontSize: 12,
+      color: theme.colors.onSurfaceVariant,
+      marginBottom: 4,
+    },
+    value: {
+      fontSize: 16,
+      color: theme.colors.onSurface,
+    },
+    signOutSection: {
+      padding: 16,
+      marginTop: 24,
+    },
+    signOutButton: {
+      borderColor: theme.colors.error,
+    },
+  });
   const auth = useAuth();
   const user = auth.status === "authenticated" ? auth.user : null;
 
@@ -47,34 +78,3 @@ export default function ProfileScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  content: {
-    flex: 1,
-  },
-  section: {
-    backgroundColor: theme.colors.surface,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-  },
-  label: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-    marginBottom: 4,
-  },
-  value: {
-    fontSize: 16,
-    color: theme.colors.onSurface,
-  },
-  signOutSection: {
-    padding: 16,
-    marginTop: 24,
-  },
-  signOutButton: {
-    borderColor: theme.colors.error,
-  },
-});

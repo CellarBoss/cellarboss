@@ -9,13 +9,14 @@ import {
   Platform,
   ScrollView,
 } from "react-native";
-import { authStyles as styles } from "@/styles/auth";
+import { useAuthStyles } from "@/styles/auth";
 import { useRouter } from "expo-router";
 import { setServerUrl } from "@/lib/auth/secure-store";
 import { testServerConnection } from "@/lib/auth/auth-service";
 import { useAuth } from "@/contexts/auth-context";
 
 export default function SetupScreen() {
+  const styles = useAuthStyles();
   const router = useRouter();
   const { markServerConfigured } = useAuth();
   const [url, setUrl] = useState("");

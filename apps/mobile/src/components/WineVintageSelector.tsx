@@ -12,7 +12,7 @@ import {
 } from "react-native-paper";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api/client";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import type { Wine, WineMaker, Vintage } from "@cellarboss/types";
 
 type WineVintageSelectorProps = {
@@ -30,6 +30,7 @@ export function WineVintageSelector({
   disabled = false,
   error,
 }: WineVintageSelectorProps) {
+  const theme = useAppTheme();
   const [wineModalVisible, setWineModalVisible] = useState(false);
   const [vintageModalVisible, setVintageModalVisible] = useState(false);
   const [selectedWineId, setSelectedWineId] = useState<number | null>(null);
@@ -140,6 +141,93 @@ export function WineVintageSelector({
     onChange(String(vintageId));
     setVintageModalVisible(false);
   }
+
+  const styles = StyleSheet.create({
+    field: {
+      marginBottom: 16,
+    },
+    label: {
+      fontSize: 12,
+      color: theme.colors.onSurfaceVariant,
+      marginBottom: 4,
+    },
+    selector: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      borderWidth: 1,
+      borderColor: theme.colors.outline,
+      borderRadius: 4,
+      paddingLeft: 12,
+      minHeight: 48,
+    },
+    selectorDisabled: {
+      opacity: 0.5,
+    },
+    selectorText: {
+      flex: 1,
+      fontSize: 16,
+      color: theme.colors.onSurface,
+    },
+    placeholderText: {
+      color: theme.colors.onSurfaceVariant,
+    },
+    modal: {
+      backgroundColor: theme.colors.surface,
+      margin: 24,
+      borderRadius: 12,
+      maxHeight: "80%",
+      overflow: "hidden",
+    },
+    modalHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingLeft: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outlineVariant,
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: "bold",
+      color: theme.colors.onSurface,
+      flex: 1,
+    },
+    searchbar: {
+      margin: 12,
+      height: 40,
+    },
+    list: {
+      maxHeight: 350,
+    },
+    groupHeader: {
+      fontSize: 13,
+      fontWeight: "700",
+      color: theme.colors.primary,
+      paddingHorizontal: 16,
+      paddingTop: 12,
+      paddingBottom: 4,
+    },
+    item: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingVertical: 4,
+      paddingHorizontal: 8,
+    },
+    itemSelected: {
+      backgroundColor: theme.colors.primaryContainer,
+    },
+    itemText: {
+      fontSize: 16,
+      color: theme.colors.onSurface,
+      flex: 1,
+    },
+    emptyText: {
+      padding: 24,
+      textAlign: "center",
+      color: theme.colors.onSurfaceVariant,
+    },
+  });
 
   return (
     <View style={styles.field}>
@@ -294,90 +382,3 @@ export function WineVintageSelector({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  field: {
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-    marginBottom: 4,
-  },
-  selector: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    borderColor: theme.colors.outline,
-    borderRadius: 4,
-    paddingLeft: 12,
-    minHeight: 48,
-  },
-  selectorDisabled: {
-    opacity: 0.5,
-  },
-  selectorText: {
-    flex: 1,
-    fontSize: 16,
-    color: theme.colors.onSurface,
-  },
-  placeholderText: {
-    color: theme.colors.onSurfaceVariant,
-  },
-  modal: {
-    backgroundColor: theme.colors.surface,
-    margin: 24,
-    borderRadius: 12,
-    maxHeight: "80%",
-    overflow: "hidden",
-  },
-  modalHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingLeft: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-    flex: 1,
-  },
-  searchbar: {
-    margin: 12,
-    height: 40,
-  },
-  list: {
-    maxHeight: 350,
-  },
-  groupHeader: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: theme.colors.primary,
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 4,
-  },
-  item: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-  },
-  itemSelected: {
-    backgroundColor: theme.colors.primaryContainer,
-  },
-  itemText: {
-    fontSize: 16,
-    color: theme.colors.onSurface,
-    flex: 1,
-  },
-  emptyText: {
-    padding: 24,
-    textAlign: "center",
-    color: theme.colors.onSurfaceVariant,
-  },
-});

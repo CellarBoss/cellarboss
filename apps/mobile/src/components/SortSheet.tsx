@@ -8,7 +8,7 @@ import {
   IconButton,
   Chip,
 } from "react-native-paper";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 type SortOption = {
   label: string;
@@ -22,6 +22,7 @@ type SortSheetProps = {
 };
 
 export function SortSheet({ options, value, onChange }: SortSheetProps) {
+  const theme = useAppTheme();
   const [visible, setVisible] = useState(false);
   const [draft, setDraft] = useState(value);
 
@@ -36,6 +37,45 @@ export function SortSheet({ options, value, onChange }: SortSheetProps) {
     onChange(draft);
     setVisible(false);
   }
+
+  const styles = StyleSheet.create({
+    modal: {
+      backgroundColor: theme.colors.surface,
+      margin: 24,
+      borderRadius: 12,
+      maxHeight: "80%",
+      overflow: "hidden",
+    },
+    header: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingLeft: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outlineVariant,
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: "bold",
+      color: theme.colors.onSurface,
+    },
+    content: {
+      padding: 16,
+    },
+    chips: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 8,
+    },
+    chip: {
+      marginBottom: 4,
+    },
+    actions: {
+      padding: 16,
+      borderTopWidth: 1,
+      borderTopColor: theme.colors.outlineVariant,
+    },
+  });
 
   return (
     <>
@@ -88,42 +128,3 @@ export function SortSheet({ options, value, onChange }: SortSheetProps) {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  modal: {
-    backgroundColor: theme.colors.surface,
-    margin: 24,
-    borderRadius: 12,
-    maxHeight: "80%",
-    overflow: "hidden",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingLeft: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-  },
-  content: {
-    padding: 16,
-  },
-  chips: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  chip: {
-    marginBottom: 4,
-  },
-  actions: {
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: theme.colors.outlineVariant,
-  },
-});

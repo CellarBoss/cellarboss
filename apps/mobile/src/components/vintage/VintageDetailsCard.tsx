@@ -1,7 +1,8 @@
 import { View, Pressable, StyleSheet } from "react-native";
 import { Text, Icon } from "react-native-paper";
 import { useRouter } from "expo-router";
-import { theme, shadows } from "@/lib/theme";
+import { shadows } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
@@ -10,7 +11,7 @@ import {
   formatDrinkingStatus,
 } from "@/lib/functions/format";
 import {
-  DRINKING_STATUS_COLORS,
+  getDrinkingStatusColors,
   DRINKING_STATUS_ICONS,
 } from "@/lib/constants/drinking-status";
 import { WineThumbnail } from "@/components/wine/WineThumbnail";
@@ -24,6 +25,7 @@ export function VintageDetailsCard({
   vintageId,
   onPress,
 }: VintageDetailsCardProps) {
+  const theme = useAppTheme();
   const router = useRouter();
 
   const imagesQuery = useApiQuery({
@@ -95,6 +97,42 @@ export function VintageDetailsCard({
   const thumbnailImage =
     images.find((i) => i.isFavourite) ?? images[images.length - 1];
 
+  const styles = StyleSheet.create({
+    heading: {
+      color: theme.colors.onSurface,
+      marginBottom: 8,
+      paddingHorizontal: 4,
+    },
+    card: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      padding: 16,
+      ...shadows.card,
+    },
+    row: {
+      flexDirection: "row" as const,
+      alignItems: "flex-start" as const,
+      gap: 12,
+    },
+    details: {
+      flex: 1,
+      gap: 4,
+    },
+    detailRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 6,
+      marginTop: 2,
+    },
+    detailText: {
+      flex: 1,
+      color: theme.colors.onSurfaceVariant,
+    },
+    linkText: {
+      color: theme.colors.primary,
+    },
+  });
+
   return (
     <>
       <Text variant="titleSmall" style={styles.heading}>
@@ -143,7 +181,7 @@ export function VintageDetailsCard({
                   <Icon
                     source={drinkingIcon}
                     size={16}
-                    color={DRINKING_STATUS_COLORS[drinkingStatus]}
+                    color={getDrinkingStatusColors(theme)[drinkingStatus]}
                   />
                 )}
                 <Text variant="bodyMedium" style={styles.detailText}>
@@ -161,39 +199,3 @@ export function VintageDetailsCard({
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  heading: {
-    color: theme.colors.onSurface,
-    marginBottom: 8,
-    paddingHorizontal: 4,
-  },
-  card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    ...shadows.card,
-  },
-  row: {
-    flexDirection: "row" as const,
-    alignItems: "flex-start" as const,
-    gap: 12,
-  },
-  details: {
-    flex: 1,
-    gap: 4,
-  },
-  detailRow: {
-    flexDirection: "row" as const,
-    alignItems: "center" as const,
-    gap: 6,
-    marginTop: 2,
-  },
-  detailText: {
-    flex: 1,
-    color: theme.colors.onSurfaceVariant,
-  },
-  linkText: {
-    color: theme.colors.primary,
-  },
-});

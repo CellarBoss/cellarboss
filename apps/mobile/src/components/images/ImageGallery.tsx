@@ -13,7 +13,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useImageSource } from "@/hooks/use-image-source";
 import { api } from "@/lib/api/client";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import type { Image as ImageType } from "@cellarboss/types";
 import { useState } from "react";
 import { X, Trash2, Star } from "lucide-react-native";
@@ -24,6 +24,7 @@ const THUMB_SIZE = (SCREEN_WIDTH - 48) / 3; // 3 columns with padding
 type Props = { vintageId: number };
 
 export function ImageGallery({ vintageId }: Props) {
+  const theme = useAppTheme();
   const queryClient = useQueryClient();
   const [lightboxImage, setLightboxImage] = useState<ImageType | null>(null);
   const { thumbSource, fullSource } = useImageSource();
@@ -69,6 +70,69 @@ export function ImageGallery({ vintageId }: Props) {
       }
     }
   }
+
+  const styles = StyleSheet.create({
+    loadingContainer: {
+      paddingVertical: 16,
+      alignItems: "center",
+    },
+    empty: {
+      fontSize: 13,
+      color: theme.colors.onSurfaceVariant,
+      paddingVertical: 4,
+    },
+    row: {
+      gap: 4,
+      marginBottom: 4,
+    },
+    thumb: {
+      width: THUMB_SIZE,
+      height: THUMB_SIZE,
+      borderRadius: 6,
+      overflow: "hidden",
+      backgroundColor: theme.colors.surfaceVariant,
+    },
+    thumbImage: {
+      width: "100%",
+      height: "100%",
+    },
+    favouriteBadge: {
+      position: "absolute",
+      top: 4,
+      left: 4,
+      backgroundColor: "rgba(0,0,0,0.5)",
+      borderRadius: 10,
+      padding: 2,
+    },
+    overlay: {
+      flex: 1,
+      backgroundColor: "rgba(0,0,0,0.9)",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    fullImage: {
+      width: SCREEN_WIDTH,
+      height: SCREEN_WIDTH,
+    },
+    overlayActions: {
+      position: "absolute",
+      top: 48,
+      right: 16,
+      flexDirection: "row",
+      gap: 8,
+    },
+    actionBtn: {
+      padding: 10,
+      borderRadius: 20,
+      backgroundColor: "rgba(0,0,0,0.6)",
+    },
+    deleteBtn: {
+      backgroundColor: "rgba(180,30,30,0.8)",
+    },
+    favouriteActiveBtn: {
+      backgroundColor: "rgba(0,0,0,0.6)",
+    },
+  });
 
   if (imagesQuery.isLoading) {
     return (
@@ -157,66 +221,3 @@ export function ImageGallery({ vintageId }: Props) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    paddingVertical: 16,
-    alignItems: "center",
-  },
-  empty: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-    paddingVertical: 4,
-  },
-  row: {
-    gap: 4,
-    marginBottom: 4,
-  },
-  thumb: {
-    width: THUMB_SIZE,
-    height: THUMB_SIZE,
-    borderRadius: 6,
-    overflow: "hidden",
-    backgroundColor: theme.colors.surfaceVariant,
-  },
-  thumbImage: {
-    width: "100%",
-    height: "100%",
-  },
-  favouriteBadge: {
-    position: "absolute",
-    top: 4,
-    left: 4,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    borderRadius: 10,
-    padding: 2,
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.9)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  fullImage: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_WIDTH,
-  },
-  overlayActions: {
-    position: "absolute",
-    top: 48,
-    right: 16,
-    flexDirection: "row",
-    gap: 8,
-  },
-  actionBtn: {
-    padding: 10,
-    borderRadius: 20,
-    backgroundColor: "rgba(0,0,0,0.6)",
-  },
-  deleteBtn: {
-    backgroundColor: "rgba(180,30,30,0.8)",
-  },
-  favouriteActiveBtn: {
-    backgroundColor: "rgba(0,0,0,0.6)",
-  },
-});

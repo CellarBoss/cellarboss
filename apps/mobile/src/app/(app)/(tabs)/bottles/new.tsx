@@ -1,4 +1,4 @@
-import { commonStyles } from "@/styles/common";
+import { useCommonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { FormCard } from "@/components/form/FormCard";
@@ -52,6 +52,7 @@ const processSave = async (
 };
 
 export default function NewBottleScreen() {
+  const commonStyles = useCommonStyles();
   return (
     <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader title="New Bottle" showBack />

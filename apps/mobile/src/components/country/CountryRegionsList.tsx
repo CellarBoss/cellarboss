@@ -4,10 +4,12 @@ import { useRouter } from "expo-router";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
-import { theme, shadows } from "@/lib/theme";
+import { shadows } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 export function CountryRegionsList({ countryId }: { countryId: number }) {
   const router = useRouter();
+  const theme = useAppTheme();
 
   const regionQuery = useApiQuery({
     queryKey: ["regions"],
@@ -35,6 +37,68 @@ export function CountryRegionsList({ countryId }: { countryId: number }) {
   const filtered = regions
     .filter((r) => r.countryId === countryId)
     .sort((a, b) => a.name.localeCompare(b.name));
+
+  const styles = StyleSheet.create({
+    section: {
+      marginTop: 16,
+    },
+    heading: {
+      color: theme.colors.onSurface,
+      marginBottom: 8,
+      paddingHorizontal: 4,
+    },
+    card: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      ...shadows.card,
+      overflow: "hidden",
+    },
+    empty: {
+      fontSize: 13,
+      color: theme.colors.onSurfaceVariant,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    row: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outlineVariant,
+      gap: 10,
+    },
+    rowLast: {
+      borderBottomWidth: 0,
+    },
+    regionName: {
+      flex: 1,
+      fontSize: 15,
+      fontWeight: "bold",
+      color: theme.colors.onSurface,
+    },
+    badge: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+    },
+    badgeText: {
+      fontSize: 13,
+      color: theme.colors.onSurfaceVariant,
+    },
+    addLink: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+      paddingHorizontal: 4,
+      paddingVertical: 12,
+    },
+    addText: {
+      fontSize: 14,
+      color: theme.colors.primary,
+      fontWeight: "500",
+    },
+  });
 
   return (
     <View style={styles.section}>
@@ -94,65 +158,3 @@ export function CountryRegionsList({ countryId }: { countryId: number }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  section: {
-    marginTop: 16,
-  },
-  heading: {
-    color: theme.colors.onSurface,
-    marginBottom: 8,
-    paddingHorizontal: 4,
-  },
-  card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    ...shadows.card,
-    overflow: "hidden",
-  },
-  empty: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-    gap: 10,
-  },
-  rowLast: {
-    borderBottomWidth: 0,
-  },
-  regionName: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-  },
-  badge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  badgeText: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-  },
-  addLink: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    paddingHorizontal: 4,
-    paddingVertical: 12,
-  },
-  addText: {
-    fontSize: 14,
-    color: theme.colors.primary,
-    fontWeight: "500",
-  },
-});

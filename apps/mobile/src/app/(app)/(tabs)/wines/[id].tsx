@@ -1,5 +1,5 @@
 import { ScrollView } from "react-native";
-import { commonStyles } from "@/styles/common";
+import { useCommonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
@@ -11,6 +11,7 @@ import { WineVintagesList } from "@/components/wine/WineVintagesList";
 import { WineTastingNotesList } from "@/components/tasting-notes/TastingNotesList";
 
 export default function ViewWineScreen() {
+  const commonStyles = useCommonStyles();
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
 

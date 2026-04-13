@@ -4,10 +4,12 @@ import { useRouter } from "expo-router";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
-import { theme, shadows } from "@/lib/theme";
+import { shadows } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import { WINE_TYPE_COLORS } from "@/lib/constants/wines";
 
 export function RegionWinesList({ regionId }: { regionId: number }) {
+  const theme = useAppTheme();
   const router = useRouter();
 
   const wineQuery = useApiQuery({
@@ -28,6 +30,66 @@ export function RegionWinesList({ regionId }: { regionId: number }) {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   const winemakerMap = new Map(winemakers.map((wm) => [wm.id, wm.name]));
+
+  const styles = StyleSheet.create({
+    section: {
+      marginTop: 16,
+    },
+    heading: {
+      color: theme.colors.onSurface,
+      marginBottom: 8,
+      paddingHorizontal: 4,
+    },
+    card: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      ...shadows.card,
+      overflow: "hidden",
+    },
+    empty: {
+      fontSize: 13,
+      color: theme.colors.onSurfaceVariant,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    row: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outlineVariant,
+      gap: 10,
+    },
+    rowLast: {
+      borderBottomWidth: 0,
+    },
+    wineInfo: {
+      flex: 1,
+      gap: 2,
+    },
+    wineName: {
+      fontSize: 15,
+      fontWeight: "bold",
+      color: theme.colors.onSurface,
+    },
+    winemakerName: {
+      fontSize: 13,
+      color: theme.colors.onSurfaceVariant,
+    },
+    addLink: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+      paddingHorizontal: 4,
+      paddingVertical: 12,
+    },
+    addText: {
+      fontSize: 14,
+      color: theme.colors.primary,
+      fontWeight: "500",
+    },
+  });
 
   return (
     <View style={styles.section}>
@@ -83,63 +145,3 @@ export function RegionWinesList({ regionId }: { regionId: number }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  section: {
-    marginTop: 16,
-  },
-  heading: {
-    color: theme.colors.onSurface,
-    marginBottom: 8,
-    paddingHorizontal: 4,
-  },
-  card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    ...shadows.card,
-    overflow: "hidden",
-  },
-  empty: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-    gap: 10,
-  },
-  rowLast: {
-    borderBottomWidth: 0,
-  },
-  wineInfo: {
-    flex: 1,
-    gap: 2,
-  },
-  wineName: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-  },
-  winemakerName: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-  },
-  addLink: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    paddingHorizontal: 4,
-    paddingVertical: 12,
-  },
-  addText: {
-    fontSize: 14,
-    color: theme.colors.primary,
-    fontWeight: "500",
-  },
-});
