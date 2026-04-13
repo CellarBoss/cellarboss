@@ -33,6 +33,10 @@ export {
 // Hooks
 export { useApiQuery, type UseApiQueryResult } from "./hooks/use-api-query";
 export { createSettingsHooks } from "./hooks/use-settings";
+export {
+  isVersionMismatch,
+  useVersionMismatch,
+} from "./hooks/use-version-mismatch";
 
 // Query gate
 export {
