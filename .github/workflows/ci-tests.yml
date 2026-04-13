@@ -139,7 +139,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:17
+        image: postgres:17@sha256:7ad98329d513dd497293b951c195ca354274a77f12ddbbbbf85e68a811823d72
         env:
           POSTGRES_USER: cellar
           POSTGRES_PASSWORD: cellar
@@ -152,7 +152,7 @@ jobs:
           --health-timeout=5s
           --health-retries=5
       mysql:
-        image: mysql:9
+        image: mysql:9@sha256:24e450bbd24f621c71b10404c946cc9ea1cbb0e6e7464b2be2de5193dcf1d05b
         env:
           MYSQL_ROOT_PASSWORD: cellar
           MYSQL_USER: cellar
@@ -348,7 +348,7 @@ jobs:
         | join(",")
          ')" >> $GITHUB_OUTPUT
 
-    - uses: re-actors/alls-green@release/v1
+    - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
       with:
         jobs: ${{ toJSON(needs) }}
         allowed-skips: ${{ steps.skips.outputs.allowed }}
