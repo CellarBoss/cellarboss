@@ -339,6 +339,16 @@ jobs:
       - validate-mobile-docs
 
     steps:
-      - uses: re-actors/alls-green@release/v1
-        with:
-          jobs: ${{ toJSON(needs) }}
+    - id: skips
+      run: |
+        echo "allowed=$(echo '${{ toJSON(needs) }}' | jq -r '
+        to_entries
+        | map(select(.value.result == "skipped"))
+        | map(.key)
+        | join(",")
+         ')" >> $GITHUB_OUTPUT
+
+    - uses: re-actors/alls-green@release/v1
+      with:
+        jobs: ${{ toJSON(needs) }}
+        allowed-skips: ${{ steps.skips.outputs.allowed }}
