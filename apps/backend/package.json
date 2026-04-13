@@ -28,7 +28,7 @@
     "better-sqlite3": "12.8.0",
     "dotenv": "17.4.1",
     "hono": "4.12.12",
-    "kysely": "0.28.15",
+    "kysely": "0.28.16",
     "kysely-ctl": "0.20.0",
     "loglayer": "9.1.0",
     "mysql2": "3.22.0",
