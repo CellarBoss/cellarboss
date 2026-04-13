@@ -31,7 +31,7 @@
     "kysely": "0.28.15",
     "kysely-ctl": "0.20.0",
     "loglayer": "9.1.0",
-    "mysql2": "3.21.0",
+    "mysql2": "3.21.1",
     "pg": "8.20.0",
     "pino": "10.3.1",
     "serialize-error": "13.0.1",
