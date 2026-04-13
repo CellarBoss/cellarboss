@@ -321,3 +321,34 @@ jobs:
 
       - name: Build docs (without screenshots)
         run: pnpm --filter @cellarboss/mobile docs:build
+
+  ci-required:
+    name: Required CI Checks
+    runs-on: ubuntu-latest
+    if: always() && !cancelled()
+    needs:
+      - test-web-functions
+      - test-validators
+      - test-common
+      - test-backend
+      - test-mobile
+      - test-web-e2e
+      - validate-expo
+      - validate-api-docs
+      - validate-web-docs
+      - validate-mobile-docs
+
+    steps:
+    - id: skips
+      run: |
+        echo "allowed=$(echo '${{ toJSON(needs) }}' | jq -r '
+        to_entries
+        | map(select(.value.result == "skipped"))
+        | map(.key)
+        | join(",")
+         ')" >> $GITHUB_OUTPUT
+
+    - uses: re-actors/alls-green@release/v1
+      with:
+        jobs: ${{ toJSON(needs) }}
+        allowed-skips: ${{ steps.skips.outputs.allowed }}
