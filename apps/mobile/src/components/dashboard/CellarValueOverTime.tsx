@@ -3,7 +3,7 @@ import { Card, Text } from "react-native-paper";
 import { parseISO, format } from "date-fns";
 import type { Bottle } from "@cellarboss/types";
 import { formatPrice } from "@/lib/functions/format";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 type CellarValueOverTimeProps = {
   bottles: Bottle[];
@@ -14,6 +14,7 @@ export function CellarValueOverTime({
   bottles,
   currency,
 }: CellarValueOverTimeProps) {
+  const theme = useAppTheme();
   const storedBottles = bottles.filter((b) => b.status === "stored");
 
   const totalValue = storedBottles.reduce(
@@ -66,6 +67,34 @@ export function CellarValueOverTime({
   const BAR_MAX_HEIGHT = 48;
   const showSparkline = cumulativeData.length >= 2;
 
+  const styles = StyleSheet.create({
+    card: {
+      backgroundColor: theme.colors.surface,
+    },
+    totalValue: {
+      fontSize: 28,
+      fontWeight: "700",
+      color: theme.colors.onSurface,
+      marginBottom: 2,
+    },
+    subtitle: {
+      fontSize: 13,
+      color: theme.colors.onSurfaceVariant,
+      marginBottom: 12,
+    },
+    sparkline: {
+      flexDirection: "row",
+      alignItems: "flex-end",
+      height: 48,
+      gap: 2,
+      marginTop: 8,
+    },
+    sparkBar: {
+      borderRadius: 2,
+      minWidth: 4,
+    },
+  });
+
   return (
     <Card style={styles.card}>
       <Card.Title title="Cellar Value" />
@@ -106,31 +135,3 @@ export function CellarValueOverTime({
     </Card>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: theme.colors.surface,
-  },
-  totalValue: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: theme.colors.onSurface,
-    marginBottom: 2,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-    marginBottom: 12,
-  },
-  sparkline: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    height: 48,
-    gap: 2,
-    marginTop: 8,
-  },
-  sparkBar: {
-    borderRadius: 2,
-    minWidth: 4,
-  },
-});

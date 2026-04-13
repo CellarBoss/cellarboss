@@ -1,5 +1,5 @@
 import { View, ScrollView, StyleSheet } from "react-native";
-import { commonStyles } from "@/styles/common";
+import { useCommonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
@@ -11,6 +11,7 @@ import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 
 export default function ViewBottleScreen() {
+  const commonStyles = useCommonStyles();
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
 

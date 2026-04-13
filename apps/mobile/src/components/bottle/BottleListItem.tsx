@@ -15,7 +15,7 @@ import { getStatusColor, BOTTLE_STATUS_ICONS } from "@/lib/constants/bottles";
 import { BOTTLE_SIZE_SHORT_LABELS } from "@cellarboss/common/constants";
 import { WINE_TYPE_COLORS } from "@/lib/constants/wines";
 import {
-  DRINKING_STATUS_COLORS,
+  getDrinkingStatusColors,
   DRINKING_STATUS_ICONS,
 } from "@/lib/constants/drinking-status";
 import type { BottleStatus } from "@cellarboss/validators/constants";
@@ -24,7 +24,7 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { StatusPickerModal } from "./StatusPickerModal";
 import { StoragePickerModal } from "./StoragePickerModal";
 
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import type { Bottle } from "@cellarboss/types";
 import type { WineType, BottleSize } from "@cellarboss/validators/constants";
 import type { DrinkingStatus } from "@/lib/functions/format";
@@ -76,6 +76,7 @@ export function BottleListItem({
 }: BottleListItemProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const theme = useAppTheme();
   const swipeableRef = useRef<SwipeableMethods>(null);
   const [statusPickerVisible, setStatusPickerVisible] = useState(false);
   const [storagePickerVisible, setStoragePickerVisible] = useState(false);
@@ -106,27 +107,59 @@ export function BottleListItem({
     },
   });
 
+  const themedStyles = StyleSheet.create({
+    item: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: theme.colors.surface,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outlineVariant,
+      gap: 12,
+    },
+    sizeLabel: {
+      fontSize: 10,
+      color: theme.colors.onSurfaceVariant,
+      marginTop: 2,
+    },
+    itemTitle: {
+      flexShrink: 1,
+      fontSize: 15,
+      fontWeight: "bold",
+      color: theme.colors.onSurface,
+    },
+    itemSub: {
+      fontSize: 13,
+      color: theme.colors.onSurfaceVariant,
+    },
+    storageText: {
+      fontSize: 12,
+      color: theme.colors.onSurfaceVariant,
+    },
+  });
+
   const content = (
-    <Pressable style={styles.item} onPress={onPress}>
+    <Pressable style={themedStyles.item} onPress={onPress}>
       <View style={styles.bottleIcon}>
         <Icon source="bottle-wine" size={28} color={bottleColor} />
-        <Text style={styles.sizeLabel}>{sizeLabel}</Text>
+        <Text style={themedStyles.sizeLabel}>{sizeLabel}</Text>
       </View>
 
       <View style={styles.center}>
         <View style={styles.titleRow}>
-          <Text style={styles.itemTitle} numberOfLines={1}>
+          <Text style={themedStyles.itemTitle} numberOfLines={1}>
             {wineName} {wineYear}
           </Text>
           {drinkingIcon !== "" && (
             <Icon
               source={drinkingIcon}
               size={16}
-              color={DRINKING_STATUS_COLORS[drinkingStatus]}
+              color={getDrinkingStatusColors(theme)[drinkingStatus]}
             />
           )}
         </View>
-        <Text style={styles.itemSub} numberOfLines={1}>
+        <Text style={themedStyles.itemSub} numberOfLines={1}>
           {winemakerName}
         </Text>
         {storageHierarchy && storageHierarchy.length > 0 && (
@@ -145,7 +178,7 @@ export function BottleListItem({
                     color={theme.colors.outline}
                   />
                 )}
-                <Text style={styles.storageText} numberOfLines={1}>
+                <Text style={themedStyles.storageText} numberOfLines={1}>
                   {name}
                 </Text>
               </View>
@@ -285,24 +318,9 @@ export function BottleListItem({
 }
 
 const styles = StyleSheet.create({
-  item: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: theme.colors.surface,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-    gap: 12,
-  },
   bottleIcon: {
     alignItems: "center",
     width: 36,
-  },
-  sizeLabel: {
-    fontSize: 10,
-    color: theme.colors.onSurfaceVariant,
-    marginTop: 2,
   },
   center: {
     flex: 1,
@@ -313,16 +331,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
   },
-  itemTitle: {
-    flexShrink: 1,
-    fontSize: 15,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-  },
-  itemSub: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-  },
   storageRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -332,10 +340,6 @@ const styles = StyleSheet.create({
   storageSegment: {
     flexDirection: "row",
     alignItems: "center",
-  },
-  storageText: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
   },
   swipeLeftIcons: {
     flexDirection: "row",

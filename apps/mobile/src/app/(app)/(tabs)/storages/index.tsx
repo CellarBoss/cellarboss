@@ -11,8 +11,8 @@ import { ScreenHeader } from "@/components/ScreenHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
-import { commonStyles } from "@/styles/common";
-import { theme } from "@/lib/theme";
+import { useCommonStyles } from "@/styles/common";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import { BottleCountBadge } from "@/components/storage/BottleCountBadge";
 import type { Storage, Bottle } from "@cellarboss/types";
 
@@ -62,6 +62,24 @@ const SORT_OPTIONS = [
 ];
 
 export default function StoragesScreen() {
+  const commonStyles = useCommonStyles();
+  const theme = useAppTheme();
+  const styles = StyleSheet.create({
+    item: {
+      backgroundColor: theme.colors.surface,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outlineVariant,
+    },
+    row: {
+      justifyContent: "space-between",
+    },
+    content: {
+      flex: 1,
+      marginRight: 12,
+    },
+  });
   const router = useRouter();
   const queryClient = useQueryClient();
   const [currentSort, setCurrentSort] = useState("name-asc");
@@ -218,20 +236,3 @@ export default function StoragesScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  item: {
-    backgroundColor: theme.colors.surface,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-  },
-  row: {
-    justifyContent: "space-between",
-  },
-  content: {
-    flex: 1,
-    marginRight: 12,
-  },
-});

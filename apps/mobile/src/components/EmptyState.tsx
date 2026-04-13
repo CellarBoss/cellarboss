@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import { Text, Button, Icon } from "react-native-paper";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 type EmptyStateProps = {
   icon?: string;
@@ -17,6 +17,32 @@ export function EmptyState({
   actionLabel,
   onAction,
 }: EmptyStateProps) {
+  const theme = useAppTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 32,
+      gap: 8,
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: "600",
+      color: theme.colors.onBackground,
+      marginTop: 8,
+    },
+    message: {
+      fontSize: 14,
+      color: theme.colors.onSurfaceVariant,
+      textAlign: "center",
+    },
+    button: {
+      marginTop: 12,
+    },
+  });
+
   return (
     <View style={styles.container}>
       <Icon source={icon} size={64} color={theme.colors.outlineVariant} />
@@ -35,27 +61,3 @@ export function EmptyState({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 32,
-    gap: 8,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: theme.colors.onBackground,
-    marginTop: 8,
-  },
-  message: {
-    fontSize: 14,
-    color: theme.colors.onSurfaceVariant,
-    textAlign: "center",
-  },
-  button: {
-    marginTop: 12,
-  },
-});

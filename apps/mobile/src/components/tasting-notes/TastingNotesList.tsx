@@ -5,7 +5,8 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { formatDateTime } from "@/lib/functions/format";
-import { theme, shadows } from "@/lib/theme";
+import { shadows } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import { TastingNote, Vintage, Wine } from "@cellarboss/types";
 import { scoreColor } from "@cellarboss/common";
 
@@ -40,6 +41,7 @@ function TastingNotesList({
   notes: TastingNote[];
   vintageId?: number;
 }) {
+  const theme = useAppTheme();
   const router = useRouter();
 
   const sorted = [...notes].sort((a, b) => b.date.localeCompare(a.date));
@@ -47,6 +49,83 @@ function TastingNotesList({
   const newNoteHref = vintageId
     ? `/tasting-notes/new?vintageId=${vintageId}`
     : "/tasting-notes/new";
+
+  const styles = StyleSheet.create({
+    section: {
+      marginTop: 16,
+    },
+    heading: {
+      color: theme.colors.onSurface,
+      marginBottom: 8,
+      paddingHorizontal: 4,
+    },
+    card: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      ...shadows.card,
+      overflow: "hidden",
+    },
+    empty: {
+      fontSize: 13,
+      color: theme.colors.onSurfaceVariant,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    row: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outlineVariant,
+    },
+    rowLast: {
+      borderBottomWidth: 0,
+    },
+    scoreBadge: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      alignItems: "center" as const,
+      justifyContent: "center" as const,
+      marginRight: 12,
+    },
+    scoreText: {
+      fontSize: 13,
+      fontWeight: "bold" as const,
+      color: "#fff",
+    },
+    rowContent: {
+      flex: 1,
+      flexShrink: 1,
+      gap: 2,
+    },
+    noteText: {
+      fontSize: 14,
+      color: theme.colors.onSurface,
+    },
+    author: {
+      fontSize: 12,
+      color: theme.colors.onSurfaceVariant,
+    },
+    date: {
+      fontSize: 12,
+      color: theme.colors.onSurfaceVariant,
+      marginLeft: 12,
+    },
+    addLink: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+      paddingHorizontal: 4,
+      paddingVertical: 12,
+    },
+    addText: {
+      fontSize: 14,
+      color: theme.colors.primary,
+      fontWeight: "500",
+    },
+  });
 
   return (
     <View style={styles.section}>
@@ -98,80 +177,3 @@ function TastingNotesList({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  section: {
-    marginTop: 16,
-  },
-  heading: {
-    color: theme.colors.onSurface,
-    marginBottom: 8,
-    paddingHorizontal: 4,
-  },
-  card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    ...shadows.card,
-    overflow: "hidden",
-  },
-  empty: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-  },
-  rowLast: {
-    borderBottomWidth: 0,
-  },
-  scoreBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: "center" as const,
-    justifyContent: "center" as const,
-    marginRight: 12,
-  },
-  scoreText: {
-    fontSize: 13,
-    fontWeight: "bold" as const,
-    color: "#fff",
-  },
-  rowContent: {
-    flex: 1,
-    flexShrink: 1,
-    gap: 2,
-  },
-  noteText: {
-    fontSize: 14,
-    color: theme.colors.onSurface,
-  },
-  author: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-  },
-  date: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-    marginLeft: 12,
-  },
-  addLink: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    paddingHorizontal: 4,
-    paddingVertical: 12,
-  },
-  addText: {
-    fontSize: 14,
-    color: theme.colors.primary,
-    fontWeight: "500",
-  },
-});

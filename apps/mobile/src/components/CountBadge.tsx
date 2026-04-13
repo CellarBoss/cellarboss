@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { Text, Icon } from "react-native-paper";
-import { commonStyles } from "@/styles/common";
-import { theme } from "@/lib/theme";
+import { useCommonStyles } from "@/styles/common";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 type CountBadgeProps = {
   icon: string;
@@ -9,6 +9,9 @@ type CountBadgeProps = {
 };
 
 export function CountBadge({ icon, count }: CountBadgeProps) {
+  const commonStyles = useCommonStyles();
+  const theme = useAppTheme();
+
   return (
     <View style={commonStyles.countBadge}>
       <Icon source={icon} size={14} color={theme.colors.onSurfaceVariant} />

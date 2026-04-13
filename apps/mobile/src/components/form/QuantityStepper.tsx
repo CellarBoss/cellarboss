@@ -1,6 +1,6 @@
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { HelperText, Text } from "react-native-paper";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 type QuantityStepperProps = {
   label: string;
@@ -17,8 +17,72 @@ export function QuantityStepper({
   editable = true,
   error,
 }: QuantityStepperProps) {
+  const theme = useAppTheme();
   const qty = Number(value) || 1;
   const set = (n: number) => onChangeValue(String(Math.max(1, n)));
+
+  const styles = StyleSheet.create({
+    field: {
+      marginBottom: 16,
+    },
+    label: {
+      fontSize: 12,
+      color: theme.colors.onSurfaceVariant,
+      marginBottom: 4,
+    },
+    stepperRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: 8,
+    },
+    stepperBtn: {
+      width: 44,
+      height: 44,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: theme.colors.outline,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    stepperBtnText: {
+      fontSize: 22,
+      color: theme.colors.onSurface,
+      lineHeight: 26,
+    },
+    stepperValue: {
+      fontSize: 22,
+      fontWeight: "600",
+      color: theme.colors.onSurface,
+      minWidth: 40,
+      textAlign: "center",
+    },
+    stepperShortcuts: {
+      flexDirection: "row",
+      gap: 8,
+    },
+    shortcut: {
+      flex: 1,
+      height: 32,
+      borderRadius: 6,
+      borderWidth: 1,
+      borderColor: theme.colors.outline,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    shortcutActive: {
+      backgroundColor: theme.colors.primary,
+      borderColor: theme.colors.primary,
+    },
+    shortcutText: {
+      fontSize: 13,
+      color: theme.colors.onSurfaceVariant,
+    },
+    shortcutTextActive: {
+      color: theme.colors.onPrimary,
+      fontWeight: "600",
+    },
+  });
 
   return (
     <View style={styles.field}>
@@ -63,66 +127,3 @@ export function QuantityStepper({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  field: {
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-    marginBottom: 4,
-  },
-  stepperRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 8,
-  },
-  stepperBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: theme.colors.outline,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  stepperBtnText: {
-    fontSize: 22,
-    color: theme.colors.onSurface,
-    lineHeight: 26,
-  },
-  stepperValue: {
-    fontSize: 22,
-    fontWeight: "600",
-    color: theme.colors.onSurface,
-    minWidth: 40,
-    textAlign: "center",
-  },
-  stepperShortcuts: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  shortcut: {
-    flex: 1,
-    height: 32,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: theme.colors.outline,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  shortcutActive: {
-    backgroundColor: theme.colors.primary,
-    borderColor: theme.colors.primary,
-  },
-  shortcutText: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-  },
-  shortcutTextActive: {
-    color: theme.colors.onPrimary,
-    fontWeight: "600",
-  },
-});

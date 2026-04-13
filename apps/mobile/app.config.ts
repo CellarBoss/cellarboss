@@ -16,12 +16,17 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   version: appVersion,
   orientation: "portrait",
   icon: "./assets/icon.png",
-  userInterfaceStyle: "light",
+  userInterfaceStyle: "automatic",
   scheme: "cellarboss",
   splash: {
     image: "./assets/splash-icon.png",
     resizeMode: "contain",
     backgroundColor: "#FBF8F8",
+    dark: {
+      image: "./assets/splash-icon.png",
+      resizeMode: "contain",
+      backgroundColor: "#1C1B1B",
+    },
   },
   ios: {
     supportsTablet: true,

@@ -1,4 +1,4 @@
-import { commonStyles } from "@/styles/common";
+import { useCommonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
@@ -12,6 +12,7 @@ import type { Country } from "@cellarboss/types";
 import type { ApiResult } from "@cellarboss/common";
 
 export default function EditCountryScreen() {
+  const commonStyles = useCommonStyles();
   const { id } = useLocalSearchParams<{ id: string }>();
   const queryClient = useQueryClient();
 

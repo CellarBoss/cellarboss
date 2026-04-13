@@ -1,6 +1,6 @@
 import { View, ScrollView, StyleSheet } from "react-native";
 import { Text } from "react-native-paper";
-import { commonStyles } from "@/styles/common";
+import { useCommonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
@@ -10,7 +10,8 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { formatDrinkingStatus } from "@/lib/functions/format";
-import { theme, shadows } from "@/lib/theme";
+import { shadows } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import { VintageTastingNotesList } from "@/components/tasting-notes/TastingNotesList";
 import { ImageGallery } from "@/components/images/ImageGallery";
 import { ImageUpload } from "@/components/images/ImageUpload";
@@ -18,6 +19,35 @@ import type { Storage } from "@cellarboss/types";
 import type { WineType } from "@cellarboss/validators/constants";
 
 export default function ViewVintageScreen() {
+  const commonStyles = useCommonStyles();
+  const theme = useAppTheme();
+  const styles = StyleSheet.create({
+    heading: {
+      color: theme.colors.onSurface,
+      marginBottom: 8,
+      paddingHorizontal: 4,
+    },
+    section: {
+      marginTop: 16,
+    },
+    bottlesCard: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      overflow: "hidden" as const,
+      ...shadows.card,
+    },
+    imagesCard: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      padding: 8,
+      ...shadows.card,
+    },
+    empty: {
+      padding: 16,
+      fontSize: 13,
+      color: theme.colors.onSurfaceVariant,
+    },
+  });
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
 
@@ -148,31 +178,3 @@ export default function ViewVintageScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  heading: {
-    color: theme.colors.onSurface,
-    marginBottom: 8,
-    paddingHorizontal: 4,
-  },
-  section: {
-    marginTop: 16,
-  },
-  bottlesCard: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    overflow: "hidden" as const,
-    ...shadows.card,
-  },
-  imagesCard: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    padding: 8,
-    ...shadows.card,
-  },
-  empty: {
-    padding: 16,
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-  },
-});

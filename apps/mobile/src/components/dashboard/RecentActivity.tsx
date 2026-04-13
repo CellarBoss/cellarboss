@@ -9,7 +9,7 @@ import type {
   Wine,
   WineMaker,
 } from "@cellarboss/types";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 type RecentActivityProps = {
   bottles: Bottle[];
@@ -38,6 +38,7 @@ export function RecentActivity({
   winemakers,
 }: RecentActivityProps) {
   const router = useRouter();
+  const theme = useAppTheme();
 
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w) => [w.id, w]));
@@ -105,6 +106,56 @@ export function RecentActivity({
   activities.sort((a, b) => b.date.getTime() - a.date.getTime());
   const recent = activities.slice(0, 8);
 
+  const styles = StyleSheet.create({
+    card: {
+      backgroundColor: theme.colors.surface,
+    },
+    content: {
+      gap: 12,
+    },
+    empty: {
+      color: theme.colors.onSurfaceVariant,
+      textAlign: "center",
+      paddingVertical: 16,
+    },
+    row: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
+    },
+    iconWrapper: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    iconPurchase: {
+      backgroundColor: theme.colors.primaryContainer,
+    },
+    iconTasting: {
+      backgroundColor: "#FEF3C7",
+    },
+    details: {
+      flex: 1,
+    },
+    wineName: {
+      fontSize: 14,
+      fontWeight: "600",
+      color: theme.colors.onSurface,
+    },
+    detail: {
+      fontSize: 12,
+      color: theme.colors.onSurfaceVariant,
+    },
+    time: {
+      fontSize: 11,
+      color: theme.colors.onSurfaceVariant,
+      textAlign: "right",
+      maxWidth: 72,
+    },
+  });
+
   if (recent.length === 0) {
     return (
       <Card style={styles.card}>
@@ -161,53 +212,3 @@ export function RecentActivity({
     </Card>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: theme.colors.surface,
-  },
-  content: {
-    gap: 12,
-  },
-  empty: {
-    color: theme.colors.onSurfaceVariant,
-    textAlign: "center",
-    paddingVertical: 16,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  iconWrapper: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  iconPurchase: {
-    backgroundColor: theme.colors.primaryContainer,
-  },
-  iconTasting: {
-    backgroundColor: "#FEF3C7",
-  },
-  details: {
-    flex: 1,
-  },
-  wineName: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: theme.colors.onSurface,
-  },
-  detail: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-  },
-  time: {
-    fontSize: 11,
-    color: theme.colors.onSurfaceVariant,
-    textAlign: "right",
-    maxWidth: 72,
-  },
-});

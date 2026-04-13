@@ -3,7 +3,7 @@ import type { Bottle, Vintage, Wine } from "@cellarboss/types";
 import { StatCard } from "./StatCard";
 import { formatPrice, formatDrinkingStatus } from "@/lib/functions/format";
 import { useRouter } from "expo-router";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 type CellarOverviewStatsProps = {
   bottles: Bottle[];
@@ -18,6 +18,7 @@ export function CellarOverviewStats({
   wines,
   currency,
 }: CellarOverviewStatsProps) {
+  const theme = useAppTheme();
   const router = useRouter();
   const currentYear = new Date().getFullYear();
 

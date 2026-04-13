@@ -1,8 +1,8 @@
 import { View, Pressable, StyleSheet } from "react-native";
 import { Text } from "react-native-paper";
-import { commonStyles } from "@/styles/common";
+import { useCommonStyles } from "@/styles/common";
 import { formatDateTime } from "@/lib/functions/format";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import { scoreColor } from "@cellarboss/common";
 import type { TastingNote } from "@cellarboss/types";
 
@@ -19,6 +19,55 @@ export function TastingNoteListItem({
   datetimeFormat,
   onPress,
 }: TastingNoteListItemProps) {
+  const commonStyles = useCommonStyles();
+  const theme = useAppTheme();
+
+  const styles = StyleSheet.create({
+    item: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: 12,
+    },
+    scoreBadge: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 2,
+      flexShrink: 0,
+    },
+    scoreText: {
+      fontSize: 14,
+      fontWeight: "bold",
+      color: "#fff",
+    },
+    content: {
+      flex: 1,
+      gap: 3,
+    },
+    top: {
+      gap: 8,
+    },
+    title: {
+      flex: 1,
+    },
+    notesSub: {
+      fontSize: 13,
+      color: theme.colors.onSurface,
+      lineHeight: 18,
+    },
+    meta: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginTop: 2,
+    },
+    metaText: {
+      fontSize: 12,
+      color: theme.colors.onSurfaceVariant,
+    },
+  });
+
   return (
     <Pressable style={[commonStyles.listItem, styles.item]} onPress={onPress}>
       <View
@@ -57,49 +106,3 @@ export function TastingNoteListItem({
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  item: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 12,
-  },
-  scoreBadge: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 2,
-    flexShrink: 0,
-  },
-  scoreText: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#fff",
-  },
-  content: {
-    flex: 1,
-    gap: 3,
-  },
-  top: {
-    gap: 8,
-  },
-  title: {
-    flex: 1,
-  },
-  notesSub: {
-    fontSize: 13,
-    color: theme.colors.onSurface,
-    lineHeight: 18,
-  },
-  meta: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 2,
-  },
-  metaText: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-  },
-});

@@ -2,7 +2,8 @@ import { type ReactElement, type ReactNode } from "react";
 import { render, type RenderOptions } from "@testing-library/react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PaperProvider } from "react-native-paper";
-import { theme } from "@/lib/theme";
+import { lightTheme } from "@/lib/theme";
+import { ThemePreferenceProvider } from "@/contexts/theme-context";
 import { NavigationHistoryProvider } from "@/contexts/navigation-history-context";
 
 function createTestQueryClient() {
@@ -18,11 +19,13 @@ function AllProviders({ children }: { children: ReactNode }) {
   const queryClient = createTestQueryClient();
 
   return (
-    <PaperProvider theme={theme}>
-      <QueryClientProvider client={queryClient}>
-        <NavigationHistoryProvider>{children}</NavigationHistoryProvider>
-      </QueryClientProvider>
-    </PaperProvider>
+    <ThemePreferenceProvider>
+      <PaperProvider theme={lightTheme}>
+        <QueryClientProvider client={queryClient}>
+          <NavigationHistoryProvider>{children}</NavigationHistoryProvider>
+        </QueryClientProvider>
+      </PaperProvider>
+    </ThemePreferenceProvider>
   );
 }
 

@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import { Card, Text } from "react-native-paper";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 type StatCardProps = {
   title: string;
@@ -17,6 +17,43 @@ export function StatCard({
   color,
   onPress,
 }: StatCardProps) {
+  const theme = useAppTheme();
+
+  const styles = StyleSheet.create({
+    card: {
+      width: "48%",
+      backgroundColor: theme.colors.surface,
+      marginBottom: 8,
+    },
+    content: {
+      paddingVertical: 12,
+      paddingHorizontal: 12,
+    },
+    accent: {
+      width: 28,
+      height: 4,
+      borderRadius: 2,
+      marginBottom: 8,
+    },
+    title: {
+      fontSize: 12,
+      color: theme.colors.onSurfaceVariant,
+      marginBottom: 4,
+      textTransform: "uppercase",
+      letterSpacing: 0.5,
+    },
+    value: {
+      fontSize: 22,
+      fontWeight: "700",
+      color: theme.colors.onSurface,
+      marginBottom: 2,
+    },
+    subtitle: {
+      fontSize: 11,
+      color: theme.colors.onSurfaceVariant,
+    },
+  });
+
   return (
     <Card style={styles.card} onPress={onPress}>
       <Card.Content style={styles.content}>
@@ -34,38 +71,3 @@ export function StatCard({
     </Card>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    width: "48%",
-    backgroundColor: theme.colors.surface,
-    marginBottom: 8,
-  },
-  content: {
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-  },
-  accent: {
-    width: 28,
-    height: 4,
-    borderRadius: 2,
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-    marginBottom: 4,
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-  },
-  value: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: theme.colors.onSurface,
-    marginBottom: 2,
-  },
-  subtitle: {
-    fontSize: 11,
-    color: theme.colors.onSurfaceVariant,
-  },
-});

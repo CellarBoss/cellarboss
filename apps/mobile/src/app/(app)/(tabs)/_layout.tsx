@@ -6,7 +6,7 @@ import {
 } from "@react-navigation/native";
 import { Tabs } from "expo-router";
 import { Icon } from "react-native-paper";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 function resetTabOnPress({
   navigation,
@@ -36,6 +36,8 @@ function resetTabOnPress({
 }
 
 export default function TabLayout() {
+  const theme = useAppTheme();
+
   return (
     <Tabs
       screenOptions={{

@@ -1,4 +1,4 @@
-import { commonStyles } from "@/styles/common";
+import { useCommonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
@@ -19,6 +19,7 @@ const defaultData: WineFormData = {
 };
 
 export default function NewWineScreen() {
+  const commonStyles = useCommonStyles();
   const { wineMakerId, regionId } = useLocalSearchParams<{
     wineMakerId?: string;
     regionId?: string;

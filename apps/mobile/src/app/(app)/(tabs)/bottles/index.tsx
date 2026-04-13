@@ -10,7 +10,7 @@ import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { formatDrinkingStatus } from "@/lib/functions/format";
 import type { DrinkingStatus } from "@/lib/functions/format";
-import { commonStyles } from "@/styles/common";
+import { useCommonStyles } from "@/styles/common";
 import {
   STATUS_FILTER_OPTIONS,
   WINE_TYPE_FILTER_OPTIONS,
@@ -30,6 +30,7 @@ const SORT_OPTIONS = [
 ];
 
 export default function CellarScreen() {
+  const commonStyles = useCommonStyles();
   const router = useRouter();
   const queryClient = useQueryClient();
   const [currentSort, setCurrentSort] = useState("purchaseDate-desc");

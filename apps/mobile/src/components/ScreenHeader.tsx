@@ -1,7 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import { Text, IconButton } from "react-native-paper";
 import { useNavigationHistory } from "@/contexts/navigation-history-context";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 type Action = {
   icon: string;
@@ -20,6 +20,34 @@ export function ScreenHeader({
   actions,
 }: ScreenHeaderProps) {
   const { goBack } = useNavigationHistory();
+  const theme = useAppTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingHorizontal: 4,
+      paddingVertical: 8,
+      backgroundColor: theme.colors.surface,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outlineVariant,
+    },
+    left: {
+      flexDirection: "row",
+      alignItems: "center",
+      flex: 1,
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: "bold",
+      color: theme.colors.onSurface,
+    },
+    actions: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+  });
 
   return (
     <View style={styles.container}>
@@ -52,30 +80,3 @@ export function ScreenHeader({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 4,
-    paddingVertical: 8,
-    backgroundColor: theme.colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-  },
-  left: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-  },
-  actions: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-});

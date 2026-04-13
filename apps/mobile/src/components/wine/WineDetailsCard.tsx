@@ -1,6 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { theme, shadows } from "@/lib/theme";
+import { shadows } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import { Wine } from "@cellarboss/types";
 import { Icon, Text } from "react-native-paper";
 import { useApiQuery } from "@/hooks/use-api-query";
@@ -9,6 +10,8 @@ import { queryGate } from "@/lib/functions/query-gate";
 import { WineThumbnail } from "./WineThumbnail";
 
 export function WineDetailsCard({ wine }: { wine: Wine }) {
+  const theme = useAppTheme();
+
   const thumbnailQuery = useQuery({
     queryKey: ["wine-thumbnail", wine.id],
     queryFn: async () => {
@@ -76,6 +79,60 @@ export function WineDetailsCard({ wine }: { wine: Wine }) {
   const region = regions.find((r) => r.id === wine.regionId);
   const country = countries.find((c) => c.id === region?.countryId);
 
+  const styles = StyleSheet.create({
+    heading: {
+      color: theme.colors.onSurface,
+      marginBottom: 8,
+      paddingHorizontal: 4,
+    },
+    row: {
+      flexDirection: "row" as const,
+      alignItems: "flex-start" as const,
+      gap: 12,
+    },
+    details: {
+      flex: 1,
+      gap: 4,
+    },
+    detailRow: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 6,
+      marginTop: 2,
+    },
+    detailText: {
+      flex: 1,
+      color: theme.colors.onSurfaceVariant,
+    },
+    card: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      padding: 16,
+      ...shadows.card,
+    },
+    error: {
+      color: theme.colors.error,
+      fontSize: 14,
+      marginTop: 12,
+      textAlign: "center",
+    },
+    success: {
+      color: "#16a34a",
+      fontSize: 14,
+      marginTop: 12,
+      textAlign: "center",
+    },
+    actions: {
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      gap: 12,
+      marginTop: 16,
+    },
+    actionButton: {
+      minWidth: 100,
+    },
+  });
+
   return (
     <>
       <Text variant="titleSmall" style={styles.heading}>
@@ -133,57 +190,3 @@ export function WineDetailsCard({ wine }: { wine: Wine }) {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  heading: {
-    color: theme.colors.onSurface,
-    marginBottom: 8,
-    paddingHorizontal: 4,
-  },
-  row: {
-    flexDirection: "row" as const,
-    alignItems: "flex-start" as const,
-    gap: 12,
-  },
-  details: {
-    flex: 1,
-    gap: 4,
-  },
-  detailRow: {
-    flexDirection: "row" as const,
-    alignItems: "center" as const,
-    gap: 6,
-    marginTop: 2,
-  },
-  detailText: {
-    flex: 1,
-    color: theme.colors.onSurfaceVariant,
-  },
-  card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    ...shadows.card,
-  },
-  error: {
-    color: theme.colors.error,
-    fontSize: 14,
-    marginTop: 12,
-    textAlign: "center",
-  },
-  success: {
-    color: "#16a34a",
-    fontSize: 14,
-    marginTop: 12,
-    textAlign: "center",
-  },
-  actions: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    gap: 12,
-    marginTop: 16,
-  },
-  actionButton: {
-    minWidth: 100,
-  },
-});

@@ -1,4 +1,4 @@
-import { commonStyles } from "@/styles/common";
+import { useCommonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
@@ -10,6 +10,7 @@ import { bottleFields } from "@/lib/fields/bottles";
 import type { Bottle } from "@cellarboss/types";
 
 export default function EditBottleScreen() {
+  const commonStyles = useCommonStyles();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const bottleQuery = useApiQuery({

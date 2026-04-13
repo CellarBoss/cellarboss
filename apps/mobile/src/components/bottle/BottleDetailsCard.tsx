@@ -1,6 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import { Text, Icon } from "react-native-paper";
-import { theme, shadows } from "@/lib/theme";
+import { shadows } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import { useSetting } from "@/hooks/use-settings";
 import {
   formatStatus,
@@ -13,6 +14,7 @@ import type { Bottle } from "@cellarboss/types";
 import type { BottleStatus } from "@cellarboss/validators/constants";
 
 export function BottleDetailsCard({ bottle }: { bottle: Bottle }) {
+  const theme = useAppTheme();
   const currencySetting = useSetting("currency");
   const dateFormatSetting = useSetting("dateFormat");
   const currency = (currencySetting.data as string) || "USD";
@@ -20,6 +22,32 @@ export function BottleDetailsCard({ bottle }: { bottle: Bottle }) {
 
   const statusIcon =
     BOTTLE_STATUS_ICONS[bottle.status as BottleStatus] ?? "help-circle";
+
+  const styles = StyleSheet.create({
+    heading: {
+      color: theme.colors.onSurface,
+      marginBottom: 8,
+      paddingHorizontal: 4,
+    },
+    card: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      padding: 16,
+      ...shadows.card,
+    },
+    infoGrid: {
+      gap: 10,
+    },
+    infoItem: {
+      flexDirection: "row" as const,
+      alignItems: "center" as const,
+      gap: 6,
+    },
+    detailText: {
+      flex: 1,
+      color: theme.colors.onSurfaceVariant,
+    },
+  });
 
   return (
     <>
@@ -73,29 +101,3 @@ export function BottleDetailsCard({ bottle }: { bottle: Bottle }) {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  heading: {
-    color: theme.colors.onSurface,
-    marginBottom: 8,
-    paddingHorizontal: 4,
-  },
-  card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    ...shadows.card,
-  },
-  infoGrid: {
-    gap: 10,
-  },
-  infoItem: {
-    flexDirection: "row" as const,
-    alignItems: "center" as const,
-    gap: 6,
-  },
-  detailText: {
-    flex: 1,
-    color: theme.colors.onSurfaceVariant,
-  },
-});

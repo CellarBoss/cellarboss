@@ -1,13 +1,14 @@
 import { View, ScrollView, Pressable, StyleSheet } from "react-native";
 import { Text, Icon } from "react-native-paper";
-import { commonStyles } from "@/styles/common";
+import { useCommonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
-import { theme, shadows } from "@/lib/theme";
+import { shadows } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import { formatDrinkingStatus } from "@/lib/functions/format";
 import { BottleListItem } from "@/components/bottle/BottleListItem";
 import { BottleCountBadge } from "@/components/storage/BottleCountBadge";
@@ -15,6 +16,86 @@ import type { Storage } from "@cellarboss/types";
 import type { WineType } from "@cellarboss/validators/constants";
 
 export default function ViewStorageScreen() {
+  const commonStyles = useCommonStyles();
+  const theme = useAppTheme();
+  const styles = StyleSheet.create({
+    heading: {
+      color: theme.colors.onSurface,
+      marginBottom: 8,
+      paddingHorizontal: 4,
+    },
+    card: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      padding: 16,
+      ...shadows.card,
+    },
+    bottlesCard: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      overflow: "hidden" as const,
+      ...shadows.card,
+    },
+    detailsRow: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: 12,
+    },
+    detailsContent: {
+      flex: 1,
+      gap: 4,
+    },
+    hierarchyRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      flexWrap: "wrap",
+      marginBottom: 2,
+    },
+    hierarchySegment: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    hierarchyText: {
+      fontSize: 13,
+      color: theme.colors.primary,
+    },
+    detailItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      marginTop: 2,
+    },
+    detailText: {
+      flex: 1,
+      color: theme.colors.onSurfaceVariant,
+    },
+    section: {
+      marginTop: 16,
+    },
+    empty: {
+      fontSize: 13,
+      color: theme.colors.onSurfaceVariant,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    bottleRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingVertical: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outlineVariant,
+      gap: 10,
+    },
+    rowLast: {
+      borderBottomWidth: 0,
+    },
+    childName: {
+      flex: 1,
+      fontSize: 15,
+      fontWeight: "bold",
+      color: theme.colors.onSurface,
+    },
+  });
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
 
@@ -277,82 +358,3 @@ export default function ViewStorageScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  heading: {
-    color: theme.colors.onSurface,
-    marginBottom: 8,
-    paddingHorizontal: 4,
-  },
-  card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    ...shadows.card,
-  },
-  bottlesCard: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    overflow: "hidden" as const,
-    ...shadows.card,
-  },
-  detailsRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 12,
-  },
-  detailsContent: {
-    flex: 1,
-    gap: 4,
-  },
-  hierarchyRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    flexWrap: "wrap",
-    marginBottom: 2,
-  },
-  hierarchySegment: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  hierarchyText: {
-    fontSize: 13,
-    color: theme.colors.primary,
-  },
-  detailItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginTop: 2,
-  },
-  detailText: {
-    flex: 1,
-    color: theme.colors.onSurfaceVariant,
-  },
-  section: {
-    marginTop: 16,
-  },
-  empty: {
-    fontSize: 13,
-    color: theme.colors.onSurfaceVariant,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  bottleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-    gap: 10,
-  },
-  rowLast: {
-    borderBottomWidth: 0,
-  },
-  childName: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-  },
-});

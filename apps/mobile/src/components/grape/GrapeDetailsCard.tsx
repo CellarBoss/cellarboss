@@ -3,10 +3,13 @@ import { Icon, Text } from "react-native-paper";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
-import { theme, shadows } from "@/lib/theme";
+import { shadows } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import type { Grape } from "@cellarboss/types";
 
 export function GrapeDetailsCard({ grape }: { grape: Grape }) {
+  const theme = useAppTheme();
+
   const winegrapesQuery = useApiQuery({
     queryKey: ["winegrapes"],
     queryFn: () => api.winegrapes.getAll(),
@@ -17,6 +20,39 @@ export function GrapeDetailsCard({ grape }: { grape: Grape }) {
 
   const [winegrapes] = result.data;
   const wineCount = winegrapes.filter((wg) => wg.grapeId === grape.id).length;
+
+  const styles = StyleSheet.create({
+    heading: {
+      color: theme.colors.onSurface,
+      marginBottom: 8,
+      paddingHorizontal: 4,
+    },
+    card: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      padding: 16,
+      ...shadows.card,
+    },
+    row: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: 12,
+    },
+    details: {
+      flex: 1,
+      gap: 4,
+    },
+    detailRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      marginTop: 2,
+    },
+    detailText: {
+      flex: 1,
+      color: theme.colors.onSurfaceVariant,
+    },
+  });
 
   return (
     <>
@@ -48,36 +84,3 @@ export function GrapeDetailsCard({ grape }: { grape: Grape }) {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  heading: {
-    color: theme.colors.onSurface,
-    marginBottom: 8,
-    paddingHorizontal: 4,
-  },
-  card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    ...shadows.card,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 12,
-  },
-  details: {
-    flex: 1,
-    gap: 4,
-  },
-  detailRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginTop: 2,
-  },
-  detailText: {
-    flex: 1,
-    color: theme.colors.onSurfaceVariant,
-  },
-});

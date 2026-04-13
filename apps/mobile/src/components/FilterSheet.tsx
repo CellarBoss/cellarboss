@@ -8,7 +8,7 @@ import {
   IconButton,
   Chip,
 } from "react-native-paper";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import type { SelectOption } from "@/lib/types/field";
 
 export type FilterConfig = {
@@ -27,6 +27,7 @@ type FilterSheetProps = {
 };
 
 export function FilterSheet({ filters, values, onChange }: FilterSheetProps) {
+  const theme = useAppTheme();
   const [visible, setVisible] = useState(false);
   const [draft, setDraft] = useState<FilterValues>(values);
 
@@ -64,6 +65,57 @@ export function FilterSheet({ filters, values, onChange }: FilterSheetProps) {
       return { ...prev, [filterKey]: [value] };
     });
   }
+
+  const styles = StyleSheet.create({
+    modal: {
+      backgroundColor: theme.colors.surface,
+      margin: 24,
+      borderRadius: 12,
+      maxHeight: "80%",
+      overflow: "hidden",
+    },
+    header: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingLeft: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outlineVariant,
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: "bold",
+      color: theme.colors.onSurface,
+    },
+    content: {
+      padding: 16,
+    },
+    filterGroup: {
+      marginBottom: 20,
+    },
+    filterLabel: {
+      fontSize: 14,
+      fontWeight: "600",
+      color: theme.colors.onSurface,
+      marginBottom: 8,
+    },
+    chips: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 8,
+    },
+    chip: {
+      marginBottom: 4,
+    },
+    actions: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      padding: 16,
+      borderTopWidth: 1,
+      borderTopColor: theme.colors.outlineVariant,
+      gap: 12,
+    },
+  });
 
   return (
     <>
@@ -144,54 +196,3 @@ export function FilterSheet({ filters, values, onChange }: FilterSheetProps) {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  modal: {
-    backgroundColor: theme.colors.surface,
-    margin: 24,
-    borderRadius: 12,
-    maxHeight: "80%",
-    overflow: "hidden",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingLeft: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outlineVariant,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: theme.colors.onSurface,
-  },
-  content: {
-    padding: 16,
-  },
-  filterGroup: {
-    marginBottom: 20,
-  },
-  filterLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: theme.colors.onSurface,
-    marginBottom: 8,
-  },
-  chips: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  chip: {
-    marginBottom: 4,
-  },
-  actions: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: theme.colors.outlineVariant,
-    gap: 12,
-  },
-});

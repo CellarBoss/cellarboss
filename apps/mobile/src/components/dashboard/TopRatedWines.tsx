@@ -2,7 +2,7 @@ import { View, StyleSheet, Pressable } from "react-native";
 import { Card, Text } from "react-native-paper";
 import type { TastingNote, Vintage, Wine, WineMaker } from "@cellarboss/types";
 import { useRouter } from "expo-router";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 type TopRatedWinesProps = {
   tastingNotes: TastingNote[];
@@ -18,6 +18,7 @@ export function TopRatedWines({
   winemakers,
 }: TopRatedWinesProps) {
   const router = useRouter();
+  const theme = useAppTheme();
 
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w) => [w.id, w]));
@@ -44,6 +45,57 @@ export function TopRatedWines({
     }))
     .sort((a, b) => b.avg - a.avg)
     .slice(0, 5);
+
+  const styles = StyleSheet.create({
+    card: {
+      backgroundColor: theme.colors.surface,
+    },
+    content: {
+      gap: 10,
+    },
+    empty: {
+      color: theme.colors.onSurfaceVariant,
+      textAlign: "center",
+      paddingVertical: 16,
+    },
+    row: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
+    },
+    rank: {
+      fontSize: 16,
+      fontWeight: "700",
+      color: theme.colors.onSurfaceVariant,
+      width: 20,
+      textAlign: "center",
+    },
+    details: {
+      flex: 1,
+    },
+    wineName: {
+      fontSize: 14,
+      fontWeight: "600",
+      color: theme.colors.onSurface,
+    },
+    winemaker: {
+      fontSize: 12,
+      color: theme.colors.onSurfaceVariant,
+    },
+    scoreBadge: {
+      backgroundColor: theme.colors.primaryContainer,
+      borderRadius: 12,
+      paddingHorizontal: 8,
+      paddingVertical: 3,
+      minWidth: 40,
+      alignItems: "center",
+    },
+    scoreText: {
+      fontSize: 13,
+      fontWeight: "700",
+      color: theme.colors.onPrimaryContainer,
+    },
+  });
 
   if (ranked.length === 0) {
     return (
@@ -101,54 +153,3 @@ export function TopRatedWines({
     </Card>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: theme.colors.surface,
-  },
-  content: {
-    gap: 10,
-  },
-  empty: {
-    color: theme.colors.onSurfaceVariant,
-    textAlign: "center",
-    paddingVertical: 16,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  rank: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: theme.colors.onSurfaceVariant,
-    width: 20,
-    textAlign: "center",
-  },
-  details: {
-    flex: 1,
-  },
-  wineName: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: theme.colors.onSurface,
-  },
-  winemaker: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-  },
-  scoreBadge: {
-    backgroundColor: theme.colors.primaryContainer,
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    minWidth: 40,
-    alignItems: "center",
-  },
-  scoreText: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: theme.colors.onPrimaryContainer,
-  },
-});

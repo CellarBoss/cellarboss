@@ -1,7 +1,7 @@
 import { View, StyleSheet, Pressable } from "react-native";
 import { Card, Text } from "react-native-paper";
 import type { Bottle, Vintage, Wine, WineMaker } from "@cellarboss/types";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 import { useRouter } from "expo-router";
 
 type DrinkingSuggestionsProps = {
@@ -18,6 +18,7 @@ export function DrinkingSuggestions({
   winemakers,
 }: DrinkingSuggestionsProps) {
   const router = useRouter();
+  const theme = useAppTheme();
   const currentYear = new Date().getFullYear();
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
   const wineMap = new Map(wines.map((w) => [w.id, w]));
@@ -55,6 +56,67 @@ export function DrinkingSuggestions({
     }))
     .sort((a, b) => a.drinkUntil - b.drinkUntil)
     .slice(0, 8);
+
+  const styles = StyleSheet.create({
+    card: {
+      backgroundColor: theme.colors.surface,
+    },
+    content: {
+      gap: 10,
+    },
+    empty: {
+      color: theme.colors.onSurfaceVariant,
+      textAlign: "center",
+      paddingVertical: 16,
+    },
+    row: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
+    },
+    countBadge: {
+      backgroundColor: theme.colors.primaryContainer,
+      borderRadius: 12,
+      width: 28,
+      height: 28,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    countText: {
+      fontSize: 13,
+      fontWeight: "700",
+      color: theme.colors.onPrimaryContainer,
+    },
+    details: {
+      flex: 1,
+    },
+    wineName: {
+      fontSize: 14,
+      fontWeight: "600",
+      color: theme.colors.onSurface,
+    },
+    winemaker: {
+      fontSize: 12,
+      color: theme.colors.onSurfaceVariant,
+    },
+    deadlineBadge: {
+      backgroundColor: "#FEF3C7",
+      borderRadius: 8,
+      paddingHorizontal: 8,
+      paddingVertical: 3,
+    },
+    deadlineBadgePast: {
+      backgroundColor: theme.colors.errorContainer,
+    },
+    deadlineText: {
+      fontSize: 11,
+      fontWeight: "600",
+      color: "#92400E",
+    },
+    deadlineTextPast: {
+      color: theme.colors.onErrorContainer,
+    },
+  });
 
   if (suggestions.length === 0) {
     return (
@@ -127,64 +189,3 @@ export function DrinkingSuggestions({
     </Card>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: theme.colors.surface,
-  },
-  content: {
-    gap: 10,
-  },
-  empty: {
-    color: theme.colors.onSurfaceVariant,
-    textAlign: "center",
-    paddingVertical: 16,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  countBadge: {
-    backgroundColor: theme.colors.primaryContainer,
-    borderRadius: 12,
-    width: 28,
-    height: 28,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  countText: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: theme.colors.onPrimaryContainer,
-  },
-  details: {
-    flex: 1,
-  },
-  wineName: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: theme.colors.onSurface,
-  },
-  winemaker: {
-    fontSize: 12,
-    color: theme.colors.onSurfaceVariant,
-  },
-  deadlineBadge: {
-    backgroundColor: "#FEF3C7",
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-  },
-  deadlineBadgePast: {
-    backgroundColor: theme.colors.errorContainer,
-  },
-  deadlineText: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: "#92400E",
-  },
-  deadlineTextPast: {
-    color: theme.colors.onErrorContainer,
-  },
-});

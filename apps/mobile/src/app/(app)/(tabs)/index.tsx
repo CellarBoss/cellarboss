@@ -11,9 +11,15 @@ import { CellarValueOverTime } from "@/components/dashboard/CellarValueOverTime"
 import { TopRatedWines } from "@/components/dashboard/TopRatedWines";
 import { DrinkingSuggestions } from "@/components/dashboard/DrinkingSuggestions";
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
-import { theme } from "@/lib/theme";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 export default function DashboardScreen() {
+  const theme = useAppTheme();
+  const styles = StyleSheet.create({
+    container: { flex: 1, backgroundColor: theme.colors.background },
+    scroll: { flex: 1 },
+    content: { padding: 16, gap: 16, paddingBottom: 32 },
+  });
   const bottleQuery = useApiQuery({
     queryKey: ["bottles"],
     queryFn: () => api.bottles.getAll(),
@@ -106,9 +112,3 @@ export default function DashboardScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: theme.colors.background },
-  scroll: { flex: 1 },
-  content: { padding: 16, gap: 16, paddingBottom: 32 },
-});
