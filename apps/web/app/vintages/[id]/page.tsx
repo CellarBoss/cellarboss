@@ -154,72 +154,73 @@ export default function ViewVintagePage() {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <DetailCard heading="Wine" icon={Barrel}>
-          <h3 className="text-lg font-semibold">
-            {wine ? (
-              <Link href={`/wines/${wine.id}`} className="hover:underline">
-                {wine.name}
-              </Link>
-            ) : (
-              "Unknown wine"
+        <div className="flex flex-col gap-6">
+          <DetailCard heading="Wine" icon={Barrel}>
+            <h3 className="text-lg font-semibold">
+              {wine ? (
+                <Link href={`/wines/${wine.id}`} className="hover:underline">
+                  {wine.name}
+                </Link>
+              ) : (
+                "Unknown wine"
+              )}
+              <span className="text-muted-foreground ml-2">{yearDisplay}</span>
+            </h3>
+            {winemaker && (
+              <DetailRow icon={User}>
+                <Link
+                  href={`/winemakers/${winemaker.id}`}
+                  className="hover:underline text-primary"
+                >
+                  {winemaker.name}
+                </Link>
+              </DetailRow>
             )}
-            <span className="text-muted-foreground ml-2">{yearDisplay}</span>
-          </h3>
-          {winemaker && (
-            <DetailRow icon={User}>
-              <Link
-                href={`/winemakers/${winemaker.id}`}
-                className="hover:underline text-primary"
-              >
-                {winemaker.name}
-              </Link>
-            </DetailRow>
-          )}
-          {(region || country) && (
-            <DetailRow icon={Earth}>
-              {[region?.name, country?.name].filter(Boolean).join(", ")}
-            </DetailRow>
-          )}
-          <DetailRow icon={Clock}>
-            <DrinkingWindowDisplay
-              drinkFrom={vintage.drinkFrom}
-              drinkUntil={vintage.drinkUntil}
-            />
-          </DetailRow>
-        </DetailCard>
-
-        <VintageImageGallery vintageId={vintageId} className="" />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        <RelatedResourceSection
-          className=""
-          heading="Bottles"
-          count={bottles.length}
-          addHref={`/bottles/new?vintageId=${vintageId}`}
-          addLabel="Add bottle"
-          emptyMessage="No bottles yet"
-        >
-          {sortedBottles.map((bottle) => {
-            const storage = bottle.storageId
-              ? storageMap.get(bottle.storageId)
-              : undefined;
-            const location = storage?.locationId
-              ? locationMap.get(storage.locationId)
-              : undefined;
-            return (
-              <VintageBottleListItem
-                key={bottle.id}
-                bottle={bottle}
-                wineType={wine?.type as WineType | undefined}
-                locationName={location?.name}
-                storagePath={getStoragePath(bottle.storageId)}
+            {(region || country) && (
+              <DetailRow icon={Earth}>
+                {[region?.name, country?.name].filter(Boolean).join(", ")}
+              </DetailRow>
+            )}
+            <DetailRow icon={Clock}>
+              <DrinkingWindowDisplay
+                drinkFrom={vintage.drinkFrom}
+                drinkUntil={vintage.drinkUntil}
               />
-            );
-          })}
-        </RelatedResourceSection>
+            </DetailRow>
+          </DetailCard>
 
-        <TastingNotesSection className="" vintageId={vintageId} />
+          <RelatedResourceSection
+            className=""
+            heading="Bottles"
+            count={bottles.length}
+            addHref={`/bottles/new?vintageId=${vintageId}`}
+            addLabel="Add bottle"
+            emptyMessage="No bottles yet"
+          >
+            {sortedBottles.map((bottle) => {
+              const storage = bottle.storageId
+                ? storageMap.get(bottle.storageId)
+                : undefined;
+              const location = storage?.locationId
+                ? locationMap.get(storage.locationId)
+                : undefined;
+              return (
+                <VintageBottleListItem
+                  key={bottle.id}
+                  bottle={bottle}
+                  wineType={wine?.type as WineType | undefined}
+                  locationName={location?.name}
+                  storagePath={getStoragePath(bottle.storageId)}
+                />
+              );
+            })}
+          </RelatedResourceSection>
+        </div>
+
+        <div className="flex flex-col gap-6">
+          <VintageImageGallery vintageId={vintageId} className="" />
+          <TastingNotesSection className="" vintageId={vintageId} />
+        </div>
       </div>
     </section>
   );

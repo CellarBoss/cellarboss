@@ -201,54 +201,50 @@ export default function ViewBottlePage() {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <DetailCard heading="Wine" icon={Barrel}>
-          <h3 className="text-lg font-semibold">
-            {wine ? (
-              <Link href={`/wines/${wine.id}`} className="hover:underline">
-                {wine.name}
-              </Link>
-            ) : (
-              "Unknown wine"
+        <div className="flex flex-col gap-6">
+          <DetailCard heading="Wine" icon={Barrel}>
+            <h3 className="text-lg font-semibold">
+              {wine ? (
+                <Link href={`/wines/${wine.id}`} className="hover:underline">
+                  {wine.name}
+                </Link>
+              ) : (
+                "Unknown wine"
+              )}
+              {vintage && (
+                <Link
+                  href={`/vintages/${vintage.id}`}
+                  className="text-muted-foreground ml-2 hover:underline"
+                >
+                  {yearDisplay}
+                </Link>
+              )}
+            </h3>
+            {winemaker && (
+              <DetailRow icon={User}>
+                <Link
+                  href={`/winemakers/${winemaker.id}`}
+                  className="hover:underline text-primary"
+                >
+                  {winemaker.name}
+                </Link>
+              </DetailRow>
+            )}
+            {(region || country) && (
+              <DetailRow icon={Earth}>
+                {[region?.name, country?.name].filter(Boolean).join(", ")}
+              </DetailRow>
             )}
             {vintage && (
-              <Link
-                href={`/vintages/${vintage.id}`}
-                className="text-muted-foreground ml-2 hover:underline"
-              >
-                {yearDisplay}
-              </Link>
+              <DetailRow icon={Clock}>
+                <DrinkingWindowDisplay
+                  drinkFrom={vintage.drinkFrom}
+                  drinkUntil={vintage.drinkUntil}
+                />
+              </DetailRow>
             )}
-          </h3>
-          {winemaker && (
-            <DetailRow icon={User}>
-              <Link
-                href={`/winemakers/${winemaker.id}`}
-                className="hover:underline text-primary"
-              >
-                {winemaker.name}
-              </Link>
-            </DetailRow>
-          )}
-          {(region || country) && (
-            <DetailRow icon={Earth}>
-              {[region?.name, country?.name].filter(Boolean).join(", ")}
-            </DetailRow>
-          )}
-          {vintage && (
-            <DetailRow icon={Clock}>
-              <DrinkingWindowDisplay
-                drinkFrom={vintage.drinkFrom}
-                drinkUntil={vintage.drinkUntil}
-              />
-            </DetailRow>
-          )}
-        </DetailCard>
+          </DetailCard>
 
-        {vintage && <VintageImageGallery vintageId={vintage.id} className="" />}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        <div className="flex flex-col gap-6">
           <DetailCard heading="Bottle" icon={BottleWine}>
             <DetailRow icon={CircleDot}>
               <Badge variant="secondary">{formatStatus(bottle.status)}</Badge>
@@ -299,7 +295,12 @@ export default function ViewBottlePage() {
           )}
         </div>
 
-        {vintage && <TastingNotesSection className="" vintageId={vintage.id} />}
+        {vintage && (
+          <div className="flex flex-col gap-6">
+            <VintageImageGallery vintageId={vintage.id} className="" />
+            <TastingNotesSection className="" vintageId={vintage.id} />
+          </div>
+        )}
       </div>
     </section>
   );
