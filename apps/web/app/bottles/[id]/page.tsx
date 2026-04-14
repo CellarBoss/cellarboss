@@ -3,10 +3,6 @@
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  User,
-  Earth,
-  Clock,
-  Barrel,
   CircleDot,
   Calendar,
   DollarSign,
@@ -30,7 +26,7 @@ import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { ChangeStatusButton } from "@/components/buttons/ChangeStatusButton";
 import { MoveBottleButton } from "@/components/buttons/MoveBottleButton";
-import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
+import { WineDetailCard } from "@/components/detail/WineDetailCard";
 import { TastingNotesSection } from "@/components/tasting-notes/TastingNotesSection";
 import { VintageImageGallery } from "@/components/images/VintageImageGallery";
 import { Badge } from "@/components/ui/badge";
@@ -155,7 +151,6 @@ export default function ViewBottlePage() {
     ? allLocations.find((l) => l.id === storage.locationId)
     : undefined;
 
-  const yearDisplay = vintage?.year !== null ? String(vintage?.year) : "NV";
   const title = `Bottle #${bottle.id}`;
 
   return (
@@ -202,48 +197,13 @@ export default function ViewBottlePage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="flex flex-col gap-6">
-          <DetailCard heading="Wine" icon={Barrel}>
-            <h3 className="text-lg font-semibold">
-              {wine ? (
-                <Link href={`/wines/${wine.id}`} className="hover:underline">
-                  {wine.name}
-                </Link>
-              ) : (
-                "Unknown wine"
-              )}
-              {vintage && (
-                <Link
-                  href={`/vintages/${vintage.id}`}
-                  className="text-muted-foreground ml-2 hover:underline"
-                >
-                  {yearDisplay}
-                </Link>
-              )}
-            </h3>
-            {winemaker && (
-              <DetailRow icon={User}>
-                <Link
-                  href={`/winemakers/${winemaker.id}`}
-                  className="hover:underline text-primary"
-                >
-                  {winemaker.name}
-                </Link>
-              </DetailRow>
-            )}
-            {(region || country) && (
-              <DetailRow icon={Earth}>
-                {[region?.name, country?.name].filter(Boolean).join(", ")}
-              </DetailRow>
-            )}
-            {vintage && (
-              <DetailRow icon={Clock}>
-                <DrinkingWindowDisplay
-                  drinkFrom={vintage.drinkFrom}
-                  drinkUntil={vintage.drinkUntil}
-                />
-              </DetailRow>
-            )}
-          </DetailCard>
+          <WineDetailCard
+            wine={wine}
+            vintage={vintage}
+            winemaker={winemaker}
+            region={region}
+            country={country}
+          />
 
           <DetailCard heading="Bottle" icon={BottleWine}>
             <DetailRow icon={CircleDot}>
