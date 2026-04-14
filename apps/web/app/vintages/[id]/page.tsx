@@ -1,8 +1,6 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import { User, Earth, Clock, Barrel } from "lucide-react";
 import { getVintageById, deleteVintage } from "@/lib/api/vintages";
 import { getWines } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
@@ -12,13 +10,11 @@ import { getBottlesByVintageId } from "@/lib/api/bottles";
 import { getStorages } from "@/lib/api/storages";
 import { getLocations } from "@/lib/api/locations";
 import { PageHeader } from "@/components/page/PageHeader";
-import { DetailCard } from "@/components/detail/DetailCard";
-import { DetailRow } from "@/components/detail/DetailRow";
 import { RelatedResourceSection } from "@/components/detail/RelatedResourceSection";
 import { VintageBottleListItem } from "@/components/detail/VintageBottleListItem";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
-import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
+import { WineDetailCard } from "@/components/detail/WineDetailCard";
 import { TastingNotesSection } from "@/components/tasting-notes/TastingNotesSection";
 import { VintageImageGallery } from "@/components/images/VintageImageGallery";
 import { useApiQuery } from "@/hooks/use-api-query";
@@ -154,72 +150,47 @@ export default function ViewVintagePage() {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <DetailCard heading="Wine" icon={Barrel}>
-          <h3 className="text-lg font-semibold">
-            {wine ? (
-              <Link href={`/wines/${wine.id}`} className="hover:underline">
-                {wine.name}
-              </Link>
-            ) : (
-              "Unknown wine"
-            )}
-            <span className="text-muted-foreground ml-2">{yearDisplay}</span>
-          </h3>
-          {winemaker && (
-            <DetailRow icon={User}>
-              <Link
-                href={`/winemakers/${winemaker.id}`}
-                className="hover:underline text-primary"
-              >
-                {winemaker.name}
-              </Link>
-            </DetailRow>
-          )}
-          {(region || country) && (
-            <DetailRow icon={Earth}>
-              {[region?.name, country?.name].filter(Boolean).join(", ")}
-            </DetailRow>
-          )}
-          <DetailRow icon={Clock}>
-            <DrinkingWindowDisplay
-              drinkFrom={vintage.drinkFrom}
-              drinkUntil={vintage.drinkUntil}
-            />
-          </DetailRow>
-        </DetailCard>
+        <div className="flex flex-col gap-6">
+          <WineDetailCard
+            wine={wine}
+            vintage={vintage}
+            winemaker={winemaker}
+            region={region}
+            country={country}
+          />
 
-        <VintageImageGallery vintageId={vintageId} className="" />
-      </div>
+          <RelatedResourceSection
+            className=""
+            heading="Bottles"
+            count={bottles.length}
+            addHref={`/bottles/new?vintageId=${vintageId}`}
+            addLabel="Add bottle"
+            emptyMessage="No bottles yet"
+          >
+            {sortedBottles.map((bottle) => {
+              const storage = bottle.storageId
+                ? storageMap.get(bottle.storageId)
+                : undefined;
+              const location = storage?.locationId
+                ? locationMap.get(storage.locationId)
+                : undefined;
+              return (
+                <VintageBottleListItem
+                  key={bottle.id}
+                  bottle={bottle}
+                  wineType={wine?.type as WineType | undefined}
+                  locationName={location?.name}
+                  storagePath={getStoragePath(bottle.storageId)}
+                />
+              );
+            })}
+          </RelatedResourceSection>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        <RelatedResourceSection
-          className=""
-          heading="Bottles"
-          count={bottles.length}
-          addHref={`/bottles/new?vintageId=${vintageId}`}
-          addLabel="Add bottle"
-          emptyMessage="No bottles yet"
-        >
-          {sortedBottles.map((bottle) => {
-            const storage = bottle.storageId
-              ? storageMap.get(bottle.storageId)
-              : undefined;
-            const location = storage?.locationId
-              ? locationMap.get(storage.locationId)
-              : undefined;
-            return (
-              <VintageBottleListItem
-                key={bottle.id}
-                bottle={bottle}
-                wineType={wine?.type as WineType | undefined}
-                locationName={location?.name}
-                storagePath={getStoragePath(bottle.storageId)}
-              />
-            );
-          })}
-        </RelatedResourceSection>
-
-        <TastingNotesSection className="" vintageId={vintageId} />
+        <div className="flex flex-col gap-6">
+          <VintageImageGallery vintageId={vintageId} className="" />
+          <TastingNotesSection className="" vintageId={vintageId} />
+        </div>
       </div>
     </section>
   );

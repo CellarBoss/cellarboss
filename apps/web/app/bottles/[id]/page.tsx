@@ -3,10 +3,6 @@
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  User,
-  Earth,
-  Clock,
-  Barrel,
   CircleDot,
   Calendar,
   DollarSign,
@@ -30,7 +26,9 @@ import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { ChangeStatusButton } from "@/components/buttons/ChangeStatusButton";
 import { MoveBottleButton } from "@/components/buttons/MoveBottleButton";
-import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
+import { WineDetailCard } from "@/components/detail/WineDetailCard";
+import { TastingNotesSection } from "@/components/tasting-notes/TastingNotesSection";
+import { VintageImageGallery } from "@/components/images/VintageImageGallery";
 import { Badge } from "@/components/ui/badge";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
@@ -153,7 +151,6 @@ export default function ViewBottlePage() {
     ? allLocations.find((l) => l.id === storage.locationId)
     : undefined;
 
-  const yearDisplay = vintage?.year !== null ? String(vintage?.year) : "NV";
   const title = `Bottle #${bottle.id}`;
 
   return (
@@ -198,101 +195,73 @@ export default function ViewBottlePage() {
         }
       />
 
-      <DetailCard heading="Wine" icon={Barrel}>
-        <h3 className="text-lg font-semibold">
-          {wine ? (
-            <Link href={`/wines/${wine.id}`} className="hover:underline">
-              {wine.name}
-            </Link>
-          ) : (
-            "Unknown wine"
-          )}
-          {vintage && (
-            <Link
-              href={`/vintages/${vintage.id}`}
-              className="text-muted-foreground ml-2 hover:underline"
-            >
-              {yearDisplay}
-            </Link>
-          )}
-        </h3>
-        {winemaker && (
-          <DetailRow icon={User}>
-            <Link
-              href={`/winemakers/${winemaker.id}`}
-              className="hover:underline text-primary"
-            >
-              {winemaker.name}
-            </Link>
-          </DetailRow>
-        )}
-        {(region || country) && (
-          <DetailRow icon={Earth}>
-            {[region?.name, country?.name].filter(Boolean).join(", ")}
-          </DetailRow>
-        )}
-        {vintage && (
-          <DetailRow icon={Clock}>
-            <DrinkingWindowDisplay
-              drinkFrom={vintage.drinkFrom}
-              drinkUntil={vintage.drinkUntil}
-            />
-          </DetailRow>
-        )}
-      </DetailCard>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="flex flex-col gap-6">
+          <WineDetailCard
+            wine={wine}
+            vintage={vintage}
+            winemaker={winemaker}
+            region={region}
+            country={country}
+          />
 
-      <div className="mt-4">
-        <DetailCard heading="Bottle" icon={BottleWine}>
-          <DetailRow icon={CircleDot}>
-            <Badge variant="secondary">{formatStatus(bottle.status)}</Badge>
-          </DetailRow>
-          <DetailRow icon={BottleWine}>
-            {formatBottleSize(bottle.size)}
-          </DetailRow>
-          <DetailRow icon={Calendar}>
-            {bottle.purchaseDate
-              ? formatDate(bottle.purchaseDate, String(dateFormat))
-              : "-"}
-          </DetailRow>
-          <DetailRow icon={DollarSign}>
-            {bottle.purchasePrice > 0
-              ? formatPrice(bottle.purchasePrice, String(currency))
-              : "-"}
-          </DetailRow>
-        </DetailCard>
-      </div>
+          <DetailCard heading="Bottle" icon={BottleWine}>
+            <DetailRow icon={CircleDot}>
+              <Badge variant="secondary">{formatStatus(bottle.status)}</Badge>
+            </DetailRow>
+            <DetailRow icon={BottleWine}>
+              {formatBottleSize(bottle.size)}
+            </DetailRow>
+            <DetailRow icon={Calendar}>
+              {bottle.purchaseDate
+                ? formatDate(bottle.purchaseDate, String(dateFormat))
+                : "-"}
+            </DetailRow>
+            <DetailRow icon={DollarSign}>
+              {bottle.purchasePrice > 0
+                ? formatPrice(bottle.purchasePrice, String(currency))
+                : "-"}
+            </DetailRow>
+          </DetailCard>
 
-      {storagePath.length > 0 && (
-        <div className="mt-4">
-          <DetailCard heading="Storage" icon={Refrigerator}>
-            <div className="flex items-center gap-1 flex-wrap text-sm">
-              {storagePath.map((segment, i) => (
-                <span key={segment.id} className="flex items-center gap-1">
-                  {i > 0 && (
-                    <ChevronRight className="h-3 w-3 text-muted-foreground" />
-                  )}
+          {storagePath.length > 0 && (
+            <DetailCard heading="Storage" icon={Refrigerator}>
+              <div className="flex items-center gap-1 flex-wrap text-sm">
+                {storagePath.map((segment, i) => (
+                  <span key={segment.id} className="flex items-center gap-1">
+                    {i > 0 && (
+                      <ChevronRight className="h-3 w-3 text-muted-foreground" />
+                    )}
+                    <Link
+                      href={`/storages/${segment.id}`}
+                      className="hover:underline text-primary"
+                    >
+                      {segment.name}
+                    </Link>
+                  </span>
+                ))}
+              </div>
+              {location && (
+                <DetailRow icon={MapPin}>
                   <Link
-                    href={`/storages/${segment.id}`}
+                    href={`/locations/${location.id}`}
                     className="hover:underline text-primary"
                   >
-                    {segment.name}
+                    {location.name}
                   </Link>
-                </span>
-              ))}
-            </div>
-            {location && (
-              <DetailRow icon={MapPin}>
-                <Link
-                  href={`/locations/${location.id}`}
-                  className="hover:underline text-primary"
-                >
-                  {location.name}
-                </Link>
-              </DetailRow>
-            )}
-          </DetailCard>
+                </DetailRow>
+              )}
+            </DetailCard>
+          )}
         </div>
-      )}
+
+        {vintage && (
+          <div className="flex flex-col gap-6">
+            <VintageImageGallery vintageId={vintage.id} className="" />
+            <TastingNotesSection className="" vintageId={vintage.id} />
+          </div>
+        )}
+      </div>
     </section>
   );
 }
