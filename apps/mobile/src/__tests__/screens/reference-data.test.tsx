@@ -28,18 +28,18 @@ jest.mock("react-native-gesture-handler/ReanimatedSwipeable", () => {
 });
 
 // Import all list screens
-import CountriesScreen from "@/app/(app)/(tabs)/countries/index";
-import NewCountryScreen from "@/app/(app)/(tabs)/countries/new";
-import RegionsScreen from "@/app/(app)/(tabs)/regions/index";
-import NewRegionScreen from "@/app/(app)/(tabs)/regions/new";
-import WinemakersScreen from "@/app/(app)/(tabs)/winemakers/index";
-import NewWinemakerScreen from "@/app/(app)/(tabs)/winemakers/new";
-import GrapesScreen from "@/app/(app)/(tabs)/grapes/index";
-import NewGrapeScreen from "@/app/(app)/(tabs)/grapes/new";
-import LocationsScreen from "@/app/(app)/(tabs)/locations/index";
-import NewLocationScreen from "@/app/(app)/(tabs)/locations/new";
-import StoragesScreen from "@/app/(app)/(tabs)/storages/index";
-import NewStorageScreen from "@/app/(app)/(tabs)/storages/new";
+import CountriesScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/countries/index";
+import NewCountryScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/countries/new";
+import RegionsScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/regions/index";
+import NewRegionScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/regions/new";
+import WinemakersScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/winemakers/index";
+import NewWinemakerScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/winemakers/new";
+import GrapesScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/grapes/index";
+import NewGrapeScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/grapes/new";
+import LocationsScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/locations/index";
+import NewLocationScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/locations/new";
+import StoragesScreen from "@/app/(app)/(tabs)/(storages)/storages/index";
+import NewStorageScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/storages/new";
 
 describe("Reference Data Screens", () => {
   beforeEach(() => {

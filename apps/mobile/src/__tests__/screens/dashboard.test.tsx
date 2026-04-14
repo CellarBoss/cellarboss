@@ -15,7 +15,7 @@ import {
   tastingNotes,
 } from "../helpers/fixtures";
 
-import DashboardScreen from "@/app/(app)/(tabs)/index";
+import DashboardScreen from "@/app/(app)/(tabs)/(dashboard)/index";
 
 describe("DashboardScreen", () => {
   beforeEach(() => {

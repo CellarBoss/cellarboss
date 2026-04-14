@@ -20,7 +20,7 @@ jest.mock("@/contexts/auth-context", () => ({
   }),
 }));
 
-import MoreScreen from "@/app/(app)/(tabs)/more";
+import MoreScreen from "@/app/(app)/(tabs)/(more)/more";
 
 describe("MoreScreen", () => {
   beforeEach(() => {
@@ -51,61 +51,61 @@ describe("MoreScreen", () => {
   it("navigates to cellar on tap", () => {
     renderWithProviders(<MoreScreen />);
     fireEvent.press(screen.getByTestId("menu-cellar"));
-    expect(mockRouter.push).toHaveBeenCalledWith("/(app)/bottles");
+    expect(mockRouter.push).toHaveBeenCalledWith("/bottles");
   });
 
   it("navigates to wines on tap", () => {
     renderWithProviders(<MoreScreen />);
     fireEvent.press(screen.getByTestId("menu-wines"));
-    expect(mockRouter.push).toHaveBeenCalledWith("/(app)/wines");
+    expect(mockRouter.push).toHaveBeenCalledWith("/wines");
   });
 
   it("navigates to tasting notes on tap", () => {
     renderWithProviders(<MoreScreen />);
     fireEvent.press(screen.getByTestId("menu-tasting-notes"));
-    expect(mockRouter.push).toHaveBeenCalledWith("/(app)/tasting-notes");
+    expect(mockRouter.push).toHaveBeenCalledWith("/tasting-notes");
   });
 
   it("navigates to winemakers on tap", () => {
     renderWithProviders(<MoreScreen />);
     fireEvent.press(screen.getByTestId("menu-winemakers"));
-    expect(mockRouter.push).toHaveBeenCalledWith("/(app)/winemakers");
+    expect(mockRouter.push).toHaveBeenCalledWith("/winemakers");
   });
 
   it("navigates to regions on tap", () => {
     renderWithProviders(<MoreScreen />);
     fireEvent.press(screen.getByTestId("menu-regions"));
-    expect(mockRouter.push).toHaveBeenCalledWith("/(app)/regions");
+    expect(mockRouter.push).toHaveBeenCalledWith("/regions");
   });
 
   it("navigates to countries on tap", () => {
     renderWithProviders(<MoreScreen />);
     fireEvent.press(screen.getByTestId("menu-countries"));
-    expect(mockRouter.push).toHaveBeenCalledWith("/(app)/countries");
+    expect(mockRouter.push).toHaveBeenCalledWith("/countries");
   });
 
   it("navigates to grapes on tap", () => {
     renderWithProviders(<MoreScreen />);
     fireEvent.press(screen.getByTestId("menu-grapes"));
-    expect(mockRouter.push).toHaveBeenCalledWith("/(app)/grapes");
+    expect(mockRouter.push).toHaveBeenCalledWith("/grapes");
   });
 
   it("navigates to storages on tap", () => {
     renderWithProviders(<MoreScreen />);
     fireEvent.press(screen.getByTestId("menu-storages"));
-    expect(mockRouter.push).toHaveBeenCalledWith("/(app)/storages");
+    expect(mockRouter.push).toHaveBeenCalledWith("/storages");
   });
 
   it("navigates to locations on tap", () => {
     renderWithProviders(<MoreScreen />);
     fireEvent.press(screen.getByTestId("menu-locations"));
-    expect(mockRouter.push).toHaveBeenCalledWith("/(app)/locations");
+    expect(mockRouter.push).toHaveBeenCalledWith("/locations");
   });
 
   it("navigates to profile on tap", () => {
     renderWithProviders(<MoreScreen />);
     fireEvent.press(screen.getByTestId("menu-profile"));
-    expect(mockRouter.push).toHaveBeenCalledWith("/(app)/profile");
+    expect(mockRouter.push).toHaveBeenCalledWith("/profile");
   });
 
   it("calls signOut on sign out tap", () => {
