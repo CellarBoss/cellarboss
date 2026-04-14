@@ -16,7 +16,7 @@ export function VintageDisplay({ vintage, wine, winemaker }: Props) {
     <span>
       <Link href={`/wines/${wine.id}`}>{wine.name}</Link>
       &nbsp;
-      <Link href={`/vintages/${vintage.id}`}>{vintage.year}</Link>
+      <Link href={`/vintages/${vintage.id}`}>{vintage.year ?? "NV"}</Link>
       <br />
       <Link
         href={`/winemakers/${winemaker.id}`}
