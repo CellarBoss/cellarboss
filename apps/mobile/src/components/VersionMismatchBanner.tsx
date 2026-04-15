@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Banner } from "react-native-paper";
-import Constants from "expo-constants";
+import * as Application from "expo-application";
 import { useVersionMismatch } from "@cellarboss/common";
 import { api } from "@/lib/api/client";
 
-const appVersion = Constants.expoConfig?.version ?? "0.0.0";
+const appVersion = Application.nativeApplicationVersion ?? "0.0.0";
 
 export function VersionMismatchBanner() {
   const [dismissed, setDismissed] = useState(false);
