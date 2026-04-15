@@ -9,6 +9,12 @@ import { Icon } from "react-native-paper";
 import { useAppTheme } from "@/hooks/use-app-theme";
 import { VersionMismatchBanner } from "@/components/VersionMismatchBanner";
 
+// Tab folders are groups like `(cellar)`, `(wines)`, so detail routes can be
+// shared across every tab via the `(dashboard,cellar,wines,storages,more)/`
+// group. Navigating to e.g. `/winemakers/3` resolves within the active tab and
+// pushes onto that tab's stack, so the tab bar stays visible and back returns
+// to the previous page on the same tab.
+
 function resetTabOnPress({
   navigation,
   route,
@@ -43,6 +49,7 @@ export default function TabLayout() {
     <>
       <VersionMismatchBanner />
       <Tabs
+        backBehavior="history"
         screenOptions={{
           headerShown: false,
           tabBarActiveTintColor: theme.colors.primary,
@@ -54,7 +61,7 @@ export default function TabLayout() {
         }}
       >
         <Tabs.Screen
-          name="index"
+          name="(dashboard)"
           listeners={resetTabOnPress}
           options={{
             title: "Dashboard",
@@ -65,7 +72,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="bottles"
+          name="(cellar)"
           listeners={resetTabOnPress}
           options={{
             title: "Cellar",
@@ -76,7 +83,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="wines"
+          name="(wines)"
           listeners={resetTabOnPress}
           options={{
             title: "Wines",
@@ -87,7 +94,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="storages"
+          name="(storages)"
           listeners={resetTabOnPress}
           options={{
             title: "Storages",
@@ -98,7 +105,7 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="more"
+          name="(more)"
           listeners={resetTabOnPress}
           options={{
             title: "More",
@@ -108,14 +115,6 @@ export default function TabLayout() {
             ),
           }}
         />
-        <Tabs.Screen name="countries" options={{ href: null }} />
-        <Tabs.Screen name="grapes" options={{ href: null }} />
-        <Tabs.Screen name="locations" options={{ href: null }} />
-        <Tabs.Screen name="regions" options={{ href: null }} />
-        <Tabs.Screen name="tasting-notes" options={{ href: null }} />
-        <Tabs.Screen name="vintages" options={{ href: null }} />
-        <Tabs.Screen name="winemakers" options={{ href: null }} />
-        <Tabs.Screen name="profile" options={{ href: null }} />
       </Tabs>
     </>
   );

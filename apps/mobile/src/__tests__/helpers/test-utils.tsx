@@ -4,7 +4,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PaperProvider } from "react-native-paper";
 import { lightTheme } from "@/lib/theme";
 import { ThemePreferenceProvider } from "@/contexts/theme-context";
-import { NavigationHistoryProvider } from "@/contexts/navigation-history-context";
 
 function createTestQueryClient() {
   return new QueryClient({
@@ -22,7 +21,7 @@ function AllProviders({ children }: { children: ReactNode }) {
     <ThemePreferenceProvider>
       <PaperProvider theme={lightTheme}>
         <QueryClientProvider client={queryClient}>
-          <NavigationHistoryProvider>{children}</NavigationHistoryProvider>
+          {children}
         </QueryClientProvider>
       </PaperProvider>
     </ThemePreferenceProvider>

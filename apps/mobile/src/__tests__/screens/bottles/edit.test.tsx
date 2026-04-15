@@ -8,7 +8,7 @@ import { screen, waitFor, fireEvent } from "@testing-library/react-native";
 import { renderWithProviders } from "../../helpers/test-utils";
 import { bottles } from "../../helpers/fixtures";
 
-import EditBottleScreen from "@/app/(app)/(tabs)/bottles/[id]/edit";
+import EditBottleScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/bottles/[id]/edit";
 
 describe("EditBottleScreen", () => {
   beforeEach(() => {

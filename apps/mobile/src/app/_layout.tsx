@@ -11,7 +11,6 @@ import {
 } from "@react-navigation/native";
 import { en, registerTranslation } from "react-native-paper-dates";
 import { AuthProvider, useAuth } from "@/contexts/auth-context";
-import { NavigationHistoryProvider } from "@/contexts/navigation-history-context";
 import {
   ThemePreferenceProvider,
   useThemePreference,
@@ -49,13 +48,11 @@ function AppProviders() {
       <NavigationThemeProvider value={navigationTheme}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <NavigationHistoryProvider>
-              <StatusBar
-                barStyle={isDark ? "light-content" : "dark-content"}
-                translucent={true}
-              />
-              <AuthGate />
-            </NavigationHistoryProvider>
+            <StatusBar
+              barStyle={isDark ? "light-content" : "dark-content"}
+              translucent={true}
+            />
+            <AuthGate />
           </AuthProvider>
         </QueryClientProvider>
       </NavigationThemeProvider>

@@ -7,7 +7,7 @@ import { screen, waitFor, fireEvent } from "@testing-library/react-native";
 import { renderWithProviders } from "../../helpers/test-utils";
 import { selectDataSelectorItem } from "../../helpers/form-helpers";
 
-import NewWineScreen from "@/app/(app)/(tabs)/wines/new";
+import NewWineScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/wines/new";
 
 async function fillRequiredFields() {
   fireEvent.changeText(screen.getByTestId("field-name"), "Test Wine");

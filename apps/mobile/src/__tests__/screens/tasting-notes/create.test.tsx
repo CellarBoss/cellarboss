@@ -7,7 +7,7 @@ import { screen, waitFor, fireEvent } from "@testing-library/react-native";
 import { renderWithProviders } from "../../helpers/test-utils";
 import { selectWineVintage } from "../../helpers/form-helpers";
 
-import NewTastingNoteScreen from "@/app/(app)/(tabs)/tasting-notes/new";
+import NewTastingNoteScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/tasting-notes/new";
 
 async function fillRequiredFields() {
   await selectWineVintage("Romanée-Conti Grand Cru", "2015");

@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import { Text, IconButton } from "react-native-paper";
-import { useNavigationHistory } from "@/contexts/navigation-history-context";
+import { useRouter } from "expo-router";
 import { useAppTheme } from "@/hooks/use-app-theme";
 
 type Action = {
@@ -19,7 +19,7 @@ export function ScreenHeader({
   showBack = false,
   actions,
 }: ScreenHeaderProps) {
-  const { goBack } = useNavigationHistory();
+  const router = useRouter();
   const theme = useAppTheme();
 
   const styles = StyleSheet.create({
@@ -52,12 +52,12 @@ export function ScreenHeader({
   return (
     <View style={styles.container}>
       <View style={styles.left}>
-        {showBack && (
+        {showBack && router.canGoBack() && (
           <IconButton
             testID="header-back-button"
             icon="arrow-left"
             size={24}
-            onPress={goBack}
+            onPress={() => router.back()}
           />
         )}
         <Text style={styles.title} numberOfLines={1}>
