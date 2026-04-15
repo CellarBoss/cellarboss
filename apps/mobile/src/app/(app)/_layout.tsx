@@ -1,5 +1,7 @@
+import { View } from "react-native";
 import { Redirect, Stack } from "expo-router";
 import { useAuth } from "@/contexts/auth-context";
+import { VersionMismatchBanner } from "@/components/VersionMismatchBanner";
 
 export default function AppLayout() {
   const auth = useAuth();
@@ -12,5 +14,12 @@ export default function AppLayout() {
     return <Redirect href="/(auth)/login" />;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <View style={{ flex: 1 }}>
+      <VersionMismatchBanner />
+      <View style={{ flex: 1 }}>
+        <Stack screenOptions={{ headerShown: false }} />
+      </View>
+    </View>
+  );
 }
