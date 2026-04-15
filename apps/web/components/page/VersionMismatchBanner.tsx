@@ -27,7 +27,7 @@ export function VersionMismatchBanner() {
     >
       <AlertTriangle className="h-5 w-5 shrink-0" />
       <p className="text-sm flex-1">
-        The application version (v{frontendVersion}) is newer than the server (v
+        The application version ({frontendVersion}) is newer than the server (
         {backendVersion}). Some features may not work correctly until the server
         is updated.
       </p>

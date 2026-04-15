@@ -10,6 +10,7 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { getApiBaseUrl } from "@/lib/api/base-url";
 import type { ThemePreference } from "@/lib/auth/secure-store";
+import * as Application from "expo-application";
 
 const themeLabels: Record<ThemePreference, string> = {
   light: "Light",
@@ -185,25 +186,38 @@ export default function MoreScreen() {
           </Dialog>
         </Portal>
 
-        <Divider />
         {apiBaseUrl && (
-          <List.Section>
-            <List.Subheader>CellarBoss Server</List.Subheader>
+          <>
+            <Divider />
+            <List.Section>
+              <List.Subheader>CellarBoss Server</List.Subheader>
 
-            <List.Item
-              testID="menu-server"
-              title="URL"
-              description={apiBaseUrl}
-              left={(props) => <List.Icon {...props} icon="server-network" />}
-            />
-            <List.Item
-              testID="menu-server-version"
-              title="Version"
-              description={versionQuery.data?.version}
-              left={(props) => <List.Icon {...props} icon="tag-outline" />}
-            />
-          </List.Section>
+              <List.Item
+                testID="menu-server"
+                title="URL"
+                description={apiBaseUrl}
+                left={(props) => <List.Icon {...props} icon="server-network" />}
+              />
+              <List.Item
+                testID="menu-server-version"
+                title="Version"
+                description={versionQuery.data?.version}
+                left={(props) => <List.Icon {...props} icon="tag-outline" />}
+              />
+            </List.Section>
+          </>
         )}
+
+        <Divider />
+        <List.Section>
+          <List.Subheader>CellarBoss Mobile</List.Subheader>
+          <List.Item
+            testID="menu-app-version"
+            title="Application Version"
+            description={Application.nativeApplicationVersion ?? "Unknown"}
+            left={(props) => <List.Icon {...props} icon="wrench-outline" />}
+          />
+        </List.Section>
       </ScrollView>
     </SafeAreaView>
   );

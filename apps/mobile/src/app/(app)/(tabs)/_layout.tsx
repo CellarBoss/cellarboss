@@ -7,7 +7,6 @@ import {
 import { Tabs } from "expo-router";
 import { Icon } from "react-native-paper";
 import { useAppTheme } from "@/hooks/use-app-theme";
-import { VersionMismatchBanner } from "@/components/VersionMismatchBanner";
 
 // Tab folders are groups like `(cellar)`, `(wines)`, so detail routes can be
 // shared across every tab via the `(dashboard,cellar,wines,storages,more)/`
@@ -46,76 +45,73 @@ export default function TabLayout() {
   const theme = useAppTheme();
 
   return (
-    <>
-      <VersionMismatchBanner />
-      <Tabs
-        backBehavior="history"
-        screenOptions={{
-          headerShown: false,
-          tabBarActiveTintColor: theme.colors.primary,
-          tabBarActiveBackgroundColor: theme.colors.surfaceVariant,
-          tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
-          tabBarStyle: {
-            borderTopColor: theme.colors.outlineVariant,
-          },
+    <Tabs
+      backBehavior="history"
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarActiveBackgroundColor: theme.colors.surfaceVariant,
+        tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
+        tabBarStyle: {
+          borderTopColor: theme.colors.outlineVariant,
+        },
+      }}
+    >
+      <Tabs.Screen
+        name="(dashboard)"
+        listeners={resetTabOnPress}
+        options={{
+          title: "Dashboard",
+          tabBarButtonTestID: "dashboard-tab",
+          tabBarIcon: ({ color, size }) => (
+            <Icon source="view-dashboard-outline" size={size} color={color} />
+          ),
         }}
-      >
-        <Tabs.Screen
-          name="(dashboard)"
-          listeners={resetTabOnPress}
-          options={{
-            title: "Dashboard",
-            tabBarButtonTestID: "dashboard-tab",
-            tabBarIcon: ({ color, size }) => (
-              <Icon source="view-dashboard-outline" size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="(cellar)"
-          listeners={resetTabOnPress}
-          options={{
-            title: "Cellar",
-            tabBarButtonTestID: "cellar-tab",
-            tabBarIcon: ({ color, size }) => (
-              <Icon source="bottle-wine-outline" size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="(wines)"
-          listeners={resetTabOnPress}
-          options={{
-            title: "Wines",
-            tabBarButtonTestID: "wines-tab",
-            tabBarIcon: ({ color, size }) => (
-              <Icon source="glass-wine" size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="(storages)"
-          listeners={resetTabOnPress}
-          options={{
-            title: "Storages",
-            tabBarButtonTestID: "storages-tab",
-            tabBarIcon: ({ color, size }) => (
-              <Icon source="warehouse" size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="(more)"
-          listeners={resetTabOnPress}
-          options={{
-            title: "More",
-            tabBarButtonTestID: "more-tab",
-            tabBarIcon: ({ color, size }) => (
-              <Icon source="dots-horizontal" size={size} color={color} />
-            ),
-          }}
-        />
-      </Tabs>
-    </>
+      />
+      <Tabs.Screen
+        name="(cellar)"
+        listeners={resetTabOnPress}
+        options={{
+          title: "Cellar",
+          tabBarButtonTestID: "cellar-tab",
+          tabBarIcon: ({ color, size }) => (
+            <Icon source="bottle-wine-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="(wines)"
+        listeners={resetTabOnPress}
+        options={{
+          title: "Wines",
+          tabBarButtonTestID: "wines-tab",
+          tabBarIcon: ({ color, size }) => (
+            <Icon source="glass-wine" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="(storages)"
+        listeners={resetTabOnPress}
+        options={{
+          title: "Storages",
+          tabBarButtonTestID: "storages-tab",
+          tabBarIcon: ({ color, size }) => (
+            <Icon source="warehouse" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="(more)"
+        listeners={resetTabOnPress}
+        options={{
+          title: "More",
+          tabBarButtonTestID: "more-tab",
+          tabBarIcon: ({ color, size }) => (
+            <Icon source="dots-horizontal" size={size} color={color} />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }
