@@ -1,4 +1,4 @@
-FROM node:24.14.1-alpine@sha256:01743339035a5c3c11a373cd7c83aeab6ed1457b55da6a69e014a95ac4e4700b AS builder
+FROM node:24.14.1-alpine@sha256:8510330d3eb72c804231a834b1a8ebb55cb3796c3e4431297a24d246b8add4d5 AS builder
 WORKDIR /app
 
 RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
@@ -16,7 +16,7 @@ RUN pnpm --filter backend build
 # is live and the dependency graph can be resolved.
 RUN pnpm --filter backend deploy --legacy /deployment
 
-FROM node:24.14.1-alpine@sha256:01743339035a5c3c11a373cd7c83aeab6ed1457b55da6a69e014a95ac4e4700b AS runner
+FROM node:24.14.1-alpine@sha256:8510330d3eb72c804231a834b1a8ebb55cb3796c3e4431297a24d246b8add4d5 AS runner
 WORKDIR /app
 
 ARG APP_VERSION=development
