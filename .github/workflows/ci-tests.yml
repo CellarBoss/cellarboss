@@ -139,7 +139,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:17@sha256:7ad98329d513dd497293b951c195ca354274a77f12ddbbbbf85e68a811823d72
+        image: postgres:18@sha256:52e6ffd11fddd081ae63880b635b2a61c14008c17fc98cdc7ce5472265516dd0
         env:
           POSTGRES_USER: cellar
           POSTGRES_PASSWORD: cellar
