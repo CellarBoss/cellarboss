@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/banner.svg" alt="CellarBoss Banner" width="80%"/>
+<img src="assets/banner.svg" alt="CellarBoss Banner" width="90%"/>
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
