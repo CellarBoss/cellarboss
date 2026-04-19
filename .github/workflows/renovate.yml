@@ -22,4 +22,5 @@ jobs:
           token: ${{ secrets.RENOVATE_TOKEN }}
         env:
           LOG_LEVEL: debug
+          RENOVATE_ALLOW_UNSAFE_SSH_COMMAND: true
           RENOVATE_REPOSITORIES: ${{ github.repository }}
