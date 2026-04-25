@@ -1,6 +1,6 @@
 {
   "private": true,
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@10.33.1",
   "scripts": {
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky"
