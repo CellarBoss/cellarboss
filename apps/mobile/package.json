@@ -28,7 +28,7 @@
     "@tanstack/react-form": "catalog:",
     "@tanstack/react-query": "catalog:",
     "date-fns": "4.1.0",
-    "expo": "55.0.17",
+    "expo": "55.0.18",
     "expo-application": "55.0.14",
     "expo-constants": "55.0.15",
     "expo-haptics": "55.0.14",
