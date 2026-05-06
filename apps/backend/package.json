@@ -36,7 +36,7 @@
     "pino": "10.3.1",
     "serialize-error": "13.0.1",
     "sharp": "0.34.5",
-    "zod": "4.3.6"
+    "zod": "4.4.2"
   },
   "devDependencies": {
     "@types/better-sqlite3": "7.6.13",
