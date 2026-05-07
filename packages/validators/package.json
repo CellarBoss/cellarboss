@@ -19,7 +19,7 @@
     }
   },
   "dependencies": {
-    "zod": "4.4.2"
+    "zod": "4.4.3"
   },
   "devDependencies": {
     "@cellarboss/types": "workspace:*",
