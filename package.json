@@ -1,6 +1,6 @@
 {
   "private": true,
-  "packageManager": "pnpm@10.33.3",
+  "packageManager": "pnpm@11.0.8",
   "scripts": {
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky"
@@ -13,5 +13,13 @@
     "lint-staged": "16.4.0",
     "prettier": "3.8.3"
   },
-  "pnpm": {}
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "better-sqlite3",
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
+    ]
+  }
 }
