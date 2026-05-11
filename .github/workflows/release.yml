@@ -355,7 +355,7 @@ jobs:
       - name: Rename AAB with version
         run: mv artifacts/app-release.aab artifacts/cellarboss-${{ github.ref_name }}-android.aab
 
-      - uses: release-drafter/release-drafter@563bf132657a13ded0b01fcb723c5a58cdd824e2 # v7.2.1
+      - uses: release-drafter/release-drafter@c2e2804cc59f45f57076a99af580d0fedb697927 # v7.3.0
         id: release
         with:
           publish: true
