@@ -20,7 +20,7 @@
     "@cellarboss/validators": "workspace:*",
     "@hono/node-server": "2.0.2",
     "@hono/zod-openapi": "1.4.0",
-    "@hono/zod-validator": "0.7.6",
+    "@hono/zod-validator": "0.8.0",
     "@loglayer/hono": "2.1.0",
     "@loglayer/transport-pino": "3.0.2",
     "@scalar/hono-api-reference": "0.10.14",
