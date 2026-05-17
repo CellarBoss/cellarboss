@@ -3,12 +3,12 @@ import { logger } from "./logger.js";
 import * as path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { promises as fs } from "node:fs";
+import { Kysely } from "kysely";
 import {
-  Kysely,
   Migrator,
   type Migration,
   type MigrationProvider,
-} from "kysely";
+} from "kysely/migration";
 import { getDialect } from "./database";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
