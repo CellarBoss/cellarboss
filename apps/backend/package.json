@@ -23,7 +23,7 @@
     "@hono/zod-validator": "0.8.0",
     "@loglayer/hono": "2.1.0",
     "@loglayer/transport-pino": "3.0.2",
-    "@scalar/hono-api-reference": "0.10.14",
+    "@scalar/hono-api-reference": "0.10.16",
     "better-auth": "1.6.11",
     "better-sqlite3": "12.10.0",
     "dotenv": "17.4.2",
