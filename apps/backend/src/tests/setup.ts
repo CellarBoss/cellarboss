@@ -1,11 +1,10 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
+import { Kysely, sql } from "kysely";
 import {
-  Kysely,
   Migrator,
-  sql,
   type Migration,
   type MigrationProvider,
-} from "kysely";
+} from "kysely/migration";
 import { vi } from "vitest";
 import { promises as fs } from "fs";
 import path from "path";
