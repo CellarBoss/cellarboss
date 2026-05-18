@@ -16,7 +16,7 @@
     "hono": "4.12.18"
   },
   "devDependencies": {
-    "tsx": "4.21.1",
+    "tsx": "4.22.0",
     "typescript": "5.9.3"
   }
 }
