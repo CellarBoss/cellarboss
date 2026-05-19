@@ -66,8 +66,8 @@ importers:
         specifier: 2.1.0
         version: 2.1.0(hono@4.12.18)(loglayer@9.1.0)
       '@loglayer/transport-pino':
-        specifier: 3.0.2
-        version: 3.0.2(pino@10.3.1)
+        specifier: 3.0.3
+        version: 3.0.3(pino@10.3.1)
       '@scalar/hono-api-reference':
         specifier: 0.10.16
         version: 0.10.16(hono@4.12.18)
@@ -2280,14 +2280,18 @@ packages:
     resolution: {integrity: sha512-hGSWhLhMF9L7sB0rXippvKhku9D9dT8imZ5OFpa4VHAVnclY0DQ+3wIPE37rzu0QAiBbyR3/HH03Q1Cgik8zYA==}
     engines: {node: '>=18'}
 
-  '@loglayer/transport-pino@3.0.2':
-    resolution: {integrity: sha512-JQnYQRctO0nI5L0Mk26uwngK52fMpkRs9qb7N3tCgSoAjFd3DQZyxV2FhcAsgpp45utJzczWNxmlB5788PJEXA==}
+  '@loglayer/transport-pino@3.0.3':
+    resolution: {integrity: sha512-7Mt+aGSdn1d24CtdHnalPHlqufBn2Er/2zx3Iqoid0e33aVOWlU+QMu+GL8iUgq5Cwwt17T/IhTYxUmxIb79Mw==}
     engines: {node: '>=18'}
     peerDependencies:
       pino: '*'
 
   '@loglayer/transport@3.0.2':
     resolution: {integrity: sha512-5t0lj/ibQQxGPpghNta8u10zl8owU0my/i2fHF/LdcCAtpw/IHblmpKSgOzdH9XE19Ub/i0VYj0JrFrFv8/NXw==}
+    engines: {node: '>=18'}
+
+  '@loglayer/transport@3.0.3':
+    resolution: {integrity: sha512-2Xhy/6UhxZeSU6+BVDJ4+wj+74xL1WlTNFR/pjenNwnbyTeA4IcpWQN2n+sFEuXvBMcQMGU7pvHJVzSNF/1y5Q==}
     engines: {node: '>=18'}
 
   '@mrleebo/prisma-ast@0.13.1':
@@ -10711,12 +10715,16 @@ snapshots:
 
   '@loglayer/shared@4.1.0': {}
 
-  '@loglayer/transport-pino@3.0.2(pino@10.3.1)':
+  '@loglayer/transport-pino@3.0.3(pino@10.3.1)':
     dependencies:
-      '@loglayer/transport': 3.0.2
+      '@loglayer/transport': 3.0.3
       pino: 10.3.1
 
   '@loglayer/transport@3.0.2':
+    dependencies:
+      '@loglayer/shared': 4.1.0
+
+  '@loglayer/transport@3.0.3':
     dependencies:
       '@loglayer/shared': 4.1.0
 
