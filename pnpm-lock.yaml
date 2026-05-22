@@ -55,22 +55,22 @@ importers:
         version: link:../../packages/validators
       '@hono/node-server':
         specifier: 2.0.2
-        version: 2.0.2(hono@4.12.19)
+        version: 2.0.2(hono@4.12.21)
       '@hono/zod-openapi':
         specifier: 1.4.0
-        version: 1.4.0(hono@4.12.19)(zod@4.4.3)
+        version: 1.4.0(hono@4.12.21)(zod@4.4.3)
       '@hono/zod-validator':
         specifier: 0.8.0
-        version: 0.8.0(hono@4.12.19)(zod@4.4.3)
+        version: 0.8.0(hono@4.12.21)(zod@4.4.3)
       '@loglayer/hono':
         specifier: 2.1.0
-        version: 2.1.0(hono@4.12.19)(loglayer@9.1.0)
+        version: 2.1.0(hono@4.12.21)(loglayer@9.1.0)
       '@loglayer/transport-pino':
         specifier: 3.0.3
         version: 3.0.3(pino@10.3.1)
       '@scalar/hono-api-reference':
         specifier: 0.10.16
-        version: 0.10.16(hono@4.12.19)
+        version: 0.10.16(hono@4.12.21)
       better-auth:
         specifier: 1.6.11
         version: 1.6.11(@prisma/client@5.22.0)(better-sqlite3@12.10.0)(drizzle-orm@0.41.0(@prisma/client@5.22.0)(@types/better-sqlite3@7.6.13)(@types/pg@8.20.0)(better-sqlite3@12.10.0)(kysely@0.29.2)(mysql2@3.22.3(@types/node@24.12.4))(pg@8.20.0))(mysql2@3.22.3(@types/node@24.12.4))(next@16.2.6(@babel/core@7.29.0)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(pg@8.20.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vitest@4.1.6)(vue@3.5.32(typescript@5.9.3))
@@ -81,8 +81,8 @@ importers:
         specifier: 17.4.2
         version: 17.4.2
       hono:
-        specifier: 4.12.19
-        version: 4.12.19
+        specifier: 4.12.21
+        version: 4.12.21
       kysely:
         specifier: 0.29.2
         version: 0.29.2
@@ -464,10 +464,10 @@ importers:
         version: link:../validators
       '@hono/node-server':
         specifier: 2.0.2
-        version: 2.0.2(hono@4.12.19)
+        version: 2.0.2(hono@4.12.21)
       hono:
-        specifier: 4.12.19
-        version: 4.12.19
+        specifier: 4.12.21
+        version: 4.12.21
     devDependencies:
       tsx:
         specifier: 4.22.2
@@ -1789,9 +1789,6 @@ packages:
   '@expo/config-plugins@55.0.10':
     resolution: {integrity: sha512-1txnRnMLIO5lM/Of/VyvDkCwZap0YFvCyfSTIlUQamhwhx6Rh7r8TXfcIstaDYUQ7X6GTMkNxLXWbcYS6ZAFDw==}
 
-  '@expo/config-plugins@55.0.9':
-    resolution: {integrity: sha512-jLfpxru8dTo7eU0cqeTWuQav7byyjb37eF/mbXl1/3eTBHBvFU1VGxpeKxanUdTQAAjqzH8KGgWb0fWcce+z1w==}
-
   '@expo/config-types@55.0.5':
     resolution: {integrity: sha512-sCmSUZG4mZ/ySXvfyyBdhjivz8Q539X1NondwDdYG7s3SBsk+wsgPJzYsqgAG/P9+l0xWjUD2F+kQ1cAJ6NNLg==}
 
@@ -1829,9 +1826,6 @@ packages:
 
   '@expo/image-utils@0.8.14':
     resolution: {integrity: sha512-5Sn+jG4Cw+shC2wDMXoqSAJnvERbiwzHn05FpWtD5IBflfTIs5gUmjzwiGVyjOdlMSQhgRrw/AymPbmO9h9mpQ==}
-
-  '@expo/json-file@10.0.14':
-    resolution: {integrity: sha512-yWwBFywFv+SxkJp/pIzzA416JVYflNUh7pqQzgaA6nXDqRyK7KfrqVzk8PdUfDnqbBcaZZxpzNssfQZzp5KHrA==}
 
   '@expo/json-file@10.0.15':
     resolution: {integrity: sha512-xLtsy1820Rf2myhhIc7WmfoUg5cWEJB9tEylhgGhRF/acYGuUXUVkKHYoHY31GbYf6CIZNvipTFxuvWRpVlXTw==}
@@ -1878,9 +1872,6 @@ packages:
 
   '@expo/package-manager@1.10.5':
     resolution: {integrity: sha512-nCP9Mebfl3jvOr0/P6VAuyah6PAtun+aihIL2zAtuE8uSe94JWkVZ7051i0MUVO+y3gFpBqnr8IIH5ch+VJjHA==}
-
-  '@expo/plist@0.5.3':
-    resolution: {integrity: sha512-jz5oPcPDd3fygwVxwSwmO6wodTwm0Qa14NUyPy0ka7H8sFmCtNZUI2+DzVe/EXjOhq1FbEjrwl89gdlWYOnVjQ==}
 
   '@expo/plist@0.5.4':
     resolution: {integrity: sha512-Jqppj0FULNq6Zp5JtQrFICl8TtpMjwwUbxEcEC2T3z7m+TOrTQEHZXz3D3Ay7vhbmvD+VMgfWJ4ARclJXeN8Eg==}
@@ -5828,8 +5819,8 @@ packages:
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
 
-  hono@4.12.19:
-    resolution: {integrity: sha512-xa3eYXYXx68XTT4hZ7dRzsXBhaq85ToSrlUJNoR0gwz/1Ap/CNwX47wfvV7pc/xWhjKVVkLT7zBJy8chhNguqQ==}
+  hono@4.12.21:
+    resolution: {integrity: sha512-uV63apnb0kyPtAUwoWgaGh9HyIFcv8lgmzPZSiTBQAFOFGIzka5EZ1dZocmGnn0XdX0+XTqJ6Tqv7selMuGLRQ==}
     engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
@@ -10104,29 +10095,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@expo/config-plugins@55.0.9':
-    dependencies:
-      '@expo/config-types': 55.0.5
-      '@expo/json-file': 10.0.14
-      '@expo/plist': 0.5.3
-      '@expo/sdk-runtime-versions': 1.0.0
-      chalk: 4.1.2
-      debug: 4.4.3
-      getenv: 2.0.0
-      glob: 13.0.6
-      resolve-from: 5.0.0
-      semver: 7.7.4
-      slugify: 1.6.9
-      xcode: 3.0.1
-      xml2js: 0.6.0
-    transitivePeerDependencies:
-      - supports-color
-
   '@expo/config-types@55.0.5': {}
 
   '@expo/config@55.0.17(typescript@5.9.3)':
     dependencies:
-      '@expo/config-plugins': 55.0.9
+      '@expo/config-plugins': 55.0.10
       '@expo/config-types': 55.0.5
       '@expo/json-file': 10.1.1
       '@expo/require-utils': 55.0.5(typescript@5.9.3)
@@ -10196,11 +10169,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
-
-  '@expo/json-file@10.0.14':
-    dependencies:
-      '@babel/code-frame': 7.29.0
-      json5: 2.2.3
 
   '@expo/json-file@10.0.15':
     dependencies:
@@ -10307,12 +10275,6 @@ snapshots:
       ora: 3.4.0
       resolve-workspace-root: 2.0.1
 
-  '@expo/plist@0.5.3':
-    dependencies:
-      '@xmldom/xmldom': 0.8.12
-      base64-js: 1.5.1
-      xmlbuilder: 15.1.1
-
   '@expo/plist@0.5.4':
     dependencies:
       '@xmldom/xmldom': 0.8.12
@@ -10322,7 +10284,7 @@ snapshots:
   '@expo/prebuild-config@55.0.18(expo@55.0.26)(typescript@5.9.3)':
     dependencies:
       '@expo/config': 55.0.17(typescript@5.9.3)
-      '@expo/config-plugins': 55.0.9
+      '@expo/config-plugins': 55.0.10
       '@expo/config-types': 55.0.5
       '@expo/image-utils': 0.8.14(typescript@5.9.3)
       '@expo/json-file': 10.1.1
@@ -10402,21 +10364,21 @@ snapshots:
 
   '@floating-ui/utils@0.2.11': {}
 
-  '@hono/node-server@2.0.2(hono@4.12.19)':
+  '@hono/node-server@2.0.2(hono@4.12.21)':
     dependencies:
-      hono: 4.12.19
+      hono: 4.12.21
 
-  '@hono/zod-openapi@1.4.0(hono@4.12.19)(zod@4.4.3)':
+  '@hono/zod-openapi@1.4.0(hono@4.12.21)(zod@4.4.3)':
     dependencies:
       '@asteasolutions/zod-to-openapi': 8.5.0(zod@4.4.3)
-      '@hono/zod-validator': 0.8.0(hono@4.12.19)(zod@4.4.3)
-      hono: 4.12.19
+      '@hono/zod-validator': 0.8.0(hono@4.12.21)(zod@4.4.3)
+      hono: 4.12.21
       openapi3-ts: 4.5.0
       zod: 4.4.3
 
-  '@hono/zod-validator@0.8.0(hono@4.12.19)(zod@4.4.3)':
+  '@hono/zod-validator@0.8.0(hono@4.12.21)(zod@4.4.3)':
     dependencies:
-      hono: 4.12.19
+      hono: 4.12.21
       zod: 4.4.3
 
   '@humanfs/core@0.19.1': {}
@@ -10746,9 +10708,9 @@ snapshots:
     dependencies:
       '@loglayer/shared': 4.1.0
 
-  '@loglayer/hono@2.1.0(hono@4.12.19)(loglayer@9.1.0)':
+  '@loglayer/hono@2.1.0(hono@4.12.21)(loglayer@9.1.0)':
     dependencies:
-      hono: 4.12.19
+      hono: 4.12.21
       loglayer: 9.1.0
 
   '@loglayer/log-level-manager@2.0.2':
@@ -11716,10 +11678,10 @@ snapshots:
 
   '@scalar/helpers@0.8.0': {}
 
-  '@scalar/hono-api-reference@0.10.16(hono@4.12.19)':
+  '@scalar/hono-api-reference@0.10.16(hono@4.12.21)':
     dependencies:
       '@scalar/client-side-rendering': 0.1.9
-      hono: 4.12.19
+      hono: 4.12.21
 
   '@scalar/schemas@0.2.0':
     dependencies:
@@ -14489,7 +14451,7 @@ snapshots:
     dependencies:
       react-is: 16.13.1
 
-  hono@4.12.19: {}
+  hono@4.12.21: {}
 
   hookable@5.5.3: {}
 
