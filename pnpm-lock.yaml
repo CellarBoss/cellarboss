@@ -64,7 +64,7 @@ importers:
         version: 0.8.0(hono@4.12.22)(zod@4.4.3)
       '@loglayer/hono':
         specifier: 2.1.0
-        version: 2.1.0(hono@4.12.22)(loglayer@9.1.0)
+        version: 2.1.0(hono@4.12.22)(loglayer@9.1.1)
       '@loglayer/transport-pino':
         specifier: 3.0.3
         version: 3.0.3(pino@10.3.1)
@@ -90,8 +90,8 @@ importers:
         specifier: 0.21.0
         version: 0.21.0(kysely@0.29.2)(magicast@0.5.3)
       loglayer:
-        specifier: 9.1.0
-        version: 9.1.0
+        specifier: 9.1.1
+        version: 9.1.1
       mysql2:
         specifier: 3.22.3
         version: 3.22.3(@types/node@24.12.4)
@@ -2296,10 +2296,6 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       pino: '*'
-
-  '@loglayer/transport@3.0.2':
-    resolution: {integrity: sha512-5t0lj/ibQQxGPpghNta8u10zl8owU0my/i2fHF/LdcCAtpw/IHblmpKSgOzdH9XE19Ub/i0VYj0JrFrFv8/NXw==}
-    engines: {node: '>=18'}
 
   '@loglayer/transport@3.0.3':
     resolution: {integrity: sha512-2Xhy/6UhxZeSU6+BVDJ4+wj+74xL1WlTNFR/pjenNwnbyTeA4IcpWQN2n+sFEuXvBMcQMGU7pvHJVzSNF/1y5Q==}
@@ -6564,8 +6560,8 @@ packages:
     resolution: {integrity: sha512-9ie8ItPR6tjY5uYJh8K/Zrv/RMZ5VOlOWvtZdEHYSTFKZfIBPQa9tOAEeAWhd+AnIneLJ22w5fjOYtoutpWq5w==}
     engines: {node: '>=18'}
 
-  loglayer@9.1.0:
-    resolution: {integrity: sha512-KFCtoydUtfshszDMIEMa180MMT4jDgBz7FkkO0r3mLDzOkfqGUCbtH9DRszK/pEPrG7999FXfBsyv4DNhvmrag==}
+  loglayer@9.1.1:
+    resolution: {integrity: sha512-K+mkZtX/MwXT8M3qwN7W5MqQeFIroHtiP1WRKGpEjMrBvAgZ8xeI3NPYQrLWkw+75AjvSxlwXJGfMHbtlTzAFw==}
     engines: {node: '>=18'}
 
   long@5.3.2:
@@ -10752,10 +10748,10 @@ snapshots:
     dependencies:
       '@loglayer/shared': 4.1.0
 
-  '@loglayer/hono@2.1.0(hono@4.12.22)(loglayer@9.1.0)':
+  '@loglayer/hono@2.1.0(hono@4.12.22)(loglayer@9.1.1)':
     dependencies:
       hono: 4.12.22
-      loglayer: 9.1.0
+      loglayer: 9.1.1
 
   '@loglayer/log-level-manager@2.0.2':
     dependencies:
@@ -10771,10 +10767,6 @@ snapshots:
     dependencies:
       '@loglayer/transport': 3.0.3
       pino: 10.3.1
-
-  '@loglayer/transport@3.0.2':
-    dependencies:
-      '@loglayer/shared': 4.1.0
 
   '@loglayer/transport@3.0.3':
     dependencies:
@@ -15419,13 +15411,13 @@ snapshots:
       strip-ansi: 7.2.0
       wrap-ansi: 9.0.2
 
-  loglayer@9.1.0:
+  loglayer@9.1.1:
     dependencies:
       '@loglayer/context-manager': 2.0.2
       '@loglayer/log-level-manager': 2.0.2
       '@loglayer/plugin': 3.0.2
       '@loglayer/shared': 4.1.0
-      '@loglayer/transport': 3.0.2
+      '@loglayer/transport': 3.0.3
 
   long@5.3.2: {}
 
