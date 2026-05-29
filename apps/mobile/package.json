@@ -27,7 +27,7 @@
     "@react-navigation/native": "^7.1.33",
     "@tanstack/react-form": "catalog:",
     "@tanstack/react-query": "catalog:",
-    "date-fns": "4.1.0",
+    "date-fns": "4.3.0",
     "expo": "55.0.26",
     "expo-application": "55.0.15",
     "expo-constants": "55.0.16",

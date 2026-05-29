@@ -21,7 +21,7 @@
   "dependencies": {
     "@cellarboss/types": "workspace:*",
     "@cellarboss/validators": "workspace:*",
-    "date-fns": "4.1.0"
+    "date-fns": "4.3.0"
   },
   "peerDependencies": {
     "react": ">=18",
