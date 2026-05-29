@@ -66,8 +66,8 @@ importers:
         specifier: 2.2.0
         version: 2.2.0(hono@4.12.23)(loglayer@9.1.1)
       '@loglayer/transport-pino':
-        specifier: 3.0.3
-        version: 3.0.3(pino@10.3.1)
+        specifier: 3.1.0
+        version: 3.1.0(pino@10.3.1)
       '@scalar/hono-api-reference':
         specifier: 0.10.19
         version: 0.10.19(hono@4.12.23)
@@ -2291,14 +2291,22 @@ packages:
     resolution: {integrity: sha512-hGSWhLhMF9L7sB0rXippvKhku9D9dT8imZ5OFpa4VHAVnclY0DQ+3wIPE37rzu0QAiBbyR3/HH03Q1Cgik8zYA==}
     engines: {node: '>=18'}
 
-  '@loglayer/transport-pino@3.0.3':
-    resolution: {integrity: sha512-7Mt+aGSdn1d24CtdHnalPHlqufBn2Er/2zx3Iqoid0e33aVOWlU+QMu+GL8iUgq5Cwwt17T/IhTYxUmxIb79Mw==}
+  '@loglayer/shared@4.2.0':
+    resolution: {integrity: sha512-DJlibZzcPqJWJDQroLSxyHKhVYyKMwwvUzpCNi9I0GWINl71qZB0cJoIYvPths+mjcmHVV/7zBVOjjPqZnfVhQ==}
+    engines: {node: '>=18'}
+
+  '@loglayer/transport-pino@3.1.0':
+    resolution: {integrity: sha512-LEaYF35bs1/NNrBDcRIJzbFex5h3Bj6SD89Wu69U+vroOi6ckoogT5xOF7UWFtdhOPQMlsIchwzsxzXKDTtwUA==}
     engines: {node: '>=18'}
     peerDependencies:
       pino: '*'
 
   '@loglayer/transport@3.0.3':
     resolution: {integrity: sha512-2Xhy/6UhxZeSU6+BVDJ4+wj+74xL1WlTNFR/pjenNwnbyTeA4IcpWQN2n+sFEuXvBMcQMGU7pvHJVzSNF/1y5Q==}
+    engines: {node: '>=18'}
+
+  '@loglayer/transport@3.1.0':
+    resolution: {integrity: sha512-5bvbfaInIQCg/k9A60TyxfQeQuNUO5fstStHcpMJH+tYnTZn5mgzPOvqe/+9DYJhEiZhx0IWZidqygL1gnmvvQ==}
     engines: {node: '>=18'}
 
   '@mrleebo/prisma-ast@0.13.1':
@@ -10763,14 +10771,20 @@ snapshots:
 
   '@loglayer/shared@4.1.0': {}
 
-  '@loglayer/transport-pino@3.0.3(pino@10.3.1)':
+  '@loglayer/shared@4.2.0': {}
+
+  '@loglayer/transport-pino@3.1.0(pino@10.3.1)':
     dependencies:
-      '@loglayer/transport': 3.0.3
+      '@loglayer/transport': 3.1.0
       pino: 10.3.1
 
   '@loglayer/transport@3.0.3':
     dependencies:
       '@loglayer/shared': 4.1.0
+
+  '@loglayer/transport@3.1.0':
+    dependencies:
+      '@loglayer/shared': 4.2.0
 
   '@mrleebo/prisma-ast@0.13.1':
     dependencies:
