@@ -63,8 +63,8 @@ importers:
         specifier: 0.8.0
         version: 0.8.0(hono@4.12.23)(zod@4.4.3)
       '@loglayer/hono':
-        specifier: 2.1.0
-        version: 2.1.0(hono@4.12.23)(loglayer@9.1.1)
+        specifier: 2.2.0
+        version: 2.2.0(hono@4.12.23)(loglayer@9.1.1)
       '@loglayer/transport-pino':
         specifier: 3.0.3
         version: 3.0.3(pino@10.3.1)
@@ -2272,8 +2272,8 @@ packages:
     resolution: {integrity: sha512-IVt/iqACGw2GnucKOpyJ69MbGQSRzsArOwsTNMuOAfzm36zTphGIH4K7g7lhRvcd2jY0dZzvWA6tCqannpgXXg==}
     engines: {node: '>=18'}
 
-  '@loglayer/hono@2.1.0':
-    resolution: {integrity: sha512-fioxb/2K7Lnl4+FUcLEoVA8GtpA4eeuFP0bsweI6aqeJHK10ZsB/g6kxn2NIDjjAfHsLhIvBAIdue5dpdO1L6A==}
+  '@loglayer/hono@2.2.0':
+    resolution: {integrity: sha512-2CKSBCDHrF4XsIbC8PUEbtjqfHWlKc6V/5EhV33lBT5TKOcwSEVfkFm36Koi5Hiw5IusARcaodqw15UxStUKKA==}
     engines: {node: '>=20'}
     peerDependencies:
       hono: '>=4.0.0'
@@ -10748,7 +10748,7 @@ snapshots:
     dependencies:
       '@loglayer/shared': 4.1.0
 
-  '@loglayer/hono@2.1.0(hono@4.12.23)(loglayer@9.1.1)':
+  '@loglayer/hono@2.2.0(hono@4.12.23)(loglayer@9.1.1)':
     dependencies:
       hono: 4.12.23
       loglayer: 9.1.1
