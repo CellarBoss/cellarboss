@@ -64,7 +64,7 @@ importers:
         version: 0.8.0(hono@4.12.23)(zod@4.4.3)
       '@loglayer/hono':
         specifier: 2.3.0
-        version: 2.3.0(hono@4.12.23)(loglayer@9.2.0)
+        version: 2.3.0(hono@4.12.23)(loglayer@9.3.0)
       '@loglayer/transport-pino':
         specifier: 3.2.0
         version: 3.2.0(pino@10.3.1)
@@ -90,8 +90,8 @@ importers:
         specifier: 0.21.0
         version: 0.21.0(kysely@0.29.2)(magicast@0.5.3)
       loglayer:
-        specifier: 9.2.0
-        version: 9.2.0
+        specifier: 9.3.0
+        version: 9.3.0
       mysql2:
         specifier: 3.22.4
         version: 3.22.4(@types/node@24.12.4)
@@ -2293,8 +2293,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@loglayer/context-manager@2.1.0':
-    resolution: {integrity: sha512-LCohf1MeDGHL5pvSl2TcmQZmyx/xfMozgmRt2zCjNC3yLymWjyHZYrkzaZ6Uv3fCy3o8wKhfj9Z+Yqln51ucBA==}
+  '@loglayer/context-manager@2.2.0':
+    resolution: {integrity: sha512-rnAXJIMRCUFuMtWNDK1F9vyh29SQQA659LVHHVv6AxvyQ/5DJpIkM7VhfuPVFV2EfnZXv343zbxDr29La5SOyA==}
     engines: {node: '>=18'}
 
   '@loglayer/hono@2.3.0':
@@ -2304,16 +2304,12 @@ packages:
       hono: '>=4.0.0'
       loglayer: '*'
 
-  '@loglayer/log-level-manager@2.1.0':
-    resolution: {integrity: sha512-c7WzwuUllVIxF51AR/OZ5eetqGLM+O8WUVyKbyUBZJ+k7qN4K/3i4civnZVHqLqrh7LSwYcFzn6CkUIoI66iaQ==}
+  '@loglayer/log-level-manager@2.2.0':
+    resolution: {integrity: sha512-ifJ6i2Tc0vwNhPS8Ugr/Y5iabNmcX+QnXnPzjz2aKxgNQQGYZ6qWlAI7WI75tINRr9S+4xxbvim9hNjQ42z7Lw==}
     engines: {node: '>=18'}
 
-  '@loglayer/plugin@3.1.0':
-    resolution: {integrity: sha512-gL4K7J31Fk+8VkRJZOcxvVxQwH/0/e7uzOAVVLOKpZDdqcsAtSNpAnXcqEQOCLA1cqKe1u7ODCk6XGJY4732oQ==}
-    engines: {node: '>=18'}
-
-  '@loglayer/shared@4.2.0':
-    resolution: {integrity: sha512-DJlibZzcPqJWJDQroLSxyHKhVYyKMwwvUzpCNi9I0GWINl71qZB0cJoIYvPths+mjcmHVV/7zBVOjjPqZnfVhQ==}
+  '@loglayer/plugin@3.2.0':
+    resolution: {integrity: sha512-yBqmZeY0+5uFzbUkSrH82tzDfo1YhzCyBx+ZEvikkYAkOlAlQHEFda4Ue+il4Km2FrCCCG0qPgMEd3Mz8kIITg==}
     engines: {node: '>=18'}
 
   '@loglayer/shared@4.3.0':
@@ -2325,10 +2321,6 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       pino: '*'
-
-  '@loglayer/transport@3.1.0':
-    resolution: {integrity: sha512-5bvbfaInIQCg/k9A60TyxfQeQuNUO5fstStHcpMJH+tYnTZn5mgzPOvqe/+9DYJhEiZhx0IWZidqygL1gnmvvQ==}
-    engines: {node: '>=18'}
 
   '@loglayer/transport@3.2.0':
     resolution: {integrity: sha512-UMnlJggWIAYzZv8PN9dR3v7qMDG7vKVyPJjyfypBa8Y2yLk/4XzDp2fAvSd1OJKWQh03lO7GfGpo87SSYoIANg==}
@@ -6593,8 +6585,8 @@ packages:
     resolution: {integrity: sha512-9ie8ItPR6tjY5uYJh8K/Zrv/RMZ5VOlOWvtZdEHYSTFKZfIBPQa9tOAEeAWhd+AnIneLJ22w5fjOYtoutpWq5w==}
     engines: {node: '>=18'}
 
-  loglayer@9.2.0:
-    resolution: {integrity: sha512-1sruHFki9WS89rzsb8lCeldfnpdzg5b6Z8csSwvzDRPyytIz20GlATbTlXGSyQWWRp84XuHNe56ulJUpVzvhaA==}
+  loglayer@9.3.0:
+    resolution: {integrity: sha512-xiZFMbUCcy8mC+/uV0EzkZV6nbo3qweQjKKQSGkcrug2VpOHudzcoWR0DOl9edr8oS+BwyEjimpG3sF2CW8sww==}
     engines: {node: '>=18'}
 
   long@5.3.2:
@@ -10787,24 +10779,22 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@loglayer/context-manager@2.1.0':
+  '@loglayer/context-manager@2.2.0':
     dependencies:
-      '@loglayer/shared': 4.2.0
+      '@loglayer/shared': 4.3.0
 
-  '@loglayer/hono@2.3.0(hono@4.12.23)(loglayer@9.2.0)':
+  '@loglayer/hono@2.3.0(hono@4.12.23)(loglayer@9.3.0)':
     dependencies:
       hono: 4.12.23
-      loglayer: 9.2.0
+      loglayer: 9.3.0
 
-  '@loglayer/log-level-manager@2.1.0':
+  '@loglayer/log-level-manager@2.2.0':
     dependencies:
-      '@loglayer/shared': 4.2.0
+      '@loglayer/shared': 4.3.0
 
-  '@loglayer/plugin@3.1.0':
+  '@loglayer/plugin@3.2.0':
     dependencies:
-      '@loglayer/shared': 4.2.0
-
-  '@loglayer/shared@4.2.0': {}
+      '@loglayer/shared': 4.3.0
 
   '@loglayer/shared@4.3.0': {}
 
@@ -10812,10 +10802,6 @@ snapshots:
     dependencies:
       '@loglayer/transport': 3.2.0
       pino: 10.3.1
-
-  '@loglayer/transport@3.1.0':
-    dependencies:
-      '@loglayer/shared': 4.2.0
 
   '@loglayer/transport@3.2.0':
     dependencies:
@@ -15460,13 +15446,13 @@ snapshots:
       strip-ansi: 7.2.0
       wrap-ansi: 9.0.2
 
-  loglayer@9.2.0:
+  loglayer@9.3.0:
     dependencies:
-      '@loglayer/context-manager': 2.1.0
-      '@loglayer/log-level-manager': 2.1.0
-      '@loglayer/plugin': 3.1.0
-      '@loglayer/shared': 4.2.0
-      '@loglayer/transport': 3.1.0
+      '@loglayer/context-manager': 2.2.0
+      '@loglayer/log-level-manager': 2.2.0
+      '@loglayer/plugin': 3.2.0
+      '@loglayer/shared': 4.3.0
+      '@loglayer/transport': 3.2.0
 
   long@5.3.2: {}
 
