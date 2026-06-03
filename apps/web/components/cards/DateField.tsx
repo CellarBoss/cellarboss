@@ -20,8 +20,8 @@ export function DateField({ field, editable }: DateFieldProps) {
   const [open, setOpen] = useState(false);
   const value: string = field.state.value ?? "";
 
-  // Parse "YYYY-MM-DD" string to Date for the calendar (avoid timezone shift)
-  const dateValue = value ? new Date(value + "T00:00:00Z") : undefined;
+  // Parse "YYYY-MM-DD" string to Date for the calendar using local midnight to avoid timezone shift
+  const dateValue = value ? new Date(value + "T00:00:00") : undefined;
 
   const displayText = dateValue
     ? dateValue.toLocaleDateString("en-GB", {
@@ -60,8 +60,10 @@ export function DateField({ field, editable }: DateFieldProps) {
           selected={dateValue}
           onSelect={(date) => {
             if (date) {
-              const iso = date.toISOString().split("T")[0];
-              field.handleChange(iso);
+              const yyyy = date.getFullYear();
+              const mm = String(date.getMonth() + 1).padStart(2, "0");
+              const dd = String(date.getDate()).padStart(2, "0");
+              field.handleChange(`${yyyy}-${mm}-${dd}`);
             }
             setOpen(false);
           }}
