@@ -10,6 +10,7 @@ import {
   createTestCountry,
   createTestGrape,
   createTestVintage,
+  createTestUser,
 } from "./setup";
 import { registerWineRoutes } from "@routes/wines.routes.js";
 import { db } from "@utils/database.js";
@@ -21,7 +22,24 @@ describe("Wine API", () => {
   beforeAll(async () => {
     await runMigrations(db);
     await cleanDatabase(db);
+    await createTestUser(db);
   });
+
+  async function createTastingNote(
+    vintageId: number,
+    notes: string = "Test tasting note",
+  ) {
+    await db
+      .insertInto("tastingNote")
+      .values({
+        vintageId,
+        date: new Date().toISOString(),
+        authorId: "test-user-1",
+        score: 8,
+        notes,
+      })
+      .execute();
+  }
 
   describe("without auth", () => {
     let app: OpenAPIHono;
@@ -80,6 +98,34 @@ describe("Wine API", () => {
         const data = await res.json();
         expect(Array.isArray(data)).toBe(true);
       });
+
+      it("includes tasting note counts for each wine", async () => {
+        const createRes = await app.request("/wine", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: "Counted List Wine",
+            wineMakerId: testWineMakerId,
+            regionId: testRegionId,
+            type: "red",
+          }),
+        });
+        const created = await createRes.json();
+        const firstVintage = await createTestVintage(db, created.id, 2018);
+        const secondVintage = await createTestVintage(db, created.id, 2019);
+
+        await createTastingNote(firstVintage.id, "First vintage note");
+        await createTastingNote(firstVintage.id, "Second vintage note");
+        await createTastingNote(secondVintage.id, "Another vintage note");
+
+        const res = await app.request("/wine");
+        expect(res.status).toBe(200);
+        const data = await res.json();
+        const wine = data.find((item: any) => item.id === created.id);
+
+        expect(wine).toBeDefined();
+        expect(wine.tastingNotesCount).toBe(3);
+      });
     });
 
     describe("POST /wine", () => {
@@ -107,6 +153,7 @@ describe("Wine API", () => {
         const data = await res.json();
         expect(data).toHaveProperty("id");
         expect(data.name).toBe("Château Margaux");
+        expect(data.tastingNotesCount).toBe(0);
       });
     });
 
@@ -134,6 +181,31 @@ describe("Wine API", () => {
         const data = await res.json();
         expect(data.id).toBe(created.id);
         expect(data.name).toBe("Opus One");
+        expect(data.tastingNotesCount).toBe(0);
+      });
+
+      it("returns tasting note count across wine vintages", async () => {
+        const createRes = await app.request("/wine", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: "Counted Detail Wine",
+            wineMakerId: testWineMakerId,
+            regionId: null,
+            type: "red",
+          }),
+        });
+        const created = await createRes.json();
+        const firstVintage = await createTestVintage(db, created.id, 2021);
+        const secondVintage = await createTestVintage(db, created.id, 2022);
+
+        await createTastingNote(firstVintage.id, "First detail note");
+        await createTastingNote(secondVintage.id, "Second detail note");
+
+        const res = await app.request(`/wine/${created.id}`);
+        expect(res.status).toBe(200);
+        const data = await res.json();
+        expect(data.tastingNotesCount).toBe(2);
       });
     });
 
@@ -186,6 +258,7 @@ describe("Wine API", () => {
         expect(res.status).toBe(200);
         const data = await res.json();
         expect(data.regionId).toBe(testRegionId);
+        expect(data.tastingNotesCount).toBe(0);
       });
     });
 

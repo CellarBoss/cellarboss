@@ -1,25 +1,56 @@
 import { db } from "@utils/database.js";
 import { insertReturning, updateReturning } from "@utils/query-helpers.js";
-import type { CreateWine, UpdateWine } from "@cellarboss/types";
+import type { CreateWine, UpdateWine, WineWithCounts } from "@cellarboss/types";
 
-export async function list() {
-  return await db.selectFrom("wine").selectAll().execute();
+type WineRowWithCounts = Omit<WineWithCounts, "tastingNotesCount"> & {
+  tastingNotesCount: number | string | bigint | null;
+};
+
+function toWineWithCounts(row: WineRowWithCounts): WineWithCounts {
+  return {
+    ...row,
+    tastingNotesCount:
+      row.tastingNotesCount == null ? 0 : Number(row.tastingNotesCount),
+  };
 }
 
-export async function getById(id: number) {
-  return await db
+function selectWineWithCounts() {
+  return db
     .selectFrom("wine")
-    .selectAll()
+    .selectAll("wine")
+    .select((eb) =>
+      eb
+        .selectFrom("tastingNote")
+        .innerJoin("vintage", "vintage.id", "tastingNote.vintageId")
+        .select((eb) => eb.fn.count("tastingNote.id").as("count"))
+        .whereRef("vintage.wineId", "=", "wine.id")
+        .as("tastingNotesCount"),
+    );
+}
+
+export async function list(): Promise<WineWithCounts[]> {
+  const rows = await selectWineWithCounts().execute();
+  return rows.map(toWineWithCounts);
+}
+
+export async function getById(id: number): Promise<WineWithCounts | undefined> {
+  const row = await selectWineWithCounts()
     .where("id", "=", id)
     .executeTakeFirst();
+  return row ? toWineWithCounts(row) : undefined;
 }
 
-export async function create(data: CreateWine) {
-  return await insertReturning(db, "wine", data);
+export async function create(data: CreateWine): Promise<WineWithCounts> {
+  const inserted = await insertReturning(db, "wine", data);
+  return (await getById(inserted.id)) as WineWithCounts;
 }
 
-export async function update(id: number, data: UpdateWine) {
-  return await updateReturning(db, "wine", id, data);
+export async function update(
+  id: number,
+  data: UpdateWine,
+): Promise<WineWithCounts> {
+  await updateReturning(db, "wine", id, data);
+  return (await getById(id)) as WineWithCounts;
 }
 
 export async function remove(id: number) {

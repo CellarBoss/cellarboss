@@ -56,6 +56,11 @@ export const storageResponseSchema = createStorageSchema.extend({
 
 export const wineResponseSchema = createWineSchema.extend({
   id: z.number().describe("Unique identifier"),
+  tastingNotesCount: z
+    .number()
+    .int()
+    .nonnegative()
+    .describe("Number of tasting notes across all vintages for this wine"),
 });
 
 export const vintageResponseSchema = createVintageSchema.extend({

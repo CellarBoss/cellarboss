@@ -13,6 +13,10 @@ export interface Wine extends GenericType {
     | "dessert";
 }
 
+export interface WineWithCounts extends Wine {
+  tastingNotesCount: number;
+}
+
 export type CreateWine = Omit<Wine, "id">;
 
 export type UpdateWine = Partial<Omit<Wine, "id">>;

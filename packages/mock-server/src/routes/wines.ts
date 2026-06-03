@@ -4,16 +4,28 @@ import { createWineSchema, updateWineSchema } from "@cellarboss/validators";
 
 let nextId = 1000;
 
+function withTastingNotesCount(wine: any, state: MockState) {
+  const vintageIds = new Set(
+    state.vintages.filter((v) => v.wineId === wine.id).map((v) => v.id),
+  );
+  const tastingNotesCount = state.tastingNotes.filter((note) =>
+    vintageIds.has(note.vintageId),
+  ).length;
+  return { ...wine, tastingNotesCount };
+}
+
 export function registerWineRoutes(app: Hono, state: MockState) {
   app.get("/api/wine", (c) => {
-    return c.json(state.wines);
+    return c.json(
+      state.wines.map((wine) => withTastingNotesCount(wine, state)),
+    );
   });
 
   app.get("/api/wine/:id", (c) => {
     const id = Number(c.req.param("id"));
     const wine = state.wines.find((w) => w.id === id);
     if (!wine) return c.json({ error: "Not found" }, 404);
-    return c.json(wine);
+    return c.json(withTastingNotesCount(wine, state));
   });
 
   app.post("/api/wine", async (c) => {
@@ -22,7 +34,7 @@ export function registerWineRoutes(app: Hono, state: MockState) {
     if (!result.success) return c.json({ error: result.error.issues }, 400);
     const wine = { id: ++nextId, ...result.data };
     state.wines.push(wine);
-    return c.json(wine, 201);
+    return c.json(withTastingNotesCount(wine, state), 201);
   });
 
   app.put("/api/wine/:id", async (c) => {
@@ -33,7 +45,7 @@ export function registerWineRoutes(app: Hono, state: MockState) {
     const idx = state.wines.findIndex((w) => w.id === id);
     if (idx === -1) return c.json({ error: "Not found" }, 404);
     state.wines[idx] = { ...state.wines[idx], ...result.data };
-    return c.json(state.wines[idx]);
+    return c.json(withTastingNotesCount(state.wines[idx], state));
   });
 
   app.delete("/api/wine/:id", (c) => {
