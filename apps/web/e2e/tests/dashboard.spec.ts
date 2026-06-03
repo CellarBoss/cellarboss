@@ -206,6 +206,43 @@ test.describe("Dashboard page", () => {
     await expect(page.getByText("Drinking Window Timeline")).toBeVisible();
   });
 
+  test("includes ordered and in-primeur bottles in drinking window timeline", async ({
+    adminContext,
+  }) => {
+    const state = buildDashboardState();
+    state.bottles = [
+      {
+        id: 1,
+        vintageId: 1,
+        purchaseDate: today,
+        purchasePrice: 250.0,
+        storageId: null,
+        status: "ordered",
+        size: "standard",
+      },
+      {
+        id: 2,
+        vintageId: 2,
+        purchaseDate: today,
+        purchasePrice: 85.0,
+        storageId: null,
+        status: "in-primeur",
+        size: "standard",
+      },
+    ];
+    await setState(state);
+
+    const page = await adminContext.newPage();
+    await page.goto("/");
+
+    await expect(page.getByText("Drinking Window Timeline")).toBeVisible();
+    await expect(
+      page.getByText(
+        "Add drinking windows to your vintages to see this timeline",
+      ),
+    ).toBeHidden();
+  });
+
   test("shows cellar value over time chart", async ({ adminContext }) => {
     const page = await adminContext.newPage();
     await page.goto("/");
