@@ -260,6 +260,35 @@ describe("Wine API", () => {
         expect(data.regionId).toBe(testRegionId);
         expect(data.tastingNotesCount).toBe(0);
       });
+
+      it("preserves non-zero tasting note count when updating a wine", async () => {
+        const createRes = await app.request("/wine", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: "Counted Update Wine",
+            wineMakerId: testWineMakerId,
+            regionId: null,
+            type: "red",
+          }),
+        });
+        const created = await createRes.json();
+        const vintage = await createTestVintage(db, created.id, 2023);
+
+        await createTastingNote(vintage.id, "Update note one");
+        await createTastingNote(vintage.id, "Update note two");
+
+        const res = await app.request(`/wine/${created.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ regionId: testRegionId }),
+        });
+
+        expect(res.status).toBe(200);
+        const data = await res.json();
+        expect(data.regionId).toBe(testRegionId);
+        expect(data.tastingNotesCount).toBe(2);
+      });
     });
 
     describe("DELETE /wine/:id", () => {
