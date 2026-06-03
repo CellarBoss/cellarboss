@@ -8,6 +8,12 @@ type DrinkingWindowTimelineProps = {
   vintages: Vintage[];
 };
 
+const timelineBottleStatuses = new Set<Bottle["status"]>([
+  "stored",
+  "ordered",
+  "in-primeur",
+]);
+
 const READY_COLOR = "#2E8B57";
 const TOO_YOUNG_COLOR = "#BDB76B";
 const PAST_PEAK_COLOR = "#CD5C5C";
@@ -19,7 +25,9 @@ export function DrinkingWindowTimeline({
   const theme = useAppTheme();
   const currentYear = new Date().getFullYear();
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
-  const storedBottles = bottles.filter((b) => b.status === "stored");
+  const storedBottles = bottles.filter((b) =>
+    timelineBottleStatuses.has(b.status),
+  );
 
   const years = Array.from({ length: 10 }, (_, i) => currentYear + i);
 
