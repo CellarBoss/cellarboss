@@ -104,7 +104,11 @@ export function DrinkingWindowTimeline({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[250px] w-full">
+        <ChartContainer
+          config={chartConfig}
+          className="h-[250px] w-full"
+          data-testid="drinking-window-timeline-chart"
+        >
           <BarChart data={chartData} accessibilityLayer>
             <CartesianGrid vertical={false} />
             <XAxis dataKey="year" tickLine={false} axisLine={false} />

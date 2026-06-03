@@ -233,6 +233,16 @@ test.describe("Dashboard page", () => {
           "Add drinking windows to your vintages to see this timeline",
         ),
       ).toBeHidden();
+
+      const timelineChart = page.getByTestId("drinking-window-timeline-chart");
+      await expect(timelineChart).toBeVisible();
+      await expect(timelineChart.locator("svg.recharts-surface")).toBeVisible();
+      await expect(
+        timelineChart.getByText(String(currentYear), { exact: true }),
+      ).toBeVisible();
+      await expect(
+        timelineChart.locator(".recharts-bar-rectangle").first(),
+      ).toBeVisible();
     });
   }
 
