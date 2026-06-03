@@ -10,6 +10,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { formatDateOnly, parseDateOnly } from "@/lib/functions/date";
 
 type DateFieldProps = {
   field: any;
@@ -20,8 +21,7 @@ export function DateField({ field, editable }: DateFieldProps) {
   const [open, setOpen] = useState(false);
   const value: string = field.state.value ?? "";
 
-  // Parse "YYYY-MM-DD" string to Date for the calendar using local midnight to avoid timezone shift
-  const dateValue = value ? new Date(value + "T00:00:00") : undefined;
+  const dateValue = value ? parseDateOnly(value) : undefined;
 
   const displayText = dateValue
     ? dateValue.toLocaleDateString("en-GB", {
@@ -60,10 +60,7 @@ export function DateField({ field, editable }: DateFieldProps) {
           selected={dateValue}
           onSelect={(date) => {
             if (date) {
-              const yyyy = date.getFullYear();
-              const mm = String(date.getMonth() + 1).padStart(2, "0");
-              const dd = String(date.getDate()).padStart(2, "0");
-              field.handleChange(`${yyyy}-${mm}-${dd}`);
+              field.handleChange(formatDateOnly(date));
             }
             setOpen(false);
           }}

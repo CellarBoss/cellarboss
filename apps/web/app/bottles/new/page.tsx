@@ -8,6 +8,7 @@ import { bottleCreateFields, type BottleFormData } from "@/lib/fields/bottles";
 import { createBottle } from "@/lib/api/bottles";
 import type { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
+import { formatDateOnly } from "@/lib/functions/date";
 
 async function handleCreate(
   data: BottleFormData,
@@ -34,7 +35,7 @@ async function handleCreate(
 function NewBottleForm() {
   const searchParams = useSearchParams();
   const vintageId = searchParams.get("vintageId");
-  const today = new Date().toISOString().split("T")[0];
+  const today = formatDateOnly(new Date());
 
   const defaultData: BottleFormData = {
     id: 0,

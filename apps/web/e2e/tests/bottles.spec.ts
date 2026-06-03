@@ -82,6 +82,35 @@ test.describe("Bottles page", () => {
     await expect(page).toHaveURL("/bottles/new");
   });
 
+  test("keeps selected purchase date from date picker", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/bottles/new");
+
+    const selectedDate = await page.evaluate(() => {
+      const date = new Date();
+
+      return {
+        daySelector: date.toLocaleDateString(),
+        label: date.toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
+      };
+    });
+
+    await page.getByRole("button", { name: selectedDate.label }).click();
+    await page
+      .locator(`button[data-day="${selectedDate.daySelector}"]`)
+      .click();
+
+    await expect(
+      page.getByRole("button", { name: selectedDate.label }),
+    ).toBeVisible();
+  });
+
   test("shows purchase price formatted with currency", async ({
     adminContext,
   }) => {
