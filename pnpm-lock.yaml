@@ -338,8 +338,8 @@ importers:
         specifier: 4.4.0
         version: 4.4.0
       lucide-react:
-        specifier: 1.16.0
-        version: 1.16.0(react@19.2.0)
+        specifier: 1.17.0
+        version: 1.17.0(react@19.2.0)
       next:
         specifier: 16.2.6
         version: 16.2.6(@babel/core@7.29.7)(@playwright/test@1.60.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -6629,8 +6629,8 @@ packages:
       react-native: '*'
       react-native-svg: ^12.0.0 || ^13.0.0 || ^14.0.0 || ^15.0.0
 
-  lucide-react@1.16.0:
-    resolution: {integrity: sha512-dYwyPzb4MEKpGUmNYk3WKWPnMrHs3FKM+q94kAnJrcDIqqn1hq2xY8scaS2ovsOCM5D51ey2gaRG3PBb1vgoYQ==}
+  lucide-react@1.17.0:
+    resolution: {integrity: sha512-9FA9evdox/JQL5PT57fdA1x/yg8T7knJ98+zjTL3UfKza6pflQUUh3XtaQIHKvnsJw1lmsEyHVlt5jchYxOQ5w==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -15494,7 +15494,7 @@ snapshots:
       react-native: 0.83.6(@babel/core@7.29.7)(@types/react@19.2.15)(react@19.2.0)
       react-native-svg: 15.15.3(react-native@0.83.6(@babel/core@7.29.7)(@types/react@19.2.15)(react@19.2.0))(react@19.2.0)
 
-  lucide-react@1.16.0(react@19.2.0):
+  lucide-react@1.17.0(react@19.2.0):
     dependencies:
       react: 19.2.0
 
