@@ -6,6 +6,9 @@ import {
   waitFor,
 } from "@testing-library/react-native";
 import { mockRouter } from "../helpers/mock-navigation";
+import { lightTheme } from "@/lib/theme";
+
+const mockUseAppTheme = jest.fn();
 
 // Mock auth context
 const mockSignIn = jest.fn();
@@ -16,6 +19,10 @@ jest.mock("@/contexts/auth-context", () => ({
     signIn: mockSignIn,
     resetServer: mockResetServer,
   }),
+}));
+
+jest.mock("@/hooks/use-app-theme", () => ({
+  useAppTheme: () => mockUseAppTheme(),
 }));
 
 // Mock secure store
@@ -31,6 +38,7 @@ describe("LoginScreen", () => {
     jest.clearAllMocks();
     mockSignIn.mockReset();
     mockResetServer.mockResolvedValue(undefined);
+    mockUseAppTheme.mockReturnValue(lightTheme);
   });
 
   it("renders email and password inputs", () => {

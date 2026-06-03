@@ -14,9 +14,11 @@ import { useRouter } from "expo-router";
 import { setServerUrl } from "@/lib/auth/secure-store";
 import { testServerConnection } from "@/lib/auth/auth-service";
 import { useAuth } from "@/contexts/auth-context";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 export default function SetupScreen() {
   const styles = useAuthStyles();
+  const theme = useAppTheme();
   const router = useRouter();
   const { markServerConfigured } = useAuth();
   const [url, setUrl] = useState("");
@@ -82,6 +84,8 @@ export default function SetupScreen() {
             value={url}
             onChangeText={setUrl}
             placeholder="e.g. cellar.example.com"
+            placeholderTextColor={theme.colors.onSurfaceVariant}
+            selectionColor={theme.colors.primary}
             autoCapitalize="none"
             autoCorrect={false}
             keyboardType="url"
@@ -99,7 +103,7 @@ export default function SetupScreen() {
             disabled={testing}
           >
             {testing ? (
-              <ActivityIndicator color="#fff" size="small" />
+              <ActivityIndicator color={theme.colors.onPrimary} size="small" />
             ) : (
               <Text style={styles.buttonText}>Connect</Text>
             )}
