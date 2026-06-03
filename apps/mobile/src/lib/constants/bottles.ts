@@ -25,6 +25,16 @@ export const BOTTLE_STATUS_ICONS: Record<BottleStatus, string> = {
   gifted: "gift",
 };
 
+const INACTIVE_BOTTLE_STATUSES = new Set<BottleStatus>([
+  "drunk",
+  "sold",
+  "gifted",
+]);
+
+export const DEFAULT_BOTTLE_STATUS_FILTER = BOTTLE_STATUSES.filter(
+  (status) => !INACTIVE_BOTTLE_STATUSES.has(status),
+);
+
 export const STATUS_FILTER_OPTIONS = BOTTLE_STATUSES.map((s) => ({
   label: formatStatus(s),
   value: s,
