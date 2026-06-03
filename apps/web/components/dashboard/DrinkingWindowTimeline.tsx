@@ -32,6 +32,12 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+const timelineBottleStatuses = new Set<Bottle["status"]>([
+  "stored",
+  "ordered",
+  "in-primeur",
+]);
+
 interface DrinkingWindowTimelineProps {
   bottles: Bottle[];
   vintages: Vintage[];
@@ -43,7 +49,9 @@ export function DrinkingWindowTimeline({
 }: DrinkingWindowTimelineProps) {
   const chartData = useMemo(() => {
     const vintageMap = new Map(vintages.map((v) => [v.id, v]));
-    const storedBottles = bottles.filter((b) => b.status === "stored");
+    const timelineBottles = bottles.filter((b) =>
+      timelineBottleStatuses.has(b.status),
+    );
     const currentYear = new Date().getFullYear();
 
     const years = Array.from({ length: 10 }, (_, i) => currentYear + i);
@@ -53,7 +61,7 @@ export function DrinkingWindowTimeline({
       let tooYoung = 0;
       let pastPeak = 0;
 
-      for (const bottle of storedBottles) {
+      for (const bottle of timelineBottles) {
         const vintage = vintageMap.get(bottle.vintageId);
         if (!vintage) continue;
         if (vintage.drinkFrom === null && vintage.drinkUntil === null) continue;
@@ -96,7 +104,11 @@ export function DrinkingWindowTimeline({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[250px] w-full">
+        <ChartContainer
+          config={chartConfig}
+          className="h-[250px] w-full"
+          data-testid="drinking-window-timeline-chart"
+        >
           <BarChart data={chartData} accessibilityLayer>
             <CartesianGrid vertical={false} />
             <XAxis dataKey="year" tickLine={false} axisLine={false} />

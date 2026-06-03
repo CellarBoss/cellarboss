@@ -206,6 +206,46 @@ test.describe("Dashboard page", () => {
     await expect(page.getByText("Drinking Window Timeline")).toBeVisible();
   });
 
+  for (const status of ["ordered", "in-primeur"] as const) {
+    test(`includes ${status} bottles in drinking window timeline`, async ({
+      adminContext,
+    }) => {
+      const state = buildDashboardState();
+      state.bottles = [
+        {
+          id: 1,
+          vintageId: 1,
+          purchaseDate: today,
+          purchasePrice: 250.0,
+          storageId: null,
+          status,
+          size: "standard",
+        },
+      ];
+      await setState(state);
+
+      const page = await adminContext.newPage();
+      await page.goto("/");
+
+      await expect(page.getByText("Drinking Window Timeline")).toBeVisible();
+      await expect(
+        page.getByText(
+          "Add drinking windows to your vintages to see this timeline",
+        ),
+      ).toBeHidden();
+
+      const timelineChart = page.getByTestId("drinking-window-timeline-chart");
+      await expect(timelineChart).toBeVisible();
+      await expect(timelineChart.locator("svg.recharts-surface")).toBeVisible();
+      await expect(
+        timelineChart.getByText(String(currentYear), { exact: true }),
+      ).toBeVisible();
+      await expect(
+        timelineChart.locator(".recharts-bar-rectangle").first(),
+      ).toBeVisible();
+    });
+  }
+
   test("shows cellar value over time chart", async ({ adminContext }) => {
     const page = await adminContext.newPage();
     await page.goto("/");
