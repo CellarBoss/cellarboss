@@ -13,9 +13,11 @@ import { useAuthStyles } from "@/styles/auth";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/contexts/auth-context";
 import { getSavedEmail, getServerUrl } from "@/lib/auth/secure-store";
+import { useAppTheme } from "@/hooks/use-app-theme";
 
 export default function LoginScreen() {
   const styles = useAuthStyles();
+  const theme = useAppTheme();
   const router = useRouter();
   const { signIn, resetServer } = useAuth();
   const [email, setEmail] = useState("");
@@ -79,6 +81,8 @@ export default function LoginScreen() {
             value={email}
             onChangeText={setEmail}
             placeholder="you@example.com"
+            placeholderTextColor={theme.colors.onSurfaceVariant}
+            selectionColor={theme.colors.primary}
             autoCapitalize="none"
             autoCorrect={false}
             keyboardType="email-address"
@@ -93,6 +97,8 @@ export default function LoginScreen() {
             value={password}
             onChangeText={setPassword}
             placeholder="Password"
+            placeholderTextColor={theme.colors.onSurfaceVariant}
+            selectionColor={theme.colors.primary}
             secureTextEntry
             textContentType="password"
             returnKeyType="go"
@@ -109,7 +115,7 @@ export default function LoginScreen() {
             disabled={loading}
           >
             {loading ? (
-              <ActivityIndicator color="#fff" size="small" />
+              <ActivityIndicator color={theme.colors.onPrimary} size="small" />
             ) : (
               <Text style={styles.buttonText}>Sign In</Text>
             )}

@@ -23,6 +23,7 @@ export function useAuthStyles() {
     title: {
       fontSize: 24,
       fontWeight: "bold",
+      color: theme.colors.onSurface,
       textAlign: "center",
       marginBottom: 8,
     },
@@ -34,13 +35,14 @@ export function useAuthStyles() {
     },
     serverUrl: {
       fontSize: 12,
-      color: "#999",
+      color: theme.colors.onSurfaceVariant,
       textAlign: "center",
       marginBottom: 20,
     },
     label: {
       fontSize: 14,
       fontWeight: "600",
+      color: theme.colors.onSurface,
       marginBottom: 6,
     },
     input: {
@@ -50,6 +52,8 @@ export function useAuthStyles() {
       paddingHorizontal: 12,
       paddingVertical: 10,
       fontSize: 16,
+      color: theme.colors.onSurface,
+      backgroundColor: theme.colors.surface,
       marginBottom: 16,
     },
     error: {
