@@ -12,9 +12,17 @@ import {
   createWineGrapeSchema,
   createWineMakerSchema,
   createWineSchema,
-  jsonValueSchema,
 } from "@cellarboss/validators";
 export { imageResponseSchema } from "@cellarboss/validators";
+
+const openApiJsonValueSchema = z.union([
+  z.string(),
+  z.number(),
+  z.boolean(),
+  z.null(),
+  z.array(z.any()),
+  z.record(z.string(), z.any()),
+]);
 
 // Shared error/success responses
 export const errorSchema = z.object({
@@ -91,7 +99,7 @@ export const settingResponseSchema = z.object({
 
 export const userPreferenceResponseSchema = z.object({
   key: z.string().describe("Preference key"),
-  value: jsonValueSchema.describe("JSON preference value"),
+  value: openApiJsonValueSchema.describe("JSON preference value"),
 });
 
 export const userResponseSchema = z.object({
