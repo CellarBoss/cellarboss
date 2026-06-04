@@ -80,7 +80,8 @@ describe("DataList", () => {
     expect(screen.getByText("Burgundy")).toBeTruthy();
     expect(screen.getByText("Barossa Valley")).toBeTruthy();
     expect(screen.queryByText("Bordeaux")).toBeNull();
-    expect(screen.getByText("Filters (1)")).toBeTruthy();
+    expect(screen.getByLabelText("Filters, 1 active")).toBeTruthy();
+    expect(screen.getByTestId("filter-active-count")).toBeTruthy();
   });
 
   it("shows empty state when no data", () => {

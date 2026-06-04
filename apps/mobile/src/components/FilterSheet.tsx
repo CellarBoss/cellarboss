@@ -144,9 +144,9 @@ export function FilterSheet({ filters, values, onChange }: FilterSheetProps) {
           style={styles.triggerButton}
         />
         {activeCount > 0 && (
-          <Badge testID="filter-active-count" style={styles.badge}>
-            {activeCount}
-          </Badge>
+          <View style={styles.badge} pointerEvents="none">
+            <Badge testID="filter-active-count">{activeCount}</Badge>
+          </View>
         )}
       </View>
 
