@@ -48,6 +48,7 @@ export default function GrapesPage() {
     {
       accessorKey: "name",
       header: "Grape Name",
+      meta: { isHideable: false },
       enableColumnFilter: true,
       enableSorting: true,
       cell: ({ row }: { row: { original: Grape } }) => {
@@ -59,6 +60,8 @@ export default function GrapesPage() {
       id: "options",
       header: "",
       size: 100,
+      enableHiding: false,
+      meta: { isHideable: false },
       enableSorting: false,
       cell: ({ row }: { row: { original: Grape } }) => {
         return (
@@ -78,6 +81,7 @@ export default function GrapesPage() {
     <section>
       <PageHeader title="Grapes" />
       <DataTable<Grape>
+        tableId="grapes"
         data={grapesList}
         columns={columns}
         filterColumnName="name"

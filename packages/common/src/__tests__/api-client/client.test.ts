@@ -20,6 +20,7 @@ describe("createApiClient", () => {
     expect(client.winegrapes).toBeDefined();
     expect(client.tastingNotes).toBeDefined();
     expect(client.settings).toBeDefined();
+    expect(client.preferences).toBeDefined();
     expect(client.users).toBeDefined();
   });
 
@@ -36,6 +37,10 @@ describe("createApiClient", () => {
     expect(typeof client.settings.getAll).toBe("function");
     expect(typeof client.settings.getByKey).toBe("function");
     expect(typeof client.settings.update).toBe("function");
+
+    expect(typeof client.preferences.get).toBe("function");
+    expect(typeof client.preferences.update).toBe("function");
+    expect(typeof client.preferences.delete).toBe("function");
 
     expect(typeof client.winegrapes.getAll).toBe("function");
     expect(typeof client.winegrapes.getByWineId).toBe("function");

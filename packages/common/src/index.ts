@@ -5,6 +5,12 @@ export { ApiQueryError } from "./types";
 export type { ApiError, ApiResult, RequestFn, UploadFn } from "./types";
 export { processBackendError } from "./errors";
 export type { AdminUser, UserFormData } from "./resources/users";
+export type {
+  JsonPrimitive,
+  JsonValue,
+  UserPreference,
+  UpsertUserPreference,
+} from "@cellarboss/types";
 
 // Constants
 export { WINE_TYPE_LABELS, BOTTLE_SIZE_LABELS } from "./constants";

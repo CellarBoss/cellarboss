@@ -95,6 +95,7 @@ export default function RegionsPage() {
     {
       accessorKey: "name",
       header: "Region Name",
+      meta: { isHideable: false },
       enableColumnFilter: true,
       enableSorting: true,
       cell: ({ row }: { row: { original: Region } }) => {
@@ -120,6 +121,8 @@ export default function RegionsPage() {
       id: "options",
       header: "",
       size: 100,
+      enableHiding: false,
+      meta: { isHideable: false },
       enableSorting: false,
       cell: ({ row }: { row: { original: Region } }) => {
         return (
@@ -139,6 +142,7 @@ export default function RegionsPage() {
     <section>
       <PageHeader title="Regions" />
       <DataTable<Region>
+        tableId="regions"
         data={regionsList}
         columns={columns}
         filterColumnName="name"

@@ -51,6 +51,7 @@ export default function LocationsPage() {
     {
       accessorKey: "name",
       header: "Location Name",
+      meta: { isHideable: false },
       enableColumnFilter: true,
       enableSorting: true,
       cell: ({ row }: { row: { original: Location } }) => {
@@ -64,6 +65,8 @@ export default function LocationsPage() {
       id: "options",
       header: "",
       size: 100,
+      enableHiding: false,
+      meta: { isHideable: false },
       enableSorting: false,
       cell: ({ row }: { row: { original: Location } }) => {
         return (
@@ -83,6 +86,7 @@ export default function LocationsPage() {
     <section>
       <PageHeader title="Locations" />
       <DataTable<Location>
+        tableId="locations"
         data={locationsList}
         columns={columns}
         filterColumnName="name"

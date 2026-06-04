@@ -102,6 +102,7 @@ export default function StoragesPage() {
     {
       accessorKey: "name",
       header: "Storage Name",
+      meta: { isHideable: false },
       enableColumnFilter: true,
       enableSorting: true,
       cell: ({ row }) => {
@@ -141,6 +142,8 @@ export default function StoragesPage() {
       id: "options",
       header: "",
       size: 100,
+      enableHiding: false,
+      meta: { isHideable: false },
       enableSorting: false,
       cell: ({ row }) => {
         return (
@@ -160,6 +163,7 @@ export default function StoragesPage() {
     <section>
       <PageHeader title="Storages" />
       <DataTable<TreeNode<Storage>>
+        tableId="storages"
         data={treeData}
         columns={columns}
         filterColumnName="name"

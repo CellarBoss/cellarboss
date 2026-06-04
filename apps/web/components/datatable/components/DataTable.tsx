@@ -1,6 +1,13 @@
 "use client";
 
-import { Fragment, ReactNode } from "react";
+import {
+  Fragment,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import {
   ColumnDef,
   getCoreRowModel,
@@ -10,6 +17,8 @@ import {
   getExpandedRowModel,
   useReactTable,
   Row,
+  Updater,
+  VisibilityState,
 } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
@@ -38,6 +47,17 @@ import { processColumnsWithFilters } from "../utils/processColumns";
 import { getContextRows } from "../utils/contextRowCalculations";
 import { calculatePaginationMetrics } from "../utils/paginationCalculations";
 import { createTableStateUpdater } from "../hooks/useDataTableState";
+import { DataTableColumnVisibilityControl } from "./DataTableColumnVisibilityControl";
+import {
+  isColumnVisibilityPreference,
+  mergeColumnVisibility,
+  toPersistedColumnVisibility,
+} from "../utils/columnVisibility";
+import {
+  useDeletePreference,
+  usePreference,
+  useUpdatePreference,
+} from "@/hooks/use-preferences";
 
 export type { BulkEditField } from "@/components/bulk/BulkEditDialog";
 export { FilterType };
@@ -60,6 +80,7 @@ type DataTableProps<T> = {
     partial: Record<string, string | number>,
   ) => Promise<void>;
   filters?: FilterDef[];
+  tableId?: string;
 };
 
 export function DataTable<T>({
@@ -76,6 +97,7 @@ export function DataTable<T>({
   bulkEditFields,
   onBulkEdit,
   filters,
+  tableId,
 }: DataTableProps<T>) {
   const hasExpansion = !!(getSubRows || renderDetail);
 
@@ -95,20 +117,92 @@ export function DataTable<T>({
     defaultExpanded: defaultExpanded ?? (getSubRows ? true : {}),
   });
 
-  // React state: sorting, row selection, visibility, dialogs
-  const state = useDataTableState(columns, defaultSortColumn);
-
   // Prepare data
   const displayData = data ?? [];
   const enableRowSelection =
     onBulkDelete !== undefined || onBulkEdit !== undefined;
 
   // Process columns with selection and filters
-  const processedColumns = processColumnsWithFilters(
-    columns,
-    enableRowSelection,
-    filters,
+  const processedColumns = useMemo(
+    () => processColumnsWithFilters(columns, enableRowSelection, filters),
+    [columns, enableRowSelection, filters],
   );
+
+  // React state: sorting, row selection, visibility, dialogs
+  const state = useDataTableState(processedColumns, defaultSortColumn);
+  const { setColumnVisibility } = state;
+  const preferenceKey = tableId
+    ? `datatable.${tableId}.columnVisibility`
+    : null;
+  const columnPreference =
+    usePreference<Record<string, boolean>>(preferenceKey);
+  const updateColumnPreference = useUpdatePreference<Record<string, boolean>>();
+  const deleteColumnPreference = useDeletePreference();
+  const hasAppliedColumnPreference = useRef(!preferenceKey);
+
+  useEffect(() => {
+    if (!preferenceKey) {
+      hasAppliedColumnPreference.current = true;
+      return;
+    }
+    if (!columnPreference.isSuccess) return;
+
+    const savedVisibility = isColumnVisibilityPreference(
+      columnPreference.data?.value,
+    )
+      ? columnPreference.data.value
+      : undefined;
+    setColumnVisibility(
+      mergeColumnVisibility(processedColumns, savedVisibility),
+    );
+    hasAppliedColumnPreference.current = true;
+  }, [
+    columnPreference.data,
+    columnPreference.isSuccess,
+    preferenceKey,
+    processedColumns,
+    setColumnVisibility,
+  ]);
+
+  const saveColumnVisibility = useCallback(
+    (visibility: VisibilityState) => {
+      if (!preferenceKey || !hasAppliedColumnPreference.current) return;
+
+      updateColumnPreference.mutate({
+        key: preferenceKey,
+        value: toPersistedColumnVisibility(processedColumns, visibility),
+      });
+    },
+    [preferenceKey, processedColumns, updateColumnPreference],
+  );
+
+  const handleColumnVisibilityChange = useCallback(
+    (updater: Updater<VisibilityState>) => {
+      setColumnVisibility((previous) => {
+        const next =
+          typeof updater === "function" ? updater(previous) : updater;
+        const visibility = mergeColumnVisibility(processedColumns, next);
+        saveColumnVisibility(visibility);
+        return visibility;
+      });
+    },
+    [processedColumns, saveColumnVisibility, setColumnVisibility],
+  );
+
+  const resetColumnVisibility = useCallback(() => {
+    const visibility = mergeColumnVisibility(processedColumns);
+    setColumnVisibility(visibility);
+
+    if (preferenceKey) {
+      hasAppliedColumnPreference.current = true;
+      deleteColumnPreference.mutate(preferenceKey);
+    }
+  }, [
+    deleteColumnPreference,
+    preferenceKey,
+    processedColumns,
+    setColumnVisibility,
+  ]);
 
   // Create table instance
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -124,9 +218,7 @@ export function DataTable<T>({
       ...(hasExpansion ? { expanded } : {}),
       ...(enableRowSelection ? { rowSelection: state.rowSelection } : {}),
     },
-    onColumnVisibilityChange: createTableStateUpdater(
-      state.setColumnVisibility,
-    ),
+    onColumnVisibilityChange: handleColumnVisibilityChange,
     ...(enableRowSelection
       ? {
           enableRowSelection: true,
@@ -197,6 +289,10 @@ export function DataTable<T>({
           ) : null}
         </div>
         <div className="flex items-center gap-2 sm:ml-auto">
+          <DataTableColumnVisibilityControl
+            table={table}
+            onReset={resetColumnVisibility}
+          />
           {buttons?.map((button, index) => (
             <Fragment key={index}>{button}</Fragment>
           ))}

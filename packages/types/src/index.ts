@@ -10,6 +10,8 @@ export type { Wine, CreateWine, UpdateWine } from "./wine";
 export type { WineGrape, CreateWineGrape, UpdateWineGrape } from "./winegrape";
 export type { WineMaker, CreateWineMaker, UpdateWineMaker } from "./winemaker";
 export type { Setting, UpdateSetting } from "./setting";
+export type { JsonPrimitive, JsonValue } from "./json";
+export type { UserPreference, UpsertUserPreference } from "./user-preference";
 export type {
   TastingNote,
   CreateTastingNote,

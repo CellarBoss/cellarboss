@@ -17,6 +17,8 @@ export function createSelectionColumn<T>(): ColumnDef<T> {
       </div>
     ),
     enableSorting: false,
+    enableHiding: false,
+    meta: { isSuppressed: true, isHideable: false },
     size: 50,
   };
 }

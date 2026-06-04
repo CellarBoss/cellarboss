@@ -295,6 +295,7 @@ export default function BottlesPage() {
     {
       id: "vintage",
       header: "Wine",
+      meta: { isHideable: false },
       enableSorting: true,
       enableColumnFilter: true,
       accessorFn: (row: Bottle) =>
@@ -407,7 +408,7 @@ export default function BottlesPage() {
       header: "Size",
       enableSorting: true,
       enableColumnFilter: true,
-      meta: { hidden: true },
+      meta: { defaultVisible: false },
     },
     {
       accessorKey: "status",
@@ -420,6 +421,8 @@ export default function BottlesPage() {
       id: "options",
       header: "",
       size: 100,
+      enableHiding: false,
+      meta: { isHideable: false },
       enableSorting: false,
       cell: ({ row }: { row: { original: Bottle } }) => (
         <div className="flex gap-1 justify-center mx-5">
@@ -456,7 +459,7 @@ export default function BottlesPage() {
       header: "",
       enableColumnFilter: true,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { isSuppressed: true, defaultVisible: false },
       accessorFn: (row: Bottle) =>
         String(vintageMap.get(row.vintageId)?.wineId ?? ""),
     },
@@ -466,7 +469,7 @@ export default function BottlesPage() {
       header: "",
       enableColumnFilter: true,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { isSuppressed: true, defaultVisible: false },
       accessorFn: (row: Bottle) => vintageMap.get(row.vintageId)?.year ?? 0,
     },
     {
@@ -475,7 +478,7 @@ export default function BottlesPage() {
       header: "",
       enableColumnFilter: true,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { isSuppressed: true, defaultVisible: false },
       accessorFn: (row: Bottle) =>
         wineMap.get(vintageMap.get(row.vintageId)?.wineId ?? 0)?.type ?? "",
     },
@@ -485,7 +488,7 @@ export default function BottlesPage() {
       header: "",
       enableColumnFilter: true,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { isSuppressed: true, defaultVisible: false },
       accessorFn: (row: Bottle) => {
         const vintage = vintageMap.get(row.vintageId);
         if (!vintage) return "unknown";
@@ -502,7 +505,7 @@ export default function BottlesPage() {
       header: "",
       enableColumnFilter: true,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { isSuppressed: true, defaultVisible: false },
       accessorFn: (row: Bottle) => {
         const vintage = vintageMap.get(row.vintageId);
         if (!vintage) return "";
@@ -520,6 +523,7 @@ export default function BottlesPage() {
     <section>
       <PageHeader title="Bottles" />
       <DataTable<Bottle>
+        tableId="bottles"
         data={bottles}
         columns={columns}
         filterColumnName="vintage"

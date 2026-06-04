@@ -67,6 +67,7 @@ export default function UsersPage() {
     {
       accessorKey: "name",
       header: "Name",
+      meta: { isHideable: false },
       enableColumnFilter: true,
       enableSorting: true,
       cell: ({ row }: { row: { original: AdminUser } }) => (
@@ -91,6 +92,8 @@ export default function UsersPage() {
       id: "options",
       header: "",
       size: 100,
+      enableHiding: false,
+      meta: { isHideable: false },
       enableSorting: false,
       cell: ({ row }: { row: { original: AdminUser } }) => (
         <div className="flex gap-1 justify-center mx-5">
@@ -108,6 +111,7 @@ export default function UsersPage() {
     <section>
       <PageHeader title="Users" />
       <DataTable<AdminUser>
+        tableId="users"
         data={usersList}
         columns={columns}
         filterColumnName="name"

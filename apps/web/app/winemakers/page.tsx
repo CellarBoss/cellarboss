@@ -51,6 +51,7 @@ export default function WinemakersPage() {
     {
       accessorKey: "name",
       header: "Winemaker Name",
+      meta: { isHideable: false },
       enableColumnFilter: true,
       enableSorting: true,
       cell: ({ row }: { row: { original: WineMaker } }) => {
@@ -64,6 +65,8 @@ export default function WinemakersPage() {
       id: "options",
       header: "",
       size: 100,
+      enableHiding: false,
+      meta: { isHideable: false },
       enableSorting: false,
       cell: ({ row }: { row: { original: WineMaker } }) => {
         return (
@@ -83,6 +86,7 @@ export default function WinemakersPage() {
     <section>
       <PageHeader title="Winemakers" />
       <DataTable<WineMaker>
+        tableId="winemakers"
         data={winemakersList}
         columns={columns}
         filterColumnName="name"

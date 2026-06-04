@@ -51,6 +51,7 @@ export default function CountriesPage() {
     {
       accessorKey: "name",
       header: "Country Name",
+      meta: { isHideable: false },
       enableColumnFilter: true,
       enableSorting: true,
       cell: ({ row }: { row: { original: Country } }) => {
@@ -64,6 +65,8 @@ export default function CountriesPage() {
       id: "options",
       header: "",
       size: 100,
+      enableHiding: false,
+      meta: { isHideable: false },
       enableSorting: false,
       cell: ({ row }: { row: { original: Country } }) => {
         return (
@@ -83,6 +86,7 @@ export default function CountriesPage() {
     <section>
       <PageHeader title="Countries" />
       <DataTable<Country>
+        tableId="countries"
         data={countriesList}
         columns={columns}
         filterColumnName="name"

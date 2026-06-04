@@ -20,6 +20,10 @@ Some filters display options in groups. For example, the wines table groups wine
 
 Click any column header to sort by that column. Click again to reverse the sort order. A sort indicator appears next to the active column header.
 
+## Column Visibility
+
+Use the columns button above the table to choose which optional columns are visible. Primary columns and row action columns remain fixed. Column choices are saved to your user preferences for each table.
+
 ## Pagination
 
 Use the pagination controls at the bottom of the table to navigate between pages. The page size and current page are stored in the URL.

@@ -1,9 +1,11 @@
 import { db } from "@utils/database.js";
 import { updateReturning } from "@utils/query-helpers.js";
 import type { UpdateSetting } from "@cellarboss/types";
+import { isUserPreferenceSettingKey } from "./user-preferences.controller.js";
 
 export async function list() {
-  return await db.selectFrom("setting").selectAll().execute();
+  const settings = await db.selectFrom("setting").selectAll().execute();
+  return settings.filter((setting) => !isUserPreferenceSettingKey(setting.key));
 }
 
 export async function getByKey(key: string) {

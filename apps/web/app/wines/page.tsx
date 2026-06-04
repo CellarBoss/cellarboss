@@ -164,6 +164,7 @@ export default function WinesPage() {
     {
       accessorKey: "name",
       header: "Wine Name",
+      meta: { isHideable: false },
       enableColumnFilter: true,
       enableSorting: true,
       cell: ({ row }) => (
@@ -182,7 +183,7 @@ export default function WinesPage() {
       header: "Type",
       enableColumnFilter: false,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { defaultVisible: false },
     },
     {
       id: "winemaker",
@@ -256,13 +257,15 @@ export default function WinesPage() {
       header: "Country",
       enableColumnFilter: false,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { isSuppressed: true, defaultVisible: false },
     },
     {
       accessorKey: "options",
       id: "options",
       header: "",
       size: 100,
+      enableHiding: false,
+      meta: { isHideable: false },
       enableSorting: false,
       cell: ({ row }) => {
         return (
@@ -288,6 +291,7 @@ export default function WinesPage() {
     <section>
       <PageHeader title="Wines" />
       <DataTable<Wine>
+        tableId="wines"
         data={winesList}
         columns={columns}
         filterColumnName="name"

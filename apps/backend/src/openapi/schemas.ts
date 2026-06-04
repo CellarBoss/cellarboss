@@ -12,6 +12,7 @@ import {
   createWineGrapeSchema,
   createWineMakerSchema,
   createWineSchema,
+  jsonValueSchema,
 } from "@cellarboss/validators";
 export { imageResponseSchema } from "@cellarboss/validators";
 
@@ -86,6 +87,11 @@ export const tastingNoteResponseSchema = createTastingNoteSchema.extend({
 export const settingResponseSchema = z.object({
   key: z.string().describe("Setting key"),
   value: z.string().describe("Setting value"),
+});
+
+export const userPreferenceResponseSchema = z.object({
+  key: z.string().describe("Preference key"),
+  value: jsonValueSchema.describe("JSON preference value"),
 });
 
 export const userResponseSchema = z.object({
