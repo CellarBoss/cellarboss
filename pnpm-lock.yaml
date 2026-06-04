@@ -372,7 +372,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/mock-server
       '@eslint/compat':
-        specifier: ^2.1.0
+        specifier: 2.1.0
         version: 2.1.0(eslint@10.4.1(jiti@2.7.0))
       '@playwright/test':
         specifier: 1.60.0
