@@ -4,22 +4,16 @@ import { createWineSchema, updateWineSchema } from "@cellarboss/validators";
 
 let nextId = 1000;
 
-function withNotes<T extends { notes?: string }>(
-  wine: T,
-): T & { notes: string } {
-  return { ...wine, notes: wine.notes ?? "" };
-}
-
 export function registerWineRoutes(app: Hono, state: MockState) {
   app.get("/api/wine", (c) => {
-    return c.json(state.wines.map(withNotes));
+    return c.json(state.wines);
   });
 
   app.get("/api/wine/:id", (c) => {
     const id = Number(c.req.param("id"));
     const wine = state.wines.find((w) => w.id === id);
     if (!wine) return c.json({ error: "Not found" }, 404);
-    return c.json(withNotes(wine));
+    return c.json(wine);
   });
 
   app.post("/api/wine", async (c) => {
@@ -39,7 +33,7 @@ export function registerWineRoutes(app: Hono, state: MockState) {
     const idx = state.wines.findIndex((w) => w.id === id);
     if (idx === -1) return c.json({ error: "Not found" }, 404);
     state.wines[idx] = { ...state.wines[idx], ...result.data };
-    return c.json(withNotes(state.wines[idx]));
+    return c.json(state.wines[idx]);
   });
 
   app.delete("/api/wine/:id", (c) => {

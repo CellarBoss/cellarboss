@@ -3,7 +3,7 @@ import type { GenericType } from "./generic";
 export interface Wine extends GenericType {
   wineMakerId: number;
   regionId: number | null;
-  notes: string;
+  notes: string | null;
   type:
     | "red"
     | "white"
@@ -14,6 +14,8 @@ export interface Wine extends GenericType {
     | "dessert";
 }
 
-export type CreateWine = Omit<Wine, "id">;
+export type CreateWine = Omit<Wine, "id" | "notes"> & {
+  notes?: Wine["notes"];
+};
 
 export type UpdateWine = Partial<Omit<Wine, "id">>;

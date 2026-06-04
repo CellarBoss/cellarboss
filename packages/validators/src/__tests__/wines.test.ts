@@ -17,7 +17,7 @@ describe("createWineSchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("defaults missing notes to an empty string", () => {
+  it("allows missing notes", () => {
     const result = createWineSchema.safeParse({
       name: "Château Margaux",
       wineMakerId: 1,
@@ -25,7 +25,19 @@ describe("createWineSchema", () => {
       type: "red",
     });
     expect(result.success).toBe(true);
-    if (result.success) expect(result.data.notes).toBe("");
+    if (result.success) expect(result.data.notes).toBeUndefined();
+  });
+
+  it("accepts null notes", () => {
+    const result = createWineSchema.safeParse({
+      name: "Château Margaux",
+      wineMakerId: 1,
+      regionId: 2,
+      type: "red",
+      notes: null,
+    });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.notes).toBeNull();
   });
 
   it("accepts null regionId", () => {
@@ -156,6 +168,7 @@ describe("updateWineSchema", () => {
   it("accepts a partial update with just name", () => {
     const result = updateWineSchema.safeParse({ name: "New Name" });
     expect(result.success).toBe(true);
+    if (result.success) expect(result.data.notes).toBeUndefined();
   });
 
   it("accepts a partial update with just type", () => {
@@ -168,6 +181,12 @@ describe("updateWineSchema", () => {
       notes: "Serve slightly cool.",
     });
     expect(result.success).toBe(true);
+  });
+
+  it("accepts a partial update that clears notes", () => {
+    const result = updateWineSchema.safeParse({ notes: null });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.notes).toBeNull();
   });
 
   it("rejects an empty object", () => {

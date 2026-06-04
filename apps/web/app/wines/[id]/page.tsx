@@ -210,7 +210,7 @@ export default function ViewWinePage() {
                 {formatWineType(wine.type)}
               </Badge>
             </DetailRow>
-            {wine.notes.trim() && (
+            {wine.notes?.trim() && (
               <DetailRow icon={StickyNote}>
                 <span className="whitespace-pre-wrap">{wine.notes}</span>
               </DetailRow>

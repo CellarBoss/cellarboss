@@ -1,38 +1,25 @@
 import { db } from "@utils/database.js";
 import { insertReturning, updateReturning } from "@utils/query-helpers.js";
-import type { CreateWine, UpdateWine, Wine } from "@cellarboss/types";
-
-type WineRow = Omit<Wine, "notes"> & { notes: string | null };
-
-function toWine(row: WineRow): Wine {
-  return {
-    ...row,
-    notes: row.notes ?? "",
-  };
-}
+import type { CreateWine, UpdateWine } from "@cellarboss/types";
 
 export async function list() {
-  const rows = await db.selectFrom("wine").selectAll().execute();
-  return rows.map(toWine);
+  return await db.selectFrom("wine").selectAll().execute();
 }
 
 export async function getById(id: number) {
-  const row = await db
+  return await db
     .selectFrom("wine")
     .selectAll()
     .where("id", "=", id)
     .executeTakeFirst();
-  return row ? toWine(row) : undefined;
 }
 
 export async function create(data: CreateWine) {
-  const row = await insertReturning(db, "wine", data);
-  return toWine(row);
+  return await insertReturning(db, "wine", data);
 }
 
 export async function update(id: number, data: UpdateWine) {
-  const row = await updateReturning(db, "wine", id, data);
-  return toWine(row);
+  return await updateReturning(db, "wine", id, data);
 }
 
 export async function remove(id: number) {

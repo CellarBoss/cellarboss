@@ -17,7 +17,7 @@ describe("createVintageSchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("defaults missing notes to an empty string", () => {
+  it("allows missing notes", () => {
     const result = createVintageSchema.safeParse({
       year: 2015,
       wineId: 1,
@@ -25,7 +25,19 @@ describe("createVintageSchema", () => {
       drinkUntil: 2035,
     });
     expect(result.success).toBe(true);
-    if (result.success) expect(result.data.notes).toBe("");
+    if (result.success) expect(result.data.notes).toBeUndefined();
+  });
+
+  it("accepts null notes", () => {
+    const result = createVintageSchema.safeParse({
+      year: 2015,
+      wineId: 1,
+      drinkFrom: 2022,
+      drinkUntil: 2035,
+      notes: null,
+    });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.notes).toBeNull();
   });
 
   it("accepts null year (non-vintage)", () => {
@@ -83,11 +95,18 @@ describe("updateVintageSchema", () => {
   it("accepts a partial update with just year", () => {
     const result = updateVintageSchema.safeParse({ year: 2016 });
     expect(result.success).toBe(true);
+    if (result.success) expect(result.data.notes).toBeUndefined();
   });
 
   it("accepts a partial update with just notes", () => {
     const result = updateVintageSchema.safeParse({ notes: "Hold until 2028." });
     expect(result.success).toBe(true);
+  });
+
+  it("accepts a partial update that clears notes", () => {
+    const result = updateVintageSchema.safeParse({ notes: null });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.notes).toBeNull();
   });
 
   it("trims notes", () => {

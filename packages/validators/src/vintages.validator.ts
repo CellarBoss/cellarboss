@@ -1,7 +1,19 @@
 import { z } from "zod";
 import { nullableInt } from "./form-helpers";
 
-const notesSchema = z.string().trim().max(5000).describe("Free-text notes");
+const notesSchema = z
+  .string()
+  .trim()
+  .max(5000)
+  .nullable()
+  .optional()
+  .describe("Free-text notes");
+const notesFormSchema = z
+  .string()
+  .trim()
+  .max(5000)
+  .default("")
+  .describe("Free-text notes");
 
 export const createVintageSchema = z.object({
   year: z
@@ -26,7 +38,7 @@ export const createVintageSchema = z.object({
     .max(2200)
     .nullable()
     .describe("Latest recommended drinking year, or null"),
-  notes: notesSchema.default(""),
+  notes: notesSchema,
 });
 
 export const vintageFormValidators = {
@@ -34,17 +46,10 @@ export const vintageFormValidators = {
   year: nullableInt(1800, 2100),
   drinkFrom: nullableInt(1800, 2200),
   drinkUntil: nullableInt(1800, 2200),
-  notes: notesSchema.default(""),
+  notes: notesFormSchema,
 } as const;
 
-export const updateVintageSchema = z
-  .object({
-    year: createVintageSchema.shape.year,
-    wineId: createVintageSchema.shape.wineId,
-    drinkFrom: createVintageSchema.shape.drinkFrom,
-    drinkUntil: createVintageSchema.shape.drinkUntil,
-    notes: notesSchema,
-  })
+export const updateVintageSchema = createVintageSchema
   .partial()
   .refine((data) => Object.keys(data).length > 0, {
     message: "At least one field must be provided",

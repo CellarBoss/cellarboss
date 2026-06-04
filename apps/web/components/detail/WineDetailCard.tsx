@@ -67,7 +67,7 @@ export function WineDetailCard({
           {[region?.name, country?.name].filter(Boolean).join(", ")}
         </DetailRow>
       )}
-      {wine?.notes.trim() && (
+      {wine?.notes?.trim() && (
         <DetailRow icon={StickyNote}>
           <span className="whitespace-pre-wrap">{wine.notes}</span>
         </DetailRow>
@@ -80,7 +80,7 @@ export function WineDetailCard({
           />
         </DetailRow>
       )}
-      {vintage?.notes.trim() && (
+      {vintage?.notes?.trim() && (
         <DetailRow icon={StickyNote}>
           <span className="whitespace-pre-wrap">{vintage.notes}</span>
         </DetailRow>

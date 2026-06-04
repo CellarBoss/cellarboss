@@ -185,7 +185,7 @@ export function WineDetailsCard({ wine }: { wine: Wine }) {
                 </Text>
               </View>
             )}
-            {wine.notes.trim() !== "" && (
+            {wine.notes?.trim() && (
               <View style={styles.detailRow}>
                 <Icon
                   source="note-text"

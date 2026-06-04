@@ -194,7 +194,7 @@ export function VintageDetailsCard({
                 </Text>
               </View>
             )}
-            {vintage.notes.trim() !== "" && (
+            {vintage.notes?.trim() && (
               <View style={styles.detailRow}>
                 <Icon
                   source="note-text"

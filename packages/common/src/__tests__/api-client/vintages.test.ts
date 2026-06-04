@@ -59,6 +59,7 @@ describe("vintagesResource", () => {
     expect(body.wineId).toBe(1);
     expect(body.drinkFrom).toBeNull();
     expect(body.drinkUntil).toBeNull();
+    expect(body.notes).toBeNull();
   });
 
   it("update coerces numeric fields and uses correct path", async () => {
