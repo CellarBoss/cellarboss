@@ -90,6 +90,28 @@ describe("updateVintageSchema", () => {
     expect(result.success).toBe(true);
   });
 
+  it("trims notes", () => {
+    const result = updateVintageSchema.safeParse({
+      notes: "  Cellar note  ",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.notes).toBe("Cellar note");
+  });
+
+  it("accepts notes at the maximum length", () => {
+    const result = updateVintageSchema.safeParse({
+      notes: "A".repeat(5000),
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects notes exceeding the maximum length", () => {
+    const result = updateVintageSchema.safeParse({
+      notes: "A".repeat(5001),
+    });
+    expect(result.success).toBe(false);
+  });
+
   it("rejects an empty object", () => {
     const result = updateVintageSchema.safeParse({});
     expect(result.success).toBe(false);
