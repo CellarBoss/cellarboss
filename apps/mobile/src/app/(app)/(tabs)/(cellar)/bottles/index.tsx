@@ -12,6 +12,7 @@ import { formatDrinkingStatus } from "@/lib/functions/format";
 import type { DrinkingStatus } from "@/lib/functions/format";
 import { useCommonStyles } from "@/styles/common";
 import {
+  DEFAULT_BOTTLE_STATUS_FILTER,
   STATUS_FILTER_OPTIONS,
   WINE_TYPE_FILTER_OPTIONS,
 } from "@/lib/constants/bottles";
@@ -160,6 +161,7 @@ export default function CellarScreen() {
       key: "status",
       label: "Status",
       options: STATUS_FILTER_OPTIONS,
+      defaultValues: DEFAULT_BOTTLE_STATUS_FILTER,
       predicate: (bottle: Bottle, selectedValues: string[]) =>
         selectedValues.includes(bottle.status),
     },

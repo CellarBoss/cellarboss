@@ -17,6 +17,7 @@ type DataListFilterConfig<T> = {
   label: string;
   options: SelectOption[];
   multiple?: boolean;
+  defaultValues?: string[];
   predicate: (item: T, selectedValues: string[]) => boolean;
 };
 
@@ -47,6 +48,16 @@ type DataListProps<T> = {
   ListHeaderComponent?: React.ReactElement;
 };
 
+function getInitialFilterValues<T>(
+  filterConfigs: DataListFilterConfig<T>[] | undefined,
+): Record<string, string[]> {
+  const initial: Record<string, string[]> = {};
+  filterConfigs?.forEach((config) => {
+    initial[config.key] = [...(config.defaultValues ?? [])];
+  });
+  return initial;
+}
+
 export function DataList<T>({
   data,
   renderItem,
@@ -69,11 +80,7 @@ export function DataList<T>({
 }: DataListProps<T>) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterValues, setFilterValues] = useState<Record<string, string[]>>(
-    () => {
-      const initial: Record<string, string[]> = {};
-      filterConfigs?.forEach((c) => (initial[c.key] = []));
-      return initial;
-    },
+    () => getInitialFilterValues(filterConfigs),
   );
 
   let filteredData = data;

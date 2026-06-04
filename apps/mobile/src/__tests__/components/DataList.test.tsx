@@ -13,12 +13,12 @@ jest.mock("react-native-gesture-handler/ReanimatedSwipeable", () => {
   };
 });
 
-type TestItem = { id: number; name: string };
+type TestItem = { id: number; name: string; status: "stored" | "drunk" };
 
 const testData: TestItem[] = [
-  { id: 1, name: "Burgundy" },
-  { id: 2, name: "Bordeaux" },
-  { id: 3, name: "Barossa Valley" },
+  { id: 1, name: "Burgundy", status: "stored" },
+  { id: 2, name: "Bordeaux", status: "drunk" },
+  { id: 3, name: "Barossa Valley", status: "stored" },
 ];
 
 function renderDataList(
@@ -58,6 +58,29 @@ describe("DataList", () => {
     expect(screen.getByText("Bordeaux")).toBeTruthy();
     expect(screen.queryByText("Burgundy")).toBeNull();
     expect(screen.queryByText("Barossa Valley")).toBeNull();
+  });
+
+  it("applies default filter values", () => {
+    renderDataList({
+      filterConfigs: [
+        {
+          key: "status",
+          label: "Status",
+          options: [
+            { label: "Stored", value: "stored" },
+            { label: "Drunk", value: "drunk" },
+          ],
+          defaultValues: ["stored"],
+          predicate: (item, selectedValues) =>
+            selectedValues.includes(item.status),
+        },
+      ],
+    });
+
+    expect(screen.getByText("Burgundy")).toBeTruthy();
+    expect(screen.getByText("Barossa Valley")).toBeTruthy();
+    expect(screen.queryByText("Bordeaux")).toBeNull();
+    expect(screen.getByText("Filters (1)")).toBeTruthy();
   });
 
   it("shows empty state when no data", () => {
