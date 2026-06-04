@@ -145,6 +145,11 @@ export function DataTable<T>({
       hasAppliedColumnPreference.current = true;
       return;
     }
+    if (columnPreference.isError) {
+      setColumnVisibility(mergeColumnVisibility(processedColumns));
+      hasAppliedColumnPreference.current = true;
+      return;
+    }
     if (!columnPreference.isSuccess) return;
 
     const savedVisibility = isColumnVisibilityPreference(
@@ -158,6 +163,7 @@ export function DataTable<T>({
     hasAppliedColumnPreference.current = true;
   }, [
     columnPreference.data,
+    columnPreference.isError,
     columnPreference.isSuccess,
     preferenceKey,
     processedColumns,

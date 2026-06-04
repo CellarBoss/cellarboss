@@ -49,4 +49,20 @@ describe("preferencesResource", () => {
     );
     expect(result).toEqual({ ok: true, data: true });
   });
+
+  it("delete passes through request errors", async () => {
+    const errorResponse = {
+      ok: false,
+      error: { message: "Not found", status: 404 },
+    } as const;
+    vi.mocked(mockRequest).mockResolvedValue(errorResponse);
+
+    const result = await preferences.delete("datatable.wines.columnVisibility");
+
+    expect(mockRequest).toHaveBeenCalledWith(
+      "preferences/datatable.wines.columnVisibility",
+      "DELETE",
+    );
+    expect(result).toEqual(errorResponse);
+  });
 });

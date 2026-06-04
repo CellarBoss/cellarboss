@@ -1,14 +1,15 @@
 import type { JsonValue, UserPreference } from "@cellarboss/types";
 import { db } from "@utils/database.js";
+import { env } from "@utils/env.js";
 
-const STORAGE_PREFIX = "userPreference:";
+export const USER_PREFERENCE_STORAGE_PREFIX = "userPreference:";
 
 export function isUserPreferenceSettingKey(key: string) {
-  return key.startsWith(STORAGE_PREFIX);
+  return key.startsWith(USER_PREFERENCE_STORAGE_PREFIX);
 }
 
 function storageKey(userId: string, key: string) {
-  return `${STORAGE_PREFIX}${userId}:${key}`;
+  return `${USER_PREFERENCE_STORAGE_PREFIX}${userId}:${key}`;
 }
 
 function parsePreferenceValue(value: string): JsonValue {
@@ -42,24 +43,16 @@ export async function upsert(
 ): Promise<UserPreference> {
   const storedKey = storageKey(userId, key);
   const storedValue = JSON.stringify(value);
-  const existing = await db
-    .selectFrom("setting")
-    .select("key")
-    .where("key", "=", storedKey)
-    .executeTakeFirst();
-
-  if (existing) {
-    await db
-      .updateTable("setting")
-      .set({ value: storedValue })
-      .where("key", "=", storedKey)
-      .execute();
-  } else {
-    await db
-      .insertInto("setting")
-      .values({ key: storedKey, value: storedValue })
-      .execute();
-  }
+  const query = db
+    .insertInto("setting")
+    .values({ key: storedKey, value: storedValue });
+  await (
+    env.DATABASE_TYPE === "mysql"
+      ? query.onDuplicateKeyUpdate({ value: storedValue })
+      : query.onConflict((oc) =>
+          oc.column("key").doUpdateSet({ value: storedValue }),
+        )
+  ).execute();
 
   return { key, value };
 }

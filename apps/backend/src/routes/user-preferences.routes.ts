@@ -39,6 +39,7 @@ const getRoute = createRoute({
   request: { params: keyParamSchema },
   responses: {
     200: jsonContent(userPreferenceResponseSchema, "The user preference"),
+    400: jsonContent(errorSchema, "Bad Request"),
     401: jsonContent(errorSchema, "Unauthorized"),
     404: jsonContent(errorSchema, "Not found"),
   },
@@ -56,6 +57,7 @@ const upsertRoute = createRoute({
   },
   responses: {
     200: jsonContent(userPreferenceResponseSchema, "The saved preference"),
+    400: jsonContent(errorSchema, "Bad Request"),
     401: jsonContent(errorSchema, "Unauthorized"),
     422: jsonContent(errorSchema, "Validation error"),
   },
@@ -70,6 +72,7 @@ const deleteRoute = createRoute({
   request: { params: keyParamSchema },
   responses: {
     200: jsonContent(successSchema, "Preference deleted"),
+    400: jsonContent(errorSchema, "Bad Request"),
     401: jsonContent(errorSchema, "Unauthorized"),
   },
 });
