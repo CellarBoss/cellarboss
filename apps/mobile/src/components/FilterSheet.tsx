@@ -7,6 +7,7 @@ import {
   Button,
   IconButton,
   Chip,
+  Badge,
 } from "react-native-paper";
 import { useAppTheme } from "@/hooks/use-app-theme";
 import type { SelectOption } from "@/lib/types/field";
@@ -115,19 +116,39 @@ export function FilterSheet({ filters, values, onChange }: FilterSheetProps) {
       borderTopColor: theme.colors.outlineVariant,
       gap: 12,
     },
+    trigger: {
+      position: "relative",
+    },
+    triggerButton: {
+      margin: 0,
+    },
+    badge: {
+      position: "absolute",
+      top: -4,
+      right: -4,
+    },
   });
 
   return (
     <>
-      <Button
-        testID="filter-button"
-        mode={activeCount > 0 ? "contained-tonal" : "outlined"}
-        icon="filter-variant"
-        onPress={handleOpen}
-        compact
-      >
-        Filters{activeCount > 0 ? ` (${activeCount})` : ""}
-      </Button>
+      <View style={styles.trigger}>
+        <IconButton
+          testID="filter-button"
+          mode={activeCount > 0 ? "contained-tonal" : "outlined"}
+          icon="filter-variant"
+          accessibilityLabel={
+            activeCount > 0 ? `Filters, ${activeCount} active` : "Filters"
+          }
+          onPress={handleOpen}
+          size={20}
+          style={styles.triggerButton}
+        />
+        {activeCount > 0 && (
+          <View style={styles.badge} pointerEvents="none">
+            <Badge testID="filter-active-count">{activeCount}</Badge>
+          </View>
+        )}
+      </View>
 
       <Portal>
         <Modal

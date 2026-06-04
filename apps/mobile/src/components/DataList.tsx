@@ -206,11 +206,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   toolbar: {
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 12,
     paddingVertical: 8,
     gap: 8,
   },
   searchbar: {
+    flex: 1,
     minHeight: 0,
   },
   searchbarInput: {
@@ -220,6 +223,7 @@ const styles = StyleSheet.create({
   },
   toolbarActions: {
     flexDirection: "row",
+    flexShrink: 0,
     gap: 8,
   },
   list: {

@@ -75,18 +75,22 @@ export function SortSheet({ options, value, onChange }: SortSheetProps) {
       borderTopWidth: 1,
       borderTopColor: theme.colors.outlineVariant,
     },
+    triggerButton: {
+      margin: 0,
+    },
   });
 
   return (
     <>
-      <Button
+      <IconButton
+        testID="sort-button"
         mode={currentLabel ? "contained-tonal" : "outlined"}
         icon="sort"
+        accessibilityLabel={currentLabel ? `Sort, ${currentLabel}` : "Sort"}
         onPress={handleOpen}
-        compact
-      >
-        {currentLabel ?? "Sort"}
-      </Button>
+        size={20}
+        style={styles.triggerButton}
+      />
 
       <Portal>
         <Modal
