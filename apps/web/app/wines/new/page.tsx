@@ -9,8 +9,12 @@ import { createWineGrape } from "@/lib/api/winegrapes";
 import { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
 
-async function handleCreate(formData: any): Promise<ApiResult<WineFormData>> {
-  const { grapeIds, ...wineData } = formData;
+async function handleCreate(
+  formData: WineFormData,
+): Promise<ApiResult<WineFormData>> {
+  const formValues = { ...formData };
+  delete (formValues as Partial<WineFormData>).id;
+  const { grapeIds, ...wineData } = formValues;
 
   const result = await createWine(wineData as Wine);
   if (!result.ok) return result;
@@ -18,18 +22,18 @@ async function handleCreate(formData: any): Promise<ApiResult<WineFormData>> {
   const newWine = result.data;
 
   // Create winegrape associations
-  const grapeIdList: string[] = Array.isArray(grapeIds) ? grapeIds : [];
+  const grapeIdList = Array.isArray(grapeIds) ? grapeIds.map(Number) : [];
   for (const grapeId of grapeIdList) {
     const grapeResult = await createWineGrape({
       wineId: newWine.id,
-      grapeId: Number(grapeId),
+      grapeId,
     });
     if (!grapeResult.ok) {
       return { ok: false, error: grapeResult.error };
     }
   }
 
-  return { ok: true, data: { ...newWine, grapeIds: grapeIdList.map(Number) } };
+  return { ok: true, data: { ...newWine, grapeIds: grapeIdList } };
 }
 
 export default function NewWinePage() {

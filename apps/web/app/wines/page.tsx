@@ -29,6 +29,8 @@ import { VintageButton } from "@/components/buttons/VintageButton";
 import { WINE_TYPES } from "@cellarboss/validators/constants";
 import { WineTastingNotesButton } from "@/components/buttons/TastingNotesButton";
 import { formatWineType } from "@/lib/functions/format";
+import { LinkIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function WinesPage() {
   const queryClient = useQueryClient();
@@ -303,6 +305,16 @@ export default function WinesPage() {
             subject="Wine"
             key="add"
           />,
+          <Button
+            key="import"
+            size="lg"
+            variant="outline"
+            onClick={() => router.push("/wines/import")}
+            className="cursor-pointer"
+          >
+            <LinkIcon />
+            Import from URL
+          </Button>,
         ]}
       />
     </section>
