@@ -107,6 +107,7 @@ describe("Vintage API", () => {
             wineId: testWineId,
             drinkFrom: 2020,
             drinkUntil: 2030,
+            notes: "Classic vintage.",
           }),
         });
         expect(res.status).toBe(201);
@@ -114,6 +115,7 @@ describe("Vintage API", () => {
         expect(data).toHaveProperty("id");
         expect(data.year).toBe(2015);
         expect(data.wineId).toBe(testWineId);
+        expect(data.notes).toBe("Classic vintage.");
       });
     });
 
@@ -223,11 +225,15 @@ describe("Vintage API", () => {
         const res = await app.request(`/vintage/${created.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ drinkUntil: 2040 }),
+          body: JSON.stringify({
+            drinkUntil: 2040,
+            notes: "Extended drinking window.",
+          }),
         });
         expect(res.status).toBe(200);
         const data = await res.json();
         expect(data.drinkUntil).toBe(2040);
+        expect(data.notes).toBe("Extended drinking window.");
       });
     });
 

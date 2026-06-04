@@ -35,6 +35,7 @@ export default function EditVintageScreen() {
       wineId: Number(data.wineId),
       drinkFrom: data.drinkFrom ? Number(data.drinkFrom) : null,
       drinkUntil: data.drinkUntil ? Number(data.drinkUntil) : null,
+      notes: data.notes ?? "",
     });
 
     if (updateResult.ok) {

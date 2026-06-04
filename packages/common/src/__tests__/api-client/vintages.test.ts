@@ -33,6 +33,7 @@ describe("vintagesResource", () => {
       wineId: "3" as any,
       drinkFrom: "2025" as any,
       drinkUntil: "2035" as any,
+      notes: "Drink with dinner.",
     };
     await vintages.create(vintage as any);
 
@@ -41,6 +42,7 @@ describe("vintagesResource", () => {
     expect(body.wineId).toBe(3);
     expect(body.drinkFrom).toBe(2025);
     expect(body.drinkUntil).toBe(2035);
+    expect(body.notes).toBe("Drink with dinner.");
   });
 
   it("create sets nullable fields to null when falsy", async () => {
@@ -66,6 +68,7 @@ describe("vintagesResource", () => {
       wineId: "2" as any,
       drinkFrom: null,
       drinkUntil: "2030" as any,
+      notes: "Updated notes.",
     };
     await vintages.update(vintage as any);
 
@@ -79,6 +82,7 @@ describe("vintagesResource", () => {
     expect(body.wineId).toBe(2);
     expect(body.drinkFrom).toBeNull();
     expect(body.drinkUntil).toBe(2030);
+    expect(body.notes).toBe("Updated notes.");
   });
 
   it("delete calls DELETE vintage/{id}", async () => {

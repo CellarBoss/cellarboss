@@ -37,6 +37,7 @@ export const defaultState: MockState = {
       type: "red",
       wineMakerId: 1,
       regionId: 1,
+      notes: "",
     },
     {
       id: 2,
@@ -44,11 +45,26 @@ export const defaultState: MockState = {
       type: "white",
       wineMakerId: 2,
       regionId: 2,
+      notes: "",
     },
   ],
   vintages: [
-    { id: 1, wineId: 1, year: 2015, drinkFrom: 2022, drinkUntil: 2035 },
-    { id: 2, wineId: 2, year: 2020, drinkFrom: null, drinkUntil: 2030 },
+    {
+      id: 1,
+      wineId: 1,
+      year: 2015,
+      drinkFrom: 2022,
+      drinkUntil: 2035,
+      notes: "",
+    },
+    {
+      id: 2,
+      wineId: 2,
+      year: 2020,
+      drinkFrom: null,
+      drinkUntil: 2030,
+      notes: "",
+    },
   ],
   locations: [{ id: 1, name: "Home Cellar" }],
   storages: [

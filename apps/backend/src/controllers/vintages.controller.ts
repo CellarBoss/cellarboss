@@ -1,33 +1,47 @@
 import { db } from "@utils/database.js";
 import { insertReturning, updateReturning } from "@utils/query-helpers.js";
-import type { CreateVintage, UpdateVintage } from "@cellarboss/types";
+import type { CreateVintage, UpdateVintage, Vintage } from "@cellarboss/types";
+
+type VintageRow = Omit<Vintage, "notes"> & { notes: string | null };
+
+function toVintage(row: VintageRow): Vintage {
+  return {
+    ...row,
+    notes: row.notes ?? "",
+  };
+}
 
 export async function list() {
-  return await db.selectFrom("vintage").selectAll().execute();
+  const rows = await db.selectFrom("vintage").selectAll().execute();
+  return rows.map(toVintage);
 }
 
 export async function getByWineId(wineId: number) {
-  return await db
+  const rows = await db
     .selectFrom("vintage")
     .selectAll()
     .where("wineId", "=", wineId)
     .execute();
+  return rows.map(toVintage);
 }
 
 export async function getById(id: number) {
-  return await db
+  const row = await db
     .selectFrom("vintage")
     .selectAll()
     .where("id", "=", id)
     .executeTakeFirst();
+  return row ? toVintage(row) : undefined;
 }
 
 export async function create(data: CreateVintage) {
-  return await insertReturning(db, "vintage", data);
+  const row = await insertReturning(db, "vintage", data);
+  return toVintage(row);
 }
 
 export async function update(id: number, data: UpdateVintage) {
-  return await updateReturning(db, "vintage", id, data);
+  const row = await updateReturning(db, "vintage", id, data);
+  return toVintage(row);
 }
 
 export async function remove(id: number) {

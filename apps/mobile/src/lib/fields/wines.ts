@@ -55,4 +55,10 @@ export const wineFields: FieldConfig<WineFormData>[] = [
       allowMultiple: true,
     },
   },
+  {
+    key: "notes",
+    label: "Notes",
+    type: "textarea",
+    validator: wineFormValidators.notes,
+  },
 ];

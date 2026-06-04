@@ -12,8 +12,20 @@ describe("createWineSchema", () => {
       wineMakerId: 1,
       regionId: 2,
       type: "red",
+      notes: "Decant for an hour.",
     });
     expect(result.success).toBe(true);
+  });
+
+  it("defaults missing notes to an empty string", () => {
+    const result = createWineSchema.safeParse({
+      name: "Château Margaux",
+      wineMakerId: 1,
+      regionId: 2,
+      type: "red",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.notes).toBe("");
   });
 
   it("accepts null regionId", () => {
@@ -80,6 +92,18 @@ describe("createWineSchema", () => {
     }
   });
 
+  it("trims notes", () => {
+    const result = createWineSchema.safeParse({
+      name: "Test",
+      wineMakerId: 1,
+      regionId: null,
+      type: "red",
+      notes: "  Cellar note  ",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.notes).toBe("Cellar note");
+  });
+
   it("rejects invalid wine type", () => {
     const result = createWineSchema.safeParse({
       name: "Test",
@@ -114,6 +138,13 @@ describe("updateWineSchema", () => {
 
   it("accepts a partial update with just type", () => {
     const result = updateWineSchema.safeParse({ type: "white" });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a partial update with just notes", () => {
+    const result = updateWineSchema.safeParse({
+      notes: "Serve slightly cool.",
+    });
     expect(result.success).toBe(true);
   });
 
@@ -170,5 +201,11 @@ describe("wineFormValidators", () => {
   it("validates wine type enum", () => {
     expect(wineFormValidators.type.safeParse("red").success).toBe(true);
     expect(wineFormValidators.type.safeParse("invalid").success).toBe(false);
+  });
+
+  it("defaults empty form notes", () => {
+    const result = wineFormValidators.notes.safeParse(undefined);
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe("");
   });
 });

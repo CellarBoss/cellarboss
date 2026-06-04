@@ -26,6 +26,7 @@ function NewVintageForm() {
         wineId: Number(wineId),
         drinkFrom: null,
         drinkUntil: null,
+        notes: "",
       } as Vintage)
     : undefined;
 

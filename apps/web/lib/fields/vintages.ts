@@ -35,4 +35,10 @@ export const vintageFields: FieldConfig<Vintage>[] = [
     label: "Drink Until",
     validator: vintageFormValidators.drinkUntil,
   },
+  {
+    key: "notes",
+    label: "Notes",
+    type: "textarea",
+    validator: vintageFormValidators.notes,
+  },
 ];

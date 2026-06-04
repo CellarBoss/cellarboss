@@ -259,7 +259,7 @@ export async function createTestWine(
 ) {
   await db
     .insertInto("wine")
-    .values({ name, wineMakerId, regionId, type: "red" })
+    .values({ name, wineMakerId, regionId, type: "red", notes: "" })
     .execute();
   return await db
     .selectFrom("wine")
@@ -277,7 +277,7 @@ export async function createTestVintage(
 ) {
   await db
     .insertInto("vintage")
-    .values({ wineId, year, drinkFrom: null, drinkUntil: null })
+    .values({ wineId, year, drinkFrom: null, drinkUntil: null, notes: "" })
     .execute();
   return await db
     .selectFrom("vintage")

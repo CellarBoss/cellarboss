@@ -53,6 +53,7 @@ export const wines: Wine[] = [
     wineMakerId: 1,
     regionId: 1,
     type: "red",
+    notes: "",
   },
   {
     id: 2,
@@ -60,6 +61,7 @@ export const wines: Wine[] = [
     wineMakerId: 2,
     regionId: 2,
     type: "red",
+    notes: "",
   },
   {
     id: 3,
@@ -67,6 +69,7 @@ export const wines: Wine[] = [
     wineMakerId: 3,
     regionId: 3,
     type: "red",
+    notes: "",
   },
   {
     id: 4,
@@ -74,6 +77,7 @@ export const wines: Wine[] = [
     wineMakerId: 1,
     regionId: 1,
     type: "white",
+    notes: "",
   },
   {
     id: 5,
@@ -81,15 +85,51 @@ export const wines: Wine[] = [
     wineMakerId: 2,
     regionId: 2,
     type: "rose",
+    notes: "",
   },
 ];
 
 export const vintages: Vintage[] = [
-  { id: 1, year: 2015, wineId: 1, drinkFrom: 2025, drinkUntil: 2060 },
-  { id: 2, year: 2018, wineId: 2, drinkFrom: 2028, drinkUntil: 2055 },
-  { id: 3, year: 2020, wineId: 3, drinkFrom: 2023, drinkUntil: 2027 },
-  { id: 4, year: 2019, wineId: 4, drinkFrom: 2022, drinkUntil: 2026 },
-  { id: 5, year: 2021, wineId: 5, drinkFrom: 2022, drinkUntil: 2024 },
+  {
+    id: 1,
+    year: 2015,
+    wineId: 1,
+    drinkFrom: 2025,
+    drinkUntil: 2060,
+    notes: "",
+  },
+  {
+    id: 2,
+    year: 2018,
+    wineId: 2,
+    drinkFrom: 2028,
+    drinkUntil: 2055,
+    notes: "",
+  },
+  {
+    id: 3,
+    year: 2020,
+    wineId: 3,
+    drinkFrom: 2023,
+    drinkUntil: 2027,
+    notes: "",
+  },
+  {
+    id: 4,
+    year: 2019,
+    wineId: 4,
+    drinkFrom: 2022,
+    drinkUntil: 2026,
+    notes: "",
+  },
+  {
+    id: 5,
+    year: 2021,
+    wineId: 5,
+    drinkFrom: 2022,
+    drinkUntil: 2024,
+    notes: "",
+  },
 ];
 
 export const bottles: Bottle[] = [

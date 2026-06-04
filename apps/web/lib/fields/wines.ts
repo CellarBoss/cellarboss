@@ -63,4 +63,10 @@ export const wineFields: FieldConfig<WineFormData>[] = [
       return val.map((v: any) => Number(v));
     }, z.array(z.number().int().positive())) as any,
   },
+  {
+    key: "notes",
+    label: "Notes",
+    type: "textarea",
+    validator: wineFormValidators.notes,
+  },
 ];

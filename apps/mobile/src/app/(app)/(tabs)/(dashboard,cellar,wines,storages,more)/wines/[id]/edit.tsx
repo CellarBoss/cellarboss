@@ -43,6 +43,7 @@ export default function EditWineScreen() {
       wineMakerId: Number(data.wineMakerId),
       regionId: data.regionId ? Number(data.regionId) : null,
       type: data.type as Wine["type"],
+      notes: data.notes ?? "",
     });
 
     if (!wineResult.ok) return wineResult as ApiResult<WineFormData>;

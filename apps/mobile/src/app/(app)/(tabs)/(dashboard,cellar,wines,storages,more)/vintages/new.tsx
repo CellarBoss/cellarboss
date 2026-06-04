@@ -20,6 +20,7 @@ export default function NewVintageScreen() {
     wineId: wineId ? Number(wineId) : 0,
     drinkFrom: null,
     drinkUntil: null,
+    notes: "",
   };
 
   const processSave = async (
@@ -30,6 +31,7 @@ export default function NewVintageScreen() {
       wineId: Number(data.wineId),
       drinkFrom: data.drinkFrom ? Number(data.drinkFrom) : null,
       drinkUntil: data.drinkUntil ? Number(data.drinkUntil) : null,
+      notes: data.notes ?? "",
     });
 
     if (result.ok) {

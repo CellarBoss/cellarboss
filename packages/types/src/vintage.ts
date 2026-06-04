@@ -4,6 +4,7 @@ export interface Vintage {
   wineId: number;
   drinkFrom: number | null;
   drinkUntil: number | null;
+  notes: string;
 }
 
 export type CreateVintage = Omit<Vintage, "id">;

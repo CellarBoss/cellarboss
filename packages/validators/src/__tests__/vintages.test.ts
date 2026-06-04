@@ -12,8 +12,20 @@ describe("createVintageSchema", () => {
       wineId: 1,
       drinkFrom: 2022,
       drinkUntil: 2035,
+      notes: "Prime drinking window.",
     });
     expect(result.success).toBe(true);
+  });
+
+  it("defaults missing notes to an empty string", () => {
+    const result = createVintageSchema.safeParse({
+      year: 2015,
+      wineId: 1,
+      drinkFrom: 2022,
+      drinkUntil: 2035,
+    });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.notes).toBe("");
   });
 
   it("accepts null year (non-vintage)", () => {
@@ -73,6 +85,11 @@ describe("updateVintageSchema", () => {
     expect(result.success).toBe(true);
   });
 
+  it("accepts a partial update with just notes", () => {
+    const result = updateVintageSchema.safeParse({ notes: "Hold until 2028." });
+    expect(result.success).toBe(true);
+  });
+
   it("rejects an empty object", () => {
     const result = updateVintageSchema.safeParse({});
     expect(result.success).toBe(false);
@@ -122,5 +139,11 @@ describe("vintageFormValidators", () => {
     expect(vintageFormValidators.drinkUntil.safeParse("2201").success).toBe(
       false,
     );
+  });
+
+  it("defaults empty form notes", () => {
+    const result = vintageFormValidators.notes.safeParse(undefined);
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data).toBe("");
   });
 });

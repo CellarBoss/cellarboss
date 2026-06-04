@@ -128,6 +128,11 @@ export function VintageDetailsCard({
       flex: 1,
       color: theme.colors.onSurfaceVariant,
     },
+    notesText: {
+      flex: 1,
+      color: theme.colors.onSurfaceVariant,
+      lineHeight: 20,
+    },
     linkText: {
       color: theme.colors.primary,
     },
@@ -186,6 +191,18 @@ export function VintageDetailsCard({
                 )}
                 <Text variant="bodyMedium" style={styles.detailText}>
                   {drinkingWindow}
+                </Text>
+              </View>
+            )}
+            {vintage.notes.trim() !== "" && (
+              <View style={styles.detailRow}>
+                <Icon
+                  source="note-text"
+                  size={16}
+                  color={theme.colors.onSurfaceVariant}
+                />
+                <Text variant="bodyMedium" style={styles.notesText}>
+                  {vintage.notes}
                 </Text>
               </View>
             )}

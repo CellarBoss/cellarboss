@@ -7,22 +7,28 @@ import {
 
 let nextId = 1000;
 
+function withNotes<T extends { notes?: string }>(
+  vintage: T,
+): T & { notes: string } {
+  return { ...vintage, notes: vintage.notes ?? "" };
+}
+
 export function registerVintageRoutes(app: Hono, state: MockState) {
   app.get("/api/vintage", (c) => {
-    return c.json(state.vintages);
+    return c.json(state.vintages.map(withNotes));
   });
 
   app.get("/api/vintage/wine/:wineId", (c) => {
     const wineId = Number(c.req.param("wineId"));
     const vintages = state.vintages.filter((v) => v.wineId === wineId);
-    return c.json(vintages);
+    return c.json(vintages.map(withNotes));
   });
 
   app.get("/api/vintage/:id", (c) => {
     const id = Number(c.req.param("id"));
     const vintage = state.vintages.find((v) => v.id === id);
     if (!vintage) return c.json({ error: "Not found" }, 404);
-    return c.json(vintage);
+    return c.json(withNotes(vintage));
   });
 
   app.post("/api/vintage", async (c) => {
@@ -42,7 +48,7 @@ export function registerVintageRoutes(app: Hono, state: MockState) {
     const idx = state.vintages.findIndex((v) => v.id === id);
     if (idx === -1) return c.json({ error: "Not found" }, 404);
     state.vintages[idx] = { ...state.vintages[idx], ...result.data };
-    return c.json(state.vintages[idx]);
+    return c.json(withNotes(state.vintages[idx]));
   });
 
   app.delete("/api/vintage/:id", (c) => {

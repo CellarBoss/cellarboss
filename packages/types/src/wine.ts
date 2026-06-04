@@ -3,6 +3,7 @@ import type { GenericType } from "./generic";
 export interface Wine extends GenericType {
   wineMakerId: number;
   regionId: number | null;
+  notes: string;
   type:
     | "red"
     | "white"

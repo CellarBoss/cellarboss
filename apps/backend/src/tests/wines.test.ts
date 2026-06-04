@@ -101,12 +101,14 @@ describe("Wine API", () => {
             wineMakerId: testWineMakerId,
             regionId: testRegionId,
             type: "red",
+            notes: "Decant before serving.",
           }),
         });
         expect(res.status).toBe(201);
         const data = await res.json();
         expect(data).toHaveProperty("id");
         expect(data.name).toBe("Château Margaux");
+        expect(data.notes).toBe("Decant before serving.");
       });
     });
 
@@ -181,11 +183,15 @@ describe("Wine API", () => {
         const res = await app.request(`/wine/${created.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ regionId: testRegionId }),
+          body: JSON.stringify({
+            regionId: testRegionId,
+            notes: "Updated cellar note.",
+          }),
         });
         expect(res.status).toBe(200);
         const data = await res.json();
         expect(data.regionId).toBe(testRegionId);
+        expect(data.notes).toBe("Updated cellar note.");
       });
     });
 

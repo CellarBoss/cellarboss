@@ -40,4 +40,10 @@ export const vintageFields: FieldConfig<Vintage>[] = [
     numberProps: { min: 1800, max: 2200 },
     validator: vintageFormValidators.drinkUntil,
   },
+  {
+    key: "notes",
+    label: "Notes",
+    type: "textarea",
+    validator: vintageFormValidators.notes,
+  },
 ];

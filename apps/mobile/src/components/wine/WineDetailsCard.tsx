@@ -104,6 +104,11 @@ export function WineDetailsCard({ wine }: { wine: Wine }) {
       flex: 1,
       color: theme.colors.onSurfaceVariant,
     },
+    notesText: {
+      flex: 1,
+      color: theme.colors.onSurfaceVariant,
+      lineHeight: 20,
+    },
     card: {
       backgroundColor: theme.colors.surface,
       borderRadius: 12,
@@ -177,6 +182,18 @@ export function WineDetailsCard({ wine }: { wine: Wine }) {
                   {wineGrapes
                     .map((wg) => grapes.find((g) => g.id === wg.grapeId)?.name)
                     .join(", ")}
+                </Text>
+              </View>
+            )}
+            {wine.notes.trim() !== "" && (
+              <View style={styles.detailRow}>
+                <Icon
+                  source="note-text"
+                  size={16}
+                  color={theme.colors.onSurfaceVariant}
+                />
+                <Text variant="bodyMedium" style={styles.notesText}>
+                  {wine.notes}
                 </Text>
               </View>
             )}

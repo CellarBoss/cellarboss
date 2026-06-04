@@ -15,6 +15,7 @@ const defaultData: WineFormData = {
   wineMakerId: 0,
   regionId: null,
   type: "red",
+  notes: "",
   grapeIds: [],
 };
 
@@ -45,6 +46,7 @@ export default function NewWineScreen() {
       wineMakerId: Number(data.wineMakerId),
       regionId: data.regionId ? Number(data.regionId) : null,
       type: data.type as Wine["type"],
+      notes: data.notes ?? "",
     });
 
     if (!result.ok) return result as ApiResult<WineFormData>;
