@@ -15,9 +15,9 @@ import {
   ThemePreferenceProvider,
   useThemePreference,
 } from "@/contexts/theme-context";
+import { I18nProvider } from "@/contexts/i18n-context";
 import { useAppTheme } from "@/hooks/use-app-theme";
 
-// TODO: Support multiple languages and read the user's preferred language from the server settings
 registerTranslation("en", en);
 
 const queryClient = new QueryClient();
@@ -47,13 +47,15 @@ function AppProviders() {
     <PaperProvider theme={theme}>
       <NavigationThemeProvider value={navigationTheme}>
         <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <StatusBar
-              barStyle={isDark ? "light-content" : "dark-content"}
-              translucent={true}
-            />
-            <AuthGate />
-          </AuthProvider>
+          <I18nProvider>
+            <AuthProvider>
+              <StatusBar
+                barStyle={isDark ? "light-content" : "dark-content"}
+                translucent={true}
+              />
+              <AuthGate />
+            </AuthProvider>
+          </I18nProvider>
         </QueryClientProvider>
       </NavigationThemeProvider>
     </PaperProvider>

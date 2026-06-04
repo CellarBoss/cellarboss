@@ -3,13 +3,14 @@
 import { useParams } from "next/navigation";
 import { useSettings, useUpdateSetting } from "@/hooks/use-settings";
 import { GenericCard } from "@/components/cards/GenericCard";
-import { settingFields, type SettingFormData } from "@/lib/fields/settings";
+import { getSettingFields, type SettingFormData } from "@/lib/fields/settings";
 import { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
 import { LoadingCard } from "@/components/cards/LoadingCard";
 import { ErrorCard } from "@/components/cards/ErrorCard";
 import { useQueryClient } from "@tanstack/react-query";
 import { type ParsedSettingsMap } from "@/lib/constants/settings";
+import { useI18n } from "@/contexts/i18n-context";
 
 export default function EditSettingPage() {
   const params = useParams();
@@ -18,6 +19,7 @@ export default function EditSettingPage() {
   const settingsQuery = useSettings();
   const updateMutation = useUpdateSetting();
   const queryClient = useQueryClient();
+  const { t } = useI18n();
 
   if (settingsQuery.isLoading) {
     return <LoadingCard />;
@@ -68,11 +70,11 @@ export default function EditSettingPage() {
 
   return (
     <section>
-      <PageHeader title="Edit Setting" />
+      <PageHeader title={t("settings.editSetting")} />
       <GenericCard<SettingFormData>
         mode="edit"
         data={settingData}
-        fields={settingFields}
+        fields={getSettingFields(key)}
         processSave={handleUpdate}
         redirectTo="/settings"
       />

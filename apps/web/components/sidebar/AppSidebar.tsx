@@ -20,6 +20,7 @@ import {
   ChevronsUpDown,
   Moon,
   Sun,
+  type LucideIcon,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { authClient } from "@/lib/auth-client";
@@ -52,31 +53,49 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
+import { useI18n } from "@/contexts/i18n-context";
+import type { TranslationKey } from "@cellarboss/common/i18n";
+
+type SidebarItem = {
+  titleKey: TranslationKey;
+  url: string;
+  icon: LucideIcon;
+};
 
 const wineItems = [
-  { title: "Bottles", url: "/bottles", icon: BottleWine },
-  { title: "Wines", url: "/wines", icon: Barrel },
-  { title: "Tasting Notes", url: "/tasting-notes", icon: ClipboardList },
-  { title: "Grapes", url: "/grapes", icon: Grape },
-  { title: "Winemakers", url: "/winemakers", icon: User },
-];
+  { titleKey: "nav.bottles", url: "/bottles", icon: BottleWine },
+  { titleKey: "nav.wines", url: "/wines", icon: Barrel },
+  {
+    titleKey: "nav.tastingNotes",
+    url: "/tasting-notes",
+    icon: ClipboardList,
+  },
+  { titleKey: "nav.grapes", url: "/grapes", icon: Grape },
+  { titleKey: "nav.winemakers", url: "/winemakers", icon: User },
+] satisfies SidebarItem[];
 
 const storageItems = [
-  { title: "Storages", url: "/storages", icon: Refrigerator },
-  { title: "Locations", url: "/locations", icon: MapPin },
-];
+  { titleKey: "nav.storages", url: "/storages", icon: Refrigerator },
+  { titleKey: "nav.locations", url: "/locations", icon: MapPin },
+] satisfies SidebarItem[];
 
 const geographyItems = [
-  { title: "Regions", url: "/regions", icon: Flag },
-  { title: "Countries", url: "/countries", icon: Earth },
-];
+  { titleKey: "nav.regions", url: "/regions", icon: Flag },
+  { titleKey: "nav.countries", url: "/countries", icon: Earth },
+] satisfies SidebarItem[];
 
 const settingsItems = [
-  { title: "Profile", url: "/profile", icon: UserCircle },
-  { title: "Application Settings", url: "/settings", icon: Settings },
-];
+  { titleKey: "nav.profile", url: "/profile", icon: UserCircle },
+  {
+    titleKey: "nav.applicationSettings",
+    url: "/settings",
+    icon: Settings,
+  },
+] satisfies SidebarItem[];
 
-const adminItems = [{ title: "Users", url: "/users", icon: Users }];
+const adminItems = [
+  { titleKey: "nav.users", url: "/users", icon: Users },
+] satisfies SidebarItem[];
 
 function getInitials(name: string) {
   return name
@@ -90,6 +109,7 @@ function getInitials(name: string) {
 export function AppSidebar() {
   const { toggleSidebar, state, isMobile } = useSidebar();
   const { theme, setTheme } = useTheme();
+  const { t } = useI18n();
   const session = authClient.useSession();
   const user = session.data?.user;
   const isAdmin = user?.role === "admin";
@@ -100,14 +120,14 @@ export function AppSidebar() {
   };
 
   const sections = [
-    { label: "Wines", items: wineItems },
-    { label: "Storage", items: storageItems },
-    { label: "Geography", items: geographyItems },
+    { labelKey: "section.wineData", items: wineItems },
+    { labelKey: "section.storage", items: storageItems },
+    { labelKey: "section.geography", items: geographyItems },
     {
-      label: "Settings",
+      labelKey: "nav.settings",
       items: isAdmin ? [...settingsItems, ...adminItems] : settingsItems,
     },
-  ];
+  ] satisfies { labelKey: TranslationKey; items: SidebarItem[] }[];
 
   return (
     <Sidebar collapsible="icon">
@@ -120,27 +140,27 @@ export function AppSidebar() {
             >
               <BottleWine className="h-5 w-5 shrink-0" />
               <span className="group-data-[collapsible=icon]:hidden">
-                CellarBoss
+                {t("app.name")}
               </span>
             </Link>
           </TooltipTrigger>
           <TooltipContent side="right" hidden={state !== "collapsed"}>
-            Dashboard
+            {t("nav.dashboard")}
           </TooltipContent>
         </Tooltip>
       </SidebarHeader>
       <SidebarContent>
-        {sections.map(({ label, items }) => (
-          <SidebarGroup key={label}>
-            <SidebarGroupLabel>{label}</SidebarGroupLabel>
+        {sections.map(({ labelKey, items }) => (
+          <SidebarGroup key={labelKey}>
+            <SidebarGroupLabel>{t(labelKey)}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild tooltip={item.title}>
+                  <SidebarMenuItem key={item.titleKey}>
+                    <SidebarMenuButton asChild tooltip={t(item.titleKey)}>
                       <a href={item.url}>
                         <item.icon />
-                        <span>{item.title}</span>
+                        <span>{t(item.titleKey)}</span>
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -203,18 +223,18 @@ export function AppSidebar() {
                     ) : (
                       <Moon className="size-4" />
                     )}
-                    Toggle theme
+                    {t("action.toggleTheme")}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => toggleSidebar()}>
                     {state === "expanded" ? (
                       <>
                         <PanelLeftClose className="size-4" />
-                        Collapse sidebar
+                        {t("action.collapseSidebar")}
                       </>
                     ) : (
                       <>
                         <PanelLeftOpen className="size-4" />
-                        Expand sidebar
+                        {t("action.expandSidebar")}
                       </>
                     )}
                   </DropdownMenuItem>
@@ -224,14 +244,14 @@ export function AppSidebar() {
                   <DropdownMenuItem asChild>
                     <a href="/profile">
                       <UserCircle className="size-4" />
-                      Profile
+                      {t("nav.profile")}
                     </a>
                   </DropdownMenuItem>
                   {isAdmin && (
                     <DropdownMenuItem asChild>
                       <a href="/settings">
                         <Settings className="size-4" />
-                        Settings
+                        {t("nav.settings")}
                       </a>
                     </DropdownMenuItem>
                   )}
@@ -239,7 +259,7 @@ export function AppSidebar() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="size-4" />
-                  Log out
+                  {t("action.logOut")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

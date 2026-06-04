@@ -30,6 +30,18 @@ export {
   parseValue,
 } from "./settings";
 
+// Internationalisation
+export {
+  DEFAULT_LANGUAGE,
+  SUPPORTED_LANGUAGE_OPTIONS,
+  translations,
+  resolveLanguage,
+  translate,
+  getLanguageLabel,
+  type SupportedLanguage,
+  type TranslationKey,
+} from "./i18n";
+
 // Hooks
 export { useApiQuery, type UseApiQueryResult } from "./hooks/use-api-query";
 export { createSettingsHooks } from "./hooks/use-settings";

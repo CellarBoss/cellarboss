@@ -6,6 +6,7 @@ import { ReactNode, useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { SettingsProvider } from "@/contexts/settings-context";
+import { I18nProvider } from "@/contexts/i18n-context";
 
 export default function Providers({
   children,
@@ -21,9 +22,11 @@ export default function Providers({
       <NuqsAdapter>
         <QueryClientProvider client={queryClient}>
           <SettingsProvider>
-            <SidebarProvider defaultOpen={sidebarDefaultOpen}>
-              {children}
-            </SidebarProvider>
+            <I18nProvider>
+              <SidebarProvider defaultOpen={sidebarDefaultOpen}>
+                {children}
+              </SidebarProvider>
+            </I18nProvider>
           </SettingsProvider>
         </QueryClientProvider>
       </NuqsAdapter>

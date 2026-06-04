@@ -7,6 +7,7 @@ import {
 import { Tabs } from "expo-router";
 import { Icon } from "react-native-paper";
 import { useAppTheme } from "@/hooks/use-app-theme";
+import { useI18n } from "@/contexts/i18n-context";
 
 // Tab folders are groups like `(cellar)`, `(wines)`, so detail routes can be
 // shared across every tab via the `(dashboard,cellar,wines,storages,more)/`
@@ -43,6 +44,7 @@ function resetTabOnPress({
 
 export default function TabLayout() {
   const theme = useAppTheme();
+  const { t } = useI18n();
 
   return (
     <Tabs
@@ -61,7 +63,7 @@ export default function TabLayout() {
         name="(dashboard)"
         listeners={resetTabOnPress}
         options={{
-          title: "Dashboard",
+          title: t("nav.dashboard"),
           tabBarButtonTestID: "dashboard-tab",
           tabBarIcon: ({ color, size }) => (
             <Icon source="view-dashboard-outline" size={size} color={color} />
@@ -72,7 +74,7 @@ export default function TabLayout() {
         name="(cellar)"
         listeners={resetTabOnPress}
         options={{
-          title: "Cellar",
+          title: t("nav.cellar"),
           tabBarButtonTestID: "cellar-tab",
           tabBarIcon: ({ color, size }) => (
             <Icon source="bottle-wine-outline" size={size} color={color} />
@@ -83,7 +85,7 @@ export default function TabLayout() {
         name="(wines)"
         listeners={resetTabOnPress}
         options={{
-          title: "Wines",
+          title: t("nav.wines"),
           tabBarButtonTestID: "wines-tab",
           tabBarIcon: ({ color, size }) => (
             <Icon source="glass-wine" size={size} color={color} />
@@ -94,7 +96,7 @@ export default function TabLayout() {
         name="(storages)"
         listeners={resetTabOnPress}
         options={{
-          title: "Storages",
+          title: t("nav.storages"),
           tabBarButtonTestID: "storages-tab",
           tabBarIcon: ({ color, size }) => (
             <Icon source="warehouse" size={size} color={color} />
@@ -105,7 +107,7 @@ export default function TabLayout() {
         name="(more)"
         listeners={resetTabOnPress}
         options={{
-          title: "More",
+          title: t("nav.more"),
           tabBarButtonTestID: "more-tab",
           tabBarIcon: ({ color, size }) => (
             <Icon source="dots-horizontal" size={size} color={color} />
