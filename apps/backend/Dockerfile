@@ -1,9 +1,9 @@
 FROM node:24.16.0-alpine@sha256:2bdb65ed1dab192432bc31c95f94155ca5ad7fc1392fb7eb7526ab682fa5bf14 AS builder
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
-
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+RUN corepack enable && corepack prepare --activate
 COPY apps/backend ./apps/backend
 COPY packages ./packages
 
