@@ -8,7 +8,7 @@ import type {
   Country,
 } from "@cellarboss/types";
 import { DetailCard } from "./DetailCard";
-import { DetailNote } from "./DetailNote";
+import { DetailNotes } from "./DetailNote";
 import { DetailRow } from "./DetailRow";
 import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
 
@@ -76,8 +76,13 @@ export function WineDetailCard({
           />
         </DetailRow>
       )}
-      <DetailNote label="Wine notes">{wine?.notes}</DetailNote>
-      <DetailNote label="Vintage notes">{vintage?.notes}</DetailNote>
+      <DetailNotes
+        heading="Notes"
+        notes={[
+          { label: "Wine", value: wine?.notes },
+          { label: "Vintage", value: vintage?.notes },
+        ]}
+      />
     </DetailCard>
   );
 }

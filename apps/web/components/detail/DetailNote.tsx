@@ -5,20 +5,47 @@ type DetailNoteProps = {
   children?: string | null;
 };
 
-export function DetailNote({ label, children }: DetailNoteProps) {
-  const isBlank = !children || children.trim() === "";
+type DetailNotesProps = {
+  heading: string;
+  notes: Array<{
+    label: string;
+    value?: string | null;
+  }>;
+};
 
-  if (isBlank) return null;
+function hasNote(value: string | null | undefined) {
+  return value !== null && value !== undefined && value.trim() !== "";
+}
+
+export function DetailNotes({ heading, notes }: DetailNotesProps) {
+  const visibleNotes = notes.filter((note) => hasNote(note.value));
+
+  if (visibleNotes.length === 0) return null;
 
   return (
-    <div className="mt-3 rounded-md border border-border bg-muted/30 px-3 py-2 text-sm">
+    <section className="mt-4 border-t border-border pt-3 text-sm">
       <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
         <StickyNote className="h-3.5 w-3.5 shrink-0" />
-        <span>{label}</span>
+        <span>{heading}</span>
       </div>
-      <p className="mt-1 whitespace-pre-wrap break-words leading-relaxed text-foreground">
-        {children}
-      </p>
-    </div>
+      <div className="mt-2 space-y-3">
+        {visibleNotes.map((note) => (
+          <div key={note.label}>
+            {visibleNotes.length > 1 && (
+              <div className="mb-1 text-xs font-medium text-muted-foreground">
+                {note.label}
+              </div>
+            )}
+            <p className="whitespace-pre-wrap break-words leading-relaxed text-foreground">
+              {note.value}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
+}
+
+export function DetailNote({ label, children }: DetailNoteProps) {
+  return <DetailNotes heading={label} notes={[{ label, value: children }]} />;
 }
