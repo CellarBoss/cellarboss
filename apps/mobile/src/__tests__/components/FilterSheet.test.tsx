@@ -47,17 +47,18 @@ function renderFilterSheet(
 describe("FilterSheet", () => {
   it("shows Filters button", () => {
     renderFilterSheet();
-    expect(screen.getByText("Filters")).toBeTruthy();
+    expect(screen.getByLabelText("Filters")).toBeTruthy();
   });
 
   it("shows active count when filters are selected", () => {
     renderFilterSheet({ values: { type: ["red"], status: [] } });
-    expect(screen.getByText("Filters (1)")).toBeTruthy();
+    expect(screen.getByLabelText("Filters, 1 active")).toBeTruthy();
+    expect(screen.getByTestId("filter-active-count")).toBeTruthy();
   });
 
   it("opens modal showing filter options", () => {
     renderFilterSheet();
-    fireEvent.press(screen.getByText("Filters"));
+    fireEvent.press(screen.getByLabelText("Filters"));
 
     expect(screen.getByText("Wine Type")).toBeTruthy();
     expect(screen.getByText("Red")).toBeTruthy();
@@ -69,7 +70,7 @@ describe("FilterSheet", () => {
   it("Apply button calls onChange with selections", () => {
     const { onChange } = renderFilterSheet();
 
-    fireEvent.press(screen.getByText("Filters"));
+    fireEvent.press(screen.getByLabelText("Filters"));
     fireEvent.press(screen.getByText("Red"));
     fireEvent.press(screen.getByText("Apply"));
 
@@ -83,7 +84,7 @@ describe("FilterSheet", () => {
       values: { type: ["red"], status: ["stored"] },
     });
 
-    fireEvent.press(screen.getByText(/Filters/));
+    fireEvent.press(screen.getByLabelText("Filters, 2 active"));
     fireEvent.press(screen.getByText("Clear All"));
     fireEvent.press(screen.getByText("Apply"));
 
