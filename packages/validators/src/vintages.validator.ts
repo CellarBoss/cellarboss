@@ -1,19 +1,6 @@
 import { z } from "zod";
 import { nullableInt } from "./form-helpers";
-
-const notesSchema = z
-  .string()
-  .trim()
-  .max(5000)
-  .nullable()
-  .optional()
-  .describe("Free-text notes");
-const notesFormSchema = z
-  .string()
-  .trim()
-  .max(5000)
-  .default("")
-  .describe("Free-text notes");
+import { notesFormSchema, notesSchema } from "./notes";
 
 export const createVintageSchema = z.object({
   year: z

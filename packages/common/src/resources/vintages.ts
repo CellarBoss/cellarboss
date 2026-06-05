@@ -1,5 +1,6 @@
 import type { Vintage, CreateVintage } from "@cellarboss/types";
 import type { ApiResult, RequestFn } from "../types";
+import { nullableNotes } from "./notes";
 
 export function vintagesResource(request: RequestFn) {
   return {
@@ -18,7 +19,7 @@ export function vintagesResource(request: RequestFn) {
         wineId: Number(vintage.wineId),
         drinkFrom: vintage.drinkFrom ? Number(vintage.drinkFrom) : null,
         drinkUntil: vintage.drinkUntil ? Number(vintage.drinkUntil) : null,
-        notes: vintage.notes ?? null,
+        notes: nullableNotes(vintage.notes),
       };
       return request<Vintage>("vintage", "POST", JSON.stringify(body));
     },
@@ -29,7 +30,7 @@ export function vintagesResource(request: RequestFn) {
         wineId: Number(vintage.wineId),
         drinkFrom: vintage.drinkFrom ? Number(vintage.drinkFrom) : null,
         drinkUntil: vintage.drinkUntil ? Number(vintage.drinkUntil) : null,
-        notes: vintage.notes ?? null,
+        notes: nullableNotes(vintage.notes),
       };
       return request<Vintage>(
         "vintage/" + vintage.id,

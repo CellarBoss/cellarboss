@@ -109,12 +109,12 @@ describe("updateVintageSchema", () => {
     if (result.success) expect(result.data.notes).toBeNull();
   });
 
-  it("trims notes", () => {
+  it("preserves notes text", () => {
     const result = updateVintageSchema.safeParse({
       notes: "  Cellar note  ",
     });
     expect(result.success).toBe(true);
-    if (result.success) expect(result.data.notes).toBe("Cellar note");
+    if (result.success) expect(result.data.notes).toBe("  Cellar note  ");
   });
 
   it("accepts notes at the maximum length", () => {

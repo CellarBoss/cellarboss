@@ -1,5 +1,6 @@
 import type { Wine } from "@cellarboss/types";
 import type { ApiResult, RequestFn } from "../types";
+import { nullableNotes } from "./notes";
 
 export function winesResource(request: RequestFn) {
   return {
@@ -13,6 +14,7 @@ export function winesResource(request: RequestFn) {
         ...wine,
         wineMakerId: Number(wine.wineMakerId),
         regionId: wine.regionId ? Number(wine.regionId) : null,
+        notes: nullableNotes(wine.notes),
       };
       return request<Wine>("wine", "POST", JSON.stringify(body));
     },
@@ -22,6 +24,7 @@ export function winesResource(request: RequestFn) {
         ...wine,
         wineMakerId: Number(wine.wineMakerId),
         regionId: wine.regionId ? Number(wine.regionId) : null,
+        notes: nullableNotes(wine.notes),
       };
       return request<Wine>("wine/" + wine.id, "PUT", JSON.stringify(body));
     },

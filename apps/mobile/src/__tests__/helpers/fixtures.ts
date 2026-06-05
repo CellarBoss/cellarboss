@@ -53,7 +53,7 @@ export const wines: Wine[] = [
     wineMakerId: 1,
     regionId: 1,
     type: "red",
-    notes: "",
+    notes: null,
   },
   {
     id: 2,
@@ -61,7 +61,7 @@ export const wines: Wine[] = [
     wineMakerId: 2,
     regionId: 2,
     type: "red",
-    notes: "",
+    notes: null,
   },
   {
     id: 3,
@@ -69,7 +69,7 @@ export const wines: Wine[] = [
     wineMakerId: 3,
     regionId: 3,
     type: "red",
-    notes: "",
+    notes: null,
   },
   {
     id: 4,
@@ -77,7 +77,7 @@ export const wines: Wine[] = [
     wineMakerId: 1,
     regionId: 1,
     type: "white",
-    notes: "",
+    notes: null,
   },
   {
     id: 5,
@@ -85,7 +85,7 @@ export const wines: Wine[] = [
     wineMakerId: 2,
     regionId: 2,
     type: "rose",
-    notes: "",
+    notes: null,
   },
 ];
 
@@ -96,7 +96,7 @@ export const vintages: Vintage[] = [
     wineId: 1,
     drinkFrom: 2025,
     drinkUntil: 2060,
-    notes: "",
+    notes: null,
   },
   {
     id: 2,
@@ -104,7 +104,7 @@ export const vintages: Vintage[] = [
     wineId: 2,
     drinkFrom: 2028,
     drinkUntil: 2055,
-    notes: "",
+    notes: null,
   },
   {
     id: 3,
@@ -112,7 +112,7 @@ export const vintages: Vintage[] = [
     wineId: 3,
     drinkFrom: 2023,
     drinkUntil: 2027,
-    notes: "",
+    notes: null,
   },
   {
     id: 4,
@@ -120,7 +120,7 @@ export const vintages: Vintage[] = [
     wineId: 4,
     drinkFrom: 2022,
     drinkUntil: 2026,
-    notes: "",
+    notes: null,
   },
   {
     id: 5,
@@ -128,7 +128,7 @@ export const vintages: Vintage[] = [
     wineId: 5,
     drinkFrom: 2022,
     drinkUntil: 2024,
-    notes: "",
+    notes: null,
   },
 ];
 

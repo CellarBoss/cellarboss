@@ -104,7 +104,7 @@ describe("createWineSchema", () => {
     }
   });
 
-  it("trims notes", () => {
+  it("preserves notes text", () => {
     const result = createWineSchema.safeParse({
       name: "Test",
       wineMakerId: 1,
@@ -113,7 +113,7 @@ describe("createWineSchema", () => {
       notes: "  Cellar note  ",
     });
     expect(result.success).toBe(true);
-    if (result.success) expect(result.data.notes).toBe("Cellar note");
+    if (result.success) expect(result.data.notes).toBe("  Cellar note  ");
   });
 
   it("accepts notes at the maximum length", () => {

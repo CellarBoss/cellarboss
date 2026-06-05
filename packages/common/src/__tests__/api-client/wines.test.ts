@@ -50,6 +50,34 @@ describe("winesResource", () => {
     expect(body.regionId).toBeNull();
   });
 
+  it("create sends blank notes as null", async () => {
+    const wine = {
+      id: 0,
+      name: "Test",
+      wineMakerId: 1,
+      regionId: null,
+      notes: "",
+    };
+    await wines.create(wine as any);
+
+    const body = JSON.parse(vi.mocked(mockRequest).mock.calls[0][2]!);
+    expect(body.notes).toBeNull();
+  });
+
+  it("preserves non-blank notes text", async () => {
+    const wine = {
+      id: 0,
+      name: "Test",
+      wineMakerId: 1,
+      regionId: null,
+      notes: "  Keep spacing  ",
+    };
+    await wines.create(wine as any);
+
+    const body = JSON.parse(vi.mocked(mockRequest).mock.calls[0][2]!);
+    expect(body.notes).toBe("  Keep spacing  ");
+  });
+
   it("update coerces wineMakerId and regionId to numbers", async () => {
     const wine = {
       id: 10,

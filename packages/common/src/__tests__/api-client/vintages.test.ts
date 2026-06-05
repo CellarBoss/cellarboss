@@ -62,6 +62,34 @@ describe("vintagesResource", () => {
     expect(body.notes).toBeNull();
   });
 
+  it("create sends blank notes as null", async () => {
+    const vintage = {
+      year: null,
+      wineId: 1,
+      drinkFrom: null,
+      drinkUntil: null,
+      notes: "   ",
+    };
+    await vintages.create(vintage as any);
+
+    const body = JSON.parse(vi.mocked(mockRequest).mock.calls[0][2]!);
+    expect(body.notes).toBeNull();
+  });
+
+  it("preserves non-blank notes text", async () => {
+    const vintage = {
+      year: null,
+      wineId: 1,
+      drinkFrom: null,
+      drinkUntil: null,
+      notes: "  Keep spacing  ",
+    };
+    await vintages.create(vintage as any);
+
+    const body = JSON.parse(vi.mocked(mockRequest).mock.calls[0][2]!);
+    expect(body.notes).toBe("  Keep spacing  ");
+  });
+
   it("update coerces numeric fields and uses correct path", async () => {
     const vintage = {
       id: 7,
