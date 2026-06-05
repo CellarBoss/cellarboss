@@ -2,14 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  User,
-  Earth,
-  Grape,
-  Barrel,
-  BottleWine,
-  StickyNote,
-} from "lucide-react";
+import { User, Earth, Grape, Barrel, BottleWine } from "lucide-react";
 import { getWineById, deleteWine } from "@/lib/api/wines";
 import { getWineGrapes } from "@/lib/api/winegrapes";
 import { getVintagesByWineId } from "@/lib/api/vintages";
@@ -20,6 +13,7 @@ import { getGrapes } from "@/lib/api/grapes";
 import { getBottles } from "@/lib/api/bottles";
 import { PageHeader } from "@/components/page/PageHeader";
 import { DetailCard } from "@/components/detail/DetailCard";
+import { DetailNote } from "@/components/detail/DetailNote";
 import { DetailRow } from "@/components/detail/DetailRow";
 import { RelatedResourceSection } from "@/components/detail/RelatedResourceSection";
 import { RelatedResourceItem } from "@/components/detail/RelatedResourceItem";
@@ -210,11 +204,7 @@ export default function ViewWinePage() {
                 {formatWineType(wine.type)}
               </Badge>
             </DetailRow>
-            {wine.notes?.trim() && (
-              <DetailRow icon={StickyNote}>
-                <span className="whitespace-pre-wrap">{wine.notes}</span>
-              </DetailRow>
-            )}
+            <DetailNote label="Wine notes">{wine.notes}</DetailNote>
           </DetailCard>
 
           <RelatedResourceSection

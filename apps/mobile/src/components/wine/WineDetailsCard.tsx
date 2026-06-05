@@ -7,6 +7,7 @@ import { Icon, Text } from "react-native-paper";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
+import { NoteBlock } from "@/components/NoteBlock";
 import { WineThumbnail } from "./WineThumbnail";
 
 export function WineDetailsCard({ wine }: { wine: Wine }) {
@@ -104,10 +105,8 @@ export function WineDetailsCard({ wine }: { wine: Wine }) {
       flex: 1,
       color: theme.colors.onSurfaceVariant,
     },
-    notesText: {
-      flex: 1,
-      color: theme.colors.onSurfaceVariant,
-      lineHeight: 20,
+    notesBlock: {
+      marginTop: 14,
     },
     card: {
       backgroundColor: theme.colors.surface,
@@ -185,24 +184,15 @@ export function WineDetailsCard({ wine }: { wine: Wine }) {
                 </Text>
               </View>
             )}
-            {wine.notes?.trim() && (
-              <View style={styles.detailRow}>
-                <Icon
-                  source="note-text"
-                  size={16}
-                  color={theme.colors.onSurfaceVariant}
-                />
-                <Text variant="bodyMedium" style={styles.notesText}>
-                  {wine.notes}
-                </Text>
-              </View>
-            )}
           </View>
           <WineThumbnail
             imageId={thumbnailQuery.data?.id}
             wineType={wine.type}
           />
         </View>
+        <NoteBlock label="Wine notes" style={styles.notesBlock}>
+          {wine.notes}
+        </NoteBlock>
       </View>
     </>
   );

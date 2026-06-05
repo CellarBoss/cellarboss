@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Barrel, User, Earth, Clock, StickyNote } from "lucide-react";
+import { Barrel, User, Earth, Clock } from "lucide-react";
 import type {
   Wine,
   Vintage,
@@ -8,6 +8,7 @@ import type {
   Country,
 } from "@cellarboss/types";
 import { DetailCard } from "./DetailCard";
+import { DetailNote } from "./DetailNote";
 import { DetailRow } from "./DetailRow";
 import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
 
@@ -67,11 +68,6 @@ export function WineDetailCard({
           {[region?.name, country?.name].filter(Boolean).join(", ")}
         </DetailRow>
       )}
-      {wine?.notes?.trim() && (
-        <DetailRow icon={StickyNote}>
-          <span className="whitespace-pre-wrap">{wine.notes}</span>
-        </DetailRow>
-      )}
       {vintage && (
         <DetailRow icon={Clock}>
           <DrinkingWindowDisplay
@@ -80,11 +76,8 @@ export function WineDetailCard({
           />
         </DetailRow>
       )}
-      {vintage?.notes?.trim() && (
-        <DetailRow icon={StickyNote}>
-          <span className="whitespace-pre-wrap">{vintage.notes}</span>
-        </DetailRow>
-      )}
+      <DetailNote label="Wine notes">{wine?.notes}</DetailNote>
+      <DetailNote label="Vintage notes">{vintage?.notes}</DetailNote>
     </DetailCard>
   );
 }

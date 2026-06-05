@@ -14,6 +14,7 @@ import {
   getDrinkingStatusColors,
   DRINKING_STATUS_ICONS,
 } from "@/lib/constants/drinking-status";
+import { NoteBlock } from "@/components/NoteBlock";
 import { WineThumbnail } from "@/components/wine/WineThumbnail";
 
 type VintageDetailsCardProps = {
@@ -128,10 +129,8 @@ export function VintageDetailsCard({
       flex: 1,
       color: theme.colors.onSurfaceVariant,
     },
-    notesText: {
-      flex: 1,
-      color: theme.colors.onSurfaceVariant,
-      lineHeight: 20,
+    notesBlock: {
+      marginTop: 14,
     },
     linkText: {
       color: theme.colors.primary,
@@ -194,24 +193,15 @@ export function VintageDetailsCard({
                 </Text>
               </View>
             )}
-            {vintage.notes?.trim() && (
-              <View style={styles.detailRow}>
-                <Icon
-                  source="note-text"
-                  size={16}
-                  color={theme.colors.onSurfaceVariant}
-                />
-                <Text variant="bodyMedium" style={styles.notesText}>
-                  {vintage.notes}
-                </Text>
-              </View>
-            )}
           </View>
           <WineThumbnail
             imageId={thumbnailImage?.id}
             wineType={wineType ?? "red"}
           />
         </View>
+        <NoteBlock label="Vintage notes" style={styles.notesBlock}>
+          {vintage.notes}
+        </NoteBlock>
       </Pressable>
     </>
   );
