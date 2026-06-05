@@ -16,6 +16,11 @@ type Row = {
 
 const columns: ColumnDef<Row>[] = [
   {
+    accessorKey: "id",
+    header: "ID",
+    meta: { defaultVisible: false, isHideable: false },
+  },
+  {
     accessorKey: "name",
     header: "Name",
     meta: { isHideable: false },
@@ -40,6 +45,7 @@ const columns: ColumnDef<Row>[] = [
 describe("column visibility helpers", () => {
   it("builds defaults from column metadata", () => {
     expect(getDefaultColumnVisibility(columns)).toEqual({
+      id: false,
       country: false,
       filterOnly: false,
     });
@@ -48,6 +54,7 @@ describe("column visibility helpers", () => {
   it("merges saved preferences without allowing fixed or suppressed overrides", () => {
     expect(
       mergeColumnVisibility(columns, {
+        id: true,
         name: false,
         region: false,
         country: true,
@@ -55,6 +62,7 @@ describe("column visibility helpers", () => {
         unknown: false,
       }),
     ).toEqual({
+      id: false,
       region: false,
       country: true,
       filterOnly: false,

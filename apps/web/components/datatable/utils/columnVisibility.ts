@@ -35,11 +35,13 @@ export function getDefaultColumnVisibility<T>(
     if (!id) return;
 
     const meta = getColumnMeta(column);
-    if (meta?.isSuppressed || meta?.hidden || meta?.defaultVisible === false) {
+    const shouldBeHidden =
+      meta?.isSuppressed || meta?.hidden || meta?.defaultVisible === false;
+    if (shouldBeHidden) {
       visibility[id] = false;
     }
 
-    if (meta?.isHideable === false) {
+    if (meta?.isHideable === false && !shouldBeHidden) {
       delete visibility[id];
     }
   });

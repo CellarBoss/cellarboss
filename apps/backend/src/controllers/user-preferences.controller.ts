@@ -1,4 +1,5 @@
 import type { JsonValue, UserPreference } from "@cellarboss/types";
+import { jsonValueSchema } from "@cellarboss/validators";
 import { db } from "@utils/database.js";
 import { env } from "@utils/env.js";
 
@@ -13,7 +14,12 @@ function storageKey(userId: string, key: string) {
 }
 
 function parsePreferenceValue(value: string): JsonValue {
-  return JSON.parse(value) as JsonValue;
+  const parsed = JSON.parse(value);
+  const result = jsonValueSchema.safeParse(parsed);
+  if (!result.success) {
+    throw new Error("Stored user preference value failed JSON validation");
+  }
+  return result.data;
 }
 
 function toUserPreference(key: string, row: { value: string }): UserPreference {
