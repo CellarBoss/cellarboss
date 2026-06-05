@@ -6,9 +6,9 @@ type DetailNoteProps = {
 };
 
 export function DetailNote({ label, children }: DetailNoteProps) {
-  const notes = children?.trim();
+  const isBlank = !children || children.trim() === "";
 
-  if (!notes) return null;
+  if (isBlank) return null;
 
   return (
     <div className="mt-3 rounded-md border border-border bg-muted/30 px-3 py-2 text-sm">
@@ -17,7 +17,7 @@ export function DetailNote({ label, children }: DetailNoteProps) {
         <span>{label}</span>
       </div>
       <p className="mt-1 whitespace-pre-wrap break-words leading-relaxed text-foreground">
-        {notes}
+        {children}
       </p>
     </div>
   );

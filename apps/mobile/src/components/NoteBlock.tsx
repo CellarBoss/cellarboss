@@ -10,9 +10,9 @@ type NoteBlockProps = {
 
 export function NoteBlock({ label, children, style }: NoteBlockProps) {
   const theme = useAppTheme();
-  const notes = children?.trim();
+  const isBlank = !children || children.trim() === "";
 
-  if (!notes) return null;
+  if (isBlank) return null;
 
   const styles = StyleSheet.create({
     block: {
@@ -51,7 +51,7 @@ export function NoteBlock({ label, children, style }: NoteBlockProps) {
         </Text>
       </View>
       <Text variant="bodyMedium" style={styles.text}>
-        {notes}
+        {children}
       </Text>
     </View>
   );
