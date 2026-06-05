@@ -1,5 +1,4 @@
 import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
-import type { UpsertUserPreference } from "@cellarboss/types";
 import {
   upsertUserPreferenceSchema,
   userPreferenceKeySchema,
@@ -11,6 +10,7 @@ import {
   errorSchema,
   successSchema,
   userPreferenceResponseSchema,
+  userPreferenceUpsertRequestSchema,
 } from "@openapi/schemas.js";
 
 const keyParamSchema = z.object({
@@ -43,7 +43,7 @@ const upsertRoute = createRoute({
   summary: "Create or update a user preference",
   request: {
     params: keyParamSchema,
-    body: jsonContent(upsertUserPreferenceSchema, "Preference value"),
+    body: jsonContent(userPreferenceUpsertRequestSchema, "Preference value"),
   },
   responses: {
     200: jsonContent(userPreferenceResponseSchema, "The saved preference"),
@@ -83,8 +83,16 @@ export function registerUserPreferenceRoutes(app: OpenAPIHono) {
   preferences.openapi(upsertRoute, async (c) => {
     const user = c.get("user" as never) as { id: string };
     const key = c.req.param("key");
-    const body = c.req.valid("json") as UpsertUserPreference;
-    const data = await preferencesController.upsert(user.id, key, body.value);
+    // zod-to-openapi cannot render the recursive JSON validator, so the route
+    // uses a finite docs schema and validates against the shared schema here.
+    const body = upsertUserPreferenceSchema.safeParse(c.req.valid("json"));
+    if (!body.success) return c.json({ error: "Validation error" }, 422);
+
+    const data = await preferencesController.upsert(
+      user.id,
+      key,
+      body.data.value,
+    );
     return c.json(data, 200);
   });
 

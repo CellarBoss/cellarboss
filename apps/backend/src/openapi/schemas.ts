@@ -15,7 +15,7 @@ import {
 } from "@cellarboss/validators";
 export { imageResponseSchema } from "@cellarboss/validators";
 
-const openApiJsonValueSchema = z.union([
+export const openApiJsonValueSchema = z.union([
   z.string(),
   z.number(),
   z.boolean(),
@@ -23,6 +23,10 @@ const openApiJsonValueSchema = z.union([
   z.array(z.any()),
   z.record(z.string(), z.any()),
 ]);
+
+export const userPreferenceUpsertRequestSchema = z.object({
+  value: openApiJsonValueSchema.describe("JSON preference value"),
+});
 
 // Shared error/success responses
 export const errorSchema = z.object({
