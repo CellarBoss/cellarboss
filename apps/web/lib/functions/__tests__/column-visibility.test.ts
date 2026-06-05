@@ -16,6 +16,11 @@ type Row = {
 
 const columns: ColumnDef<Row>[] = [
   {
+    id: "select",
+    header: "",
+    meta: { isHideable: false },
+  },
+  {
     accessorKey: "id",
     header: "ID",
     meta: { defaultVisible: false, isHideable: false },
@@ -54,6 +59,7 @@ describe("column visibility helpers", () => {
   it("merges saved preferences without allowing fixed or suppressed overrides", () => {
     expect(
       mergeColumnVisibility(columns, {
+        select: false,
         id: true,
         name: false,
         region: false,
