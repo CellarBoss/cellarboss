@@ -1,6 +1,9 @@
 import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
 import type { UpsertUserPreference } from "@cellarboss/types";
-import { userPreferenceKeySchema } from "@cellarboss/validators";
+import {
+  upsertUserPreferenceSchema,
+  userPreferenceKeySchema,
+} from "@cellarboss/validators";
 import * as preferencesController from "@controllers/user-preferences.controller.js";
 import { requireAuth } from "@middleware/auth.middleware.js";
 import { jsonContent } from "@openapi/helpers.js";
@@ -9,19 +12,6 @@ import {
   successSchema,
   userPreferenceResponseSchema,
 } from "@openapi/schemas.js";
-
-const userPreferenceValueSchema = z.union([
-  z.string(),
-  z.number(),
-  z.boolean(),
-  z.null(),
-  z.array(z.any()),
-  z.record(z.string(), z.any()),
-]);
-
-const upsertUserPreferenceRequestSchema = z.object({
-  value: userPreferenceValueSchema.describe("JSON preference value"),
-});
 
 const keyParamSchema = z.object({
   key: userPreferenceKeySchema.openapi({
@@ -53,7 +43,7 @@ const upsertRoute = createRoute({
   summary: "Create or update a user preference",
   request: {
     params: keyParamSchema,
-    body: jsonContent(upsertUserPreferenceRequestSchema, "Preference value"),
+    body: jsonContent(upsertUserPreferenceSchema, "Preference value"),
   },
   responses: {
     200: jsonContent(userPreferenceResponseSchema, "The saved preference"),
