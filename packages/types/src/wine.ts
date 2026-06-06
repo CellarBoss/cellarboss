@@ -14,12 +14,6 @@ export interface Wine extends GenericType {
     | "dessert";
 }
 
-export type CreateWine = {
-  name: Wine["name"];
-  wineMakerId: Wine["wineMakerId"];
-  regionId: Wine["regionId"];
-  type: Wine["type"];
-  notes?: Wine["notes"];
-};
+export type CreateWine = Omit<Wine, "id">;
 
-export type UpdateWine = Partial<CreateWine>;
+export type UpdateWine = Partial<Omit<Wine, "id">>;

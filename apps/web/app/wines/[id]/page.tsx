@@ -2,7 +2,14 @@
 
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { User, Earth, Grape, Barrel, BottleWine } from "lucide-react";
+import {
+  User,
+  Earth,
+  Grape,
+  Barrel,
+  BottleWine,
+  StickyNote,
+} from "lucide-react";
 import { getWineById, deleteWine } from "@/lib/api/wines";
 import { getWineGrapes } from "@/lib/api/winegrapes";
 import { getVintagesByWineId } from "@/lib/api/vintages";
@@ -13,7 +20,6 @@ import { getGrapes } from "@/lib/api/grapes";
 import { getBottles } from "@/lib/api/bottles";
 import { PageHeader } from "@/components/page/PageHeader";
 import { DetailCard } from "@/components/detail/DetailCard";
-import { DetailNote } from "@/components/detail/DetailNote";
 import { DetailRow } from "@/components/detail/DetailRow";
 import { RelatedResourceSection } from "@/components/detail/RelatedResourceSection";
 import { RelatedResourceItem } from "@/components/detail/RelatedResourceItem";
@@ -27,6 +33,10 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
 import { formatWineType } from "@/lib/functions/format";
 import { WINE_TYPE_COLORS } from "@/lib/constants/wine-colouring";
+
+function hasNote(value: string | null | undefined): value is string {
+  return value !== null && value !== undefined && value.trim() !== "";
+}
 
 export default function ViewWinePage() {
   const params = useParams();
@@ -115,14 +125,12 @@ export default function ViewWinePage() {
 
   const vintageIds = new Set(vintages.map((v) => v.id));
   const bottleCountByVintage = new Map<number, number>();
-  let totalStoredBottles = 0;
   for (const bottle of allBottles) {
     if (vintageIds.has(bottle.vintageId) && bottle.status === "stored") {
       bottleCountByVintage.set(
         bottle.vintageId,
         (bottleCountByVintage.get(bottle.vintageId) ?? 0) + 1,
       );
-      totalStoredBottles++;
     }
   }
 
@@ -204,7 +212,15 @@ export default function ViewWinePage() {
                 {formatWineType(wine.type)}
               </Badge>
             </DetailRow>
-            <DetailNote label="Wine notes">{wine.notes}</DetailNote>
+            {hasNote(wine.notes) && (
+              <section className="mt-4 border-t border-border pt-3 text-sm">
+                <div className="mb-2 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                  <StickyNote className="h-3.5 w-3.5" />
+                  <span>Wine notes</span>
+                </div>
+                <p className="leading-6 text-muted-foreground">{wine.notes}</p>
+              </section>
+            )}
           </DetailCard>
 
           <RelatedResourceSection

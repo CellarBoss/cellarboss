@@ -105,9 +105,6 @@ export function WineDetailsCard({ wine }: { wine: Wine }) {
       flex: 1,
       color: theme.colors.onSurfaceVariant,
     },
-    notesBlock: {
-      marginTop: 14,
-    },
     card: {
       backgroundColor: theme.colors.surface,
       borderRadius: 12,
@@ -190,9 +187,7 @@ export function WineDetailsCard({ wine }: { wine: Wine }) {
             wineType={wine.type}
           />
         </View>
-        <NoteBlock label="Wine notes" style={styles.notesBlock}>
-          {wine.notes}
-        </NoteBlock>
+        <NoteBlock label="Wine notes">{wine.notes}</NoteBlock>
       </View>
     </>
   );

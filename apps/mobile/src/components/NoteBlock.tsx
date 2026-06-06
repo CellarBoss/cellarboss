@@ -1,14 +1,13 @@
-import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Icon, Text } from "react-native-paper";
 import { useAppTheme } from "@/hooks/use-app-theme";
 
 type NoteBlockProps = {
   label: string;
   children?: string | null;
-  style?: StyleProp<ViewStyle>;
 };
 
-export function NoteBlock({ label, children, style }: NoteBlockProps) {
+export function NoteBlock({ label, children }: NoteBlockProps) {
   const theme = useAppTheme();
   const isBlank = !children || children.trim() === "";
 
@@ -18,6 +17,7 @@ export function NoteBlock({ label, children, style }: NoteBlockProps) {
     section: {
       borderTopColor: theme.colors.outlineVariant,
       borderTopWidth: 1,
+      marginTop: 14,
       paddingTop: 12,
     },
     header: {
@@ -37,7 +37,7 @@ export function NoteBlock({ label, children, style }: NoteBlockProps) {
   });
 
   return (
-    <View style={[styles.section, style]}>
+    <View style={styles.section}>
       <View style={styles.header}>
         <Icon
           source="note-text-outline"

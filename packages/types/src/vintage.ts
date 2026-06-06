@@ -7,12 +7,6 @@ export interface Vintage {
   notes: string | null;
 }
 
-export type CreateVintage = {
-  year: Vintage["year"];
-  wineId: Vintage["wineId"];
-  drinkFrom: Vintage["drinkFrom"];
-  drinkUntil: Vintage["drinkUntil"];
-  notes?: Vintage["notes"];
-};
+export type CreateVintage = Omit<Vintage, "id">;
 
-export type UpdateVintage = Partial<CreateVintage>;
+export type UpdateVintage = Partial<Omit<Vintage, "id">>;

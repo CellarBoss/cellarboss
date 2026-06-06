@@ -129,9 +129,6 @@ export function VintageDetailsCard({
       flex: 1,
       color: theme.colors.onSurfaceVariant,
     },
-    notesBlock: {
-      marginTop: 14,
-    },
     linkText: {
       color: theme.colors.primary,
     },
@@ -199,9 +196,7 @@ export function VintageDetailsCard({
             wineType={wineType ?? "red"}
           />
         </View>
-        <NoteBlock label="Vintage notes" style={styles.notesBlock}>
-          {vintage.notes}
-        </NoteBlock>
+        <NoteBlock label="Vintage notes">{vintage.notes}</NoteBlock>
       </Pressable>
     </>
   );
