@@ -15,12 +15,10 @@ export function NoteBlock({ label, children, style }: NoteBlockProps) {
   if (isBlank) return null;
 
   const styles = StyleSheet.create({
-    block: {
-      borderColor: theme.colors.outlineVariant,
-      borderRadius: 8,
-      borderWidth: 1,
-      paddingHorizontal: 12,
-      paddingVertical: 10,
+    section: {
+      borderTopColor: theme.colors.outlineVariant,
+      borderTopWidth: 1,
+      paddingTop: 12,
     },
     header: {
       alignItems: "center",
@@ -39,7 +37,7 @@ export function NoteBlock({ label, children, style }: NoteBlockProps) {
   });
 
   return (
-    <View style={[styles.block, style]}>
+    <View style={[styles.section, style]}>
       <View style={styles.header}>
         <Icon
           source="note-text-outline"
