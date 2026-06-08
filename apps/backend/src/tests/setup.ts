@@ -78,6 +78,7 @@ export async function cleanDatabase(db: Kysely<Database>): Promise<void> {
     "grape",
     "location",
     "setting",
+    "preference",
     "user", // created by createTestUser, not migrations
   ];
   for (const table of tables) {

@@ -21,6 +21,7 @@ describe("createApiClient", () => {
     expect(client.tastingNotes).toBeDefined();
     expect(client.settings).toBeDefined();
     expect(client.users).toBeDefined();
+    expect(client.preferences).toBeDefined();
   });
 
   it("each namespace has expected methods", () => {
@@ -36,6 +37,11 @@ describe("createApiClient", () => {
     expect(typeof client.settings.getAll).toBe("function");
     expect(typeof client.settings.getByKey).toBe("function");
     expect(typeof client.settings.update).toBe("function");
+
+    expect(typeof client.preferences.getAll).toBe("function");
+    expect(typeof client.preferences.getByKey).toBe("function");
+    expect(typeof client.preferences.upsert).toBe("function");
+    expect(typeof client.preferences.remove).toBe("function");
 
     expect(typeof client.winegrapes.getAll).toBe("function");
     expect(typeof client.winegrapes.getByWineId).toBe("function");
