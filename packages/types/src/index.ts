@@ -16,3 +16,4 @@ export type {
   UpdateTastingNote,
 } from "./tasting-note";
 export type { Image } from "./image";
+export type { Preference, UpsertPreference } from "./preference";
