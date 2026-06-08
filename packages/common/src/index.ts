@@ -23,6 +23,9 @@ export {
   type DrinkingStatus,
 } from "./format";
 
+// Preferences
+export { parsePreference } from "./preferences";
+
 // Settings
 export {
   type SettingValueType,
@@ -33,6 +36,7 @@ export {
 // Hooks
 export { useApiQuery, type UseApiQueryResult } from "./hooks/use-api-query";
 export { createSettingsHooks } from "./hooks/use-settings";
+export { createPreferencesHooks } from "./hooks/use-preferences";
 export {
   isVersionMismatch,
   useVersionMismatch,
