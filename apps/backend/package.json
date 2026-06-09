@@ -31,7 +31,7 @@
     "kysely": "0.29.2",
     "kysely-ctl": "0.21.0",
     "loglayer": "9.3.0",
-    "mysql2": "3.22.4",
+    "mysql2": "3.22.5",
     "pg": "8.21.0",
     "pino": "10.3.1",
     "serialize-error": "13.0.1",
@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "7.6.13",
-    "@types/node": "24.13.0",
+    "@types/node": "24.13.1",
     "@types/pg": "8.20.0",
     "@vitest/coverage-v8": "4.1.8",
     "@vitest/ui": "4.1.8",
