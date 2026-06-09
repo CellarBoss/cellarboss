@@ -97,7 +97,7 @@ function buildDashboardState() {
         purchaseDate: "2023-06-01",
         purchasePrice: 200.0,
         storageId: 1,
-        status: "consumed",
+        status: "drunk",
         size: "standard",
       },
     ] as Bottle[],
