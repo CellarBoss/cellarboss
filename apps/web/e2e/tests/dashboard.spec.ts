@@ -1,5 +1,4 @@
 import { test, expect, setState, resetState } from "../fixtures/auth";
-import type { Bottle } from "@cellarboss/types";
 
 const today = new Date().toISOString().split("T")[0]; // e.g. "2026-03-18"
 const currentYear = new Date().getFullYear();
@@ -100,7 +99,7 @@ function buildDashboardState() {
         status: "consumed",
         size: "standard",
       },
-    ] as Bottle[],
+    ],
     tastingNotes: [
       {
         id: 1,
