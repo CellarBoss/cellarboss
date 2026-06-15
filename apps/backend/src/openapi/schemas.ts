@@ -94,3 +94,9 @@ export const userResponseSchema = z.object({
   email: z.string().describe("User's email address"),
   role: z.string().describe("User's role"),
 });
+
+export const preferenceResponseSchema = z.object({
+  userId: z.string().describe("User ID the preference belongs to"),
+  key: z.string().describe("Preference key"),
+  value: z.string().describe("Preference value as a JSON string"),
+});

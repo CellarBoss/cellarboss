@@ -14,6 +14,7 @@ import { registerTastingNoteRoutes } from "./tasting-notes.routes";
 import { registerUserRoutes } from "./users.routes";
 import { registerVersionRoutes } from "./version.routes";
 import { registerImageRoutes } from "./images.routes";
+import { registerPreferenceRoutes } from "./preferences.routes";
 
 export function registerRoutes(app: OpenAPIHono) {
   registerBottleRoutes(app);
@@ -31,4 +32,5 @@ export function registerRoutes(app: OpenAPIHono) {
   registerUserRoutes(app);
   registerVersionRoutes(app);
   registerImageRoutes(app);
+  registerPreferenceRoutes(app);
 }

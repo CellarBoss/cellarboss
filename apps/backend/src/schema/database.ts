@@ -13,6 +13,7 @@ import type {
   WineGrape,
   WineMaker,
   Setting,
+  Preference,
 } from "@cellarboss/types";
 
 // Kysely table definitions - wrap auto-increment IDs with Generated<>
@@ -68,6 +69,8 @@ export interface ImageTable extends Omit<Image, "id" | "isFavourite"> {
 
 export interface SettingTable extends Setting {}
 
+export interface PreferenceTable extends Preference {}
+
 // Better Auth managed table - only fields needed for joins
 export interface UserTable {
   id: string;
@@ -90,5 +93,6 @@ export interface Database {
   tastingNote: TastingNoteTable;
   image: ImageTable;
   setting: SettingTable;
+  preference: PreferenceTable;
   user: UserTable;
 }

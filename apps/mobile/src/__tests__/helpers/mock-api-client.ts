@@ -93,6 +93,12 @@ export const mockApi = {
     getAll: jest.fn().mockResolvedValue(mockOk([])),
     update: jest.fn(),
   },
+  preferences: {
+    getAll: jest.fn().mockResolvedValue(mockOk([])),
+    getByKey: jest.fn(),
+    upsert: jest.fn(),
+    remove: jest.fn(),
+  },
 };
 
 jest.mock("@/lib/api/client", () => ({
