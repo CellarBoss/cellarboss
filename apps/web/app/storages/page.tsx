@@ -104,6 +104,7 @@ export default function StoragesPage() {
       header: "Storage Name",
       enableColumnFilter: true,
       enableSorting: true,
+      meta: { isHideable: false },
       cell: ({ row }) => {
         return <a href={"/storages/" + row.original.id}>{row.original.name}</a>;
       },
@@ -142,6 +143,7 @@ export default function StoragesPage() {
       header: "",
       size: 100,
       enableSorting: false,
+      meta: { isHideable: false },
       cell: ({ row }) => {
         return (
           <div className="flex gap-1 justify-center mx-5">

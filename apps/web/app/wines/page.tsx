@@ -166,6 +166,7 @@ export default function WinesPage() {
       header: "Wine Name",
       enableColumnFilter: true,
       enableSorting: true,
+      meta: { isHideable: false },
       cell: ({ row }) => (
         <div className="flex items-center justify-between gap-2 flex-1 min-w-0">
           <a href={"/wines/" + row.original.id}>{row.original.name}</a>
@@ -182,7 +183,7 @@ export default function WinesPage() {
       header: "Type",
       enableColumnFilter: false,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { isSuppressed: true },
     },
     {
       id: "winemaker",
@@ -256,7 +257,7 @@ export default function WinesPage() {
       header: "Country",
       enableColumnFilter: false,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { isSuppressed: true },
     },
     {
       accessorKey: "options",
@@ -264,6 +265,7 @@ export default function WinesPage() {
       header: "",
       size: 100,
       enableSorting: false,
+      meta: { isHideable: false },
       cell: ({ row }) => {
         return (
           <div className="flex gap-1 justify-center mx-5">
