@@ -8,6 +8,7 @@ import {
   createTestUser,
 } from "./setup";
 import { registerPreferenceRoutes } from "@routes/preferences.routes.js";
+import { registerRoutes } from "@routes/index.js";
 import { db } from "@utils/database.js";
 
 const USER_ID = "test-user-1";
@@ -192,6 +193,41 @@ describe("Preferences API", () => {
       const res = await otherApp.request("/user/preferences");
       expect(res.status).toBe(200);
       expect(await res.json()).toEqual([]);
+    });
+  });
+
+  // Regression: the `/user/{id}` route (registered for users) must not shadow
+  // `/user/preferences`. Uses the real registerRoutes so it guards the
+  // production registration order, not a hand-rolled one.
+  describe("route precedence alongside user routes", () => {
+    let app: OpenAPIHono;
+
+    beforeEach(() => {
+      app = createTestAppWithAuth(USER_ID);
+      registerRoutes(app);
+    });
+
+    it("GET /user/preferences is not shadowed by GET /user/{id}", async () => {
+      const res = await app.request("/user/preferences");
+      expect(res.status).toBe(200);
+      expect(await res.json()).toEqual([]);
+    });
+
+    it("round-trips a saved preference", async () => {
+      const value = JSON.stringify({ name: true, vintage: false });
+      const put = await app.request("/user/preferences/columns.bottles", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ value }),
+      });
+      expect(put.status).toBe(200);
+
+      const res = await app.request("/user/preferences");
+      expect(res.status).toBe(200);
+      const data = await res.json();
+      expect(data).toHaveLength(1);
+      expect(data[0].key).toBe("columns.bottles");
+      expect(data[0].value).toBe(value);
     });
   });
 });

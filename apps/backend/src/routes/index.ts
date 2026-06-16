@@ -29,8 +29,12 @@ export function registerRoutes(app: OpenAPIHono) {
   registerWineMakerRoutes(app);
   registerSettingsRoutes(app);
   registerTastingNoteRoutes(app);
+  // Preferences mount at /user/preferences, which overlaps the /user/{id} route
+  // registered by the user routes. Hono resolves overlapping mounts by
+  // registration order, so preferences must be registered first to avoid being
+  // shadowed by /user/{id}.
+  registerPreferenceRoutes(app);
   registerUserRoutes(app);
   registerVersionRoutes(app);
   registerImageRoutes(app);
-  registerPreferenceRoutes(app);
 }
