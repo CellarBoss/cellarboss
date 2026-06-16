@@ -23,9 +23,14 @@ export function processColumnsWithFilters<T>(
         ? rangeFilter
         : multiSelectFilter
       : undefined;
+    const meta = col.meta;
+    // Suppressed columns and columns explicitly marked non-hideable cannot be
+    // toggled by the user.
+    const canHide = meta?.isHideable !== false && !meta?.isSuppressed;
     return {
       ...col,
-      meta: { ...(col.meta ?? {}), _hasExplicitSize: col.size !== undefined },
+      ...(canHide ? {} : { enableHiding: false }),
+      meta: { ...(meta ?? {}), _hasExplicitSize: col.size !== undefined },
       ...(filterFn && !col.filterFn ? { filterFn } : {}),
     };
   });

@@ -8,6 +8,7 @@ import {
   RowSelectionState,
   Updater,
 } from "@tanstack/react-table";
+import { computeDefaultColumnVisibility } from "../utils/columnVisibility";
 
 /**
  * Adapter function to convert React's setState to TanStack Table's OnChangeFn
@@ -54,17 +55,7 @@ export function useDataTableState<T>(
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-    () => {
-      const visibility: VisibilityState = {};
-      columns.forEach((col) => {
-        const colId = (col as any).id ?? (col as any).accessorKey;
-        const meta = (col as any).meta;
-        if (meta?.hidden) {
-          visibility[colId] = false;
-        }
-      });
-      return visibility;
-    },
+    () => computeDefaultColumnVisibility(columns),
   );
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);

@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import {
   ColumnDef,
   getCoreRowModel,
@@ -30,9 +31,11 @@ import {
   BulkEditDialog,
   BulkEditField,
 } from "@/components/bulk/BulkEditDialog";
+import { DataTableColumnsControl } from "./DataTableColumnsControl";
 import { RowSelectionContext } from "../selection/RowSelectionContext";
 import { useDataTableState } from "../hooks/useDataTableState";
 import { useDataTableUrlState } from "../hooks/useDataTableUrlState";
+import { useColumnVisibilityPreference } from "../hooks/useColumnVisibilityPreference";
 import { useBulkActions } from "../hooks/useBulkActions";
 import { processColumnsWithFilters } from "../utils/processColumns";
 import { getContextRows } from "../utils/contextRowCalculations";
@@ -60,6 +63,11 @@ type DataTableProps<T> = {
     partial: Record<string, string | number>,
   ) => Promise<void>;
   filters?: FilterDef[];
+  /**
+   * Stable identifier for persisting per-user column visibility. Defaults to
+   * the current pathname, which is sufficient when a route renders one table.
+   */
+  tableId?: string;
 };
 
 export function DataTable<T>({
@@ -76,8 +84,15 @@ export function DataTable<T>({
   bulkEditFields,
   onBulkEdit,
   filters,
+  tableId,
 }: DataTableProps<T>) {
   const hasExpansion = !!(getSubRows || renderDetail);
+  const pathname = usePathname();
+  // Normalise the pathname into a key segment (e.g. "/bottles" -> "bottles",
+  // "/wines/red" -> "wines.red") so the stored preference key stays clean.
+  const normalisedPath =
+    pathname.replace(/^\/+|\/+$/g, "").replace(/\/+/g, ".") || "root";
+  const resolvedTableId = tableId ?? normalisedPath;
 
   // URL-backed state: column filters (including search), pagination, expansion
   const {
@@ -97,6 +112,14 @@ export function DataTable<T>({
 
   // React state: sorting, row selection, visibility, dialogs
   const state = useDataTableState(columns, defaultSortColumn);
+
+  // Bridge column visibility with per-user preference storage
+  const onColumnVisibilityChange = useColumnVisibilityPreference({
+    tableId: resolvedTableId,
+    columns,
+    columnVisibility: state.columnVisibility,
+    setColumnVisibility: state.setColumnVisibility,
+  });
 
   // Prepare data
   const displayData = data ?? [];
@@ -124,9 +147,7 @@ export function DataTable<T>({
       ...(hasExpansion ? { expanded } : {}),
       ...(enableRowSelection ? { rowSelection: state.rowSelection } : {}),
     },
-    onColumnVisibilityChange: createTableStateUpdater(
-      state.setColumnVisibility,
-    ),
+    onColumnVisibilityChange,
     ...(enableRowSelection
       ? {
           enableRowSelection: true,
@@ -195,6 +216,7 @@ export function DataTable<T>({
               columnFilters={columnFilters}
             />
           ) : null}
+          <DataTableColumnsControl table={table} />
         </div>
         <div className="flex items-center gap-2 sm:ml-auto">
           {buttons?.map((button, index) => (
