@@ -20,8 +20,10 @@ const columns: ColumnDef<Row>[] = [
 ];
 
 describe("columnPreferenceKey", () => {
-  it("namespaces the table id", () => {
-    expect(columnPreferenceKey("/bottles")).toBe("datatable.columns./bottles");
+  it("groups the key per table", () => {
+    expect(columnPreferenceKey("bottles")).toBe(
+      "datatable.bottles.columns.visibility",
+    );
   });
 });
 
