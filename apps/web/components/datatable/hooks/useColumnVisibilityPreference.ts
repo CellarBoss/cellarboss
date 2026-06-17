@@ -1,6 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+// Note: list pages must include usePreferences() in their queryGate so the
+// preferences are loaded before this hook runs — that lets the saved visibility
+// apply synchronously on the first render. The effect below is only a fallback.
 import type {
   ColumnDef,
   OnChangeFn,
@@ -9,6 +12,7 @@ import type {
 import { usePreferences, useUpsertPreference } from "@/hooks/use-preferences";
 import {
   columnPreferenceKey,
+  computeDefaultColumnVisibility,
   getHideableColumnIds,
   mergeSavedVisibility,
   parseSavedVisibility,
@@ -18,46 +22,65 @@ import {
 type Params<T> = {
   tableId: string;
   columns: ColumnDef<T>[];
+};
+
+type ColumnVisibilityPreference = {
   columnVisibility: VisibilityState;
-  setColumnVisibility: (
-    value: VisibilityState | ((prev: VisibilityState) => VisibilityState),
-  ) => void;
+  onColumnVisibilityChange: OnChangeFn<VisibilityState>;
 };
 
 /**
- * Bridges DataTable column visibility with per-user preference storage.
+ * Owns DataTable column visibility and keeps it in sync with per-user
+ * preference storage.
  *
- * - Once preferences load, overlays the saved visibility for hideable columns
- *   onto the computed defaults (applied once, so it never clobbers later edits).
- * - Returns an `onColumnVisibilityChange` handler that updates local state and
- *   persists the new visibility for the table's hideable columns.
+ * - Initial state merges any already-cached saved preference into the computed
+ *   defaults, so a cached preference applies on the very first render. The page
+ *   gate loads preferences first, so this is the normal path.
+ * - The effect is a fallback: if preferences weren't cached yet, it applies
+ *   them once the query settles.
+ * - `onColumnVisibilityChange` updates state and persists the new visibility.
  */
 export function useColumnVisibilityPreference<T>({
   tableId,
   columns,
-  columnVisibility,
-  setColumnVisibility,
-}: Params<T>): OnChangeFn<VisibilityState> {
-  const { data: preferences } = usePreferences();
+}: Params<T>): ColumnVisibilityPreference {
+  const { data: preferences, isPending } = usePreferences();
   const upsert = useUpsertPreference();
 
   const hideableIds = useMemo(() => getHideableColumnIds(columns), [columns]);
 
-  // Apply the saved preference exactly once, after preferences resolve.
-  const appliedRef = useRef(false);
-  useEffect(() => {
-    if (appliedRef.current || !preferences) return;
-    appliedRef.current = true;
-    const saved = parseSavedVisibility(
-      preferences.get(columnPreferenceKey(tableId)),
-    );
-    if (!saved) return;
-    setColumnVisibility((prev) =>
-      mergeSavedVisibility(prev, saved, hideableIds),
-    );
-  }, [preferences, tableId, hideableIds, setColumnVisibility]);
+  const readSaved = (): VisibilityState | null =>
+    preferences
+      ? parseSavedVisibility(preferences.get(columnPreferenceKey(tableId)))
+      : null;
 
-  return useCallback<OnChangeFn<VisibilityState>>(
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    () =>
+      mergeSavedVisibility(
+        computeDefaultColumnVisibility(columns),
+        readSaved(),
+        hideableIds,
+      ),
+  );
+
+  // Saved prefs are applied at init when already cached; the ref guards against
+  // re-applying over later edits.
+  const appliedRef = useRef(preferences !== undefined);
+
+  useEffect(() => {
+    if (appliedRef.current || isPending) return;
+    appliedRef.current = true;
+    const saved = readSaved();
+    if (saved) {
+      setColumnVisibility((prev) =>
+        mergeSavedVisibility(prev, saved, hideableIds),
+      );
+    }
+    // readSaved closes over the current preferences/tableId
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPending, preferences, tableId, hideableIds]);
+
+  const onColumnVisibilityChange = useCallback<OnChangeFn<VisibilityState>>(
     (updater) => {
       const next =
         typeof updater === "function" ? updater(columnVisibility) : updater;
@@ -70,6 +93,8 @@ export function useColumnVisibilityPreference<T>({
         value: serializeColumnVisibility(next, hideableIds),
       });
     },
-    [columnVisibility, setColumnVisibility, hideableIds, tableId, upsert],
+    [columnVisibility, hideableIds, tableId, upsert],
   );
+
+  return { columnVisibility, onColumnVisibilityChange };
 }

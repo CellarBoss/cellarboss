@@ -2,13 +2,10 @@
 
 import { useState } from "react";
 import {
-  ColumnDef,
   SortingState,
-  VisibilityState,
   RowSelectionState,
   Updater,
 } from "@tanstack/react-table";
-import { computeDefaultColumnVisibility } from "../utils/columnVisibility";
 
 /**
  * Adapter function to convert React's setState to TanStack Table's OnChangeFn
@@ -23,7 +20,6 @@ export function createTableStateUpdater<T>(
 export interface DataTableState {
   sorting: SortingState;
   rowSelection: RowSelectionState;
-  columnVisibility: VisibilityState;
   deleteDialogOpen: boolean;
   editDialogOpen: boolean;
 }
@@ -37,15 +33,11 @@ export interface DataTableStateSetters {
       | RowSelectionState
       | ((prev: RowSelectionState) => RowSelectionState),
   ) => void;
-  setColumnVisibility: (
-    visibility: VisibilityState | ((prev: VisibilityState) => VisibilityState),
-  ) => void;
   setDeleteDialogOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
   setEditDialogOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
 }
 
-export function useDataTableState<T>(
-  columns: ColumnDef<T>[],
+export function useDataTableState(
   defaultSortColumn?: string,
 ): DataTableState & DataTableStateSetters {
   const [sorting, setSorting] = useState<SortingState>(
@@ -54,22 +46,16 @@ export function useDataTableState<T>(
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-    () => computeDefaultColumnVisibility(columns),
-  );
-
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   return {
     sorting,
     rowSelection,
-    columnVisibility,
     deleteDialogOpen,
     editDialogOpen,
     setSorting,
     setRowSelection,
-    setColumnVisibility,
     setDeleteDialogOpen,
     setEditDialogOpen,
   };

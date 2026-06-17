@@ -110,16 +110,17 @@ export function DataTable<T>({
     defaultExpanded: defaultExpanded ?? (getSubRows ? true : {}),
   });
 
-  // React state: sorting, row selection, visibility, dialogs
-  const state = useDataTableState(columns, defaultSortColumn);
+  // React state: sorting, row selection, dialogs
+  const state = useDataTableState(defaultSortColumn);
 
-  // Bridge column visibility with per-user preference storage
-  const onColumnVisibilityChange = useColumnVisibilityPreference({
-    tableId: resolvedTableId,
-    columns,
-    columnVisibility: state.columnVisibility,
-    setColumnVisibility: state.setColumnVisibility,
-  });
+  // Column visibility is owned by this hook, synced with per-user preference
+  // storage. The page gate loads preferences first, so the saved visibility
+  // applies synchronously on the first render.
+  const { columnVisibility, onColumnVisibilityChange } =
+    useColumnVisibilityPreference({
+      tableId: resolvedTableId,
+      columns,
+    });
 
   // Prepare data
   const displayData = data ?? [];
@@ -143,7 +144,7 @@ export function DataTable<T>({
       pagination,
       columnFilters,
       sorting: state.sorting,
-      columnVisibility: state.columnVisibility,
+      columnVisibility,
       ...(hasExpansion ? { expanded } : {}),
       ...(enableRowSelection ? { rowSelection: state.rowSelection } : {}),
     },
