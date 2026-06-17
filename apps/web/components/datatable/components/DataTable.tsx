@@ -31,7 +31,6 @@ import {
   BulkEditDialog,
   BulkEditField,
 } from "@/components/bulk/BulkEditDialog";
-import { DataTableColumnsControl } from "./DataTableColumnsControl";
 import { RowSelectionContext } from "../selection/RowSelectionContext";
 import { useDataTableState } from "../hooks/useDataTableState";
 import { useDataTableUrlState } from "../hooks/useDataTableUrlState";
@@ -176,8 +175,8 @@ export function DataTable<T>({
       : {}),
   });
 
-  // Get pagination metrics
-  const { pageSize, pageCount } = calculatePaginationMetrics(
+  // Get pagination metrics (pageCount is hierarchy-aware, hence the custom calc)
+  const { pageCount } = calculatePaginationMetrics(
     table,
     pagination,
     getSubRows,
@@ -216,7 +215,6 @@ export function DataTable<T>({
               columnFilters={columnFilters}
             />
           ) : null}
-          <DataTableColumnsControl table={table} />
         </div>
         <div className="flex items-center gap-2 sm:ml-auto">
           {buttons?.map((button, index) => (
@@ -264,10 +262,8 @@ export function DataTable<T>({
           ))}
         </TableBody>
         <DataTableFooter
-          columns={processedColumns}
-          pagination={pagination}
+          table={table}
           pageCount={pageCount}
-          pageSize={pageSize}
           setPagination={setPagination}
         />
       </Table>

@@ -8,7 +8,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Columns3 } from "lucide-react";
+import { Settings2 } from "lucide-react";
 
 /** Human-readable label for a column, or null if it shouldn't appear in the menu. */
 function getColumnLabel<T>(column: Column<T, unknown>): string | null {
@@ -42,8 +42,8 @@ export function DataTableColumnsControl<T>({ table }: Props<T>) {
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-10">
-          <Columns3 className="mr-2 h-4 w-4" />
-          Columns
+          <Settings2 className="mr-2 h-4 w-4" />
+          Configure Table
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-56 max-h-[var(--radix-popover-content-available-height,auto)] overflow-y-auto p-4">
