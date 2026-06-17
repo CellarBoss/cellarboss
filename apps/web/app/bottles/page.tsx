@@ -33,6 +33,7 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useSettingsContext } from "@/contexts/settings-context";
 import { queryGate } from "@/lib/functions/query-gate";
+import { usePreferences } from "@/hooks/use-preferences";
 import {
   formatPrice,
   formatStatus,
@@ -92,6 +93,7 @@ export default function BottlesPage() {
   });
   const settings = useSettingsContext();
 
+  const preferencesQuery = usePreferences();
   const result = queryGate([
     bottleQuery,
     vintageQuery,
@@ -101,6 +103,7 @@ export default function BottlesPage() {
     locationQuery,
     regionQuery,
     countryQuery,
+    preferencesQuery,
   ]);
   if (!result.ready) return result.gate;
 

@@ -17,6 +17,7 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
+import { usePreferences } from "@/hooks/use-preferences";
 
 export default function StoragesPage() {
   const queryClient = useQueryClient();
@@ -71,7 +72,8 @@ export default function StoragesPage() {
     queryFn: getLocations,
   });
 
-  const result = queryGate([storageQuery, locationQuery]);
+  const preferencesQuery = usePreferences();
+  const result = queryGate([storageQuery, locationQuery, preferencesQuery]);
   if (!result.ready) return result.gate;
 
   const [storagesList, locationList] = result.data;

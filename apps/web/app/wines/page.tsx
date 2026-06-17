@@ -20,6 +20,7 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
+import { usePreferences } from "@/hooks/use-preferences";
 import WineDetailRow from "@/components/datatable/components/detail/WineDetailRow";
 import {
   WINE_TYPE_COLORS,
@@ -93,11 +94,13 @@ export default function WinesPage() {
     queryFn: getCountries,
   });
 
+  const preferencesQuery = usePreferences();
   const result = queryGate([
     wineQuery,
     winemakerQuery,
     regionQuery,
     countryQuery,
+    preferencesQuery,
   ]);
   if (!result.ready) return result.gate;
 

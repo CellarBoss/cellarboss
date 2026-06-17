@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
+import { usePreferences } from "@/hooks/use-preferences";
 
 export default function LocationsPage() {
   const queryClient = useQueryClient();
@@ -42,7 +43,8 @@ export default function LocationsPage() {
     queryFn: getLocations,
   });
 
-  const result = queryGate([locationQuery]);
+  const preferencesQuery = usePreferences();
+  const result = queryGate([locationQuery, preferencesQuery]);
   if (!result.ready) return result.gate;
 
   const [locationsList] = result.data;
