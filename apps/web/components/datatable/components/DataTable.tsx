@@ -38,6 +38,7 @@ import { useDataTableUrlState } from "../hooks/useDataTableUrlState";
 import { useColumnVisibilityPreference } from "../hooks/useColumnVisibilityPreference";
 import { useBulkActions } from "../hooks/useBulkActions";
 import { processColumnsWithFilters } from "../utils/processColumns";
+import { normaliseTableId } from "../utils/tablePreferences";
 import { getContextRows } from "../utils/contextRowCalculations";
 import { calculatePaginationMetrics } from "../utils/paginationCalculations";
 import { createTableStateUpdater } from "../hooks/useDataTableState";
@@ -88,11 +89,9 @@ export function DataTable<T>({
 }: DataTableProps<T>) {
   const hasExpansion = !!(getSubRows || renderDetail);
   const pathname = usePathname();
-  // Normalise the pathname into a key segment (e.g. "/bottles" -> "bottles",
-  // "/wines/red" -> "wines.red") so the stored preference key stays clean.
-  const normalisedPath =
-    pathname.replace(/^\/+|\/+$/g, "").replace(/\/+/g, ".") || "root";
-  const resolvedTableId = tableId ?? normalisedPath;
+  // Normalise into a key-safe id (lowercase dotted segments) so the stored
+  // preference key always passes the backend key validator, whatever the route.
+  const resolvedTableId = normaliseTableId(tableId ?? pathname);
 
   // URL-backed state: column filters (including search), pagination, expansion
   const {

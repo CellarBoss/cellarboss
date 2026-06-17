@@ -1,12 +1,12 @@
 import type { ColumnDef, VisibilityState } from "@tanstack/react-table";
+import { tablePreferenceKey } from "./tablePreferences";
 
 /**
- * Preference key under which a table's column visibility is stored. Keys are
- * grouped per table (`datatable.<tableId>.columns.<aspect>`) so related DataTable
- * settings — e.g. a future `columns.order` — sit under one prefix.
+ * Preference key under which a table's column visibility is stored
+ * (`datatable.<tableId>.columns.visibility`).
  */
 export function columnPreferenceKey(tableId: string): string {
-  return `datatable.${tableId}.columns.visibility`;
+  return tablePreferenceKey(tableId, "columns", "visibility");
 }
 
 function columnId<T>(col: ColumnDef<T>): string | undefined {
