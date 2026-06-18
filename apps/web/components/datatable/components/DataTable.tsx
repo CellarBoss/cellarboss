@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, ReactNode } from "react";
+import { Fragment, ReactNode, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import {
   ColumnDef,
@@ -35,6 +35,7 @@ import { RowSelectionContext } from "../selection/RowSelectionContext";
 import { useDataTableState } from "../hooks/useDataTableState";
 import { useDataTableUrlState } from "../hooks/useDataTableUrlState";
 import { useColumnVisibilityPreference } from "../hooks/useColumnVisibilityPreference";
+import { useColumnOrderPreference } from "../hooks/useColumnOrderPreference";
 import { useBulkActions } from "../hooks/useBulkActions";
 import { processColumnsWithFilters } from "../utils/processColumns";
 import { normaliseTableId } from "../utils/tablePreferences";
@@ -120,10 +121,27 @@ export function DataTable<T>({
       columns,
     });
 
+  // Column order is owned by this hook (content columns only), synced with
+  // per-user preference storage the same way as visibility.
+  const { order: contentColumnOrder, setOrder: setContentColumnOrder } =
+    useColumnOrderPreference({
+      tableId: resolvedTableId,
+      columns,
+    });
+
   // Prepare data
   const displayData = data ?? [];
   const enableRowSelection =
     onBulkDelete !== undefined || onBulkEdit !== undefined;
+
+  // Full leaf order handed to the table: the fixed selection column is pinned
+  // first, then the user-ordered content columns. Any leaf columns not listed
+  // here (suppressed / label-less action columns) keep their definition order
+  // appended after, per TanStack's column ordering behaviour.
+  const columnOrder = useMemo(
+    () => [...(enableRowSelection ? ["select"] : []), ...contentColumnOrder],
+    [enableRowSelection, contentColumnOrder],
+  );
 
   // Process columns with selection and filters
   const processedColumns = processColumnsWithFilters(
@@ -143,6 +161,7 @@ export function DataTable<T>({
       columnFilters,
       sorting: state.sorting,
       columnVisibility,
+      columnOrder,
       ...(hasExpansion ? { expanded } : {}),
       ...(enableRowSelection ? { rowSelection: state.rowSelection } : {}),
     },
@@ -265,6 +284,8 @@ export function DataTable<T>({
           table={table}
           pageCount={pageCount}
           setPagination={setPagination}
+          columnOrder={contentColumnOrder}
+          onColumnOrderChange={setContentColumnOrder}
         />
       </Table>
       {enableRowSelection && (

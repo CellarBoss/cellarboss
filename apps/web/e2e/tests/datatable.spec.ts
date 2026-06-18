@@ -161,4 +161,65 @@ test.describe("DataTable interactions", () => {
       page.getByRole("columnheader", { name: /winemaker/i }),
     ).toBeHidden();
   });
+
+  test("column order preference persists across reload", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/wines");
+
+    // Column 0 is the selection checkbox, so the first data column is nth(1).
+    await expect(page.getByRole("columnheader").nth(1)).toContainText(
+      "Wine Name",
+    );
+
+    await page.getByRole("button", { name: /configure table/i }).click();
+
+    // Drag the "Winemaker" handle up above the "Wine Name" handle to move it to
+    // the front of the order. dnd-kit's PointerSensor needs the movement split
+    // into steps so it registers the activation and intermediate collisions.
+    const source = page.getByRole("button", { name: /reorder winemaker/i });
+    const target = page.getByRole("button", { name: /reorder wine name/i });
+    const sBox = (await source.boundingBox())!;
+    const tBox = (await target.boundingBox())!;
+    await page.mouse.move(sBox.x + sBox.width / 2, sBox.y + sBox.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(
+      sBox.x + sBox.width / 2,
+      sBox.y + sBox.height / 2 - 8,
+      {
+        steps: 4,
+      },
+    );
+    await page.mouse.move(
+      tBox.x + tBox.width / 2,
+      tBox.y + tBox.height / 2 - 2,
+      {
+        steps: 12,
+      },
+    );
+    await page.mouse.up();
+
+    // Winemaker becomes the first data column immediately.
+    await expect(page.getByRole("columnheader").nth(1)).toContainText(
+      "Winemaker",
+    );
+
+    // The save goes through a Next.js server action (browser-invisible), so poll
+    // the mock server until the order preference is persisted before reloading.
+    await expect
+      .poll(async () => {
+        const res = await fetch(`${MOCK_SERVER}/api/user/preferences`);
+        const prefs: Array<{ key: string }> = await res.json();
+        return prefs.some((p) => p.key.includes("columns.order"));
+      })
+      .toBe(true);
+
+    await page.reload();
+
+    // The saved order should apply on first paint — Winemaker stays first.
+    await expect(page.getByRole("columnheader").nth(1)).toContainText(
+      "Winemaker",
+    );
+  });
 });
