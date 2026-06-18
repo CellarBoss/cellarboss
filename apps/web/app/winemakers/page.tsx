@@ -55,6 +55,7 @@ export default function WinemakersPage() {
       header: "Winemaker Name",
       enableColumnFilter: true,
       enableSorting: true,
+      meta: { isHideable: false },
       cell: ({ row }: { row: { original: WineMaker } }) => {
         return (
           <a href={"/winemakers/" + row.original.id}>{row.original.name}</a>

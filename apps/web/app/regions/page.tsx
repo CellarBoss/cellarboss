@@ -99,6 +99,7 @@ export default function RegionsPage() {
       header: "Region Name",
       enableColumnFilter: true,
       enableSorting: true,
+      meta: { isHideable: false },
       cell: ({ row }: { row: { original: Region } }) => {
         return <a href={"/regions/" + row.original.id}>{row.original.name}</a>;
       },

@@ -52,6 +52,7 @@ export default function GrapesPage() {
       header: "Grape Name",
       enableColumnFilter: true,
       enableSorting: true,
+      meta: { isHideable: false },
       cell: ({ row }: { row: { original: Grape } }) => {
         return <a href={"/grapes/" + row.original.id}>{row.original.name}</a>;
       },

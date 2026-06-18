@@ -55,6 +55,7 @@ export default function LocationsPage() {
       header: "Location Name",
       enableColumnFilter: true,
       enableSorting: true,
+      meta: { isHideable: false },
       cell: ({ row }: { row: { original: Location } }) => {
         return (
           <a href={"/locations/" + row.original.id}>{row.original.name}</a>

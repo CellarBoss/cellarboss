@@ -55,6 +55,7 @@ export default function CountriesPage() {
       header: "Country Name",
       enableColumnFilter: true,
       enableSorting: true,
+      meta: { isHideable: false },
       cell: ({ row }: { row: { original: Country } }) => {
         return (
           <a href={"/countries/" + row.original.id}>{row.original.name}</a>

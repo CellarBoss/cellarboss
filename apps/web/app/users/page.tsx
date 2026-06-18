@@ -71,6 +71,7 @@ export default function UsersPage() {
       header: "Name",
       enableColumnFilter: true,
       enableSorting: true,
+      meta: { isHideable: false },
       cell: ({ row }: { row: { original: AdminUser } }) => (
         <a href={`/users/${row.original.id}`}>{row.original.name}</a>
       ),
