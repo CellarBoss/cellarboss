@@ -11,7 +11,6 @@ import { AddButton } from "@/components/buttons/AddButton";
 import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
-import { usePreferences } from "@/hooks/use-preferences";
 
 export default function UsersPage() {
   const queryClient = useQueryClient();
@@ -20,7 +19,6 @@ export default function UsersPage() {
   const isAdmin = session.data?.user?.role === "admin";
 
   const usersQuery = useApiQuery({ queryKey: ["users"], queryFn: getUsers });
-  const preferencesQuery = usePreferences();
 
   if (!isAdmin) {
     return (
@@ -34,7 +32,7 @@ export default function UsersPage() {
     );
   }
 
-  const result = queryGate([usersQuery, preferencesQuery]);
+  const result = queryGate([usersQuery]);
   if (!result.ready) return result.gate;
 
   const [usersList] = result.data;
