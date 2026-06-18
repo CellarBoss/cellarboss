@@ -12,6 +12,7 @@ import { registerGrapeRoutes } from "./routes/grapes";
 import { registerStorageRoutes } from "./routes/storages";
 import { registerLocationRoutes } from "./routes/locations";
 import { registerSettingsRoutes } from "./routes/settings";
+import { registerPreferenceRoutes } from "./routes/preferences";
 import { registerUserRoutes } from "./routes/users";
 import { registerWinegrapeRoutes } from "./routes/winegrapes";
 import { registerTastingNoteRoutes } from "./routes/tasting-notes";
@@ -44,6 +45,7 @@ export type MockState = {
   storages: any[];
   locations: any[];
   settings: any[];
+  preferences: any[];
   users: any[];
   wineGrapes: any[];
   tastingNotes: any[];
@@ -92,6 +94,10 @@ export async function startMockServer(port: number): Promise<ServerType> {
   });
 
   // Register all domain routes
+  // Preference routes must be registered before user routes because users has
+  // a dynamic /api/user/:id route that would otherwise intercept the static
+  // /api/user/preferences endpoints
+  registerPreferenceRoutes(app, state);
   // User routes must be registered before auth routes because auth has a
   // catch-all /api/auth/* that would intercept /api/auth/admin/* endpoints
   registerUserRoutes(app, state);

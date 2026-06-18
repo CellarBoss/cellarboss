@@ -304,6 +304,7 @@ export const docsSeedData: Omit<MockState, "session"> = {
     { key: "date", value: "yyyy-MM-dd" },
     { key: "datetime", value: "yyyy-MM-dd HH:mm" },
   ],
+  preferences: [],
   wineGrapes: [
     { wineId: 1, grapeId: 1 },
     { wineId: 1, grapeId: 2 },

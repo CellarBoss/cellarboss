@@ -71,6 +71,7 @@ export const defaultState: MockState = {
     { key: "date", value: "yyyy-MM-dd" },
     { key: "datetime", value: "yyyy-MM-dd HH:mm" },
   ],
+  preferences: [],
   users: [
     {
       id: "admin-user-1",
