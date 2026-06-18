@@ -1,4 +1,10 @@
-import { test, expect, setState, resetState } from "../fixtures/auth";
+import {
+  test,
+  expect,
+  setState,
+  resetState,
+  MOCK_SERVER,
+} from "../fixtures/auth";
 
 test.describe("DataTable interactions", () => {
   test.beforeEach(async () => {
@@ -92,5 +98,67 @@ test.describe("DataTable interactions", () => {
         .getByText(/selected/i)
         .or(page.getByRole("button", { name: /delete selected/i })),
     ).toBeVisible();
+  });
+
+  test("primary column cannot be hidden from the columns control", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/wines");
+
+    await page.getByRole("button", { name: /configure table/i }).click();
+
+    // The "Wine Name" column is marked isHideable: false (primary) — its toggle
+    // is shown but disabled. A hideable column ("Winemaker") stays enabled.
+    await expect(page.locator("#column-toggle-name")).toBeDisabled();
+    await expect(page.locator("#column-toggle-winemaker")).toBeEnabled();
+  });
+
+  test("can hide a column via the columns control", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/wines");
+
+    await expect(
+      page.getByRole("columnheader", { name: /winemaker/i }),
+    ).toBeVisible();
+
+    await page.getByRole("button", { name: /configure table/i }).click();
+    await page.locator("#column-toggle-winemaker").click();
+
+    await expect(
+      page.getByRole("columnheader", { name: /winemaker/i }),
+    ).toBeHidden();
+  });
+
+  test("column visibility preference persists across reload", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/wines");
+
+    await page.getByRole("button", { name: /configure table/i }).click();
+    await page.locator("#column-toggle-winemaker").click();
+    await expect(
+      page.getByRole("columnheader", { name: /winemaker/i }),
+    ).toBeHidden();
+
+    // The save goes through a Next.js server action (browser-invisible), so poll
+    // the mock server until the preference is persisted before reloading.
+    await expect
+      .poll(async () => {
+        const res = await fetch(`${MOCK_SERVER}/api/user/preferences`);
+        const prefs: Array<{ key: string }> = await res.json();
+        return prefs.some((p) => p.key.includes("columns.visibility"));
+      })
+      .toBe(true);
+
+    await page.reload();
+
+    // The saved preference should apply on first paint — column stays hidden.
+    await expect(
+      page.getByRole("columnheader", { name: /winemaker/i }),
+    ).toBeHidden();
   });
 });
