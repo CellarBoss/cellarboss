@@ -18,12 +18,18 @@ type DataTableFooterProps<T> = {
   setPagination: (
     newPag: PaginationState | ((prev: PaginationState) => PaginationState),
   ) => void;
+  // Content column order (selection column excluded) and its setter, for the
+  // configure-table drag-and-drop reordering control.
+  columnOrder: string[];
+  onColumnOrderChange: (next: string[]) => void;
 };
 
 export default function DataTableFooter<T>({
   table,
   pageCount,
   setPagination,
+  columnOrder,
+  onColumnOrderChange,
 }: DataTableFooterProps<T>) {
   "use no memo"; // reads live pagination & visible-column state from the table
 
@@ -36,7 +42,11 @@ export default function DataTableFooter<T>({
         <TableCell colSpan={colSpan}>
           <div className="flex w-full flex-col items-center gap-2 sm:relative sm:flex-row">
             <div className="order-3 sm:order-none">
-              <DataTableColumnsControl table={table} />
+              <DataTableColumnsControl
+                table={table}
+                columnOrder={columnOrder}
+                onColumnOrderChange={onColumnOrderChange}
+              />
             </div>
             <div className="order-1 sm:absolute sm:left-1/2 sm:-translate-x-1/2">
               <PaginationControl
