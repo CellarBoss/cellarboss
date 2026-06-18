@@ -6,6 +6,7 @@ import { AppSidebar } from "@/components/sidebar/AppSidebar";
 import { MobileHeader } from "@/components/sidebar/MobileHeader";
 import { LoadingCard } from "@/components/cards/LoadingCard";
 import { VersionMismatchBanner } from "@/components/page/VersionMismatchBanner";
+import { PreferencesProvider } from "@/contexts/preferences-context";
 import Providers from "@/app/providers";
 
 export const metadata: Metadata = {
@@ -33,7 +34,9 @@ export default async function RootLayout({
                 <MobileHeader />
                 <VersionMismatchBanner />
                 <div className="w-full bg-card shadow-sm rounded-lg p-4 md:p-10">
-                  <Suspense fallback={<LoadingCard />}>{children}</Suspense>
+                  <Suspense fallback={<LoadingCard />}>
+                    <PreferencesProvider>{children}</PreferencesProvider>
+                  </Suspense>
                 </div>
               </main>
             </div>
