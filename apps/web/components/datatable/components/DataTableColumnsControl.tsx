@@ -19,6 +19,10 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import {
+  restrictToParentElement,
+  restrictToVerticalAxis,
+} from "@dnd-kit/modifiers";
+import {
   SortableContext,
   arrayMove,
   sortableKeyboardCoordinates,
@@ -160,6 +164,7 @@ export function DataTableColumnsControl<T>({
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
+            modifiers={[restrictToVerticalAxis, restrictToParentElement]}
             onDragEnd={handleDragEnd}
           >
             <SortableContext
