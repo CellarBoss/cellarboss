@@ -412,6 +412,8 @@ export default function BottlesPage() {
       enableSorting: true,
       enableColumnFilter: true,
       meta: { defaultVisible: false },
+      cell: ({ row }: { row: { original: Bottle } }) =>
+        formatBottleSize(row.original.size),
     },
     {
       accessorKey: "status",
