@@ -20,6 +20,8 @@ export default function DataTableRow<T>({
   canExpand,
   isContext,
 }: DataTableRowProps<T>) {
+  "use no memo"; // visible cells derive from live table visibility state
+
   const cells = row.getVisibleCells();
   const firstDataCellIndex = cells.findIndex((c) => c.column.id !== "select");
 

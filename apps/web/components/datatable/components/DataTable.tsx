@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import {
   ColumnDef,
   getCoreRowModel,
@@ -33,8 +34,10 @@ import {
 import { RowSelectionContext } from "../selection/RowSelectionContext";
 import { useDataTableState } from "../hooks/useDataTableState";
 import { useDataTableUrlState } from "../hooks/useDataTableUrlState";
+import { useColumnVisibilityPreference } from "../hooks/useColumnVisibilityPreference";
 import { useBulkActions } from "../hooks/useBulkActions";
 import { processColumnsWithFilters } from "../utils/processColumns";
+import { normaliseTableId } from "../utils/tablePreferences";
 import { getContextRows } from "../utils/contextRowCalculations";
 import { calculatePaginationMetrics } from "../utils/paginationCalculations";
 import { createTableStateUpdater } from "../hooks/useDataTableState";
@@ -60,6 +63,11 @@ type DataTableProps<T> = {
     partial: Record<string, string | number>,
   ) => Promise<void>;
   filters?: FilterDef[];
+  /**
+   * Stable identifier for persisting per-user column visibility. Defaults to
+   * the current pathname, which is sufficient when a route renders one table.
+   */
+  tableId?: string;
 };
 
 export function DataTable<T>({
@@ -76,8 +84,13 @@ export function DataTable<T>({
   bulkEditFields,
   onBulkEdit,
   filters,
+  tableId,
 }: DataTableProps<T>) {
   const hasExpansion = !!(getSubRows || renderDetail);
+  const pathname = usePathname();
+  // Normalise into a key-safe id (lowercase dotted segments) so the stored
+  // preference key always passes the backend key validator, whatever the route.
+  const resolvedTableId = normaliseTableId(tableId ?? pathname);
 
   // URL-backed state: column filters (including search), pagination, expansion
   const {
@@ -95,8 +108,17 @@ export function DataTable<T>({
     defaultExpanded: defaultExpanded ?? (getSubRows ? true : {}),
   });
 
-  // React state: sorting, row selection, visibility, dialogs
-  const state = useDataTableState(columns, defaultSortColumn);
+  // React state: sorting, row selection, dialogs
+  const state = useDataTableState(defaultSortColumn);
+
+  // Column visibility is owned by this hook, synced with per-user preference
+  // storage. The page gate loads preferences first, so the saved visibility
+  // applies synchronously on the first render.
+  const { columnVisibility, onColumnVisibilityChange } =
+    useColumnVisibilityPreference({
+      tableId: resolvedTableId,
+      columns,
+    });
 
   // Prepare data
   const displayData = data ?? [];
@@ -120,13 +142,11 @@ export function DataTable<T>({
       pagination,
       columnFilters,
       sorting: state.sorting,
-      columnVisibility: state.columnVisibility,
+      columnVisibility,
       ...(hasExpansion ? { expanded } : {}),
       ...(enableRowSelection ? { rowSelection: state.rowSelection } : {}),
     },
-    onColumnVisibilityChange: createTableStateUpdater(
-      state.setColumnVisibility,
-    ),
+    onColumnVisibilityChange,
     ...(enableRowSelection
       ? {
           enableRowSelection: true,
@@ -155,8 +175,8 @@ export function DataTable<T>({
       : {}),
   });
 
-  // Get pagination metrics
-  const { pageSize, pageCount } = calculatePaginationMetrics(
+  // Get pagination metrics (pageCount is hierarchy-aware, hence the custom calc)
+  const { pageCount } = calculatePaginationMetrics(
     table,
     pagination,
     getSubRows,
@@ -242,10 +262,8 @@ export function DataTable<T>({
           ))}
         </TableBody>
         <DataTableFooter
-          columns={processedColumns}
-          pagination={pagination}
+          table={table}
           pageCount={pageCount}
-          pageSize={pageSize}
           setPagination={setPagination}
         />
       </Table>

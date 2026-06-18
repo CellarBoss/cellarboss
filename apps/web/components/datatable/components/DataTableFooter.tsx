@@ -1,35 +1,43 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import { Table as TableInstance } from "@tanstack/react-table";
 import type { PaginationState } from "@tanstack/react-table";
 
 import { TableCell, TableFooter, TableRow } from "@/components/ui/table";
 
 import { PaginationControl } from "./PaginationControl";
 import { PaginationSelector } from "./PaginationSelector";
+import { DataTableColumnsControl } from "./DataTableColumnsControl";
 
 type DataTableFooterProps<T> = {
-  columns: ColumnDef<T>[];
-  pagination: PaginationState;
+  table: TableInstance<T>;
+  // pageCount uses a custom (hierarchy-aware) calc, and pagination is controlled
+  // via nuqs rather than the table's onPaginationChange — so these can't be read
+  // off the table and stay as props.
   pageCount: number;
-  pageSize: number;
   setPagination: (
     newPag: PaginationState | ((prev: PaginationState) => PaginationState),
   ) => void;
 };
 
 export default function DataTableFooter<T>({
-  columns,
-  pagination,
+  table,
   pageCount,
-  pageSize,
   setPagination,
 }: DataTableFooterProps<T>) {
+  "use no memo"; // reads live pagination & visible-column state from the table
+
+  const pagination = table.getState().pagination;
+  const colSpan = table.getVisibleLeafColumns().length;
+
   return (
     <TableFooter>
       <TableRow>
-        <TableCell colSpan={columns.length}>
+        <TableCell colSpan={colSpan}>
           <div className="flex w-full flex-col items-center gap-2 sm:relative sm:flex-row">
+            <div className="order-3 sm:order-none">
+              <DataTableColumnsControl table={table} />
+            </div>
             <div className="order-1 sm:absolute sm:left-1/2 sm:-translate-x-1/2">
               <PaginationControl
                 pagination={pagination}
@@ -50,7 +58,7 @@ export default function DataTableFooter<T>({
             </div>
             <div className="order-2 flex items-center gap-2 sm:ml-auto">
               <PaginationSelector
-                pageSize={pageSize}
+                pageSize={pagination.pageSize}
                 onPageSizeChange={(size) =>
                   setPagination((p) => ({
                     ...p,

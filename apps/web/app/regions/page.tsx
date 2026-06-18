@@ -17,6 +17,7 @@ import { AddButton } from "@/components/buttons/AddButton";
 import { getCountries } from "@/lib/api/countries";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
+import { usePreferences } from "@/hooks/use-preferences";
 
 export default function RegionsPage() {
   const queryClient = useQueryClient();
@@ -67,7 +68,8 @@ export default function RegionsPage() {
     queryFn: getCountries,
   });
 
-  const result = queryGate([regionQuery, countryQuery]);
+  const preferencesQuery = usePreferences();
+  const result = queryGate([regionQuery, countryQuery, preferencesQuery]);
   if (!result.ready) return result.gate;
 
   const [regionsList, countryList] = result.data;
@@ -97,6 +99,7 @@ export default function RegionsPage() {
       header: "Region Name",
       enableColumnFilter: true,
       enableSorting: true,
+      meta: { isHideable: false },
       cell: ({ row }: { row: { original: Region } }) => {
         return <a href={"/regions/" + row.original.id}>{row.original.name}</a>;
       },

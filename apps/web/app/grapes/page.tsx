@@ -11,6 +11,7 @@ import { AddButton } from "@/components/buttons/AddButton";
 import { deleteGrape, getGrapes } from "@/lib/api/grapes";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
+import { usePreferences } from "@/hooks/use-preferences";
 
 export default function GrapesPage() {
   const queryClient = useQueryClient();
@@ -39,7 +40,8 @@ export default function GrapesPage() {
 
   const grapeQuery = useApiQuery({ queryKey: ["grapes"], queryFn: getGrapes });
 
-  const result = queryGate([grapeQuery]);
+  const preferencesQuery = usePreferences();
+  const result = queryGate([grapeQuery, preferencesQuery]);
   if (!result.ready) return result.gate;
 
   const [grapesList] = result.data;
@@ -50,6 +52,7 @@ export default function GrapesPage() {
       header: "Grape Name",
       enableColumnFilter: true,
       enableSorting: true,
+      meta: { isHideable: false },
       cell: ({ row }: { row: { original: Grape } }) => {
         return <a href={"/grapes/" + row.original.id}>{row.original.name}</a>;
       },

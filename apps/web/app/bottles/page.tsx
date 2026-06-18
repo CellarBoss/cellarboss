@@ -33,6 +33,7 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useSettingsContext } from "@/contexts/settings-context";
 import { queryGate } from "@/lib/functions/query-gate";
+import { usePreferences } from "@/hooks/use-preferences";
 import {
   formatPrice,
   formatStatus,
@@ -92,6 +93,7 @@ export default function BottlesPage() {
   });
   const settings = useSettingsContext();
 
+  const preferencesQuery = usePreferences();
   const result = queryGate([
     bottleQuery,
     vintageQuery,
@@ -101,6 +103,7 @@ export default function BottlesPage() {
     locationQuery,
     regionQuery,
     countryQuery,
+    preferencesQuery,
   ]);
   if (!result.ready) return result.gate;
 
@@ -297,6 +300,7 @@ export default function BottlesPage() {
       header: "Wine",
       enableSorting: true,
       enableColumnFilter: true,
+      meta: { isHideable: false },
       accessorFn: (row: Bottle) =>
         getVintageName(row.vintageId, vintageMap, wineMap, winemakerMap),
       cell: ({ row }: { row: { original: Bottle } }) => {
@@ -407,7 +411,9 @@ export default function BottlesPage() {
       header: "Size",
       enableSorting: true,
       enableColumnFilter: true,
-      meta: { hidden: true },
+      meta: { defaultVisible: false },
+      cell: ({ row }: { row: { original: Bottle } }) =>
+        formatBottleSize(row.original.size),
     },
     {
       accessorKey: "status",
@@ -421,6 +427,7 @@ export default function BottlesPage() {
       header: "",
       size: 100,
       enableSorting: false,
+      meta: { isHideable: false },
       cell: ({ row }: { row: { original: Bottle } }) => (
         <div className="flex gap-1 justify-center mx-5">
           <ViewButton
@@ -456,7 +463,7 @@ export default function BottlesPage() {
       header: "",
       enableColumnFilter: true,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { isSuppressed: true },
       accessorFn: (row: Bottle) =>
         String(vintageMap.get(row.vintageId)?.wineId ?? ""),
     },
@@ -466,7 +473,7 @@ export default function BottlesPage() {
       header: "",
       enableColumnFilter: true,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { isSuppressed: true },
       accessorFn: (row: Bottle) => vintageMap.get(row.vintageId)?.year ?? 0,
     },
     {
@@ -475,7 +482,7 @@ export default function BottlesPage() {
       header: "",
       enableColumnFilter: true,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { isSuppressed: true },
       accessorFn: (row: Bottle) =>
         wineMap.get(vintageMap.get(row.vintageId)?.wineId ?? 0)?.type ?? "",
     },
@@ -485,7 +492,7 @@ export default function BottlesPage() {
       header: "",
       enableColumnFilter: true,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { isSuppressed: true },
       accessorFn: (row: Bottle) => {
         const vintage = vintageMap.get(row.vintageId);
         if (!vintage) return "unknown";
@@ -502,7 +509,7 @@ export default function BottlesPage() {
       header: "",
       enableColumnFilter: true,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { isSuppressed: true },
       accessorFn: (row: Bottle) => {
         const vintage = vintageMap.get(row.vintageId);
         if (!vintage) return "";

@@ -20,6 +20,7 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
+import { usePreferences } from "@/hooks/use-preferences";
 import WineDetailRow from "@/components/datatable/components/detail/WineDetailRow";
 import {
   WINE_TYPE_COLORS,
@@ -93,11 +94,13 @@ export default function WinesPage() {
     queryFn: getCountries,
   });
 
+  const preferencesQuery = usePreferences();
   const result = queryGate([
     wineQuery,
     winemakerQuery,
     regionQuery,
     countryQuery,
+    preferencesQuery,
   ]);
   if (!result.ready) return result.gate;
 
@@ -166,6 +169,7 @@ export default function WinesPage() {
       header: "Wine Name",
       enableColumnFilter: true,
       enableSorting: true,
+      meta: { isHideable: false },
       cell: ({ row }) => (
         <div className="flex items-center justify-between gap-2 flex-1 min-w-0">
           <a href={"/wines/" + row.original.id}>{row.original.name}</a>
@@ -182,7 +186,7 @@ export default function WinesPage() {
       header: "Type",
       enableColumnFilter: false,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { isSuppressed: true },
     },
     {
       id: "winemaker",
@@ -256,7 +260,7 @@ export default function WinesPage() {
       header: "Country",
       enableColumnFilter: false,
       enableSorting: false,
-      meta: { hidden: true },
+      meta: { isSuppressed: true },
     },
     {
       accessorKey: "options",
@@ -264,6 +268,7 @@ export default function WinesPage() {
       header: "",
       size: 100,
       enableSorting: false,
+      meta: { isHideable: false },
       cell: ({ row }) => {
         return (
           <div className="flex gap-1 justify-center mx-5">

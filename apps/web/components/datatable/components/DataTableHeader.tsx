@@ -15,6 +15,8 @@ export default function DataTableHeader<T>({
   table,
   sorting,
 }: DataTableHeaderProps<T>) {
+  "use no memo"; // header columns derive from live table visibility state
+
   return (
     <TableHeader>
       {table.getHeaderGroups().map((headerGroup: any) => (
