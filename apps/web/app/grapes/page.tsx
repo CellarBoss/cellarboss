@@ -11,7 +11,6 @@ import { AddButton } from "@/components/buttons/AddButton";
 import { deleteGrape, getGrapes } from "@/lib/api/grapes";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
-import { usePreferences } from "@/hooks/use-preferences";
 
 export default function GrapesPage() {
   const queryClient = useQueryClient();
@@ -40,8 +39,7 @@ export default function GrapesPage() {
 
   const grapeQuery = useApiQuery({ queryKey: ["grapes"], queryFn: getGrapes });
 
-  const preferencesQuery = usePreferences();
-  const result = queryGate([grapeQuery, preferencesQuery]);
+  const result = queryGate([grapeQuery]);
   if (!result.ready) return result.gate;
 
   const [grapesList] = result.data;

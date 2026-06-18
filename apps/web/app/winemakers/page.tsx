@@ -11,7 +11,6 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
-import { usePreferences } from "@/hooks/use-preferences";
 
 export default function WinemakersPage() {
   const queryClient = useQueryClient();
@@ -43,8 +42,7 @@ export default function WinemakersPage() {
     queryFn: getWinemakers,
   });
 
-  const preferencesQuery = usePreferences();
-  const result = queryGate([winemakerQuery, preferencesQuery]);
+  const result = queryGate([winemakerQuery]);
   if (!result.ready) return result.gate;
 
   const [winemakersList] = result.data;

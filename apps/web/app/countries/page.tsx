@@ -11,7 +11,6 @@ import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
-import { usePreferences } from "@/hooks/use-preferences";
 
 export default function CountriesPage() {
   const queryClient = useQueryClient();
@@ -43,8 +42,7 @@ export default function CountriesPage() {
     queryFn: getCountries,
   });
 
-  const preferencesQuery = usePreferences();
-  const result = queryGate([countryQuery, preferencesQuery]);
+  const result = queryGate([countryQuery]);
   if (!result.ready) return result.gate;
 
   const [countriesList] = result.data;
