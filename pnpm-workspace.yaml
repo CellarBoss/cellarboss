@@ -9,6 +9,10 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
 
+overrides:
+  # @better-auth/core@1.6.x peer-requires EXACTLY better-call 1.3.6 (not a held-back version - it's the version this better-auth line is built against; 2.x is a future major it doesn't support). The dev-only @better-auth/cli lags at 1.4.x and would otherwise drag in better-call 1.1.8, leaving core's peer unmet. Pin the whole workspace to 1.3.6. Renovate must NOT bump this across the v2 major (2.x drops the root serializeCookie export better-auth imports).
+  better-call: 1.3.6
+
 catalog:
   '@tanstack/react-query': 5.101.0
   '@tanstack/react-form': 1.33.0
@@ -16,9 +20,6 @@ catalog:
   'react': 19.2.0
   'react-dom': 19.2.0
   'react-test-renderer': 19.2.0
-
-overrides:
-  better-call: 1.3.6 # Pin to the 1.3.x line better-auth targets; @better-auth/cli drags in an older version, so dedupe here. Do NOT bump across the v2 major - 2.x drops the root serializeCookie export better-auth imports.
 
 onlyBuiltDependencies:
   - better-sqlite3
