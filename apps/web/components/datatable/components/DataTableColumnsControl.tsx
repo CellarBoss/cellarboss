@@ -9,28 +9,28 @@ import {
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { GripVertical, Settings2 } from "lucide-react";
+import { DragDropProvider } from "@dnd-kit/react";
+import { useSortable } from "@dnd-kit/react/sortable";
 import {
-  DndContext,
-  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
-  closestCenter,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  restrictToParentElement,
-  restrictToVerticalAxis,
-} from "@dnd-kit/modifiers";
-import {
-  SortableContext,
-  arrayMove,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+  PointerActivationConstraints,
+} from "@dnd-kit/dom";
+import { move } from "@dnd-kit/helpers";
+import { RestrictToVerticalAxis } from "@dnd-kit/abstract/modifiers";
 import { columnMenuLabel } from "../utils/columnOrder";
+
+// Activate dragging after a small pointer movement rather than the library's
+// default press-and-hold delay, so a column can be grabbed and reordered in one
+// motion. KeyboardSensor keeps the list reorderable via the keyboard.
+const sensors = [
+  PointerSensor.configure({
+    activationConstraints: [
+      new PointerActivationConstraints.Distance({ value: 4 }),
+    ],
+  }),
+  KeyboardSensor,
+];
 
 /** Human-readable label for a column, or null if it shouldn't appear in the menu. */
 function getColumnLabel<T>(column: Column<T, unknown>): string | null {
@@ -41,32 +41,21 @@ function getColumnLabel<T>(column: Column<T, unknown>): string | null {
 function SortableColumnItem<T>({
   column,
   label,
+  index,
 }: {
   column: Column<T, unknown>;
   label: string;
+  index: number;
 }) {
   "use no memo"; // reads live, mutable column visibility state
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    setActivatorNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: column.id });
+  const { ref, handleRef, isDragging } = useSortable({ id: column.id, index });
 
   const canHide = column.getCanHide();
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
+      ref={ref}
       className={
         "flex items-center gap-2 " +
         (isDragging ? "relative z-10 opacity-80" : "")
@@ -74,11 +63,9 @@ function SortableColumnItem<T>({
     >
       <button
         type="button"
-        ref={setActivatorNodeRef}
+        ref={handleRef}
         className="cursor-grab touch-none text-muted-foreground active:cursor-grabbing"
         aria-label={`Reorder ${label}`}
-        {...attributes}
-        {...listeners}
       >
         <GripVertical className="h-4 w-4" />
       </button>
@@ -130,22 +117,7 @@ export function DataTableColumnsControl<T>({
         !!column && getColumnLabel(column) !== null,
     );
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
-
   if (items.length === 0) return null;
-
-  const handleDragEnd = ({ active, over }: DragEndEvent) => {
-    if (!over || active.id === over.id) return;
-    const from = columnOrder.indexOf(String(active.id));
-    const to = columnOrder.indexOf(String(over.id));
-    if (from === -1 || to === -1) return;
-    onColumnOrderChange(arrayMove(columnOrder, from, to));
-  };
 
   return (
     <Popover>
@@ -161,27 +133,32 @@ export function DataTableColumnsControl<T>({
           <p className="text-xs text-muted-foreground">
             Drag to reorder. Toggle to show or hide.
           </p>
-          <DndContext
+          <DragDropProvider
             sensors={sensors}
-            collisionDetection={closestCenter}
-            modifiers={[restrictToVerticalAxis, restrictToParentElement]}
-            onDragEnd={handleDragEnd}
+            modifiers={[RestrictToVerticalAxis]}
+            onDragEnd={(event) => {
+              if (event.operation.canceled) return;
+              // With optimistic sorting the dragged item ends up over itself in
+              // its new slot, so source/target ids can match even on a real move.
+              // Let `move` compute the order from the projected index and only
+              // persist when it actually changed.
+              const next = move(columnOrder, event);
+              if (next.join() !== columnOrder.join()) {
+                onColumnOrderChange(next);
+              }
+            }}
           >
-            <SortableContext
-              items={items.map((column) => column.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className="space-y-2">
-                {items.map((column) => (
-                  <SortableColumnItem
-                    key={column.id}
-                    column={column}
-                    label={getColumnLabel(column) as string}
-                  />
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
+            <div className="space-y-2">
+              {items.map((column, index) => (
+                <SortableColumnItem
+                  key={column.id}
+                  column={column}
+                  label={getColumnLabel(column) as string}
+                  index={index}
+                />
+              ))}
+            </div>
+          </DragDropProvider>
         </div>
       </PopoverContent>
     </Popover>
