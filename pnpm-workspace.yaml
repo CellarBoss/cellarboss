@@ -18,7 +18,7 @@ catalog:
   'react-test-renderer': 19.2.0
 
 overrides:
-  better-call: 2.0.4 # Required until @better-auth/cli is updated to depend on a newer better-call version
+  better-call: 1.3.6 # Pin to the 1.3.x line better-auth targets; @better-auth/cli drags in an older version, so dedupe here. Do NOT bump across the v2 major - 2.x drops the root serializeCookie export better-auth imports.
 
 onlyBuiltDependencies:
   - better-sqlite3
