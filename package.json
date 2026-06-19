@@ -3,13 +3,13 @@
   "packageManager": "pnpm@11.6.0",
   "scripts": {
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prepare": "husky"
+    "prepare": "lefthook install"
   },
   "lint-staged": {
     "*.{ts,tsx,md}": "prettier --write"
   },
   "devDependencies": {
-    "husky": "9.1.7",
+    "lefthook": "2.1.9",
     "lint-staged": "17.0.7",
     "prettier": "3.8.4"
   }
