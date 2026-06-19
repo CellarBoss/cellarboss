@@ -27,6 +27,8 @@ Thank you for your interest in contributing. This document covers everything you
    pnpm install
    ```
 
+   This also installs the Git pre-commit hook via [Lefthook](https://lefthook.dev/) (through the `prepare` script), which auto-formats staged files on commit.
+
 3. **Configure environment variables**
 
    See [docs/backend.md](docs/backend.md) and [docs/web.md](docs/web.md) for descriptions of each variable.
@@ -83,7 +85,7 @@ See [docs/backend.md](docs/backend.md) and [docs/web.md](docs/web.md) for more d
 ## Code Style
 
 - TypeScript is used throughout; avoid `any` where possible
-- Formatting is enforced by Prettier — run `pnpm format` before committing
+- Formatting is enforced by Prettier — a Lefthook pre-commit hook formats staged files automatically, or run `pnpm format` to format the whole repo manually
 - Linting is enforced by ESLint — run `pnpm lint` to check
 - Prefer editing existing abstractions over introducing new ones unless clearly necessary
 
