@@ -49,6 +49,11 @@
       ]
     },
     {
+      "description": "Do not bump better-call. It is pinned via pnpm overrides to satisfy better-auth's exact peer (@better-auth/core peer-requires better-call 1.3.6) and must move in lockstep with better-auth, not independently - never across the v2 major, which drops the root serializeCookie export better-auth imports. Update manually when @better-auth/cli catches up to the 1.6 line.",
+      "matchPackageNames": ["/^better-call$/"],
+      "enabled": false
+    },
+    {
       "matchUpdateTypes": ["patch", "digest"],
       "minimumReleaseAge": "3 days",
       "automerge": true,
