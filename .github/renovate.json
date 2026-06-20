@@ -19,6 +19,7 @@
     "**/.next/**",
     "**/coverage/**"
   ],
+  "statusCheckNames": { "minimumReleaseAge": null },
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
