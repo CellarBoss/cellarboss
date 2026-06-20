@@ -8,7 +8,7 @@ import { spawn, type ChildProcess } from "child_process";
 const MOCK_SERVER_PORT = 5173;
 const MOCK_SERVER_URL = `http://localhost:${MOCK_SERVER_PORT}`;
 const WEB_SERVER_URL = "http://localhost:3000";
-const VIEWPORT = { width: 1280, height: 720 };
+const VIEWPORT = { width: 1800, height: 1100 };
 const OUTPUT_DIR = resolve(__dirname, "../public/screenshots");
 
 const SESSION_COOKIE_NAME = "better-auth.session_token";
@@ -46,7 +46,10 @@ async function createAuthenticatedContext(
     ? T
     : never,
 ): Promise<BrowserContext> {
-  const context = await browser.newContext({ viewport: VIEWPORT });
+  const context = await browser.newContext({
+    viewport: VIEWPORT,
+    deviceScaleFactor: 2,
+  });
   await context.addCookies([
     {
       name: SESSION_COOKIE_NAME,
