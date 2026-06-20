@@ -7,9 +7,8 @@ RUN corepack enable && corepack prepare --activate
 COPY apps/backend ./apps/backend
 COPY packages ./packages
 
-ENV LEFTHOOK=0
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm install --frozen-lockfile --store-dir /pnpm/store
+    CI=true pnpm install --frozen-lockfile --store-dir /pnpm/store
 
 RUN pnpm --filter backend build
 
