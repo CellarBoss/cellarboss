@@ -1,6 +1,10 @@
 FROM node:24.16.0-alpine@sha256:21f403ab171f2dc89bad4dd69d7721bfd15f084ccb46cdd225f31f2bc59b5c9a AS builder
 WORKDIR /app
 
+# Mark this as a non-interactive build: skips the root "prepare" hook install
+# (no git in the image) and lets pnpm proceed without TTY confirmation prompts.
+ENV CI=true
+
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 RUN corepack enable && corepack prepare --activate
@@ -8,7 +12,7 @@ COPY apps/backend ./apps/backend
 COPY packages ./packages
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    CI=true pnpm install --frozen-lockfile --store-dir /pnpm/store
+    pnpm install --frozen-lockfile --store-dir /pnpm/store
 
 RUN pnpm --filter backend build
 
