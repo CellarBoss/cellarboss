@@ -19,8 +19,6 @@
     "**/.next/**",
     "**/coverage/**"
   ],
-  "statusCheckNames": { "minimumReleaseAge": null },
-  "repositoryCache": "reset",
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
