@@ -29,6 +29,8 @@ import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { MoveBottleButton } from "@/components/buttons/MoveBottleButton";
 import { ChangeStatusButton } from "@/components/buttons/ChangeStatusButton";
 import { AddButton } from "@/components/buttons/AddButton";
+import { Button } from "@/components/ui/button";
+import { Link2 } from "lucide-react";
 import { PageHeader } from "@/components/page/PageHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useSettingsContext } from "@/contexts/settings-context";
@@ -533,6 +535,15 @@ export default function BottlesPage() {
         bulkEditFields={bulkEditFields}
         onBulkEdit={handleBulkEdit}
         buttons={[
+          <Button
+            key="import"
+            size="lg"
+            variant="outline"
+            onClick={() => router.push("/bottles/import")}
+            className="cursor-pointer"
+          >
+            <Link2 /> Import from URL
+          </Button>,
           <AddButton
             onClick={async () => router.push("/bottles/new")}
             subject="Bottle"
