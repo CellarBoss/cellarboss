@@ -1,5 +1,9 @@
-FROM node:24.16.0-alpine@sha256:21f403ab171f2dc89bad4dd69d7721bfd15f084ccb46cdd225f31f2bc59b5c9a AS builder
+FROM node:24.17.0-alpine@sha256:156b55f92e98ccd5ef49578a8cea0df4679826564bad1c9d4ef04462b9f0ded6 AS builder
 WORKDIR /app
+
+# Mark this as a non-interactive build: skips the root "prepare" hook install
+# (no git in the image) and lets pnpm proceed without TTY confirmation prompts.
+ENV CI=true
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
@@ -16,7 +20,7 @@ RUN pnpm --filter backend build
 # is live and the dependency graph can be resolved.
 RUN pnpm --filter backend deploy --legacy /deployment
 
-FROM node:24.16.0-alpine@sha256:21f403ab171f2dc89bad4dd69d7721bfd15f084ccb46cdd225f31f2bc59b5c9a AS runner
+FROM node:24.17.0-alpine@sha256:156b55f92e98ccd5ef49578a8cea0df4679826564bad1c9d4ef04462b9f0ded6 AS runner
 WORKDIR /app
 
 ARG APP_VERSION=development

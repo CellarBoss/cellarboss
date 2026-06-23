@@ -34,6 +34,17 @@ Select multiple rows using the checkboxes on the left side of the table. When ro
 
 Each row may have action buttons on the right side for quick access to view, edit, or delete operations.
 
+## Configure Table
+
+Click the **Configure Table** button below the table to customize which columns are shown and in what order.
+
+![DataTable column configuration](/screenshots/datatable-columns.png)
+
+- **Show or hide columns** — Toggle the checkbox next to a column name to control whether it appears in the table. Some columns are always shown and cannot be hidden.
+- **Reorder columns** — Drag a column by its handle to move it left or right in the table. You can also reorder using the keyboard: focus a handle and use the arrow keys.
+
+Your column visibility and ordering choices are saved to your preferences, so the table looks the same the next time you visit.
+
 ## URL State
 
 All table state — search text, active filters, current page, and page size — is stored in the URL using query parameters. This means:

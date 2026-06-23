@@ -1,9 +1,9 @@
 {
   "private": true,
-  "packageManager": "pnpm@11.6.0",
+  "packageManager": "pnpm@11.8.0",
   "scripts": {
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prepare": "lefthook install"
+    "prepare": "node -e \"if(!process.env.CI)require('node:child_process').execSync('lefthook install',{stdio:'inherit'})\""
   },
   "lint-staged": {
     "*.{ts,tsx,md}": "prettier --write"

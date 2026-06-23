@@ -7,8 +7,9 @@ type CaptureScreenshot = (
 ) => Promise<void>;
 
 /**
- * Captures screenshots for generic DataTable features: search, filters, bulk actions.
- * Uses the bottles page as a representative example.
+ * Captures screenshots for generic DataTable features: search, filters, bulk
+ * actions, and column configuration. Uses the bottles page as a representative
+ * example.
  */
 export async function capture(
   page: Page,
@@ -42,4 +43,15 @@ export async function capture(
   await selectAll.click();
   await page.waitForTimeout(300);
   await captureScreenshot(page, outputDir, "datatable-bulk");
+
+  // Configure Table — open the column control to show visibility/reorder options
+  await page.goto("http://localhost:3000/bottles");
+  await page.waitForSelector("table");
+  const configureButton = page.getByRole("button", { name: "Configure Table" });
+  await configureButton.click();
+  await page.waitForSelector("[data-slot='popover-content']");
+  await page.waitForTimeout(300);
+  await captureScreenshot(page, outputDir, "datatable-columns");
+  // Close popover
+  await page.keyboard.press("Escape");
 }

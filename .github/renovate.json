@@ -13,6 +13,7 @@
   "draftPR": false,
   "dependencyDashboard": true,
   "postUpdateOptions": ["pnpmDedupe"],
+  "statusCheckNames": { "minimumReleaseAge": null },
   "ignorePaths": [
     "**/dist/**",
     "**/build/**",
