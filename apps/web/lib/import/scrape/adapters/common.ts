@@ -112,6 +112,52 @@ export function extractOpenGraph($: CheerioAPI): Partial<ScrapedWine> {
 }
 
 /**
+ * Pull a JSON object literal out of an inline `<script>`, given the text that
+ * immediately precedes its opening brace (e.g. `const product =`). Many
+ * client-rendered retailers hydrate the page from a blob like this instead of
+ * exposing schema.org metadata, so this is the only reliable source of the
+ * structured fields. Braces inside string literals are handled, and the result
+ * is `null` if the marker is missing or the object can't be parsed.
+ */
+export function extractInlineObject(
+  html: string,
+  marker: string | RegExp,
+): Record<string, unknown> | null {
+  const re =
+    typeof marker === "string"
+      ? new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+      : marker;
+  const match = re.exec(html);
+  if (!match) return null;
+
+  const start = html.indexOf("{", match.index + match[0].length);
+  if (start === -1) return null;
+
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (let i = start; i < html.length; i++) {
+    const ch = html[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === "\\") escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') inString = true;
+    else if (ch === "{") depth++;
+    else if (ch === "}" && --depth === 0) {
+      try {
+        return JSON.parse(html.slice(start, i + 1)) as Record<string, unknown>;
+      } catch {
+        return null;
+      }
+    }
+  }
+  return null;
+}
+
+/**
  * Read a value from a spec list keyed by label text. Handles the common
  * markup shapes: `<dt>/<dd>` definition lists, `<th>/<td>` table rows, and
  * generic `label`/`value` element pairs marked with data attributes.

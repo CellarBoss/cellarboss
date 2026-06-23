@@ -42,6 +42,17 @@ const nakedWinesHtml = `<!doctype html><html><head>
 </table>
 </body></html>`;
 
+// The real Naked Wines page is client-rendered: no schema.org Product or spec
+// table, just OpenGraph tags plus an inline `const product = {...}` blob.
+const nakedWinesInlineHtml = `<!doctype html><html><head>
+<meta property="og:title" content="Benjamin Darnault Minervois 2025" />
+<meta property="og:description" content="A smooth, thoroughly quaffable classic." />
+<meta property="og:image" content="https://img.example/darnault.jpg" />
+<script>
+const product = {"productName":"Benjamin Darnault Minervois 2025","vintage":"2025","closureType":"Cork","productFamily":{"category":"Red","name":"Benjamin Darnault Minervois"},"wineGrape":"Grenache Blend","grape":[],"origin":"France","countryCode":"FR","region":"Languedoc-Roussillon","producer":{"firstName":"Benjamin","lastName":"Darnault","urlString":"benjamin-darnault"},"productStyleDesc":"Fruity Red","bottleSize":750,"size":750,"listPrice":14.99,"salePrice":14.99,"angelPrice":10.99};
+</script>
+</head><body></body></html>`;
+
 describe("registry.pickAdapter", () => {
   it("routes hostnames to the right adapter", () => {
     expect(
@@ -89,5 +100,26 @@ describe("Naked Wines adapter", () => {
     expect(wine.volumeMl).toBe(750);
     expect(wine.price).toBe(12.99);
     expect(wine.imageUrl).toBe("https://img.example/testarosso.jpg");
+  });
+
+  it("extracts details from the inline product blob of a client-rendered page", () => {
+    const url = new URL(
+      "https://www.nakedwines.co.uk/wines/benjamin-darnault-minervois-2025",
+    );
+    const wine = finaliseScrapedWine(
+      nakedWines.extract(nakedWinesInlineHtml, url),
+    );
+
+    expect(wine.name).toBe("Benjamin Darnault Minervois 2025");
+    expect(wine.winemaker).toBe("Benjamin Darnault");
+    expect(wine.country).toBe("France");
+    expect(wine.region).toBe("Languedoc-Roussillon");
+    expect(wine.grapes).toEqual(["Grenache Blend"]);
+    expect(wine.type).toBe("red");
+    expect(wine.vintageYear).toBe(2025);
+    expect(wine.volumeMl).toBe(750);
+    expect(wine.price).toBe(14.99);
+    expect(wine.imageUrl).toBe("https://img.example/darnault.jpg");
+    expect(wine.description).toBe("A smooth, thoroughly quaffable classic.");
   });
 });
