@@ -33,6 +33,7 @@ import {
 import { formatDateOnly } from "@/lib/functions/date";
 import { PageHeader } from "@/components/page/PageHeader";
 import { EntityResolver } from "@/components/import/EntityResolver";
+import { GrapeMultiSelect } from "@/components/import/GrapeMultiSelect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -73,6 +74,36 @@ type FormState = {
 
 const NONE = "__none__";
 
+/** Capacity in millilitres for each known bottle size. */
+const BOTTLE_SIZE_ML: Record<Bottle["size"], number> = {
+  piccolo: 187,
+  half: 375,
+  standard: 750,
+  litre: 1000,
+  magnum: 1500,
+  "double-magnum": 3000,
+  jeroboam: 4500,
+  imperial: 6000,
+  salmanazar: 9000,
+  balthazar: 12000,
+  nebuchadnezzar: 15000,
+};
+
+/** Map a scraped volume in millilitres to the closest known bottle size. */
+function bottleSizeFromMl(ml: number | null): Bottle["size"] {
+  if (ml == null) return "standard";
+  let best: Bottle["size"] = "standard";
+  let bestDiff = Infinity;
+  for (const size of BOTTLE_SIZES) {
+    const diff = Math.abs(BOTTLE_SIZE_ML[size] - ml);
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      best = size;
+    }
+  }
+  return best;
+}
+
 function resolvedFrom(
   matchId: number | null,
   scraped: string | null,
@@ -99,10 +130,10 @@ function buildInitialForm(draft: ImportDraft): FormState {
     drinkFrom: "",
     drinkUntil: "",
     purchaseDate: formatDateOnly(new Date()),
-    purchasePrice: "0",
+    purchasePrice: scraped.price != null ? String(scraped.price) : "0",
     storageId: NONE,
     status: "ordered",
-    size: "standard",
+    size: bottleSizeFromMl(scraped.volumeMl),
     quantity: "1",
   };
 }
@@ -358,31 +389,11 @@ export default function ImportBottlePage() {
                     allowNone
                   />
 
-                  <div className="flex flex-col gap-2">
-                    <Label>Grapes</Label>
-                    {form.grapes.length === 0 && (
-                      <p className="text-sm text-muted-foreground">
-                        None detected.
-                      </p>
-                    )}
-                    {form.grapes.map((grape, i) => (
-                      <EntityResolver
-                        key={i}
-                        label={`Grape ${i + 1}`}
-                        scrapedValue={grape.newName ?? null}
-                        entities={grapes as GenericType[]}
-                        value={grape}
-                        onChange={(v) =>
-                          update({
-                            grapes: form.grapes.map((g, j) =>
-                              j === i ? v : g,
-                            ),
-                          })
-                        }
-                        allowNone
-                      />
-                    ))}
-                  </div>
+                  <GrapeMultiSelect
+                    entities={grapes as GenericType[]}
+                    value={form.grapes}
+                    onChange={(v) => update({ grapes: v })}
+                  />
                 </>
               )}
             </CardContent>
