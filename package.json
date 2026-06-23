@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "lefthook": "2.1.9",
-    "lint-staged": "17.0.7",
+    "lint-staged": "17.0.8",
     "prettier": "3.8.4"
   }
 }
