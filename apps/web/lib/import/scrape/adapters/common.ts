@@ -207,6 +207,33 @@ export function extractSpecValue(
   return found;
 }
 
+/**
+ * Read a value from an icon-labelled spec list, where the field is identified
+ * by an SVG sprite reference (e.g. `<use xlink:href="…/sprite.svg#Grape-Type">`)
+ * rather than visible label text, and the value sits in a sibling `<span>`.
+ * Sites like The Wine Society render their product characteristics this way.
+ */
+export function extractIconSpec(
+  $: CheerioAPI,
+  spriteIds: string[],
+): string | null {
+  const wanted = spriteIds.map((s) => s.toLowerCase());
+  let found: string | null = null;
+  $("use").each((_, el) => {
+    if (found) return;
+    const href = (
+      $(el).attr("xlink:href") ??
+      $(el).attr("href") ??
+      ""
+    ).toLowerCase();
+    const id = href.split("#")[1];
+    if (!id || !wanted.includes(id)) return;
+    const value = $(el).closest("li").find("span").last().text().trim();
+    if (value) found = value;
+  });
+  return found;
+}
+
 /** Merge JSON-LD and OpenGraph, preferring the richer JSON-LD values. */
 export function extractCommon($: CheerioAPI): Partial<ScrapedWine> {
   const og = extractOpenGraph($);

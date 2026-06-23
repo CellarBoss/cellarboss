@@ -42,6 +42,36 @@ const nakedWinesHtml = `<!doctype html><html><head>
 </table>
 </body></html>`;
 
+// The real Wine Society page has no JSON-LD and labels its spec list with SVG
+// sprite icons (e.g. `#Grape-Type`), not text, with the value in a sibling span.
+const wineSocietyIconHtml = `<!doctype html><html><head>
+<meta property="og:title" content="Contino Reserva, Rioja 2017" />
+<meta property="og:image" content="https://img.example/contino.jpg" />
+</head><body>
+<div class="product-details__origin">
+  <svg class="icon icon--align-bottom icon--country-flag icon--margin-right" viewBox="0 0 24 24"><use xlink:href="/static/sprite.svg#spain"></use></svg>
+  Red Wine from Spain - Rioja
+</div>
+<h2 class="category-nav__title category-nav__title--country">
+  <svg class="icon icon--country-flag" viewBox="0 0 24 24"><use xlink:href="/static/sprite.svg#france"></use></svg>
+  France
+</h2>
+<ul class="product-characteristics__list">
+  <li class="product-characteristics__list-item-two-columns-right-column">
+    <svg viewBox="0 0 24 24"><use xlink:href="/static/sprite.svg#Style"></use></svg>
+    <span>Red Wine</span>
+  </li>
+  <li class="product-characteristics__list-item-two-columns-right-column">
+    <svg viewBox="0 0 24 24"><use xlink:href="/static/sprite.svg#Grape-Type"></use></svg>
+    <span>Tempranillo</span>
+  </li>
+  <li class="product-characteristics__list-item-two-columns-right-column">
+    <svg viewBox="0 0 24 24"><use xlink:href="/static/sprite.svg#Alcohol-Level"></use></svg>
+    <span>14% Alcohol</span>
+  </li>
+</ul>
+</body></html>`;
+
 // The real Naked Wines page is client-rendered: no schema.org Product or spec
 // table, just OpenGraph tags plus an inline `const product = {...}` blob.
 const nakedWinesInlineHtml = `<!doctype html><html><head>
@@ -82,6 +112,23 @@ describe("The Wine Society adapter", () => {
     expect(wine.volumeMl).toBe(750);
     expect(wine.price).toBe(19.5);
     expect(wine.imageUrl).toBe("https://img.example/coufran.jpg");
+  });
+
+  it("extracts grape and style from the icon-labelled spec list", () => {
+    const url = new URL(
+      "https://www.thewinesociety.com/product/contino-reserva-rioja-2017/",
+    );
+    const wine = finaliseScrapedWine(
+      theWineSociety.extract(wineSocietyIconHtml, url),
+    );
+
+    expect(wine.name).toBe("Contino Reserva, Rioja 2017");
+    expect(wine.country).toBe("Spain");
+    expect(wine.region).toBe("Rioja");
+    expect(wine.grapes).toEqual(["Tempranillo"]);
+    expect(wine.type).toBe("red");
+    expect(wine.vintageYear).toBe(2017);
+    expect(wine.imageUrl).toBe("https://img.example/contino.jpg");
   });
 });
 
