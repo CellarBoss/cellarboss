@@ -26,3 +26,19 @@ onlyBuiltDependencies:
   - better-sqlite3
   - esbuild
   - sharp
+
+minimumReleaseAgeExclude:
+  - '@expo/cli@55.0.33'
+  - '@expo/config@55.0.18'
+  - '@expo/local-build-cache-provider@55.0.14'
+  - '@expo/metro-config@55.0.24'
+  - '@expo/prebuild-config@55.0.19'
+  - babel-preset-expo@55.0.23
+  - expo-file-system@55.0.23
+  - expo@55.0.27
+  - expo-application@55.0.16
+  - expo-haptics@55.0.15
+  - expo-image-picker@55.0.21
+  - expo-linking@55.0.16
+  - expo-secure-store@55.0.15
+  - jest-expo@55.0.19
