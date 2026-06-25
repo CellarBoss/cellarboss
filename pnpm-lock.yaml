@@ -54,8 +54,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/validators
       '@hono/node-server':
-        specifier: 2.0.5
-        version: 2.0.5(hono@4.12.26)
+        specifier: 2.0.6
+        version: 2.0.6(hono@4.12.26)
       '@hono/zod-openapi':
         specifier: 1.4.0
         version: 1.4.0(hono@4.12.26)(zod@4.4.3)
@@ -478,8 +478,8 @@ importers:
         specifier: workspace:*
         version: link:../validators
       '@hono/node-server':
-        specifier: 2.0.5
-        version: 2.0.5(hono@4.12.26)
+        specifier: 2.0.6
+        version: 2.0.6(hono@4.12.26)
       hono:
         specifier: 4.12.26
         version: 4.12.26
@@ -2036,8 +2036,8 @@ packages:
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
 
-  '@hono/node-server@2.0.5':
-    resolution: {integrity: sha512-yQFvDmyDo3y6rEOJZDUYPJ49DIKTPpIk4kGvm40xx4Ejne0Pu9a1+exxPN+C1UppWK/WGZX9F++/Xs231tE86g==}
+  '@hono/node-server@2.0.6':
+    resolution: {integrity: sha512-7DeRlKG57JDBNZ5Qj2jwVdgwQy4b0tLubRLl3zCf91/rCf9i7p1V5FtW/yWibm1uUHE493ts9ZXH/7g/LQWl+g==}
     engines: {node: '>=20'}
     peerDependencies:
       hono: ^4
@@ -10885,7 +10885,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.11': {}
 
-  '@hono/node-server@2.0.5(hono@4.12.26)':
+  '@hono/node-server@2.0.6(hono@4.12.26)':
     dependencies:
       hono: 4.12.26
 
