@@ -52,7 +52,7 @@
     "react": "catalog:",
     "react-day-picker": "10.0.1",
     "react-dom": "catalog:",
-    "recharts": "3.8.1",
+    "recharts": "3.9.0",
     "tailwind-merge": "3.6.0",
     "tailwind-variants": "3.2.2",
     "zod": "4.4.3"
