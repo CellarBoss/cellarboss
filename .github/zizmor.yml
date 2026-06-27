@@ -1,0 +1,26 @@
+# zizmor configuration
+# https://docs.zizmor.sh/configuration/
+#
+# Each ignore below documents a finding we have reviewed and accepted as safe
+# for our setup. Prefer fixing findings (e.g. moving expansions into env vars,
+# scoping permissions per-job) over adding entries here.
+
+rules:
+  dangerous-triggers:
+    ignore:
+      # PR Test Reports uses `workflow_run` deliberately: it is the recommended
+      # secure pattern for posting coverage/Playwright comments on PRs from
+      # forks. It downloads artifacts produced by the untrusted PR run but never
+      # checks out or executes that PR's code.
+      - pr-report.yml
+      # PR Labeler uses `pull_request_target` so release-drafter's autolabeler
+      # gets a write-scoped token on fork PRs. It runs only the release-drafter
+      # actions and never checks out or executes the PR's code.
+      - pr-labeler.yml
+
+  cache-poisoning:
+    ignore:
+      # The Release workflow runs only on `v*.*.*` tags pushed by maintainers,
+      # not on untrusted PRs, so its build-input caches are not a realistic
+      # cache-poisoning vector.
+      - release.yml
