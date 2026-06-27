@@ -335,10 +335,13 @@ jobs:
           path: artifacts/
 
       - name: Generate What's New text
+        env:
+          RELEASE_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
         run: |
           mkdir -p whatsnew
-          echo "See what's new in this release: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}" > whatsnew/whatsnew-en-US
-          echo "See what's new in this release: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}" > whatsnew/whatsnew-en-GB
+          echo "See what's new in this release: https://github.com/${RELEASE_REPO}/releases/tag/${RELEASE_TAG}" > whatsnew/whatsnew-en-US
+          echo "See what's new in this release: https://github.com/${RELEASE_REPO}/releases/tag/${RELEASE_TAG}" > whatsnew/whatsnew-en-GB
 
       - name: Upload to Google Play (Internal Testing)
         uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5 # v1.1.5
@@ -369,7 +372,9 @@ jobs:
           path: artifacts/
 
       - name: Rename AAB with version
-        run: mv artifacts/app-release.aab artifacts/cellarboss-${{ github.ref_name }}-android.aab
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: mv artifacts/app-release.aab "artifacts/cellarboss-${RELEASE_TAG}-android.aab"
 
       - uses: release-drafter/release-drafter@ed4bc48ec97379be2258e7b7ac2624a3e26ab809 # v7.4.0
         id: release
@@ -381,9 +386,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload AAB to release
-        run: gh release upload ${{ github.ref_name }} artifacts/cellarboss-${{ github.ref_name }}-android.aab --clobber
+        run: gh release upload "$RELEASE_TAG" "artifacts/cellarboss-${RELEASE_TAG}-android.aab" --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ github.ref_name }}
 
   docker-frontend:
     name: Build & Push Frontend Image
