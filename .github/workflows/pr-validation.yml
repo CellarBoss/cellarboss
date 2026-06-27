@@ -51,3 +51,22 @@ jobs:
 
       - name: Check formatting
         run: pnpm prettier --check "**/*.{ts,tsx,md}"
+
+  zizmor:
+    name: Workflow Security Scan
+    runs-on: ubuntu-latest
+    if: github.event.action != 'edited'
+    permissions:
+      contents: read
+      security-events: write # upload SARIF to code scanning when available
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@192e21d79ab29983730a13d1382995c2307fbcaa # v0.5.7
+        with:
+          # Auto-detect whether code scanning (SARIF upload) is available;
+          # otherwise the action just fails the build on findings.
+          advanced-security: auto
