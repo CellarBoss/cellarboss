@@ -23,5 +23,4 @@ export type GroupedMultiSelectFilterDef = {
 };
 
 export type MultiSelectFilterDef =
-  | FlatMultiSelectFilterDef
-  | GroupedMultiSelectFilterDef;
+  FlatMultiSelectFilterDef | GroupedMultiSelectFilterDef;
