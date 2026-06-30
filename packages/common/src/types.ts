@@ -15,8 +15,7 @@ export class ApiQueryError extends Error {
 }
 
 export type ApiResult<T> =
-  | { ok: true; data: T }
-  | { ok: false; error: ApiError };
+  { ok: true; data: T } | { ok: false; error: ApiError };
 
 export type RequestFn = <T>(
   path: string,

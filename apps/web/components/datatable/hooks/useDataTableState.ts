@@ -30,8 +30,7 @@ export interface DataTableStateSetters {
   ) => void;
   setRowSelection: (
     selection:
-      | RowSelectionState
-      | ((prev: RowSelectionState) => RowSelectionState),
+      RowSelectionState | ((prev: RowSelectionState) => RowSelectionState),
   ) => void;
   setDeleteDialogOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
   setEditDialogOpen: (open: boolean | ((prev: boolean) => boolean)) => void;

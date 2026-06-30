@@ -26,9 +26,7 @@ export type {
   RangeFilterDef,
 };
 export type FilterDef =
-  | FlatMultiSelectFilterDef
-  | GroupedMultiSelectFilterDef
-  | RangeFilterDef;
+  FlatMultiSelectFilterDef | GroupedMultiSelectFilterDef | RangeFilterDef;
 
 type DataTableFilterControlProps<T> = {
   filters: FilterDef[];
@@ -62,8 +60,7 @@ function getFilterComponent<T>(
           table={table}
           activeValue={
             getFilterValue(columnFilters, filter.columnId) as
-              | RangeFilterValue
-              | undefined
+              RangeFilterValue | undefined
           }
         />
       );
@@ -75,8 +72,7 @@ function getFilterComponent<T>(
           table={table}
           activeValues={
             getFilterValue(columnFilters, filter.columnId) as
-              | string[]
-              | undefined
+              string[] | undefined
           }
         />
       );
@@ -88,8 +84,7 @@ function getFilterComponent<T>(
           table={table}
           activeValues={
             getFilterValue(columnFilters, filter.columnId) as
-              | string[]
-              | undefined
+              string[] | undefined
           }
         />
       );

@@ -25,8 +25,7 @@ type TreeNode = {
 
 function getParent(item: GenericType): number | null {
   return (item as unknown as Record<string, unknown>)["parent"] as
-    | number
-    | null;
+    number | null;
 }
 
 function buildFlatTree(

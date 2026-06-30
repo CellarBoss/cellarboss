@@ -211,8 +211,7 @@ export function useDataTableUrlState({
 
   function setColumnFilters(
     newFilters:
-      | ColumnFiltersState
-      | ((prev: ColumnFiltersState) => ColumnFiltersState),
+      ColumnFiltersState | ((prev: ColumnFiltersState) => ColumnFiltersState),
   ) {
     const resolved =
       typeof newFilters === "function" ? newFilters(columnFilters) : newFilters;

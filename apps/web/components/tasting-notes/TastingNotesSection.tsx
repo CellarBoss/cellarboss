@@ -31,8 +31,7 @@ export function TastingNotesSection({
   const queryClient = useQueryClient();
   const router = useRouter();
   const datetimeFormat = useSettingsContext().get("datetime") as
-    | string
-    | undefined;
+    string | undefined;
 
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const isVintageMode = props.vintageId !== undefined;
