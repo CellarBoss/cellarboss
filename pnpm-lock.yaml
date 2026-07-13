@@ -55,22 +55,22 @@ importers:
         version: link:../../packages/validators
       '@hono/node-server':
         specifier: 2.0.8
-        version: 2.0.8(hono@4.12.28)
+        version: 2.0.8(hono@4.12.29)
       '@hono/zod-openapi':
         specifier: 1.4.0
-        version: 1.4.0(hono@4.12.28)(zod@4.4.3)
+        version: 1.4.0(hono@4.12.29)(zod@4.4.3)
       '@hono/zod-validator':
         specifier: 0.8.0
-        version: 0.8.0(hono@4.12.28)(zod@4.4.3)
+        version: 0.8.0(hono@4.12.29)(zod@4.4.3)
       '@loglayer/hono':
         specifier: 2.3.0
-        version: 2.3.0(hono@4.12.28)(loglayer@9.3.0)
+        version: 2.3.0(hono@4.12.29)(loglayer@9.3.0)
       '@loglayer/transport-pino':
         specifier: 3.2.0
         version: 3.2.0(pino@10.3.1)
       '@scalar/hono-api-reference':
         specifier: 0.11.9
-        version: 0.11.9(hono@4.12.28)
+        version: 0.11.9(hono@4.12.29)
       better-auth:
         specifier: 1.6.23
         version: 1.6.23(@prisma/client@5.22.0)(better-sqlite3@12.11.1)(drizzle-orm@0.41.0(@prisma/client@5.22.0)(@types/better-sqlite3@7.6.13)(@types/pg@8.20.0)(better-sqlite3@12.11.1)(kysely@0.29.3)(mysql2@3.22.6(@types/node@24.13.3))(pg@8.22.0))(mysql2@3.22.6(@types/node@24.13.3))(next@16.2.10(@babel/core@7.29.7)(@playwright/test@1.61.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(pg@8.22.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vitest@4.1.10)(vue@3.5.39(typescript@5.9.3))
@@ -81,8 +81,8 @@ importers:
         specifier: 17.4.2
         version: 17.4.2
       hono:
-        specifier: 4.12.28
-        version: 4.12.28
+        specifier: 4.12.29
+        version: 4.12.29
       kysely:
         specifier: 0.29.3
         version: 0.29.3
@@ -479,10 +479,10 @@ importers:
         version: link:../validators
       '@hono/node-server':
         specifier: 2.0.8
-        version: 2.0.8(hono@4.12.28)
+        version: 2.0.8(hono@4.12.29)
       hono:
-        specifier: 4.12.28
-        version: 4.12.28
+        specifier: 4.12.29
+        version: 4.12.29
     devDependencies:
       tsx:
         specifier: 4.23.0
@@ -6041,8 +6041,8 @@ packages:
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
 
-  hono@4.12.28:
-    resolution: {integrity: sha512-YwUvVpSF7m1yOblFPrU3Hbo8XhPheBoiyfGuII6z19LnOr6JpDnyyp7LFNrfV56wS8tpvtBFGRISHN02pDdLOA==}
+  hono@4.12.29:
+    resolution: {integrity: sha512-1hNiRjawYrLq/4m3DQQjPGFg0VZkk4RjQJDff/excI6Dm9BiL75qxGrd7/c6YOxPdq6AscP3LiXhQ6fKFC1Waw==}
     engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
@@ -10773,21 +10773,21 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
-  '@hono/node-server@2.0.8(hono@4.12.28)':
+  '@hono/node-server@2.0.8(hono@4.12.29)':
     dependencies:
-      hono: 4.12.28
+      hono: 4.12.29
 
-  '@hono/zod-openapi@1.4.0(hono@4.12.28)(zod@4.4.3)':
+  '@hono/zod-openapi@1.4.0(hono@4.12.29)(zod@4.4.3)':
     dependencies:
       '@asteasolutions/zod-to-openapi': 8.5.0(zod@4.4.3)
-      '@hono/zod-validator': 0.8.0(hono@4.12.28)(zod@4.4.3)
-      hono: 4.12.28
+      '@hono/zod-validator': 0.8.0(hono@4.12.29)(zod@4.4.3)
+      hono: 4.12.29
       openapi3-ts: 4.6.0
       zod: 4.4.3
 
-  '@hono/zod-validator@0.8.0(hono@4.12.28)(zod@4.4.3)':
+  '@hono/zod-validator@0.8.0(hono@4.12.29)(zod@4.4.3)':
     dependencies:
-      hono: 4.12.28
+      hono: 4.12.29
       zod: 4.4.3
 
   '@humanfs/core@0.19.2':
@@ -11226,9 +11226,9 @@ snapshots:
     dependencies:
       '@loglayer/shared': 4.3.0
 
-  '@loglayer/hono@2.3.0(hono@4.12.28)(loglayer@9.3.0)':
+  '@loglayer/hono@2.3.0(hono@4.12.29)(loglayer@9.3.0)':
     dependencies:
-      hono: 4.12.28
+      hono: 4.12.29
       loglayer: 9.3.0
 
   '@loglayer/log-level-manager@2.2.0':
@@ -12166,10 +12166,10 @@ snapshots:
 
   '@scalar/helpers@0.9.0': {}
 
-  '@scalar/hono-api-reference@0.11.9(hono@4.12.28)':
+  '@scalar/hono-api-reference@0.11.9(hono@4.12.29)':
     dependencies:
       '@scalar/client-side-rendering': 0.3.2
-      hono: 4.12.28
+      hono: 4.12.29
 
   '@scalar/schemas@0.7.2':
     dependencies:
@@ -14955,7 +14955,7 @@ snapshots:
     dependencies:
       react-is: 16.13.1
 
-  hono@4.12.28: {}
+  hono@4.12.29: {}
 
   hookable@5.5.3: {}
 
