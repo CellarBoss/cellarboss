@@ -16,7 +16,7 @@ overrides:
 
 catalog:
   '@tanstack/react-query': 5.101.2
-  '@tanstack/react-form': 1.33.1
+  '@tanstack/react-form': 1.33.2
   '@tanstack/react-table': 8.21.3
   'react': 19.2.0
   'react-dom': 19.2.0
