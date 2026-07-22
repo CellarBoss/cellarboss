@@ -15,7 +15,7 @@ export const env = z
     LOG_LEVEL: z
       .enum(["trace", "debug", "info", "warn", "error"])
       .default("info"),
-    MCP_ENABLED: z.coerce.boolean().default(false),
+    MCP_ENABLED: z.stringbool().default(false),
     UPLOAD_DIR: z
       .string()
       .refine((p) => existsSync(p), {
