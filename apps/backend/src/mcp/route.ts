@@ -1,17 +1,23 @@
 import type { Hono } from "hono";
 import { StreamableHTTPTransport } from "@hono/mcp";
-import { mcpServer } from "./server.js";
+import { createMcpServer } from "./server.js";
 
-// Stateless, unauthenticated transport: no sessionIdGenerator, so every
-// request is handled independently and JSON-RPC responses come back as
-// plain JSON instead of an SSE stream.
+// Stateless, unauthenticated transport: a fresh server + transport pair is
+// created for every request (no sessionIdGenerator, no shared connection).
+// A single shared transport would let concurrent requests collide on
+// internal request-id bookkeeping when two clients happen to reuse the same
+// JSON-RPC id, and the SDK throws if connect() is called twice on the same
+// server without an intervening close().
 export function registerMcpRoutes(app: Hono<any>) {
-  const transport = new StreamableHTTPTransport({ enableJsonResponse: true });
-
   app.all("/mcp", async (c) => {
-    if (!mcpServer.isConnected()) {
-      await mcpServer.connect(transport);
+    const mcpServer = createMcpServer();
+    const transport = new StreamableHTTPTransport({ enableJsonResponse: true });
+    await mcpServer.connect(transport);
+    try {
+      return await transport.handleRequest(c);
+    } finally {
+      await transport.close();
+      await mcpServer.close();
     }
-    return transport.handleRequest(c);
   });
 }
