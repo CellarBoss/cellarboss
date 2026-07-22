@@ -23,6 +23,7 @@ DATABASE_TYPE=sqlite
 DATABASE_URL=database.sqlite
 NODE_ENV=development
 UPLOAD_DIR=/path/to/uploads
+MCP_ENABLED=false
 ```
 
 ## Scripts
@@ -49,6 +50,7 @@ src/
 ├── index.ts           # Entry point — creates Hono app, registers routes
 ├── controllers/       # Business logic (CRUD operations per entity)
 ├── routes/            # API route definitions with OpenAPI schemas
+├── mcp/                # Optional read-only MCP server (server.ts, route.ts)
 ├── middleware/        # auth.ts, admin.ts, error.ts
 ├── schema/            # Kysely database table interfaces
 ├── openapi/           # OpenAPI helper utilities
@@ -67,6 +69,15 @@ The API is OpenAPI-first, using `@hono/zod-openapi` for spec generation. CRUD ro
 - `requireAuth` — checks the session via Better Auth
 - `requireAdmin` — checks the user has the `admin` role
 - Error handler — maps Kysely errors and constraint violations to HTTP responses
+
+## MCP Server
+
+An optional [Model Context Protocol](https://modelcontextprotocol.io) server can be mounted at `/mcp`, gated by the `MCP_ENABLED` environment variable (default `false`). When enabled, it exposes read-only tools for the core cellar domain — `list_bottles`/`get_bottle`, `list_wines`/`get_wine`, `list_storages`/`get_storage`, and `list_locations`/`get_location` — backed directly by the existing controllers.
+
+The transport is stateless Streamable HTTP (`@hono/mcp` + `@modelcontextprotocol/sdk`) with no session tracking and no authentication — it's intended for trusted, internal-network use only (e.g. a local AI assistant talking to a self-hosted instance), not for exposure over the public internet.
+
+- `src/mcp/server.ts` — the `McpServer` instance and tool registrations
+- `src/mcp/route.ts` — mounts the `/mcp` route on the Hono app
 
 ## Database Support
 
