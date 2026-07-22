@@ -171,8 +171,10 @@ async function buildStorageLookups() {
   function storagePath(storageId: number | null): string | null {
     if (storageId === null) return null;
     const segments: string[] = [];
+    const visited = new Set<number>();
     let current: number | null = storageId;
-    while (current !== null) {
+    while (current !== null && !visited.has(current)) {
+      visited.add(current);
       const name = nameById.get(current);
       if (!name) break;
       segments.unshift(name);
