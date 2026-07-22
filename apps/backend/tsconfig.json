@@ -23,6 +23,9 @@
       "@controllers/*": [
         "./src/controllers/*"
       ],
+      "@mcp/*": [
+        "./src/mcp/*"
+      ],
       "@middleware/*": [
         "./src/middleware/*"
       ],

@@ -6,6 +6,7 @@ import { cors } from "hono/cors";
 import { auth } from "@utils/auth.js";
 import { env } from "@utils/env.js";
 import { registerRoutes } from "@routes/index.js";
+import { registerMcpRoutes } from "@mcp/route.js";
 import { errorHandler } from "@middleware/error.middleware.js";
 import { honoLogLayer, type HonoLogLayerVariables } from "@loglayer/hono";
 import { logger } from "@utils/logger.js";
@@ -70,6 +71,11 @@ api.get(
 );
 
 app.route("/api", api);
+
+// Optional read-only MCP (Model Context Protocol) server
+if (env.MCP_ENABLED) {
+  registerMcpRoutes(app);
+}
 
 serve(
   {
