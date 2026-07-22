@@ -1,9 +1,13 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import * as bottlesController from "@controllers/bottles.controller.js";
-import * as winesController from "@controllers/wines.controller.js";
 import * as storagesController from "@controllers/storages.controller.js";
 import * as locationsController from "@controllers/locations.controller.js";
+import {
+  listEnrichedWines,
+  getEnrichedWine,
+  listEnrichedBottles,
+  getEnrichedBottle,
+} from "./queries.js";
 import { env } from "@utils/env.js";
 
 export const mcpServer = new McpServer({
@@ -24,18 +28,22 @@ function notFoundResult(entity: string, id: number) {
 
 mcpServer.registerTool(
   "list_bottles",
-  { description: "List every bottle in the cellar inventory" },
-  async () => jsonResult(await bottlesController.list()),
+  {
+    description:
+      "List every bottle in the cellar inventory, with the wine/vintage it holds and its resolved storage location embedded (storagePath and location) rather than raw ids",
+  },
+  async () => jsonResult(await listEnrichedBottles()),
 );
 
 mcpServer.registerTool(
   "get_bottle",
   {
-    description: "Get a single bottle by its id",
+    description:
+      "Get a single bottle by its id, with the wine/vintage it holds and its resolved storage location embedded (storagePath and location) rather than raw ids",
     inputSchema: { id: z.number().int() },
   },
   async ({ id }) => {
-    const bottle = await bottlesController.getById(id);
+    const bottle = await getEnrichedBottle(id);
     return bottle ? jsonResult(bottle) : notFoundResult("Bottle", id);
   },
 );
@@ -44,19 +52,20 @@ mcpServer.registerTool(
   "list_wines",
   {
     description:
-      "List every wine (producer + label, independent of vintage or stock)",
+      "List every wine, one row per vintage, with winemaker, region/country, grape varieties, drinking window, and bottle counts by status embedded. The id field is the vintage id",
   },
-  async () => jsonResult(await winesController.list()),
+  async () => jsonResult(await listEnrichedWines()),
 );
 
 mcpServer.registerTool(
   "get_wine",
   {
-    description: "Get a single wine by its id",
+    description:
+      "Get a single wine at a specific vintage, with winemaker, region/country, grape varieties, drinking window, and bottle counts by status embedded. id is the vintage id, as returned by list_wines",
     inputSchema: { id: z.number().int() },
   },
   async ({ id }) => {
-    const wine = await winesController.getById(id);
+    const wine = await getEnrichedWine(id);
     return wine ? jsonResult(wine) : notFoundResult("Wine", id);
   },
 );
