@@ -23,6 +23,7 @@ DATABASE_TYPE=sqlite
 DATABASE_URL=database.sqlite
 NODE_ENV=development
 UPLOAD_DIR=/path/to/uploads
+MCP_ENABLED=false
 ```
 
 ## Scripts
@@ -49,6 +50,7 @@ src/
 ├── index.ts           # Entry point — creates Hono app, registers routes
 ├── controllers/       # Business logic (CRUD operations per entity)
 ├── routes/            # API route definitions with OpenAPI schemas
+├── mcp/                # Optional read-only MCP server (server.ts, route.ts)
 ├── middleware/        # auth.ts, admin.ts, error.ts
 ├── schema/            # Kysely database table interfaces
 ├── openapi/           # OpenAPI helper utilities
@@ -67,6 +69,25 @@ The API is OpenAPI-first, using `@hono/zod-openapi` for spec generation. CRUD ro
 - `requireAuth` — checks the session via Better Auth
 - `requireAdmin` — checks the user has the `admin` role
 - Error handler — maps Kysely errors and constraint violations to HTTP responses
+
+## MCP Server
+
+An optional [Model Context Protocol](https://modelcontextprotocol.io) server can be mounted at `/mcp`, gated by the `MCP_ENABLED` environment variable (default `false`). When enabled, it exposes eight read-only tools:
+
+| Tool                              | Shape                                                                                                                                                                                  |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `list_wines` / `get_wine`         | One row per **vintage** (`id` is the vintage id) with winemaker, region/country, grape varieties, drinking window, and bottle counts by status embedded                                |
+| `list_bottles` / `get_bottle`     | One row per bottle with wine/vintage identity embedded plus a resolved `storagePath` (walks the storage parent chain, e.g. `"Cellar > Rack 3"`) and `location` name instead of raw ids |
+| `list_storages` / `get_storage`   | Flat, backed directly by the storage controller                                                                                                                                        |
+| `list_locations` / `get_location` | Flat, backed directly by the location controller                                                                                                                                       |
+
+The wine and bottle tools join across tables server-side (`src/mcp/queries.ts`) rather than returning raw single-table rows — this is a deliberate departure from the REST API, whose list/get endpoints are flat and left to the frontend to join client-side. An MCP client can't afford N round trips to resolve foreign keys the way a React page can, so the enrichment happens once in the query layer.
+
+The transport is stateless Streamable HTTP (`@hono/mcp` + `@modelcontextprotocol/sdk`) with no session tracking and no authentication — it's intended for trusted, internal-network use only (e.g. a local AI assistant talking to a self-hosted instance), not for exposure over the public internet.
+
+- `src/mcp/server.ts` — the `McpServer` instance and tool registrations
+- `src/mcp/route.ts` — mounts the `/mcp` route on the Hono app
+- `src/mcp/queries.ts` — the enriched, joined queries backing the wine and bottle tools
 
 ## Database Support
 

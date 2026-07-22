@@ -23,6 +23,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@controllers": path.resolve(__dirname, "./src/controllers"),
+      "@mcp": path.resolve(__dirname, "./src/mcp"),
       "@middleware": path.resolve(__dirname, "./src/middleware"),
       "@utils": path.resolve(__dirname, "./src/utils"),
       "@routes": path.resolve(__dirname, "./src/routes"),
