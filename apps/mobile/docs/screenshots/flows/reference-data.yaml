@@ -9,7 +9,7 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "menu-winemakers"
 - waitForAnimationToEnd
-- takeScreenshot: ${SCREENSHOT_DIR}/winemakers-list
+- takeScreenshot: winemakers-list
 
 # --- Regions ---
 - tapOn:
@@ -18,7 +18,7 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "menu-regions"
 - waitForAnimationToEnd
-- takeScreenshot: ${SCREENSHOT_DIR}/regions-list
+- takeScreenshot: regions-list
 
 # --- Countries ---
 - tapOn:
@@ -32,7 +32,7 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "menu-countries"
 - waitForAnimationToEnd
-- takeScreenshot: ${SCREENSHOT_DIR}/countries-list
+- takeScreenshot: countries-list
 
 # --- Grapes ---
 - tapOn:
@@ -41,7 +41,7 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "menu-grapes"
 - waitForAnimationToEnd
-- takeScreenshot: ${SCREENSHOT_DIR}/grapes-list
+- takeScreenshot: grapes-list
 
 # --- Locations ---
 - tapOn:
@@ -55,10 +55,10 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "menu-locations"
 - waitForAnimationToEnd
-- takeScreenshot: ${SCREENSHOT_DIR}/locations-list
+- takeScreenshot: locations-list
 
 # --- Storages (use tab) ---
 - tapOn:
     id: "storages-tab"
 - waitForAnimationToEnd
-- takeScreenshot: ${SCREENSHOT_DIR}/storages-list
+- takeScreenshot: storages-list
