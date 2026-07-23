@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import * as storagesController from "@controllers/storages.controller.js";
 import * as locationsController from "@controllers/locations.controller.js";
+import * as tastingNotesController from "@controllers/tasting-notes.controller.js";
 import {
   listEnrichedWines,
   getEnrichedWine,
@@ -61,7 +62,7 @@ export function createMcpServer() {
     "list_wines",
     {
       description:
-        "List every wine, one row per vintage, with winemaker, region/country, grape varieties, drinking window, and bottle counts by status embedded. The id field is the vintage id",
+        "List every wine, one row per vintage, with winemaker, region/country, grape varieties, drinking window, bottle counts by status, and tasting note averageScore/noteCount embedded. The id field is the vintage id. Use the tasting-note tools to read the actual note text",
       annotations: readOnly,
     },
     async () => jsonResult(await listEnrichedWines()),
@@ -71,7 +72,7 @@ export function createMcpServer() {
     "get_wine",
     {
       description:
-        "Get a single wine at a specific vintage, with winemaker, region/country, grape varieties, drinking window, and bottle counts by status embedded. id is the vintage id, as returned by list_wines",
+        "Get a single wine at a specific vintage, with winemaker, region/country, grape varieties, drinking window, bottle counts by status, and tasting note averageScore/noteCount embedded. id is the vintage id, as returned by list_wines. Use the tasting-note tools to read the actual note text",
       inputSchema: { id: z.number().int() },
       annotations: readOnly,
     },
@@ -125,6 +126,52 @@ export function createMcpServer() {
       const location = await locationsController.getById(id);
       return location ? jsonResult(location) : notFoundResult("Location", id);
     },
+  );
+
+  mcpServer.registerTool(
+    "list_tasting_notes",
+    {
+      description:
+        "List every tasting note (score 0-10 and free-text notes) across the whole cellar, with the author's name embedded and vintageId linking back to the tasted wine",
+      annotations: readOnly,
+    },
+    async () => jsonResult(await tastingNotesController.list()),
+  );
+
+  mcpServer.registerTool(
+    "get_tasting_note",
+    {
+      description: "Get a single tasting note by its id",
+      inputSchema: { id: z.number().int() },
+      annotations: readOnly,
+    },
+    async ({ id }) => {
+      const note = await tastingNotesController.getById(id);
+      return note ? jsonResult(note) : notFoundResult("Tasting note", id);
+    },
+  );
+
+  mcpServer.registerTool(
+    "get_tasting_notes_for_vintage",
+    {
+      description:
+        "List every tasting note recorded for a specific vintage. id is the vintage id, as returned by list_wines/get_wine",
+      inputSchema: { id: z.number().int() },
+      annotations: readOnly,
+    },
+    async ({ id }) =>
+      jsonResult(await tastingNotesController.getByVintageId(id)),
+  );
+
+  mcpServer.registerTool(
+    "get_tasting_notes_for_wine",
+    {
+      description:
+        "List every tasting note recorded across all vintages of a wine. id is the wineId field returned by list_wines/get_wine",
+      inputSchema: { id: z.number().int() },
+      annotations: readOnly,
+    },
+    async ({ id }) => jsonResult(await tastingNotesController.getByWineId(id)),
   );
 
   return mcpServer;
