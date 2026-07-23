@@ -25,7 +25,8 @@ function screenshotPlaceholder(): Plugin {
 
 export default defineConfig({
   title: "CellarBoss",
-  description: "User documentation for the CellarBoss wine cellar management application",
+  description:
+    "User documentation for the CellarBoss wine cellar management application",
   base: "/web/",
   ignoreDeadLinks: true,
   vite: {
@@ -34,8 +35,16 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: "User Guide", link: "/guide/" },
-      { text: "Mobile Docs", link: "https://docs.cellarboss.org/mobile/", target: "_self" },
-      { text: "API Reference", link: "https://docs.cellarboss.org/api/", target: "_self" },
+      {
+        text: "Mobile Docs",
+        link: "https://docs.cellarboss.org/mobile/",
+        target: "_self",
+      },
+      {
+        text: "API Reference",
+        link: "https://docs.cellarboss.org/api/",
+        target: "_self",
+      },
     ],
     sidebar: [
       {
@@ -75,6 +84,7 @@ export default defineConfig({
         items: [
           { text: "DataTable", link: "/features/datatable" },
           { text: "Storage Hierarchy", link: "/features/storage-hierarchy" },
+          { text: "MCP Server", link: "/features/mcp" },
         ],
       },
     ],
