@@ -75,6 +75,7 @@ jobs:
         with:
           name: Web
           working-directory: apps/web
+          comment-on: none
 
       - name: Validators coverage report
         if: hashFiles('packages/validators/coverage/coverage-summary.json') != ''
@@ -82,6 +83,7 @@ jobs:
         with:
           name: Validators
           working-directory: packages/validators
+          comment-on: none
 
       - name: Backend coverage report
         if: hashFiles('apps/backend/coverage/coverage-summary.json') != ''
@@ -89,6 +91,7 @@ jobs:
         with:
           name: Backend
           working-directory: apps/backend
+          comment-on: none
 
       - name: Common coverage report
         if: hashFiles('packages/common/coverage/coverage-summary.json') != ''
@@ -96,6 +99,7 @@ jobs:
         with:
           name: Common
           working-directory: packages/common
+          comment-on: none
 
       - name: Mobile coverage report
         if: hashFiles('apps/mobile/coverage/coverage-summary.json') != ''
@@ -103,6 +107,7 @@ jobs:
         with:
           name: Mobile
           working-directory: apps/mobile
+          comment-on: none
 
   playwright:
     name: Post Playwright Report
