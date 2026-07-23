@@ -90,6 +90,14 @@
       "text",
       "lcov",
       "json-summary"
-    ]
+    ],
+    "coverageThreshold": {
+      "global": {
+        "statements": 50,
+        "branches": 48,
+        "functions": 44,
+        "lines": 51
+      }
+    }
   }
 }

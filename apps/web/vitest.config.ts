@@ -27,6 +27,15 @@ export default defineConfig({
         "lib/api/**",
         "components/ui/**",
       ],
+      // Floor a few points below current baseline (~13%) so CI fails on real
+      // regressions without tripping on normal fluctuation. Most UI coverage
+      // here comes from Playwright E2E, not these unit tests.
+      thresholds: {
+        statements: 12,
+        branches: 8,
+        functions: 8,
+        lines: 12,
+      },
     },
   },
   esbuild: {

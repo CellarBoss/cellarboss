@@ -18,6 +18,14 @@ export default defineConfig({
       reporter: ["text", "json-summary", "json"],
       include: ["src/**/*.ts"],
       exclude: ["src/tests/**", "**/*.test.ts", "**/*.d.ts"],
+      // Floor a few points below current baseline (~79%) so CI fails on real
+      // regressions without tripping on normal fluctuation.
+      thresholds: {
+        statements: 75,
+        branches: 60,
+        functions: 80,
+        lines: 75,
+      },
     },
   },
   resolve: {
