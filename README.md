@@ -28,11 +28,12 @@
 
 ## Features
 
-- Wine database with detailed attributes (country, region, grape, winemaker, vintage)
-- Bottle inventory with per-bottle storage location tracking
-- Store images of your collection
-- Drinking window tracking per vintage
-- Tasting notes & ratings
+- [Wine database](https://docs.cellarboss.org/web/resources/wines.html) with detailed attributes (country, region, grape, winemaker, vintage)
+- [Bottle inventory](https://docs.cellarboss.org/web/resources/bottles.html) with per-bottle storage location tracking
+- [Store images](https://docs.cellarboss.org/web/resources/vintages.html#images) of your collection
+- [Drinking window tracking](https://docs.cellarboss.org/web/resources/vintages.html) per vintage
+- [Tasting notes & ratings](https://docs.cellarboss.org/web/resources/tasting-notes.html)
+- [MCP server](https://docs.cellarboss.org/web/features/mcp.html) to query your cellar from AI assistants in natural language
 
 ## Quick Start
 

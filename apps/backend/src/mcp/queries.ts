@@ -14,6 +14,8 @@ export interface EnrichedWine {
   drinkFrom: number | null;
   drinkUntil: number | null;
   bottleCounts: Record<string, number>;
+  averageScore: number | null;
+  noteCount: number;
 }
 
 export interface EnrichedBottle {
@@ -93,6 +95,27 @@ async function enrichWineRows(rows: WineRow[]): Promise<EnrichedWine[]> {
     bottleCountsByVintageId.set(row.vintageId, counts);
   }
 
+  const noteAggRows = await db
+    .selectFrom("tastingNote")
+    .select((eb) => [
+      "vintageId",
+      eb.fn.avg("score").as("averageScore"),
+      eb.fn.count("id").as("noteCount"),
+    ])
+    .where("vintageId", "in", vintageIds)
+    .groupBy("vintageId")
+    .execute();
+  const noteAggByVintageId = new Map<
+    number,
+    { averageScore: number; noteCount: number }
+  >();
+  for (const row of noteAggRows) {
+    noteAggByVintageId.set(row.vintageId, {
+      averageScore: toNumber(row.averageScore),
+      noteCount: Number(row.noteCount),
+    });
+  }
+
   return rows.map((row) => ({
     id: row.id,
     wineId: row.wineId,
@@ -106,6 +129,8 @@ async function enrichWineRows(rows: WineRow[]): Promise<EnrichedWine[]> {
     drinkFrom: row.drinkFrom,
     drinkUntil: row.drinkUntil,
     bottleCounts: bottleCountsByVintageId.get(row.id) ?? {},
+    averageScore: noteAggByVintageId.get(row.id)?.averageScore ?? null,
+    noteCount: noteAggByVintageId.get(row.id)?.noteCount ?? 0,
   }));
 }
 

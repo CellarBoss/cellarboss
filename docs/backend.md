@@ -72,16 +72,18 @@ The API is OpenAPI-first, using `@hono/zod-openapi` for spec generation. CRUD ro
 
 ## MCP Server
 
-An optional [Model Context Protocol](https://modelcontextprotocol.io) server can be mounted at `/mcp`, gated by the `MCP_ENABLED` environment variable (default `false`). When enabled, it exposes eight read-only tools:
+An optional [Model Context Protocol](https://modelcontextprotocol.io) server can be mounted at `/mcp`, gated by the `MCP_ENABLED` environment variable (default `false`). When enabled, it exposes twelve read-only tools:
 
-| Tool                              | Shape                                                                                                                                                                                  |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `list_wines` / `get_wine`         | One row per **vintage** (`id` is the vintage id) with winemaker, region/country, grape varieties, drinking window, and bottle counts by status embedded                                |
-| `list_bottles` / `get_bottle`     | One row per bottle with wine/vintage identity embedded plus a resolved `storagePath` (walks the storage parent chain, e.g. `"Cellar > Rack 3"`) and `location` name instead of raw ids |
-| `list_storages` / `get_storage`   | Flat, backed directly by the storage controller                                                                                                                                        |
-| `list_locations` / `get_location` | Flat, backed directly by the location controller                                                                                                                                       |
+| Tool                                                           | Shape                                                                                                                                                                                            |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `list_wines` / `get_wine`                                      | One row per **vintage** (`id` is the vintage id) with winemaker, region/country, grape varieties, drinking window, bottle counts by status, and tasting note `averageScore`/`noteCount` embedded |
+| `list_bottles` / `get_bottle`                                  | One row per bottle with wine/vintage identity embedded plus a resolved `storagePath` (walks the storage parent chain, e.g. `"Cellar > Rack 3"`) and `location` name instead of raw ids           |
+| `list_storages` / `get_storage`                                | Flat, backed directly by the storage controller                                                                                                                                                  |
+| `list_locations` / `get_location`                              | Flat, backed directly by the location controller                                                                                                                                                 |
+| `list_tasting_notes` / `get_tasting_note`                      | Flat, backed directly by the tasting note controller, with the author's name joined in                                                                                                           |
+| `get_tasting_notes_for_vintage` / `get_tasting_notes_for_wine` | Tasting notes scoped to one vintage, or across every vintage of a wine                                                                                                                           |
 
-The wine and bottle tools join across tables server-side (`src/mcp/queries.ts`) rather than returning raw single-table rows — this is a deliberate departure from the REST API, whose list/get endpoints are flat and left to the frontend to join client-side. An MCP client can't afford N round trips to resolve foreign keys the way a React page can, so the enrichment happens once in the query layer.
+The wine and bottle tools join across tables server-side (`src/mcp/queries.ts`) rather than returning raw single-table rows — this is a deliberate departure from the REST API, whose list/get endpoints are flat and left to the frontend to join client-side. An MCP client can't afford N round trips to resolve foreign keys the way a React page can, so the enrichment happens once in the query layer. Tasting note text is deliberately kept out of the wine enrichment (only the `averageScore`/`noteCount` aggregate is embedded) so a client has to make a deliberate call to read note content rather than pulling every note's full text into every wine listing.
 
 The transport is stateless Streamable HTTP (`@hono/mcp` + `@modelcontextprotocol/sdk`) with no session tracking and no authentication — it's intended for trusted, internal-network use only (e.g. a local AI assistant talking to a self-hosted instance), not for exposure over the public internet.
 

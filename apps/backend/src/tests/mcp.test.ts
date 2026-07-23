@@ -12,9 +12,11 @@ import {
   createTestVintage,
   createTestLocation,
   createTestStorage,
+  createTestUser,
 } from "./setup";
 import { registerMcpRoutes } from "@mcp/route.js";
 import * as bottlesController from "@controllers/bottles.controller.js";
+import * as tastingNotesController from "@controllers/tasting-notes.controller.js";
 import { db } from "@utils/database.js";
 
 async function rpc(
@@ -49,6 +51,7 @@ describe("MCP server", () => {
   beforeAll(async () => {
     await runMigrations(db);
     await cleanDatabase(db);
+    await createTestUser(db);
 
     app = createTestApp();
     registerMcpRoutes(app);
@@ -92,6 +95,10 @@ describe("MCP server", () => {
         "get_storage",
         "list_locations",
         "get_location",
+        "list_tasting_notes",
+        "get_tasting_note",
+        "get_tasting_notes_for_vintage",
+        "get_tasting_notes_for_wine",
       ]),
     );
   });
@@ -134,6 +141,8 @@ describe("MCP server", () => {
       expect(data.grapes).toEqual(["MCP Test Grape"]);
       expect(data.year).toBe(2019);
       expect(data.bottleCounts.stored).toBe(1);
+      expect(data.averageScore).toBeNull();
+      expect(data.noteCount).toBe(0);
       expect(bottle.id).toBeGreaterThan(0);
     });
 
@@ -259,6 +268,65 @@ describe("MCP server", () => {
         await callTool(app, "get_storage", { id: storage.id }),
       );
       expect(data.name).toBe("MCP Test Storage");
+    });
+  });
+
+  describe("tasting notes", () => {
+    it("exposes notes via the note tools and as an averageScore/noteCount aggregate on the wine", async () => {
+      const wineMaker = await createTestWineMaker(db, "MCP Note Maker");
+      const wine = await createTestWine(
+        db,
+        wineMaker.id,
+        null,
+        "MCP Note Wine",
+      );
+      const vintage = await createTestVintage(db, wine.id, 2017);
+      const noteA = await tastingNotesController.create({
+        vintageId: vintage.id,
+        score: 8,
+        notes: "Great fruit, well balanced.",
+        authorId: "test-user-1",
+        date: new Date().toISOString(),
+      });
+      await tastingNotesController.create({
+        vintageId: vintage.id,
+        score: 6,
+        notes: "A bit tight, needs more time.",
+        authorId: "test-user-1",
+        date: new Date().toISOString(),
+      });
+
+      const wineData = toolData(
+        await callTool(app, "get_wine", { id: vintage.id }),
+      );
+      expect(wineData.noteCount).toBe(2);
+      expect(wineData.averageScore).toBe(7);
+
+      const note = toolData(
+        await callTool(app, "get_tasting_note", { id: noteA.id }),
+      );
+      expect(note.score).toBe(8);
+      expect(note.author).toBe("Test User");
+
+      const forVintage = toolData(
+        await callTool(app, "get_tasting_notes_for_vintage", {
+          id: vintage.id,
+        }),
+      );
+      expect(forVintage).toHaveLength(2);
+
+      const forWine = toolData(
+        await callTool(app, "get_tasting_notes_for_wine", { id: wine.id }),
+      );
+      expect(forWine).toHaveLength(2);
+
+      const list = toolData(await callTool(app, "list_tasting_notes"));
+      expect(list.some((n: { id: number }) => n.id === noteA.id)).toBe(true);
+    });
+
+    it("get_tasting_note reports an error for an unknown id", async () => {
+      const result = await callTool(app, "get_tasting_note", { id: 999999 });
+      expect(result.isError).toBe(true);
     });
   });
 });
