@@ -6,12 +6,12 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "cellar-tab"
 - waitForAnimationToEnd
-- takeScreenshot: ${SCREENSHOT_DIR}/bottles-list
+- takeScreenshot: bottles-list
 
 # Tap on first bottle to view detail
 - tapOn: "Château Margaux 2015"
 - waitForAnimationToEnd
-- takeScreenshot: ${SCREENSHOT_DIR}/bottles-detail
+- takeScreenshot: bottles-detail
 
 # Go back to list
 - pressKey: back
@@ -21,7 +21,7 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "fab-add"
 - waitForAnimationToEnd
-- takeScreenshot: ${SCREENSHOT_DIR}/bottles-create
+- takeScreenshot: bottles-create
 
 # Go back
 - pressKey: back
@@ -33,4 +33,4 @@ appId: org.cellarboss.mobile
 - tapOn:
     id: "header-action-pencil"
 - waitForAnimationToEnd
-- takeScreenshot: ${SCREENSHOT_DIR}/bottles-edit
+- takeScreenshot: bottles-edit

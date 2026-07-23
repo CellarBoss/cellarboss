@@ -23,7 +23,7 @@ mkdir -p "$MAESTRO_OUTPUT_DIR"
 # The || captures the exit code so set -e doesn't abort before copying screenshots.
 echo "Running Maestro screenshot flows..."
 cd "$SCRIPT_DIR"
-timeout 900 maestro test --output "$MAESTRO_OUTPUT_DIR" --env SCREENSHOT_DIR="$MAESTRO_OUTPUT_DIR" flows/ || MAESTRO_EXIT_CODE=$?
+timeout 900 maestro test --test-output-dir "$MAESTRO_OUTPUT_DIR" flows/ || MAESTRO_EXIT_CODE=$?
 MAESTRO_EXIT_CODE=${MAESTRO_EXIT_CODE:-0}
 
 # 2. Copy screenshots to docs public directory
