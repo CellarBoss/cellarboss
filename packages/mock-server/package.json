@@ -13,7 +13,7 @@
   "dependencies": {
     "@cellarboss/validators": "workspace:*",
     "@hono/node-server": "2.0.12",
-    "hono": "4.12.33"
+    "hono": "4.12.34"
   },
   "devDependencies": {
     "tsx": "4.23.1",
