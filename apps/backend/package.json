@@ -29,7 +29,7 @@
     "better-auth": "1.6.25",
     "better-sqlite3": "13.0.2",
     "dotenv": "17.4.2",
-    "hono": "4.13.0",
+    "hono": "4.13.1",
     "kysely": "0.29.4",
     "kysely-ctl": "0.21.0",
     "loglayer": "9.4.0",
