@@ -27,7 +27,7 @@
     "@modelcontextprotocol/sdk": "1.30.0",
     "@scalar/hono-api-reference": "0.11.12",
     "better-auth": "1.6.26",
-    "better-sqlite3": "13.0.2",
+    "better-sqlite3": "13.0.3",
     "dotenv": "17.4.2",
     "hono": "4.13.1",
     "kysely": "0.29.4",
