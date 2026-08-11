@@ -1,12 +1,16 @@
 "use client";
 
 import { useContext } from "react";
-import { Row, Table as TableInstance } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
+import type { AppCoreTable, AppRow } from "../../tableFeatures";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RowSelectionContext } from "../../selection/RowSelectionContext";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function SelectAllCheckbox({ table }: { table: TableInstance<any> }) {
+export function SelectAllCheckbox<T extends RowData>({
+  table,
+}: {
+  table: AppCoreTable<T>;
+}) {
   const rowSelection = useContext(RowSelectionContext);
   const pageRows = table.getRowModel().rows;
   const allSelected =
@@ -20,8 +24,7 @@ export function SelectAllCheckbox({ table }: { table: TableInstance<any> }) {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function SelectionCell({ row }: { row: Row<any> }) {
+export function SelectionCell<T extends RowData>({ row }: { row: AppRow<T> }) {
   const rowSelection = useContext(RowSelectionContext);
   return (
     <Checkbox

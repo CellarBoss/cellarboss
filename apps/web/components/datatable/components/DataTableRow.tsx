@@ -1,20 +1,21 @@
 "use client";
 
-import { flexRender, Row } from "@tanstack/react-table";
+import { flexRender, type RowData } from "@tanstack/react-table";
+import type { AppRow } from "../tableFeatures";
 
 import { TableCell, TableRow } from "@/components/ui/table";
 
 import { cn } from "@/lib/utils";
 import { ChevronRight, ChevronDown } from "lucide-react";
 
-type DataTableRowProps<T> = {
-  row: Row<T>;
+type DataTableRowProps<T extends RowData> = {
+  row: AppRow<T>;
   isExpanded: boolean;
   canExpand: boolean;
   isContext?: boolean;
 };
 
-export default function DataTableRow<T>({
+export default function DataTableRow<T extends RowData>({
   row,
   isExpanded,
   canExpand,

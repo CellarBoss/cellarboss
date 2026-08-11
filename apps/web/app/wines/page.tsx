@@ -12,7 +12,10 @@ import {
   type FilterDef,
   FilterType,
 } from "@/components/datatable/components/DataTable";
-import { ColumnDef, Row } from "@tanstack/react-table";
+import type {
+  AppColumnDef,
+  AppRow,
+} from "@/components/datatable/tableFeatures";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { useRouter } from "next/navigation";
@@ -160,7 +163,7 @@ export default function WinesPage() {
     },
   ];
 
-  const columns: ColumnDef<Wine>[] = [
+  const columns: AppColumnDef<Wine>[] = [
     {
       accessorKey: "name",
       header: "Wine Name",
@@ -191,7 +194,7 @@ export default function WinesPage() {
       header: "Winemaker",
       enableColumnFilter: false,
       enableSorting: true,
-      sortingFn: (rowA: Row<Wine>, rowB: Row<Wine>) => {
+      sortFn: (rowA: AppRow<Wine>, rowB: AppRow<Wine>) => {
         const winemakerA = winemakerList.find(
           (w) => w.id === rowA.original.wineMakerId,
         );
@@ -219,7 +222,7 @@ export default function WinesPage() {
       header: "Region",
       enableColumnFilter: false,
       enableSorting: true,
-      sortingFn: (rowA: Row<Wine>, rowB: Row<Wine>) => {
+      sortFn: (rowA: AppRow<Wine>, rowB: AppRow<Wine>) => {
         const regionA = regionList.find((r) => r.id === rowA.original.regionId);
         const regionB = regionList.find((r) => r.id === rowB.original.regionId);
         const nameA = regionA?.name ?? "";

@@ -1,9 +1,7 @@
 "use client";
 
-import {
-  ColumnFiltersState,
-  Table as TableInstance,
-} from "@tanstack/react-table";
+import type { ColumnFiltersState, RowData } from "@tanstack/react-table";
+import type { AppTable } from "../tableFeatures";
 import { Button } from "@/components/ui/button";
 import type { RangeFilterValue } from "../filters/rangeFilter";
 import { FlatMultiSelectFilter } from "./filters/FlatMultiSelectFilter";
@@ -28,9 +26,9 @@ export type {
 export type FilterDef =
   FlatMultiSelectFilterDef | GroupedMultiSelectFilterDef | RangeFilterDef;
 
-type DataTableFilterControlProps<T> = {
+type DataTableFilterControlProps<T extends RowData> = {
   filters: FilterDef[];
-  table: TableInstance<T>;
+  table: AppTable<T>;
   columnFilters: ColumnFiltersState;
 };
 
@@ -46,9 +44,9 @@ function getFilterValue(
   return columnFilters.find((cf) => cf.id === columnId)?.value;
 }
 
-function getFilterComponent<T>(
+function getFilterComponent<T extends RowData>(
   filter: FilterDef,
-  table: TableInstance<T>,
+  table: AppTable<T>,
   columnFilters: ColumnFiltersState,
 ): React.ReactNode {
   switch (filter.type) {
@@ -94,7 +92,7 @@ function getFilterComponent<T>(
   }
 }
 
-export function DataTableFilterControl<T>({
+export function DataTableFilterControl<T extends RowData>({
   filters,
   table,
   columnFilters,

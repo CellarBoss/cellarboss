@@ -1,8 +1,9 @@
-import { FilterFn } from "@tanstack/react-table";
+import type { FilterFn } from "@tanstack/react-table";
+import type { AppFeatures } from "../tableFeatures";
 
 export type RangeFilterValue = { min?: number; max?: number };
 
-export const rangeFilter: FilterFn<any> = (
+export const rangeFilter: FilterFn<AppFeatures, any> = (
   row,
   columnId,
   filterValue: RangeFilterValue,

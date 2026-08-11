@@ -1,4 +1,5 @@
-import type { ColumnDef } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
+import type { AppColumnDef } from "../tableFeatures";
 import { tablePreferenceKey } from "./tablePreferences";
 
 /**
@@ -9,7 +10,7 @@ export function columnOrderPreferenceKey(tableId: string): string {
   return tablePreferenceKey(tableId, "columns", "order");
 }
 
-function columnId<T>(col: ColumnDef<T>): string | undefined {
+function columnId<T extends RowData>(col: AppColumnDef<T>): string | undefined {
   return (col as any).id ?? (col as any).accessorKey;
 }
 
@@ -19,7 +20,9 @@ function columnId<T>(col: ColumnDef<T>): string | undefined {
  * no usable header). The orderable set is defined by this so the columns the
  * user can drag exactly match the menu rows.
  */
-export function columnMenuLabel<T>(col: ColumnDef<T>): string | null {
+export function columnMenuLabel<T extends RowData>(
+  col: AppColumnDef<T>,
+): string | null {
   const meta = col.meta;
   if (meta?.isSuppressed) return null;
   if (meta?.label) return meta.label;
@@ -32,7 +35,9 @@ export function columnMenuLabel<T>(col: ColumnDef<T>): string | null {
  * Content column ids the user is allowed to reorder, in definition order.
  * Excludes suppressed and label-less columns (which never appear in the menu).
  */
-export function getOrderableColumnIds<T>(columns: ColumnDef<T>[]): string[] {
+export function getOrderableColumnIds<T extends RowData>(
+  columns: AppColumnDef<T>[],
+): string[] {
   const ids: string[] = [];
   columns.forEach((col) => {
     const id = columnId(col);

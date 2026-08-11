@@ -9,7 +9,10 @@ import {
   DataTable,
   type BulkEditField,
 } from "@/components/datatable/components/DataTable";
-import { ColumnDef, Row } from "@tanstack/react-table";
+import type {
+  AppColumnDef,
+  AppRow,
+} from "@/components/datatable/tableFeatures";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { useRouter } from "next/navigation";
@@ -98,7 +101,7 @@ export default function StoragesPage() {
     },
   ];
 
-  const columns: ColumnDef<TreeNode<Storage>>[] = [
+  const columns: AppColumnDef<TreeNode<Storage>>[] = [
     {
       accessorKey: "name",
       header: "Storage Name",
@@ -114,9 +117,9 @@ export default function StoragesPage() {
       header: "Location",
       enableColumnFilter: false,
       enableSorting: true,
-      sortingFn: (
-        rowA: Row<TreeNode<Storage>>,
-        rowB: Row<TreeNode<Storage>>,
+      sortFn: (
+        rowA: AppRow<TreeNode<Storage>>,
+        rowB: AppRow<TreeNode<Storage>>,
       ) => {
         const locationA = locationList.find(
           (l) => l.id === rowA.original.locationId,

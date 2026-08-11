@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Table as TableInstance } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
+import type { AppTable } from "../../tableFeatures";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -20,13 +21,13 @@ export type RangeFilterDef = {
   urlParamName?: string;
 };
 
-type Props<T> = {
+type Props<T extends RowData> = {
   filter: RangeFilterDef;
-  table: TableInstance<T>;
+  table: AppTable<T>;
   activeValue: RangeFilterValue | undefined;
 };
 
-export function RangeFilter<T>({
+export function RangeFilter<T extends RowData>({
   filter,
   table,
   activeValue: rangeVal,

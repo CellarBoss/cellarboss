@@ -1,13 +1,14 @@
-import { Row } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
+import type { AppRow } from "../../tableFeatures";
 import { TableCell, TableRow } from "@/components/ui/table";
 
-interface DataTableDetailRowProps<T> {
+interface DataTableDetailRowProps<T extends RowData> {
   columnSpan: number;
-  row: Row<T>;
+  row: AppRow<T>;
   renderDetail: (row: T) => React.ReactNode;
 }
 
-export default function DataTableDetailRow<T>({
+export default function DataTableDetailRow<T extends RowData>({
   columnSpan,
   row,
   renderDetail,

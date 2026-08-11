@@ -2,16 +2,7 @@
 
 import { Fragment, ReactNode, useMemo } from "react";
 import { usePathname } from "next/navigation";
-import {
-  ColumnDef,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  getPaginationRowModel,
-  getExpandedRowModel,
-  useReactTable,
-  Row,
-} from "@tanstack/react-table";
+import { useTable } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
@@ -42,14 +33,20 @@ import { normaliseTableId } from "../utils/tablePreferences";
 import { getContextRows } from "../utils/contextRowCalculations";
 import { calculatePaginationMetrics } from "../utils/paginationCalculations";
 import { createTableStateUpdater } from "../hooks/useDataTableState";
+import {
+  dataTableFeatures,
+  type AppColumnDef,
+  type AppRow,
+} from "../tableFeatures";
+import type { RowData } from "@tanstack/react-table";
 
 export type { BulkEditField } from "@/components/bulk/BulkEditDialog";
 export { FilterType };
 export type { FilterDef } from "./DataTableFilterControl";
 
-type DataTableProps<T> = {
+type DataTableProps<T extends RowData> = {
   data?: T[];
-  columns: ColumnDef<T>[];
+  columns: AppColumnDef<T>[];
   defaultPageSize?: number;
   filterColumnName?: string;
   defaultSortColumn?: string;
@@ -71,7 +68,7 @@ type DataTableProps<T> = {
   tableId?: string;
 };
 
-export function DataTable<T>({
+export function DataTable<T extends RowData>({
   data,
   columns,
   defaultPageSize,
@@ -151,8 +148,8 @@ export function DataTable<T>({
   );
 
   // Create table instance
-  // eslint-disable-next-line react-hooks/incompatible-library
-  const table = useReactTable({
+  const table = useTable({
+    features: dataTableFeatures,
     data: displayData,
     columns: processedColumns,
     getRowId: (row) => String((row as Record<string, unknown>).id),
@@ -173,16 +170,11 @@ export function DataTable<T>({
           onRowSelectionChange: createTableStateUpdater(state.setRowSelection),
         }
       : {}),
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     onColumnFiltersChange: createTableStateUpdater(setColumnFilters),
     onSortingChange: createTableStateUpdater(state.setSorting),
     ...(getSubRows
       ? {
           getSubRows,
-          getExpandedRowModel: getExpandedRowModel(),
           onExpandedChange: createTableStateUpdater(setExpanded),
           filterFromLeafRows: true,
         }
@@ -208,7 +200,7 @@ export function DataTable<T>({
   // Get selected rows and bulk action handlers
   const selectedRows = table
     .getSelectedRowModel()
-    .flatRows.map((r: Row<T>) => r.original);
+    .flatRows.map((r: AppRow<T>) => r.original);
   const selectedCount = selectedRows.length;
   const bulkActions = useBulkActions(
     selectedRows,
