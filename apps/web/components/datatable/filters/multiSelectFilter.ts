@@ -1,7 +1,8 @@
-import { FilterFn } from "@tanstack/react-table";
+import type { FilterFn } from "@tanstack/react-table";
+import type { AppFeatures } from "../tableFeatures";
 
 // Custom filter function for multi-select filters
-export const multiSelectFilter: FilterFn<any> = (
+export const multiSelectFilter: FilterFn<AppFeatures, any> = (
   row,
   columnId,
   filterValue: string[],

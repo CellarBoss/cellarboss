@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import type { ColumnDef } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
+import type { AppColumnDef } from "../tableFeatures";
 import { usePreferencesContext } from "@/contexts/preferences-context";
 import { useUpsertPreference } from "@/hooks/use-preferences";
 import {
@@ -12,9 +13,9 @@ import {
   serializeColumnOrder,
 } from "../utils/columnOrder";
 
-type Params<T> = {
+type Params<T extends RowData> = {
   tableId: string;
-  columns: ColumnDef<T>[];
+  columns: AppColumnDef<T>[];
 };
 
 type ColumnOrderPreference = {
@@ -36,7 +37,7 @@ type ColumnOrderPreference = {
  * The returned `order` covers only the reorderable content columns; callers are
  * responsible for pinning fixed columns (e.g. the selection column) around it.
  */
-export function useColumnOrderPreference<T>({
+export function useColumnOrderPreference<T extends RowData>({
   tableId,
   columns,
 }: Params<T>): ColumnOrderPreference {

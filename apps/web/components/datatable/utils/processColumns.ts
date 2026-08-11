@@ -1,15 +1,16 @@
-import { ColumnDef } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
+import type { AppColumnDef } from "../tableFeatures";
 import type { FilterDef } from "../components/DataTableFilterControl";
 import { FilterType } from "../components/DataTableFilterControl";
 import { multiSelectFilter } from "../filters/multiSelectFilter";
 import { rangeFilter } from "../filters/rangeFilter";
 import { createSelectionColumn } from "../components/selection/selectionColumn";
 
-export function processColumnsWithFilters<T>(
-  columns: ColumnDef<T>[],
+export function processColumnsWithFilters<T extends RowData>(
+  columns: AppColumnDef<T>[],
   enableRowSelection: boolean,
   filters?: FilterDef[],
-): ColumnDef<T>[] {
+): AppColumnDef<T>[] {
   const selectionColumn = enableRowSelection
     ? [createSelectionColumn<T>()]
     : [];

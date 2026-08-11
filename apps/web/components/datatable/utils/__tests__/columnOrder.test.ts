@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import type { ColumnDef } from "@tanstack/react-table";
+import type { AppColumnDef } from "../../tableFeatures";
 import {
   columnMenuLabel,
   columnOrderPreferenceKey,
@@ -11,7 +11,7 @@ import {
 
 type Row = { id: number };
 
-const columns: ColumnDef<Row>[] = [
+const columns: AppColumnDef<Row>[] = [
   { id: "name", header: "Name", meta: { isHideable: false } },
   { id: "price", header: "Price" },
   { id: "size", header: "Size", meta: { defaultVisible: false } },

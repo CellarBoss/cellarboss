@@ -2,16 +2,21 @@
 
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-import { flexRender, SortingState, Table } from "@tanstack/react-table";
+import {
+  flexRender,
+  type SortingState,
+  type RowData,
+} from "@tanstack/react-table";
+import type { AppTable } from "../tableFeatures";
 
 import { ArrowUp, ArrowDown } from "lucide-react";
 
-type DataTableHeaderProps<T> = {
-  table: Table<T>;
+type DataTableHeaderProps<T extends RowData> = {
+  table: AppTable<T>;
   sorting: SortingState;
 };
 
-export default function DataTableHeader<T>({
+export default function DataTableHeader<T extends RowData>({
   table,
   sorting,
 }: DataTableHeaderProps<T>) {

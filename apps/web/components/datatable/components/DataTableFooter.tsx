@@ -1,7 +1,7 @@
 "use client";
 
-import { Table as TableInstance } from "@tanstack/react-table";
-import type { PaginationState } from "@tanstack/react-table";
+import type { PaginationState, RowData } from "@tanstack/react-table";
+import type { AppTable } from "../tableFeatures";
 
 import { TableCell, TableFooter, TableRow } from "@/components/ui/table";
 
@@ -9,8 +9,8 @@ import { PaginationControl } from "./PaginationControl";
 import { PaginationSelector } from "./PaginationSelector";
 import { DataTableColumnsControl } from "./DataTableColumnsControl";
 
-type DataTableFooterProps<T> = {
-  table: TableInstance<T>;
+type DataTableFooterProps<T extends RowData> = {
+  table: AppTable<T>;
   // pageCount uses a custom (hierarchy-aware) calc, and pagination is controlled
   // via nuqs rather than the table's onPaginationChange — so these can't be read
   // off the table and stay as props.
@@ -24,7 +24,7 @@ type DataTableFooterProps<T> = {
   onColumnOrderChange: (next: string[]) => void;
 };
 
-export default function DataTableFooter<T>({
+export default function DataTableFooter<T extends RowData>({
   table,
   pageCount,
   setPagination,
@@ -33,7 +33,7 @@ export default function DataTableFooter<T>({
 }: DataTableFooterProps<T>) {
   "use no memo"; // reads live pagination & visible-column state from the table
 
-  const pagination = table.getState().pagination;
+  const pagination = table.state.pagination;
   const colSpan = table.getVisibleLeafColumns().length;
 
   return (

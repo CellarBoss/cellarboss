@@ -1,6 +1,7 @@
 "use client";
 
-import { Column, Table as TableInstance } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
+import type { AppColumn, AppTable } from "../tableFeatures";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -33,17 +34,19 @@ const sensors = [
 ];
 
 /** Human-readable label for a column, or null if it shouldn't appear in the menu. */
-function getColumnLabel<T>(column: Column<T, unknown>): string | null {
+function getColumnLabel<T extends RowData>(
+  column: AppColumn<T>,
+): string | null {
   return columnMenuLabel(column.columnDef);
 }
 
 /** A single draggable column row: drag handle + visibility checkbox. */
-function SortableColumnItem<T>({
+function SortableColumnItem<T extends RowData>({
   column,
   label,
   index,
 }: {
-  column: Column<T, unknown>;
+  column: AppColumn<T>;
   label: string;
   index: number;
 }) {
@@ -90,15 +93,15 @@ function SortableColumnItem<T>({
   );
 }
 
-type Props<T> = {
-  table: TableInstance<T>;
+type Props<T extends RowData> = {
+  table: AppTable<T>;
   /** Reorderable content column ids in their current effective order. */
   columnOrder: string[];
   /** Persist a new content column order. */
   onColumnOrderChange: (next: string[]) => void;
 };
 
-export function DataTableColumnsControl<T>({
+export function DataTableColumnsControl<T extends RowData>({
   table,
   columnOrder,
   onColumnOrderChange,
@@ -113,7 +116,7 @@ export function DataTableColumnsControl<T>({
   const items = columnOrder
     .map((id) => columnsById.get(id))
     .filter(
-      (column): column is Column<T, unknown> =>
+      (column): column is AppColumn<T> =>
         !!column && getColumnLabel(column) !== null,
     );
 

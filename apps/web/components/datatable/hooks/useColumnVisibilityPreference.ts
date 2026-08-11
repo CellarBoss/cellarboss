@@ -2,10 +2,11 @@
 
 import { useCallback, useMemo, useState } from "react";
 import type {
-  ColumnDef,
+  ColumnVisibilityState,
   OnChangeFn,
-  VisibilityState,
+  RowData,
 } from "@tanstack/react-table";
+import type { AppColumnDef } from "../tableFeatures";
 import { usePreferencesContext } from "@/contexts/preferences-context";
 import { useUpsertPreference } from "@/hooks/use-preferences";
 import {
@@ -17,14 +18,14 @@ import {
   serializeColumnVisibility,
 } from "../utils/columnVisibility";
 
-type Params<T> = {
+type Params<T extends RowData> = {
   tableId: string;
-  columns: ColumnDef<T>[];
+  columns: AppColumnDef<T>[];
 };
 
 type ColumnVisibilityPreference = {
-  columnVisibility: VisibilityState;
-  onColumnVisibilityChange: OnChangeFn<VisibilityState>;
+  columnVisibility: ColumnVisibilityState;
+  onColumnVisibilityChange: OnChangeFn<ColumnVisibilityState>;
 };
 
 /**
@@ -37,7 +38,7 @@ type ColumnVisibilityPreference = {
  *
  * `onColumnVisibilityChange` updates state and persists the new visibility.
  */
-export function useColumnVisibilityPreference<T>({
+export function useColumnVisibilityPreference<T extends RowData>({
   tableId,
   columns,
 }: Params<T>): ColumnVisibilityPreference {
@@ -46,16 +47,18 @@ export function useColumnVisibilityPreference<T>({
 
   const hideableIds = useMemo(() => getHideableColumnIds(columns), [columns]);
 
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-    () =>
+  const [columnVisibility, setColumnVisibility] =
+    useState<ColumnVisibilityState>(() =>
       mergeSavedVisibility(
         computeDefaultColumnVisibility(columns),
         parseSavedVisibility(preferences.get(columnPreferenceKey(tableId))),
         hideableIds,
       ),
-  );
+    );
 
-  const onColumnVisibilityChange = useCallback<OnChangeFn<VisibilityState>>(
+  const onColumnVisibilityChange = useCallback<
+    OnChangeFn<ColumnVisibilityState>
+  >(
     (updater) => {
       const next =
         typeof updater === "function" ? updater(columnVisibility) : updater;

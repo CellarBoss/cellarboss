@@ -1,6 +1,7 @@
 "use client";
 
-import { Table as TableInstance } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
+import type { AppTable } from "../../tableFeatures";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -12,13 +13,13 @@ import { Badge } from "@/components/ui/badge";
 import { ChevronDown } from "lucide-react";
 import { type FlatMultiSelectFilterDef } from "./multiSelectFilterUtils";
 
-type Props<T> = {
+type Props<T extends RowData> = {
   filter: FlatMultiSelectFilterDef;
-  table: TableInstance<T>;
+  table: AppTable<T>;
   activeValues: string[] | undefined;
 };
 
-export function FlatMultiSelectFilter<T>({
+export function FlatMultiSelectFilter<T extends RowData>({
   filter,
   table,
   activeValues,

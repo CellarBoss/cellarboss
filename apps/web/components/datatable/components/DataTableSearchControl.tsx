@@ -1,20 +1,20 @@
 "use client";
 
-import { Table } from "@tanstack/react-table";
+import type { ColumnFiltersState, RowData } from "@tanstack/react-table";
+import type { AppTable } from "../tableFeatures";
 import { Input } from "@/components/ui/input";
-import { ColumnFiltersState } from "@tanstack/react-table";
 
-type DataTableSearchControlProps = {
-  table: Table<any>;
+type DataTableSearchControlProps<T extends RowData> = {
+  table: AppTable<T>;
   filterColumnName?: string;
   columnFilters: ColumnFiltersState;
 };
 
-export function DataTableSearchControl({
+export function DataTableSearchControl<T extends RowData>({
   table,
   filterColumnName,
   columnFilters,
-}: DataTableSearchControlProps) {
+}: DataTableSearchControlProps<T>) {
   return (
     <>
       {filterColumnName != null && (

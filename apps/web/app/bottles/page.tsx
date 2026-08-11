@@ -47,7 +47,7 @@ import {
   BOTTLE_SIZES,
   WINE_TYPES,
 } from "@cellarboss/validators/constants";
-import { Row } from "@tanstack/react-table";
+import type { AppRow } from "@/components/datatable/tableFeatures";
 import { compareAsc } from "date-fns";
 import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDisplay";
 import { StorageHierarchyDisplay } from "@/components/storage/StorageHierarchyDisplay";
@@ -338,7 +338,7 @@ export default function BottlesPage() {
       accessorKey: "purchaseDate",
       header: "Purchase Date",
       enableSorting: true,
-      sortingFn: (rowA: Row<Bottle>, rowB: Row<Bottle>) => {
+      sortFn: (rowA: AppRow<Bottle>, rowB: AppRow<Bottle>) => {
         return compareAsc(
           rowA.original.purchaseDate,
           rowB.original.purchaseDate,
@@ -371,7 +371,7 @@ export default function BottlesPage() {
       enableColumnFilter: true,
       accessorFn: (row: Bottle) => String(row.storageId || ""),
       filterFn: (
-        row: Row<Bottle>,
+        row: AppRow<Bottle>,
         _columnId: string,
         filterValue: string[],
       ) => {
