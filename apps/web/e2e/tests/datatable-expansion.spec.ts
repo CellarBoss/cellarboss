@@ -131,3 +131,89 @@ test.describe("DataTable row expansion URL state", () => {
     );
   });
 });
+
+test.describe("DataTable row expansion with hierarchical (getSubRows) data", () => {
+  // Regression coverage needs enough rows to exceed one page (default page
+  // size is 20): with only a couple of storages, every render's freshly-built
+  // tree `data` array happens not to trip the bug this guards against (v9's
+  // `getCoreRowModel` auto-resets `expanded` back to `{}` whenever the `data`
+  // reference changes, which used to fire on every click since storages/page.tsx
+  // rebuilds its tree data on every render). 15 racks x 2 rows = 30 rows makes
+  // the failure reproduce reliably.
+  const RACK_COUNT = 15;
+
+  test.beforeEach(async () => {
+    const storages: {
+      id: number;
+      name: string;
+      parent: number | null;
+      locationId: number;
+    }[] = [];
+    let id = 1;
+    for (let i = 1; i <= RACK_COUNT; i++) {
+      const rackId = id++;
+      storages.push({
+        id: rackId,
+        name: `Rack ${i}`,
+        parent: null,
+        locationId: 1,
+      });
+      storages.push({
+        id: id++,
+        name: `Shelf ${i}`,
+        parent: rackId,
+        locationId: 1,
+      });
+    }
+    await setState({ locations: [{ id: 1, name: "Main Cellar" }], storages });
+  });
+
+  test.afterEach(async () => {
+    await resetState();
+  });
+
+  test("all rows are expanded by default", async ({ adminContext }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/storages");
+
+    await expect(page.getByText("Shelf 1", { exact: true })).toBeVisible();
+    await expect(page.getByText("Shelf 2", { exact: true })).toBeVisible();
+  });
+
+  test("collapsing one row leaves other rows expanded (regression: v9 auto-reset was clobbering expanded state on every re-render)", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/storages");
+
+    await expect(page.getByText("Shelf 1", { exact: true })).toBeVisible();
+    await expect(page.getByText("Shelf 2", { exact: true })).toBeVisible();
+
+    const rack1Row = page.locator("tr").filter({ hasText: /Rack 1(?!\d)/ });
+    await rack1Row.getByRole("button", { name: "Collapse row" }).click();
+    // The regression fires from a microtask-scheduled table-internal reset
+    // that lands just after the click handler returns, so the assertions
+    // below can pass immediately on the very state the bug is about to
+    // overwrite unless we let that microtask (and the resulting re-render)
+    // settle first.
+    await page.waitForTimeout(500);
+
+    // Only Rack 1's child should be hidden; Rack 2's child stays visible
+    await expect(page.getByText("Shelf 1", { exact: true })).not.toBeVisible();
+    await expect(page.getByText("Shelf 2", { exact: true })).toBeVisible();
+  });
+
+  test("a collapsed row can be re-expanded", async ({ adminContext }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/storages");
+
+    const rack1Row = page.locator("tr").filter({ hasText: /Rack 1(?!\d)/ });
+    await rack1Row.getByRole("button", { name: "Collapse row" }).click();
+    await page.waitForTimeout(500);
+    await expect(page.getByText("Shelf 1", { exact: true })).not.toBeVisible();
+
+    await rack1Row.getByRole("button", { name: "Expand row" }).click();
+    await page.waitForTimeout(500);
+    await expect(page.getByText("Shelf 1", { exact: true })).toBeVisible();
+  });
+});
