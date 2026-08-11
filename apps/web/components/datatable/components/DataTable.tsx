@@ -172,6 +172,17 @@ export function DataTable<T extends RowData>({
       : {}),
     onColumnFiltersChange: createTableStateUpdater(setColumnFilters),
     onSortingChange: createTableStateUpdater(state.setSorting),
+    ...(hasExpansion
+      ? {
+          // `expanded` is fully owned by useDataTableUrlState (persisted to the
+          // URL), not by the table instance. v9 defaults to resetting expanded
+          // state whenever the core row model recomputes (e.g. a page passing
+          // a freshly-built `data` array on every render, as with tree data) -
+          // opt out so an in-flight expand/collapse can't be clobbered right
+          // after it's applied.
+          autoResetExpanded: false,
+        }
+      : {}),
     ...(getSubRows
       ? {
           getSubRows,
@@ -182,6 +193,10 @@ export function DataTable<T extends RowData>({
     ...(renderDetail
       ? {
           onExpandedChange: createTableStateUpdater(setExpanded),
+          // No getSubRows in this mode, so rows have no subRows for the
+          // default getCanExpand check to key off. Every row can expand to
+          // reveal its detail row.
+          getRowCanExpand: () => true,
         }
       : {}),
   });
