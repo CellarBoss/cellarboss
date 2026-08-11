@@ -13,6 +13,10 @@ import {
   columnVisibilityFeature,
   columnOrderingFeature,
   columnSizingFeature,
+  sortFn_text,
+  sortFn_alphanumeric,
+  sortFn_basic,
+  sortFn_datetime,
 } from "@tanstack/react-table";
 import type {
   ColumnDef,
@@ -74,6 +78,14 @@ export const dataTableFeatures = tableFeatures({
   paginatedRowModel: createPaginatedRowModel(),
   expandedRowModel: createExpandedRowModel(),
   columnMeta: metaHelper<DataTableColumnMeta>(),
+  // Auto sort-fn resolution (columns with no explicit `sortFn`) needs these
+  // registered by name, or it silently falls back to `basic` comparison.
+  sortFns: {
+    text: sortFn_text,
+    alphanumeric: sortFn_alphanumeric,
+    basic: sortFn_basic,
+    datetime: sortFn_datetime,
+  },
 });
 
 export type AppFeatures = typeof dataTableFeatures;
