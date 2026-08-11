@@ -17,6 +17,12 @@ import {
   sortFn_alphanumeric,
   sortFn_basic,
   sortFn_datetime,
+  filterFn_includesString,
+  filterFn_weakEquals,
+  filterFn_equals,
+  filterFn_inNumberRange,
+  filterFn_arrIncludes,
+  filterFn_inDateRange,
 } from "@tanstack/react-table";
 import type {
   ColumnDef,
@@ -85,6 +91,17 @@ export const dataTableFeatures = tableFeatures({
     alphanumeric: sortFn_alphanumeric,
     basic: sortFn_basic,
     datetime: sortFn_datetime,
+  },
+  // Auto filter-fn resolution (columns with no explicit `filterFn`, e.g. the
+  // free-text search column) needs these registered by name, or filtering is
+  // silently a no-op — every row matches regardless of the search term.
+  filterFns: {
+    includesString: filterFn_includesString,
+    weakEquals: filterFn_weakEquals,
+    equals: filterFn_equals,
+    inNumberRange: filterFn_inNumberRange,
+    arrIncludes: filterFn_arrIncludes,
+    inDateRange: filterFn_inDateRange,
   },
 });
 
