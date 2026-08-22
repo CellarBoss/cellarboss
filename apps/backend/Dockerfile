@@ -7,6 +7,10 @@ ENV CI=true
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
+# better-sqlite3 has no prebuilt binary for this platform and falls back to
+# node-gyp, which needs Python and a C++ toolchain to compile from source.
+RUN apk add --no-cache python3 make g++
+
 RUN corepack enable && corepack prepare --activate
 COPY apps/backend ./apps/backend
 COPY packages ./packages
