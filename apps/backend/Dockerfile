@@ -15,7 +15,7 @@ RUN corepack enable && corepack prepare --activate
 COPY apps/backend ./apps/backend
 COPY packages ./packages
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+RUN --mount=type=cache,id=pnpm-backend,target=/pnpm/store \
     pnpm install --frozen-lockfile --store-dir /pnpm/store
 
 RUN pnpm --filter backend build
