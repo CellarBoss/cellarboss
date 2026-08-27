@@ -11,7 +11,7 @@ RUN corepack enable && corepack prepare --activate
 COPY apps/web ./apps/web
 COPY packages ./packages
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+RUN --mount=type=cache,id=pnpm-web,target=/pnpm/store \
     pnpm install --frozen-lockfile --store-dir /pnpm/store
 
 ARG APP_VERSION=development
