@@ -55,17 +55,44 @@ async function checkAndSeed(db: Kysely<Database>) {
 }
 
 async function runMigrations() {
-  try {
-    logger.info("Running Kysely migrations");
-    execSync("kysely migrate latest", { stdio: "inherit" });
+  // Better Auth runs first so "user" exists before the Kysely migrations
+  // that FK-reference it run. If Better Auth's own migration refuses on a
+  // populated table, Kysely's migrations still run — migration 018 fixes
+  // that case — and we exit non-zero either way so the platform restarts
+  // and retries against the now-fixed schema.
+  logger.info("Starting database migrations");
 
+  let failed = false;
+
+  try {
     logger.info("Running better-auth migrations");
     execSync("auth migrate --yes --config ./dist/src/utils/auth.js", {
       stdio: "inherit",
     });
   } catch (err) {
-    logger.withError(err as Error).error("Error running migrations");
+    logger
+      .withError(err as Error)
+      .warn(
+        "better-auth migration failed — continuing to Kysely migrations, which may fix the schema for a retry",
+      );
+    failed = true;
+  }
+
+  try {
+    logger.info("Running Kysely migrations");
+    execSync("kysely migrate latest", { stdio: "inherit" });
+  } catch (err) {
+    logger.withError(err as Error).error("Kysely migration failed");
+    failed = true;
+  }
+
+  if (failed) {
+    logger.error(
+      "One or more migration steps failed — exiting so the platform can restart and retry",
+    );
     process.exit(1);
+  } else {
+    logger.info("Database migrations completed successfully");
   }
 }
 
