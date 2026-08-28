@@ -13,7 +13,14 @@ import { createPool as createMysqlPool } from "mysql2";
 
 export const MODEL_PREFIX = "authIntegrationTest";
 
+// Memoized so this test's own queries and better-auth's internal adapter
+// share the same underlying connection, letting a single destroy() (see
+// auth-migration.test.ts) close it rather than leaking one per call.
+let cachedDialect: Dialect | undefined;
+
 export function buildDialect(): Dialect {
+  if (cachedDialect) return cachedDialect;
+
   const type = process.env.DATABASE_TYPE;
   const url = process.env.DATABASE_URL;
   if (!type || !url) {
@@ -23,18 +30,14 @@ export function buildDialect(): Dialect {
   }
 
   if (type === "sqlite") {
-    return new SqliteDialect({ database: new Database(url) });
-  }
-
-  if (type === "postgres") {
-    return new PostgresDialect({
+    cachedDialect = new SqliteDialect({ database: new Database(url) });
+  } else if (type === "postgres") {
+    cachedDialect = new PostgresDialect({
       pool: new pg.Pool({ connectionString: url }),
     });
-  }
-
-  if (type === "mysql") {
+  } else if (type === "mysql") {
     const parsed = new URL(url);
-    return new MysqlDialect({
+    cachedDialect = new MysqlDialect({
       pool: createMysqlPool({
         host: parsed.hostname,
         port: parseInt(parsed.port) || 3306,
@@ -43,9 +46,11 @@ export function buildDialect(): Dialect {
         database: parsed.pathname.slice(1),
       }),
     });
+  } else {
+    throw new Error(`Unsupported DATABASE_TYPE: ${type}`);
   }
 
-  throw new Error(`Unsupported DATABASE_TYPE: ${type}`);
+  return cachedDialect;
 }
 
 export const auth = betterAuth({

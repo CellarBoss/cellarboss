@@ -5,7 +5,6 @@ import path from "node:path";
 import fs from "node:fs";
 import os from "node:os";
 import { Kysely, sql } from "kysely";
-import type { Dialect } from "kysely";
 import type { auth as AuthType } from "./fixtures/auth-integration.config.js";
 
 // Runs the real "auth migrate" CLI, then a real sign-up + sign-in, against
@@ -23,7 +22,7 @@ let isolatedUrl: string;
 let sqliteFilePath: string | undefined;
 let auth: typeof AuthType;
 let MODEL_PREFIX: string;
-let buildDialect: () => Dialect;
+let testDb: Kysely<any> | undefined;
 
 describe("real better-auth migration + sign-up/sign-in", () => {
   beforeAll(async () => {
@@ -48,25 +47,29 @@ describe("real better-auth migration + sign-up/sign-in", () => {
     const fixture = await import("./fixtures/auth-integration.config.js");
     auth = fixture.auth;
     MODEL_PREFIX = fixture.MODEL_PREFIX;
-    buildDialect = fixture.buildDialect;
+    // Same (memoized) dialect better-auth's own adapter uses, so destroying
+    // this one connection in afterAll closes both.
+    testDb = new Kysely<any>({ dialect: fixture.buildDialect() });
   }, 30_000);
 
   afterAll(async () => {
-    if (databaseType === "sqlite") {
-      // Best-effort: the file may still be open, which errors on Windows.
+    if (testDb) {
+      if (databaseType !== "sqlite") {
+        for (const table of ["session", "account", "verification", "user"]) {
+          await sql`drop table if exists ${sql.raw(`${MODEL_PREFIX}_${table}`)}`.execute(
+            testDb,
+          );
+        }
+      }
+      await testDb.destroy();
+    }
+
+    if (databaseType === "sqlite" && sqliteFilePath) {
       try {
-        if (sqliteFilePath) fs.rmSync(sqliteFilePath, { force: true });
+        fs.rmSync(sqliteFilePath, { force: true });
       } catch {
-        // ignore
+        // best-effort
       }
-    } else {
-      const db = new Kysely<any>({ dialect: buildDialect() });
-      for (const table of ["session", "account", "verification", "user"]) {
-        await sql`drop table if exists ${sql.raw(`${MODEL_PREFIX}_${table}`)}`.execute(
-          db,
-        );
-      }
-      await db.destroy();
     }
 
     process.env.DATABASE_URL = originalDatabaseUrl;
@@ -90,17 +93,12 @@ describe("real better-auth migration + sign-up/sign-in", () => {
   });
 
   it("stores the issuer better-auth 1.7+ requires for credential accounts", async () => {
-    const db = new Kysely<any>({ dialect: buildDialect() });
-    try {
-      const account = (await db
-        .selectFrom(`${MODEL_PREFIX}_account`)
-        .select(["issuer", "providerId"])
-        .where("providerId", "=", "credential")
-        .executeTakeFirstOrThrow()) as { issuer: string; providerId: string };
+    const account = (await testDb!
+      .selectFrom(`${MODEL_PREFIX}_account`)
+      .select(["issuer", "providerId"])
+      .where("providerId", "=", "credential")
+      .executeTakeFirstOrThrow()) as { issuer: string; providerId: string };
 
-      expect(account.issuer).toBe("local:credential");
-    } finally {
-      await db.destroy();
-    }
+    expect(account.issuer).toBe("local:credential");
   });
 });
