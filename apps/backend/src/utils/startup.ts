@@ -55,11 +55,11 @@ async function checkAndSeed(db: Kysely<Database>) {
 }
 
 async function runMigrations() {
-  // Better Auth runs first so "user" exists before Kysely migrations
-  // 013/015 (which FK-reference it) run. If Better Auth's own migration
-  // refuses on a populated table, Kysely's migrations still run — migration
-  // 018 fixes that case — and we exit non-zero either way so the platform
-  // restarts and retries against the now-fixed schema.
+  // Better Auth runs first so "user" exists before the Kysely migrations
+  // that FK-reference it run. If Better Auth's own migration refuses on a
+  // populated table, Kysely's migrations still run — migration 018 fixes
+  // that case — and we exit non-zero either way so the platform restarts
+  // and retries against the now-fixed schema.
   logger.info("Starting database migrations");
 
   let failed = false;
