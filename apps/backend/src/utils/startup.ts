@@ -61,7 +61,7 @@ async function runMigrations() {
 
     logger.info("Running better-auth migrations");
     try {
-      execSync("better-auth migrate --yes --config ./dist/src/utils/auth.js", {
+      execSync("auth migrate --yes --config ./dist/src/utils/auth.js", {
         stdio: "inherit",
       });
     } catch {
