@@ -60,13 +60,9 @@ async function runMigrations() {
     execSync("kysely migrate latest", { stdio: "inherit" });
 
     logger.info("Running better-auth migrations");
-    try {
-      execSync("auth migrate --yes --config ./dist/src/utils/auth.js", {
-        stdio: "inherit",
-      });
-    } catch {
-      logger.warn("better-auth migrations may have nothing to do, skipping");
-    }
+    execSync("auth migrate --yes --config ./dist/src/utils/auth.js", {
+      stdio: "inherit",
+    });
   } catch (err) {
     logger.withError(err as Error).error("Error running migrations");
     process.exit(1);
