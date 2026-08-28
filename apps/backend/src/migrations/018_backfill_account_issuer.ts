@@ -199,6 +199,13 @@ export async function up(db: Kysely<any>): Promise<void> {
     await backfillIssuer(db);
     await enforceNotNull(db);
   } else if (issuerColumn.isNullable) {
+    if (dialect === "sqlite") {
+      // sqlite can't ALTER a column to NOT NULL in place — enforceNotNull()
+      // is a no-op here, so a nullable "issuer" column (e.g. left behind by
+      // an interrupted manual fix) must go through the rebuild path instead.
+      await rebuildSqliteAccountTable(db);
+      return;
+    }
     await backfillIssuer(db);
     await enforceNotNull(db);
   } else {
