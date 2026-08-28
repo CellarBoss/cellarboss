@@ -9,6 +9,7 @@ export const auth = betterAuth({
   trustedOrigins: (env.CORS || "http://localhost:3000").split(","),
   database: {
     dialect: getDialect(),
+    type: env.DATABASE_TYPE,
   },
   emailAndPassword: {
     enabled: true,

@@ -8,14 +8,13 @@
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
-    "auth:migrate": "better-auth migrate --yes --config ./dist/src/utils/auth.js",
+    "auth:migrate": "auth migrate --yes --config ./dist/src/utils/auth.js",
     "migrate": "tsx src/utils/migrate.ts latest",
     "migrate:down": "tsx src/utils/migrate.ts down",
     "seed": "kysely seed run",
     "generate:docs": "tsx scripts/generate-docs.ts"
   },
   "dependencies": {
-    "@better-auth/cli": "1.4.21",
     "@cellarboss/types": "workspace:*",
     "@cellarboss/validators": "workspace:*",
     "@hono/mcp": "0.3.2",
@@ -26,6 +25,7 @@
     "@loglayer/transport-pino": "3.3.0",
     "@modelcontextprotocol/sdk": "1.30.0",
     "@scalar/hono-api-reference": "0.11.16",
+    "auth": "1.7.1",
     "better-auth": "1.7.1",
     "better-sqlite3": "13.0.3",
     "dotenv": "17.4.2",
