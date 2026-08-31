@@ -31,7 +31,7 @@ minimumReleaseAgeExclude:
   - '@expo/prebuild-config@55.0.19 || 55.0.20 || 55.0.21 || 55.0.22'
   - babel-preset-expo@55.0.23 || 55.0.24 || 55.0.25
   - expo-file-system@55.0.23 || 55.0.24 || 55.0.25 || 55.0.26
-  - expo@55.0.27 || 55.0.28 || 55.0.29 || 55.0.30
+  - expo@55.0.27 || 55.0.28 || 55.0.29 || 55.0.30 || 55.0.31
   - expo-application@55.0.16 || 55.0.17 || 55.0.18 || 55.0.19
   - expo-haptics@55.0.15 || 55.0.16 || 55.0.17 || 55.0.18
   - expo-image-picker@55.0.21 || 55.0.22 || 55.0.23 || 55.0.24
@@ -53,3 +53,4 @@ minimumReleaseAgeExclude:
   - expo-router@55.0.17 || 55.0.18
   - '@expo/router-server@55.0.19'
   - expo-server@55.0.12
+  - expo-modules-core@55.0.26
