@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-node
+      - uses: $/.github/actions/setup-node
 
       - name: Check formatting
         run: pnpm prettier --check "**/*.{ts,tsx,md}"
@@ -38,7 +38,7 @@ jobs:
           persist-credentials: false
 
       - name: Run zizmor
-        uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054 # v0.6.2
+        uses: zizmorcore/zizmor-action@70fb788f84895a7701f5643d103d587e460b5c99 # v0.6.3
         with:
           # Auto-detect whether code scanning (SARIF upload) is available;
           # otherwise the action just fails the build on findings.

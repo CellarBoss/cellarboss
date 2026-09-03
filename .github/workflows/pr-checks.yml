@@ -18,7 +18,7 @@ jobs:
   tests:
     name: Tests
     if: github.event.pull_request.draft == false
-    uses: ./.github/workflows/ci-tests.yml
+    uses: $/.github/workflows/ci-tests.yml
     with:
       detect-changes: true
       upload-coverage: true
