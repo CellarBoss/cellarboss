@@ -60,7 +60,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-node
+      - uses: $/.github/actions/setup-node
 
       - name: Build frontend
         run: pnpm --filter @cellarboss/web build
@@ -90,7 +90,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-node
+      - uses: $/.github/actions/setup-node
 
       - name: Run validators unit tests
         run: pnpm --filter @cellarboss/validators ${{ inputs.upload-coverage && 'test:coverage' || 'test' }}
@@ -112,7 +112,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-node
+      - uses: $/.github/actions/setup-node
 
       - name: Run common unit tests
         run: pnpm --filter @cellarboss/common ${{ inputs.upload-coverage && 'test:coverage' || 'test' }}
@@ -178,7 +178,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-node
+      - uses: $/.github/actions/setup-node
 
       - name: Build backend
         run: pnpm --filter backend build
@@ -209,7 +209,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-node
+      - uses: $/.github/actions/setup-node
 
       - name: Run mobile unit tests
         run: pnpm --filter @cellarboss/mobile ${{ inputs.upload-coverage && 'test:coverage' || 'test' }}
@@ -231,7 +231,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-node
+      - uses: $/.github/actions/setup-node
 
       - name: Cache Playwright browsers
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -292,7 +292,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-node
+      - uses: $/.github/actions/setup-node
 
       - name: Expo doctor
         working-directory: apps/mobile
@@ -311,7 +311,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-node
+      - uses: $/.github/actions/setup-node
 
       - name: Validate API docs generation
         run: pnpm --filter backend generate:docs
@@ -325,7 +325,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-node
+      - uses: $/.github/actions/setup-node
 
       - name: Build docs (without screenshots)
         run: pnpm --filter @cellarboss/web docs:build
@@ -339,7 +339,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-node
+      - uses: $/.github/actions/setup-node
 
       - name: Build docs (without screenshots)
         run: pnpm --filter @cellarboss/mobile docs:build
