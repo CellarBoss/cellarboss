@@ -12,7 +12,7 @@ COPY apps/web ./apps/web
 COPY packages ./packages
 
 RUN --mount=type=cache,id=pnpm-web,target=/pnpm/store \
-    pnpm install --frozen-lockfile --store-dir /pnpm/store
+    pnpm install --frozen-lockfile --filter @cellarboss/web... --store-dir /pnpm/store
 
 ARG APP_VERSION=development
 ENV APP_VERSION=$APP_VERSION
