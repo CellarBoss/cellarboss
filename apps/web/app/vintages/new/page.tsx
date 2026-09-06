@@ -29,13 +29,15 @@ function NewVintageForm() {
       } as Vintage)
     : undefined;
 
+  const redirectTo = wineId ? `/wines/${wineId}` : "/wines";
+
   return (
     <GenericCard<Vintage>
       mode="create"
       data={defaultData}
       fields={vintageFields}
       processSave={handleCreate}
-      redirectTo="/wines"
+      redirectTo={redirectTo}
     />
   );
 }

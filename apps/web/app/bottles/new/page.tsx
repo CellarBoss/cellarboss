@@ -48,13 +48,15 @@ function NewBottleForm() {
     quantity: 1,
   };
 
+  const redirectTo = vintageId ? `/vintages/${vintageId}` : "/bottles";
+
   return (
     <GenericCard<BottleFormData>
       mode="create"
       data={defaultData}
       fields={bottleCreateFields}
       processSave={handleCreate}
-      redirectTo="/bottles"
+      redirectTo={redirectTo}
     />
   );
 }
