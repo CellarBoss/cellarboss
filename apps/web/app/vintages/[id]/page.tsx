@@ -140,7 +140,7 @@ export default function ViewVintagePage() {
             <DeleteButton
               onDelete={async () => {
                 const result = await deleteVintage(vintageId);
-                if (result.ok) router.push("/vintages");
+                if (result.ok) router.push(`/wines/${vintage.wineId}`);
                 return result.ok;
               }}
               itemDescription={title}
