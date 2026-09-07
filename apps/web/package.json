@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@cellarboss/mock-server": "workspace:*",
-    "@eslint/compat": "2.1.0",
+    "@eslint/compat": "2.1.1",
     "@playwright/test": "1.62.1",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "24.13.3",
