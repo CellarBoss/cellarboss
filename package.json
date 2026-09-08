@@ -1,6 +1,6 @@
 {
   "private": true,
-  "packageManager": "pnpm@12.3.2",
+  "packageManager": "pnpm@12.3.4",
   "scripts": {
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "node -e \"if(!process.env.CI)require('node:child_process').execSync('lefthook install',{stdio:'inherit'})\""
