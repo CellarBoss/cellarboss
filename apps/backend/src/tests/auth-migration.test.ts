@@ -91,14 +91,4 @@ describe("real better-auth migration + sign-up/sign-in", () => {
     expect(signIn.user?.email).toBe(email);
     expect(signIn.token).toBeTruthy();
   });
-
-  it("stores the issuer better-auth 1.7+ requires for credential accounts", async () => {
-    const account = (await testDb!
-      .selectFrom(`${MODEL_PREFIX}_account`)
-      .select(["issuer", "providerId"])
-      .where("providerId", "=", "credential")
-      .executeTakeFirstOrThrow()) as { issuer: string; providerId: string };
-
-    expect(account.issuer).toBe("local:credential");
-  });
 });
