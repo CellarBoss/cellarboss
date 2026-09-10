@@ -24,7 +24,7 @@
     "@loglayer/hono": "2.4.0",
     "@loglayer/transport-pino": "3.3.0",
     "@modelcontextprotocol/sdk": "1.30.0",
-    "@scalar/hono-api-reference": "0.12.0",
+    "@scalar/hono-api-reference": "0.12.1",
     "auth": "1.7.3",
     "better-auth": "1.7.3",
     "better-sqlite3": "13.0.3",
