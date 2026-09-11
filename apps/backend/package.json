@@ -11,7 +11,7 @@
     "auth:migrate": "auth migrate --yes --config ./dist/src/utils/auth.js",
     "migrate": "tsx src/utils/migrate.ts latest",
     "migrate:down": "tsx src/utils/migrate.ts down",
-    "seed": "kysely seed run",
+    "seed": "tsx src/utils/seed-cli.ts",
     "generate:docs": "tsx scripts/generate-docs.ts"
   },
   "dependencies": {

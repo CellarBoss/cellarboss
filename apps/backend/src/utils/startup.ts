@@ -7,6 +7,7 @@ import process from "process";
 import { sql, type Kysely } from "kysely";
 import { cleanupOrphanedFiles, ensureUploadDirs } from "./upload.js";
 import { env } from "./env.js";
+import { runSeeds } from "./seed.js";
 import { logger } from "./logger.js";
 
 async function waitForDb() {
@@ -33,23 +34,11 @@ async function waitForDb() {
   }
 }
 
-async function checkAndSeed(db: Kysely<Database>) {
+async function seedDatabase(db: Kysely<Database>) {
   try {
-    const countResult = await db
-      .selectFrom("setting")
-      .select(db.fn.countAll().as("count"))
-      .executeTakeFirst();
-
-    const count = Number(countResult?.count || 0);
-
-    if (count === 0) {
-      logger.info("Database empty, running seeders");
-      execSync("kysely seed run", { stdio: "inherit" });
-    } else {
-      logger.debug("Database already seeded");
-    }
+    await runSeeds(db);
   } catch (err) {
-    logger.withError(err as Error).error("Error checking/seeding database");
+    logger.withError(err as Error).error("Error seeding database");
     process.exit(1);
   }
 }
@@ -125,7 +114,7 @@ async function cleanupImages(db: Kysely<Database>) {
 async function main() {
   const db = await waitForDb();
   await runMigrations();
-  await checkAndSeed(db);
+  await seedDatabase(db);
   await ensureUploadDirs();
   await cleanupImages(db);
   startServer();

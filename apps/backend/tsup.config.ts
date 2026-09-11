@@ -13,6 +13,7 @@ export default defineConfig({
   entry: {
     "src/index": "src/index.ts",
     "src/utils/startup": "src/utils/startup.ts",
+    "src/utils/seed-cli": "src/utils/seed-cli.ts",
     "src/utils/database": "src/utils/database.ts",
     "src/utils/auth": "src/utils/auth.ts",
     ...dirEntries("src/migrations"),
