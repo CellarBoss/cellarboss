@@ -96,6 +96,7 @@ describe.runIf(databaseType === "sqlite")("seeds", () => {
     // The upgrade path: an existing install has data but an empty ledger, so
     // every seed runs once more over rows that are already there. A seed that
     // is not idempotent crash-loops the backend on upgrade.
+    await runSeeds(db, folder); // no-op if the test above already ran
     const before = await snapshot();
 
     await sql`delete from seed_history`.execute(db);
