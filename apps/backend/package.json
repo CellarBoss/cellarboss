@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "9.6.0",
-    "@types/node": "24.13.3",
+    "@types/node": "24.13.4",
     "@types/pg": "8.23.1",
     "@vitest/coverage-v8": "5.0.0",
     "@vitest/ui": "5.0.0",
