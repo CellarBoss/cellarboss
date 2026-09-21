@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import type { Wine } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
 
@@ -32,16 +34,47 @@ async function handleCreate(formData: any): Promise<ApiResult<WineFormData>> {
   return { ok: true, data: { ...newWine, grapeIds: grapeIdList.map(Number) } };
 }
 
+function NewWineForm() {
+  const searchParams = useSearchParams();
+  const winemakerId = searchParams.get("winemakerId");
+  const regionId = searchParams.get("regionId");
+
+  const defaultData =
+    winemakerId || regionId
+      ? ({
+          id: 0,
+          name: "",
+          type: "" as WineFormData["type"],
+          wineMakerId: winemakerId ? Number(winemakerId) : 0,
+          regionId: regionId ? Number(regionId) : null,
+          grapeIds: [],
+        } as WineFormData)
+      : undefined;
+
+  const redirectTo = winemakerId
+    ? `/winemakers/${winemakerId}`
+    : regionId
+      ? `/regions/${regionId}`
+      : "/wines";
+
+  return (
+    <GenericCard<WineFormData>
+      mode="create"
+      data={defaultData}
+      fields={wineFields}
+      processSave={handleCreate}
+      redirectTo={redirectTo}
+    />
+  );
+}
+
 export default function NewWinePage() {
   return (
     <section>
       <PageHeader title="New Wine" />
-      <GenericCard<WineFormData>
-        mode="create"
-        fields={wineFields}
-        processSave={handleCreate}
-        redirectTo="/wines"
-      />
+      <Suspense>
+        <NewWineForm />
+      </Suspense>
     </section>
   );
 }

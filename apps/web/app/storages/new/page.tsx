@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import type { Storage } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
 import { storageFields } from "@/lib/fields/storages";
@@ -20,6 +22,38 @@ async function handleCreate(storage: Storage): Promise<ApiResult<Storage>> {
   return lastResult as ApiResult<Storage>;
 }
 
+function NewStorageForm() {
+  const searchParams = useSearchParams();
+  const locationId = searchParams.get("locationId");
+  const parentId = searchParams.get("parentId");
+
+  const defaultData =
+    locationId || parentId
+      ? ({
+          id: 0,
+          name: "",
+          locationId: locationId ? Number(locationId) : null,
+          parent: parentId ? Number(parentId) : null,
+        } as Storage)
+      : undefined;
+
+  const redirectTo = parentId
+    ? `/storages/${parentId}`
+    : locationId
+      ? `/locations/${locationId}`
+      : "/storages";
+
+  return (
+    <GenericCard<Storage>
+      mode="create"
+      data={defaultData}
+      fields={storageFields}
+      processSave={handleCreate}
+      redirectTo={redirectTo}
+    />
+  );
+}
+
 export default function NewStoragePage() {
   return (
     <section>
@@ -28,12 +62,9 @@ export default function NewStoragePage() {
         Tip: Use [1-6] or [A-F] in the name to create multiple storages at once.
         Multiple ranges like [A-C][1-3] create all combinations.
       </p>
-      <GenericCard<Storage>
-        mode="create"
-        fields={storageFields}
-        processSave={handleCreate}
-        redirectTo="/storages"
-      />
+      <Suspense>
+        <NewStorageForm />
+      </Suspense>
     </section>
   );
 }

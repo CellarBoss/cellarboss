@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import type { Region } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
 import { regionFields } from "@/lib/fields/regions";
@@ -18,16 +20,38 @@ async function handleCreate(region: Region): Promise<ApiResult<Region>> {
   }
 }
 
+function NewRegionForm() {
+  const searchParams = useSearchParams();
+  const countryId = searchParams.get("countryId");
+
+  const defaultData = countryId
+    ? ({
+        id: 0,
+        name: "",
+        countryId: Number(countryId),
+      } as Region)
+    : undefined;
+
+  const redirectTo = countryId ? `/countries/${countryId}` : "/regions";
+
+  return (
+    <GenericCard<Region>
+      mode="create"
+      data={defaultData}
+      fields={regionFields}
+      processSave={handleCreate}
+      redirectTo={redirectTo}
+    />
+  );
+}
+
 export default function NewRegionPage() {
   return (
     <section>
       <PageHeader title="New Region" />
-      <GenericCard<Region>
-        mode="create"
-        fields={regionFields}
-        processSave={handleCreate}
-        redirectTo="/regions"
-      />
+      <Suspense>
+        <NewRegionForm />
+      </Suspense>
     </section>
   );
 }
