@@ -170,4 +170,16 @@ test.describe("Wines page", () => {
       /Château Margaux/,
     );
   });
+
+  test("Add wine from region page pre-selects that region", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/regions/2");
+
+    await page.getByRole("link", { name: "Add wine" }).click();
+
+    await expect(page).toHaveURL(/\/wines\/new\?regionId=2/);
+    await expect(fieldCombobox(page, "Region")).toHaveText(/Burgundy/);
+  });
 });

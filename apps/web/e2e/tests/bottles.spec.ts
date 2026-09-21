@@ -146,4 +146,47 @@ test.describe("Bottles page", () => {
     await bottleIcons.nth(1).hover();
     await expect(page.getByRole("tooltip")).toContainText("Magnum (1.5L)");
   });
+
+  // The dashboard wine-type chart links here as /bottles?type=<type>
+  test("wine type filter from the URL is applied on load", async ({
+    adminContext,
+  }) => {
+    await setState({
+      wines: [
+        ...BOTTLE_SEED.wines,
+        {
+          id: 2,
+          name: "Blanc de Blancs",
+          type: "white",
+          wineMakerId: 1,
+          regionId: 1,
+        },
+      ],
+      vintages: [
+        ...BOTTLE_SEED.vintages,
+        { id: 2, wineId: 2, year: 2020, drinkFrom: 2022, drinkUntil: 2030 },
+      ],
+      bottles: [
+        ...BOTTLE_SEED.bottles,
+        {
+          id: 3,
+          vintageId: 2,
+          purchaseDate: "2023-05-01",
+          purchasePrice: 60.0,
+          storageId: 1,
+          status: "stored",
+          size: "standard",
+        },
+      ],
+    });
+
+    const page = await adminContext.newPage();
+
+    await page.goto("/bottles");
+    await expect(page.getByText("Blanc de Blancs")).toBeVisible();
+
+    await page.goto("/bottles?type=red");
+    await expect(page.getByText("Château Margaux 2015").first()).toBeVisible();
+    await expect(page.getByText("Blanc de Blancs")).toBeHidden();
+  });
 });
