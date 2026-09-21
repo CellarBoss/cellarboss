@@ -11,6 +11,6 @@
   "devDependencies": {
     "lefthook": "2.1.14",
     "lint-staged": "17.5.1",
-    "prettier": "3.9.6"
+    "prettier": "3.9.8"
   }
 }
