@@ -1,4 +1,5 @@
 import { test, expect, setState, resetState } from "../fixtures/auth";
+import { fieldCombobox } from "../fixtures/form";
 
 test.describe("Wines page", () => {
   test.beforeEach(async () => {
@@ -122,5 +123,51 @@ test.describe("Wines page", () => {
     await expect(
       page.getByRole("link", { name: "Château Margaux" }).first(),
     ).toBeVisible();
+  });
+
+  test("new wine form pre-selects winemaker from URL parameter", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/wines/new?winemakerId=2");
+
+    await expect(fieldCombobox(page, "Winemaker")).toHaveText(
+      /Domaine Leflaive/,
+    );
+  });
+
+  test("new wine form pre-selects region from URL parameter", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/wines/new?regionId=2");
+
+    await expect(fieldCombobox(page, "Region")).toHaveText(/Burgundy/);
+  });
+
+  test("new wine form has no selection without URL parameters", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/wines/new");
+
+    await expect(fieldCombobox(page, "Winemaker")).toHaveText(
+      /Choose an option/,
+    );
+    await expect(fieldCombobox(page, "Region")).toHaveText(/Choose an option/);
+  });
+
+  test("Add wine from winemaker page pre-selects that winemaker", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/winemakers/1");
+
+    await page.getByRole("link", { name: "Add wine" }).click();
+
+    await expect(page).toHaveURL(/\/wines\/new\?winemakerId=1/);
+    await expect(fieldCombobox(page, "Winemaker")).toHaveText(
+      /Château Margaux/,
+    );
   });
 });
