@@ -18,6 +18,13 @@ export function stringifyValues<T>(data: T): any {
   return String(data);
 }
 
+// Parses a URL query parameter as a positive integer ID, or null if absent/invalid
+export function parseIdParam(value: string | null): number | null {
+  if (!value || !/^\d+$/.test(value)) return null;
+  const id = Number(value);
+  return Number.isSafeInteger(id) && id > 0 ? id : null;
+}
+
 const MAX_EXPANSION_RESULTS = 1000;
 
 function expandNamePatternImpl(name: string, results: string[]): void {
