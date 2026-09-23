@@ -8,6 +8,7 @@ import { regionFields } from "@/lib/fields/regions";
 import { createRegion } from "@/lib/api/regions";
 import { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
+import { parseIdParam } from "@/lib/functions/strings";
 
 async function handleCreate(region: Region): Promise<ApiResult<Region>> {
   console.log("Create region:", region);
@@ -22,13 +23,13 @@ async function handleCreate(region: Region): Promise<ApiResult<Region>> {
 
 function NewRegionForm() {
   const searchParams = useSearchParams();
-  const countryId = searchParams.get("countryId");
+  const countryId = parseIdParam(searchParams.get("countryId"));
 
   const defaultData = countryId
     ? ({
         id: 0,
         name: "",
-        countryId: Number(countryId),
+        countryId,
       } as Region)
     : undefined;
 

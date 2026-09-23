@@ -10,6 +10,7 @@ import { createWine } from "@/lib/api/wines";
 import { createWineGrape } from "@/lib/api/winegrapes";
 import { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
+import { parseIdParam } from "@/lib/functions/strings";
 
 async function handleCreate(formData: any): Promise<ApiResult<WineFormData>> {
   const { grapeIds, ...wineData } = formData;
@@ -36,8 +37,8 @@ async function handleCreate(formData: any): Promise<ApiResult<WineFormData>> {
 
 function NewWineForm() {
   const searchParams = useSearchParams();
-  const winemakerId = searchParams.get("winemakerId");
-  const regionId = searchParams.get("regionId");
+  const winemakerId = parseIdParam(searchParams.get("winemakerId"));
+  const regionId = parseIdParam(searchParams.get("regionId"));
 
   const defaultData =
     winemakerId || regionId
@@ -45,8 +46,8 @@ function NewWineForm() {
           id: 0,
           name: "",
           type: "" as WineFormData["type"],
-          wineMakerId: winemakerId ? Number(winemakerId) : 0,
-          regionId: regionId ? Number(regionId) : null,
+          wineMakerId: winemakerId ?? 0,
+          regionId,
           grapeIds: [],
         } as WineFormData)
       : undefined;

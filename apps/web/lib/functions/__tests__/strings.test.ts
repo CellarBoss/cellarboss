@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { stringifyValues, expandNamePattern } from "../strings";
+import { stringifyValues, expandNamePattern, parseIdParam } from "../strings";
 
 describe("stringifyValues", () => {
   it("converts numbers to strings", () => {
@@ -83,5 +83,34 @@ describe("expandNamePattern", () => {
     // [0-9][0-9][0-9] = 1000 combinations, but capped
     const results = expandNamePattern("[0-9][0-9][0-9]");
     expect(results.length).toBeLessThanOrEqual(1000);
+  });
+});
+
+describe("parseIdParam", () => {
+  it("parses positive integers", () => {
+    expect(parseIdParam("1")).toBe(1);
+    expect(parseIdParam("42")).toBe(42);
+  });
+
+  it("returns null for missing values", () => {
+    expect(parseIdParam(null)).toBeNull();
+    expect(parseIdParam("")).toBeNull();
+  });
+
+  it("returns null for zero and negative values", () => {
+    expect(parseIdParam("0")).toBeNull();
+    expect(parseIdParam("-1")).toBeNull();
+  });
+
+  it("returns null for non-integer values", () => {
+    expect(parseIdParam("abc")).toBeNull();
+    expect(parseIdParam("1.5")).toBeNull();
+    expect(parseIdParam("1e3")).toBeNull();
+    expect(parseIdParam(" 1")).toBeNull();
+    expect(parseIdParam("../settings")).toBeNull();
+  });
+
+  it("returns null for unsafe integers", () => {
+    expect(parseIdParam("99999999999999999999")).toBeNull();
   });
 });

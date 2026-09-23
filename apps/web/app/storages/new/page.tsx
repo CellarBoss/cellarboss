@@ -8,7 +8,7 @@ import { storageFields } from "@/lib/fields/storages";
 import { createStorage } from "@/lib/api/storages";
 import { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
-import { expandNamePattern } from "@/lib/functions/strings";
+import { expandNamePattern, parseIdParam } from "@/lib/functions/strings";
 
 async function handleCreate(storage: Storage): Promise<ApiResult<Storage>> {
   const names = expandNamePattern(storage.name);
@@ -24,16 +24,16 @@ async function handleCreate(storage: Storage): Promise<ApiResult<Storage>> {
 
 function NewStorageForm() {
   const searchParams = useSearchParams();
-  const locationId = searchParams.get("locationId");
-  const parentId = searchParams.get("parentId");
+  const locationId = parseIdParam(searchParams.get("locationId"));
+  const parentId = parseIdParam(searchParams.get("parentId"));
 
   const defaultData =
     locationId || parentId
       ? ({
           id: 0,
           name: "",
-          locationId: locationId ? Number(locationId) : null,
-          parent: parentId ? Number(parentId) : null,
+          locationId,
+          parent: parentId,
         } as Storage)
       : undefined;
 
