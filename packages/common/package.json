@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@tanstack/react-query": "catalog:",
-    "@types/react": "19.2.18",
+    "@types/react": "catalog:",
     "react": "catalog:",
     "@vitest/coverage-v8": "5.0.1",
     "typescript": "5.9.3",
