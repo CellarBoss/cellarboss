@@ -92,6 +92,12 @@
       "matchPackageNames": [
         "/^@types//"
       ]
+    },
+    {
+      "description": "@types/react must track the React runtime, which Expo pins",
+      "matchPackageNames": ["@types/react", "@types/react-dom"],
+      "matchUpdateTypes": ["major", "minor"],
+      "enabled": false
     }
   ]
 }
