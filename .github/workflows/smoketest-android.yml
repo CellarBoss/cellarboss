@@ -11,6 +11,7 @@ jobs:
   smoke-test-android:
     name: Android Smoke Test
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -67,9 +68,12 @@ jobs:
           ./gradlew assembleRelease -PreactNativeArchitectures=x86_64 --no-daemon --build-cache
 
       - name: Install Maestro
+        env:
+          # renovate: datasource=github-releases depName=mobile-dev-inc/maestro extractVersion=^cli-(?<version>.+)$
+          MAESTRO_VERSION: 2.10.0
         run: |
           curl -Ls "https://get.maestro.mobile.dev" | bash
-          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
 
       - name: Start mock server
         run: pnpm --filter @cellarboss/mock-server start &
@@ -79,6 +83,20 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+
+      - name: Wait for mock server
+        run: |
+          TIMEOUT=30
+          ELAPSED=0
+          until curl -sf "http://localhost:5174/__test/healthcheck" > /dev/null 2>&1; do
+            if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
+              echo "Mock server did not start within ${TIMEOUT}s"
+              exit 1
+            fi
+            sleep 1
+            ELAPSED=$((ELAPSED + 1))
+          done
+          echo "Mock server is ready."
 
       - name: Start emulator and run smoke tests
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0

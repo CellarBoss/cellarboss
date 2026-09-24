@@ -24,7 +24,9 @@ jobs:
       backend: ${{ steps.filter.outputs.backend || 'true' }}
       mobile: ${{ steps.filter.outputs.mobile || 'true' }}
       packages: ${{ steps.filter.outputs.packages || 'true' }}
+      mock-server: ${{ steps.filter.outputs.mock-server || 'true' }}
       structure: ${{ steps.filter.outputs.structure || 'true' }}
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: inputs.detect-changes
@@ -46,14 +48,19 @@ jobs:
               - 'packages/validators/**'
               - 'packages/types/**'
               - 'packages/common/**'
+            mock-server:
+              - 'packages/mock-server/**'
             structure:
               - 'package.json'
               - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
               - '.github/workflows/**'
+              - '.github/actions/**'
 
   test-web-functions:
     name: Test WebUI Functions
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: changes
     if: needs.changes.outputs.web == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.structure == 'true'
     steps:
@@ -84,6 +91,7 @@ jobs:
   test-validators:
     name: Test Validators
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: changes
     if: needs.changes.outputs.packages == 'true' || needs.changes.outputs.structure == 'true'
     steps:
@@ -106,6 +114,7 @@ jobs:
   test-common:
     name: Test Common
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: changes
     if: needs.changes.outputs.packages == 'true' || needs.changes.outputs.structure == 'true'
     steps:
@@ -128,6 +137,7 @@ jobs:
   test-backend:
     name: Test Backend (${{ matrix.db }})
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: changes
     if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.structure == 'true'
 
@@ -183,8 +193,10 @@ jobs:
       - name: Build backend
         run: pnpm --filter backend build
 
+      # Coverage is collected from the sqlite run only; the other databases
+      # exercise the same code paths, so one report is representative.
       - name: Run backend tests
-        run: pnpm --filter backend ${{ inputs.upload-coverage && 'test:coverage' || 'test' }}
+        run: pnpm --filter backend ${{ inputs.upload-coverage && matrix.db == 'sqlite' && 'test:coverage' || 'test' }}
         env:
           DATABASE_TYPE: ${{ matrix.DATABASE_TYPE }}
           DATABASE_URL: ${{ matrix.DATABASE_URL }}
@@ -193,16 +205,17 @@ jobs:
           BETTER_AUTH_SECRET: ci-test-placeholder
 
       - name: Upload coverage
-        if: inputs.upload-coverage
+        if: inputs.upload-coverage && matrix.db == 'sqlite'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: coverage-backend-${{ matrix.db }}
+          name: coverage-backend
           path: apps/backend/coverage/
           retention-days: 1
 
   test-mobile:
     name: Test Mobile
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: changes
     if: needs.changes.outputs.mobile == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.structure == 'true'
     steps:
@@ -225,8 +238,9 @@ jobs:
   test-web-e2e:
     name: Test WebUI E2E
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     needs: changes
-    if: needs.changes.outputs.web == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.structure == 'true'
+    if: needs.changes.outputs.web == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.mock-server == 'true' || needs.changes.outputs.structure == 'true'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -286,6 +300,7 @@ jobs:
   validate-expo:
     name: Validate Expo Setup
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: changes
     if: needs.changes.outputs.mobile == 'true' || needs.changes.outputs.structure == 'true'
     steps:
@@ -296,7 +311,10 @@ jobs:
 
       - name: Expo doctor
         working-directory: apps/mobile
-        run: npx expo-doctor@latest --verbose
+        env:
+          # renovate: datasource=npm depName=expo-doctor
+          EXPO_DOCTOR_VERSION: 1.20.4
+        run: npx "expo-doctor@${EXPO_DOCTOR_VERSION}" --verbose
 
       - name: Expo dependency check
         working-directory: apps/mobile
@@ -305,6 +323,7 @@ jobs:
   validate-api-docs:
     name: Validate API Docs
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: changes
     if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.structure == 'true'
     steps:
@@ -319,8 +338,9 @@ jobs:
   validate-web-docs:
     name: Validate WebUI User Docs
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: changes
-    if: needs.changes.outputs.web == 'true' || needs.changes.outputs.packages == 'true'
+    if: needs.changes.outputs.web == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.structure == 'true'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -333,8 +353,9 @@ jobs:
   validate-mobile-docs:
     name: Validate Mobile User Docs
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: changes
-    if: needs.changes.outputs.mobile == 'true' || needs.changes.outputs.packages == 'true'
+    if: needs.changes.outputs.mobile == 'true' || needs.changes.outputs.packages == 'true' || needs.changes.outputs.structure == 'true'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -347,8 +368,12 @@ jobs:
   ci-required:
     name: Required CI Checks
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: always() && !cancelled()
+    # `changes` is listed so a failed change detection fails this gate rather
+    # than silently skipping every suite (skips are otherwise allowed).
     needs:
+      - changes
       - test-web-functions
       - test-validators
       - test-common
