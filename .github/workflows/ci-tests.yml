@@ -246,23 +246,7 @@ jobs:
         with:
           persist-credentials: false
       - uses: $/.github/actions/setup-node
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        id: playwright-cache
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('apps/web/package.json') }}
-          restore-keys: |
-            playwright-${{ runner.os }}-
-
-      - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm --filter @cellarboss/web exec playwright install --with-deps chromium
-
-      - name: Install Playwright system deps (cache hit)
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: pnpm --filter @cellarboss/web exec playwright install-deps chromium
+      - uses: $/.github/actions/setup-playwright
 
       - name: Run E2E tests
         run: pnpm --filter @cellarboss/web test:e2e

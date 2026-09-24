@@ -70,23 +70,7 @@ jobs:
         with:
           persist-credentials: false
       - uses: $/.github/actions/setup-node
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        id: playwright-cache
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('apps/web/package.json') }}
-          restore-keys: |
-            playwright-${{ runner.os }}-
-
-      - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm --filter @cellarboss/web exec playwright install --with-deps chromium
-
-      - name: Install Playwright system deps (cache hit)
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: pnpm --filter @cellarboss/web exec playwright install-deps chromium
+      - uses: $/.github/actions/setup-playwright
 
       - name: Generate documentation screenshots
         run: pnpm --filter @cellarboss/web docs:screenshots
@@ -116,104 +100,19 @@ jobs:
         with:
           persist-credentials: false
       - uses: $/.github/actions/setup-node
-
-      - name: Setup Java
-        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
-        with:
-          distribution: 'temurin'
-          java-version: '17.0.20+8'
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
-
-      - name: Cache AVD
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: avd-api-31-${{ runner.os }}
-
-      - name: Create AVD
-        if: steps.avd-cache.outputs.cache-hit != 'true'
-        run: |
-          sdkmanager "system-images;android-31;google_apis;x86_64"
-          echo "no" | avdmanager create avd -n test_device -k "system-images;android-31;google_apis;x86_64" --device "pixel_6"
-
-      - name: Cache Expo prebuild
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        id: expo-prebuild-cache
-        with:
-          path: apps/mobile/android/
-          key: expo-prebuild-android-${{ hashFiles('apps/mobile/package.json', 'apps/mobile/app.config.ts') }}
-
-      - name: Expo prebuild (Android)
-        if: steps.expo-prebuild-cache.outputs.cache-hit != 'true'
-        run: cd apps/mobile && npx expo prebuild --platform android --clean
-
-      - name: Cache Gradle
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('apps/mobile/android/**/*.gradle*', 'apps/mobile/android/gradle-wrapper.properties') }}
-          restore-keys: gradle-${{ runner.os }}-
+      - uses: $/.github/actions/setup-android
 
       - name: Build Android release APK
-        run: |
-          cd apps/mobile/android
-          ./gradlew assembleRelease -PreactNativeArchitectures=x86_64 --no-daemon --build-cache
+        working-directory: apps/mobile/android
+        run: ./gradlew assembleRelease -PreactNativeArchitectures=x86_64 --no-daemon --build-cache
 
-      - name: Install Maestro
-        env:
-          # renovate: datasource=github-releases depName=mobile-dev-inc/maestro extractVersion=^cli-(?<version>.+)$
-          MAESTRO_VERSION: 2.10.0
-        run: |
-          curl -Ls "https://get.maestro.mobile.dev" | bash
-          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
-
-      - name: Enable KVM
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-
-      - name: Start mock server
-        run: pnpm --filter @cellarboss/mock-server start &
-
-      - name: Wait for mock server
-        run: |
-          TIMEOUT=30
-          ELAPSED=0
-          until curl -sf "http://localhost:5174/__test/healthcheck" > /dev/null 2>&1; do
-            if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
-              echo "Mock server did not start within ${TIMEOUT}s"
-              exit 1
-            fi
-            sleep 1
-            ELAPSED=$((ELAPSED + 1))
-          done
-          echo "Mock server is ready."
+      - uses: $/.github/actions/start-mock-server
 
       - name: Generate screenshots
         timeout-minutes: 20
-        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
-        env:
-          MAESTRO_DRIVER_STARTUP_TIMEOUT: 180000
+        uses: $/.github/actions/run-android-emulator
         with:
-          api-level: 31
-          target: google_apis
-          arch: x86_64
-          avd-name: test_device
-          force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
-          disable-animations: true
           script: |
-            adb wait-for-device
-            adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
-            adb install apps/mobile/android/app/build/outputs/apk/release/app-release.apk
             cd apps/mobile && pnpm docs:screenshots
 
       - name: Build mobile docs
@@ -297,34 +196,25 @@ jobs:
           persist-credentials: false
       - uses: $/.github/actions/setup-node
 
-      - name: Setup Java
-        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+      # No prebuild cache here: the release build always runs a clean prebuild
+      # with APP_VERSION set, and must not seed the cache the test jobs share.
+      - uses: $/.github/actions/setup-android
         with:
-          distribution: 'temurin'
-          java-version: '17.0.20+8'
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
+          prebuild-cache: false
+          app-version: ${{ github.ref_name }}
 
       - name: Decode keystore
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"
 
-      # No prebuild cache here: the release build always runs a clean prebuild
-      # with APP_VERSION set, and must not seed the cache the test jobs share.
-      - name: Expo prebuild (Android)
-        run: cd apps/mobile && npx expo prebuild --platform android --clean
-        env:
-          APP_VERSION: ${{ github.ref_name }}
-
       - name: Build Android release AAB
+        working-directory: apps/mobile/android
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          cd apps/mobile/android
           ./gradlew bundleRelease \
             -Pandroid.injected.signing.store.file="$RUNNER_TEMP/release.keystore" \
             -Pandroid.injected.signing.store.password="$ANDROID_KEYSTORE_PASSWORD" \

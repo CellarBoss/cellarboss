@@ -1,0 +1,65 @@
+name: Run Android Emulator
+description: Boot an Android emulator with Maestro available, install an APK, then run a script against it
+
+inputs:
+  apk:
+    description: 'Path to the APK to install before running the script'
+    default: apps/mobile/android/app/build/outputs/apk/release/app-release.apk
+  script:
+    description: 'Commands to run once the APK is installed. Each line runs in its own shell, so chain `cd` with `&&`.'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Cache AVD
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      id: avd-cache
+      with:
+        path: |
+          ~/.android/avd/*
+          ~/.android/adb*
+        key: avd-api-31-${{ runner.os }}
+
+    - name: Create AVD
+      if: steps.avd-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        sdkmanager "system-images;android-31;google_apis;x86_64"
+        echo "no" | avdmanager create avd -n test_device -k "system-images;android-31;google_apis;x86_64" --device "pixel_6"
+
+    - name: Install Maestro
+      shell: bash
+      env:
+        # renovate: datasource=github-releases depName=mobile-dev-inc/maestro extractVersion=^cli-(?<version>.+)$
+        MAESTRO_VERSION: 2.10.0
+      # Writes a constant path; nothing here is attacker-controlled.
+      run: | # zizmor: ignore[github-env]
+        curl -Ls "https://get.maestro.mobile.dev" | bash
+        echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+    - name: Enable KVM
+      shell: bash
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+
+    - name: Start emulator and run script
+      uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
+      env:
+        EMULATOR_APK: ${{ inputs.apk }}
+        MAESTRO_DRIVER_STARTUP_TIMEOUT: 180000
+      with:
+        api-level: 31
+        target: google_apis
+        arch: x86_64
+        avd-name: test_device
+        force-avd-creation: false
+        emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+        disable-animations: true
+        script: |
+          adb wait-for-device
+          adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
+          adb install "$EMULATOR_APK"
+          ${{ inputs.script }}

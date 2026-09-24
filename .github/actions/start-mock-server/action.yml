@@ -1,0 +1,25 @@
+name: Start Mock Server
+description: Start the mock API server in the background and wait until it is healthy
+
+runs:
+  using: composite
+  steps:
+    - name: Start mock server
+      shell: bash
+      run: nohup pnpm --filter @cellarboss/mock-server start > "$RUNNER_TEMP/mock-server.log" 2>&1 &
+
+    - name: Wait for mock server
+      shell: bash
+      run: |
+        TIMEOUT=30
+        ELAPSED=0
+        until curl -sf "http://localhost:5174/__test/healthcheck" > /dev/null 2>&1; do
+          if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
+            echo "Mock server did not start within ${TIMEOUT}s"
+            cat "$RUNNER_TEMP/mock-server.log"
+            exit 1
+          fi
+          sleep 1
+          ELAPSED=$((ELAPSED + 1))
+        done
+        echo "Mock server is ready."
