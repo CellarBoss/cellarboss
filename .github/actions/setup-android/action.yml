@@ -1,0 +1,51 @@
+name: Setup Android
+description: Setup Java + Android SDK and generate the native Android project with Expo prebuild
+
+inputs:
+  native-project:
+    description: 'Generate the native Android project and restore the Gradle cache. Set to false when only the SDK is needed, e.g. to run a prebuilt APK on the emulator.'
+    default: 'true'
+  prebuild-cache:
+    description: 'Reuse a cached Expo prebuild. Release builds set this to false so they always prebuild clean with their own APP_VERSION.'
+    default: 'true'
+  app-version:
+    description: 'APP_VERSION passed to Expo prebuild (defaults to 0.0.0 in app.config.ts when empty)'
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Java
+      uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+      with:
+        distribution: 'temurin'
+        java-version: '17.0.20+8'
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
+
+    - name: Cache Expo prebuild
+      if: inputs.native-project == 'true' && inputs.prebuild-cache == 'true'
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      id: expo-prebuild-cache
+      with:
+        path: apps/mobile/android/
+        key: expo-prebuild-android-${{ hashFiles('apps/mobile/package.json', 'apps/mobile/app.config.ts') }}
+
+    - name: Expo prebuild (Android)
+      if: inputs.native-project == 'true' && steps.expo-prebuild-cache.outputs.cache-hit != 'true'
+      shell: bash
+      working-directory: apps/mobile
+      env:
+        APP_VERSION: ${{ inputs.app-version }}
+      run: npx expo prebuild --platform android --clean
+
+    - name: Cache Gradle
+      if: inputs.native-project == 'true'
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: gradle-${{ runner.os }}-${{ hashFiles('apps/mobile/android/**/*.gradle*', 'apps/mobile/android/gradle-wrapper.properties') }}
+        restore-keys: gradle-${{ runner.os }}-

@@ -9,31 +9,50 @@ on:
 permissions:
   contents: read
 
-jobs:
-  prettier:
-    name: Check Formatting
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: $/.github/actions/setup-node
+# Releases publish images, docs and store builds; never run two at once, and
+# never cancel one part-way through publishing.
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 
-      - name: Check formatting
-        run: pnpm prettier --check "**/*.{ts,tsx,md}"
+# Three stages, each waiting on every job in the one before:
+#   verify  - lint, tests, Android and Docker smoke tests
+#   build   - docs sites and the signed Android bundle
+#   publish - images, docs, Play Store, then the GitHub release last
+# Nothing is published unless everything has verified and built.
+
+jobs:
+  # ── Verify ──────────────────────────────────────────────────────────────
+
+  lint:
+    name: Lint
+    uses: $/.github/workflows/_lint.yml
+    permissions:
+      contents: read
+      security-events: write # zizmor uploads SARIF to code scanning when available
 
   tests:
     name: Tests
-    uses: $/.github/workflows/ci-tests.yml
+    uses: $/.github/workflows/_tests.yml
+    permissions:
+      contents: read
+      pull-requests: read # requested by the change-detection job, even though it is off here
 
-  smoketest-android:
+  smoke-android:
     name: Android Smoke Tests
-    uses: $/.github/workflows/smoketest-android.yml
+    uses: $/.github/workflows/_smoke-android.yml
+
+  smoke-docker:
+    name: Docker Smoke Tests
+    uses: $/.github/workflows/_smoke-docker.yml
+
+  # ── Build ───────────────────────────────────────────────────────────────
 
   build-api-docs:
     name: Build API Docs
     runs-on: ubuntu-latest
-    needs: [prettier, tests, smoketest-android]
+    timeout-minutes: 10
+    needs: [lint, tests, smoke-android, smoke-docker]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -55,29 +74,14 @@ jobs:
   build-webui-user-docs:
     name: Build WebUI User Docs
     runs-on: ubuntu-latest
-    needs: [prettier, tests, smoketest-android]
+    timeout-minutes: 15
+    needs: [lint, tests, smoke-android, smoke-docker]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: $/.github/actions/setup-node
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        id: playwright-cache
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('apps/web/package.json') }}
-          restore-keys: |
-            playwright-${{ runner.os }}-
-
-      - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm --filter @cellarboss/web exec playwright install --with-deps chromium
-
-      - name: Install Playwright system deps (cache hit)
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: pnpm --filter @cellarboss/web exec playwright install-deps chromium
+      - uses: $/.github/actions/setup-playwright
 
       - name: Generate documentation screenshots
         run: pnpm --filter @cellarboss/web docs:screenshots
@@ -100,107 +104,33 @@ jobs:
   build-mobile-user-docs:
     name: Build Mobile User Docs
     runs-on: ubuntu-latest
-    needs: [prettier, tests, smoketest-android]
+    timeout-minutes: 30
+    needs: [lint, tests, smoke-android, smoke-docker]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: $/.github/actions/setup-node
 
-      - name: Setup Java
-        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+      # Only the SDK is needed: the APK comes from the Android smoke test.
+      - uses: $/.github/actions/setup-android
         with:
-          distribution: 'temurin'
-          java-version: '17.0.20+8'
+          native-project: false
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
-
-      - name: Cache AVD
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        id: avd-cache
+      - name: Download test APK
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: avd-api-31-${{ runner.os }}
+          name: android-test-apk
+          path: ${{ runner.temp }}/apk
 
-      - name: Create AVD
-        if: steps.avd-cache.outputs.cache-hit != 'true'
-        run: |
-          sdkmanager "system-images;android-31;google_apis;x86_64"
-          echo "no" | avdmanager create avd -n test_device -k "system-images;android-31;google_apis;x86_64" --device "pixel_6"
-
-      - name: Cache Expo prebuild
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        id: expo-prebuild-cache
-        with:
-          path: apps/mobile/android/
-          key: expo-prebuild-android-${{ hashFiles('apps/mobile/package.json', 'apps/mobile/app.config.ts') }}
-
-      - name: Expo prebuild (Android)
-        if: steps.expo-prebuild-cache.outputs.cache-hit != 'true'
-        run: cd apps/mobile && npx expo prebuild --platform android --clean
-
-      - name: Cache Gradle
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('apps/mobile/android/**/*.gradle*', 'apps/mobile/android/gradle-wrapper.properties') }}
-          restore-keys: gradle-${{ runner.os }}-
-
-      - name: Build Android release APK
-        run: |
-          cd apps/mobile/android
-          ./gradlew assembleRelease -PreactNativeArchitectures=x86_64 --no-daemon --build-cache
-
-      - name: Install Maestro
-        run: |
-          curl -Ls "https://get.maestro.mobile.dev" | bash
-          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
-
-      - name: Enable KVM
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-
-      - name: Start mock server
-        run: pnpm --filter @cellarboss/mock-server start &
-
-      - name: Wait for mock server
-        run: |
-          TIMEOUT=30
-          ELAPSED=0
-          until curl -sf "http://localhost:5174/__test/healthcheck" > /dev/null 2>&1; do
-            if [ "$ELAPSED" -ge "$TIMEOUT" ]; then
-              echo "Mock server did not start within ${TIMEOUT}s"
-              exit 1
-            fi
-            sleep 1
-            ELAPSED=$((ELAPSED + 1))
-          done
-          echo "Mock server is ready."
+      - uses: $/.github/actions/start-mock-server
 
       - name: Generate screenshots
         timeout-minutes: 20
-        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
-        env:
-          MAESTRO_DRIVER_STARTUP_TIMEOUT: 180000
+        uses: $/.github/actions/run-android-emulator
         with:
-          api-level: 31
-          target: google_apis
-          arch: x86_64
-          avd-name: test_device
-          force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-snapshot-load -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
-          disable-animations: true
+          apk: ${{ runner.temp }}/apk/app-release.apk
           script: |
-            adb wait-for-device
-            adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
-            adb install apps/mobile/android/app/build/outputs/apk/release/app-release.apk
             cd apps/mobile && pnpm docs:screenshots
 
       - name: Build mobile docs
@@ -213,10 +143,99 @@ jobs:
           path: apps/mobile/docs/.vitepress/dist/
           retention-days: 1
 
+  build-android:
+    name: Build Android Bundle
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: [lint, tests, smoke-android, smoke-docker]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: $/.github/actions/setup-node
+
+      # No prebuild cache here: the release build always runs a clean prebuild
+      # with APP_VERSION set, and must not seed the cache the test jobs share.
+      - uses: $/.github/actions/setup-android
+        with:
+          prebuild-cache: false
+          app-version: ${{ github.ref_name }}
+
+      - name: Decode keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+
+      - name: Build Android release AAB
+        working-directory: apps/mobile/android
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          ./gradlew bundleRelease \
+            -Pandroid.injected.signing.store.file="$RUNNER_TEMP/release.keystore" \
+            -Pandroid.injected.signing.store.password="$ANDROID_KEYSTORE_PASSWORD" \
+            -Pandroid.injected.signing.key.alias="$ANDROID_KEY_ALIAS" \
+            -Pandroid.injected.signing.key.password="$ANDROID_KEY_PASSWORD"
+
+      - name: Upload Android AAB artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: android-aab
+          path: apps/mobile/android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 1
+
+  # ── Publish ─────────────────────────────────────────────────────────────
+
+  # docker/github-builder distributes the build across native runners per
+  # platform, merges the multi-arch manifest, and signs the attestations.
+  docker-publish:
+    name: Publish ${{ matrix.image.name }}
+    needs: [build-api-docs, build-webui-user-docs, build-mobile-user-docs, build-android]
+    permissions:
+      contents: read
+      packages: write
+      id-token: write # signs attestations and cache entries via GitHub OIDC
+    strategy:
+      matrix:
+        image:
+          - name: cellarboss-web
+            file: apps/web/Dockerfile
+          - name: cellarboss-backend
+            file: apps/backend/Dockerfile
+    uses: docker/github-builder/.github/workflows/build.yml@58cb9f5b71b1836d6f690c1e95effdeb9b98cb8a # v1.17.0
+    with:
+      output: image
+      push: true
+      platforms: linux/amd64,linux/arm64
+      file: ${{ matrix.image.file }}
+      build-args: |
+        APP_VERSION=${{ github.ref_name }}
+      cache: true
+      cache-scope: ${{ matrix.image.name }}
+      cache-mode: max
+      job-name-prefix: ${{ matrix.image.name }}
+      # Registry names must be lowercase, so the org is not derived from github.repository_owner.
+      meta-images: ghcr.io/cellarboss/${{ matrix.image.name }}
+      meta-tags: |
+        type=semver,pattern={{version}}
+        type=semver,pattern={{major}}.{{minor}}
+        type=semver,pattern={{major}}.{{minor}}.{{patch}}
+        type=raw,value=latest
+      set-meta-labels: true
+      set-meta-annotations: true
+    secrets:
+      registry-auths: |
+        - registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
   deploy-docs:
     name: Deploy Documentation
     runs-on: ubuntu-latest
-    needs: [build-api-docs, build-webui-user-docs, build-mobile-user-docs]
+    timeout-minutes: 10
+    needs: [build-api-docs, build-webui-user-docs, build-mobile-user-docs, build-android]
     permissions:
       contents: read
       pages: write
@@ -271,62 +290,11 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
 
-  build-android:
-    name: Build Android APK
-    runs-on: ubuntu-latest
-    needs: [prettier, tests, smoketest-android]
-
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: $/.github/actions/setup-node
-
-      - name: Setup Java
-        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
-        with:
-          distribution: 'temurin'
-          java-version: '17.0.20+8'
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
-
-      - name: Cache Expo prebuild
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: apps/mobile/android/
-          key: expo-prebuild-android-${{ hashFiles('apps/mobile/package.json', 'apps/mobile/app.config.ts') }}
-
-      - name: Decode keystore
-        run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > /tmp/release.keystore
-
-      - name: Expo prebuild (Android)
-        run: cd apps/mobile && npx expo prebuild --platform android --clean
-        env:
-          APP_VERSION: ${{ github.ref_name }}
-
-      - name: Build Android release AAB
-        run: |
-          cd apps/mobile/android
-          ./gradlew bundleRelease \
-            -Pandroid.injected.signing.store.file=/tmp/release.keystore \
-            -Pandroid.injected.signing.store.password="${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
-            -Pandroid.injected.signing.key.alias="${{ secrets.ANDROID_KEY_ALIAS }}" \
-            -Pandroid.injected.signing.key.password="${{ secrets.ANDROID_KEY_PASSWORD }}"
-
-      - name: Upload Android AAB artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: android-aab
-          path: apps/mobile/android/app/build/outputs/bundle/release/app-release.aab
-          retention-days: 1
-
   deploy-android:
     name: Deploy to Google Play
     runs-on: ubuntu-latest
-    needs: [build-android]
-
+    timeout-minutes: 15
+    needs: [build-api-docs, build-webui-user-docs, build-mobile-user-docs, build-android]
     steps:
       - name: Download Android AAB
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -353,14 +321,15 @@ jobs:
           status: draft
           whatsNewDirectory: whatsnew
 
+  # Last, so a GitHub release only appears once everything has shipped.
   create-release:
     name: Publish GitHub Release
     runs-on: ubuntu-latest
-    needs: [docker-publish, build-android]
+    timeout-minutes: 10
+    needs: [docker-publish, deploy-docs, deploy-android]
     permissions:
       contents: write
       pull-requests: read
-
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -391,126 +360,3 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_TAG: ${{ github.ref_name }}
-
-  # Builds each image natively per architecture and runs it, so a broken
-  # image (e.g. a native module failing on arm64) blocks the release before
-  # anything is pushed. Only reads the publish job's cache: that cache is
-  # signed by docker/github-builder, so it must not be written from here.
-  docker-smoke:
-    name: Smoke Test ${{ matrix.image.name }} (${{ matrix.platform.slug }})
-    runs-on: ${{ matrix.platform.runner }}
-    strategy:
-      fail-fast: true
-      matrix:
-        image:
-          - name: cellarboss-web
-            file: apps/web/Dockerfile
-            port: 3000
-            smoke-path: /login
-            smoke-env: |
-              CELLARBOSS_SERVER=http://localhost:5000
-              BETTER_AUTH_SECRET=smoke-test-secret
-              BETTER_AUTH_URL=http://localhost:5000
-          - name: cellarboss-backend
-            file: apps/backend/Dockerfile
-            port: 5000
-            smoke-path: /api/version
-            smoke-env: |
-              DATABASE_TYPE=sqlite
-              DATABASE_URL=/tmp/smoke.sqlite
-              BETTER_AUTH_SECRET=smoke-test-secret
-              BETTER_AUTH_URL=http://localhost:5000
-        platform:
-          - arch: linux/amd64
-            runner: ubuntu-24.04
-            slug: amd64
-          - arch: linux/arm64
-            runner: ubuntu-24.04-arm
-            slug: arm64
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
-
-      - name: Build
-        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
-        with:
-          context: .
-          file: ${{ matrix.image.file }}
-          platforms: ${{ matrix.platform.arch }}
-          load: true
-          tags: smoke-test:local
-          build-args: |
-            APP_VERSION=${{ github.ref_name }}
-          cache-from: type=gha,scope=${{ matrix.image.name }}-linux-${{ matrix.platform.slug }}
-
-      - name: Smoke test
-        env:
-          PORT: ${{ matrix.image.port }}
-          SMOKE_PATH: ${{ matrix.image.smoke-path }}
-          SMOKE_ENV: ${{ matrix.image.smoke-env }}
-        run: |
-          printf '%s\n' "$SMOKE_ENV" > "$RUNNER_TEMP/smoke.env"
-          docker run -d --name smoke -p "${PORT}:${PORT}" --env-file "$RUNNER_TEMP/smoke.env" smoke-test:local
-
-          TIMEOUT=120
-          ELAPSED=0
-          until curl -sf "http://localhost:${PORT}${SMOKE_PATH}" > /dev/null 2>&1; do
-            if [ "$ELAPSED" -ge "$TIMEOUT" ] || [ "$(docker inspect -f '{{.State.Running}}' smoke)" != "true" ]; then
-              echo "Container did not respond on ${SMOKE_PATH} after ${ELAPSED}s"
-              docker logs smoke
-              exit 1
-            fi
-            sleep 2
-            ELAPSED=$((ELAPSED + 2))
-          done
-          echo "Container responded on ${SMOKE_PATH} after ${ELAPSED}s"
-          docker rm -f smoke
-
-  # docker/github-builder distributes the build across native runners per
-  # platform, merges the multi-arch manifest, and signs the attestations.
-  docker-publish:
-    name: Publish ${{ matrix.image.name }}
-    needs: [prettier, tests, smoketest-android, docker-smoke]
-    permissions:
-      contents: read
-      packages: write
-      id-token: write # signs attestations and cache entries via GitHub OIDC
-    strategy:
-      matrix:
-        image:
-          - name: cellarboss-web
-            file: apps/web/Dockerfile
-          - name: cellarboss-backend
-            file: apps/backend/Dockerfile
-    uses: docker/github-builder/.github/workflows/build.yml@58cb9f5b71b1836d6f690c1e95effdeb9b98cb8a # v1.17.0
-    with:
-      output: image
-      push: true
-      platforms: linux/amd64,linux/arm64
-      file: ${{ matrix.image.file }}
-      build-args: |
-        APP_VERSION=${{ github.ref_name }}
-      cache: true
-      cache-scope: ${{ matrix.image.name }}
-      cache-mode: max
-      job-name-prefix: ${{ matrix.image.name }}
-      # Registry names must be lowercase, so the org is not derived from github.repository_owner.
-      meta-images: ghcr.io/cellarboss/${{ matrix.image.name }}
-      meta-tags: |
-        type=semver,pattern={{version}}
-        type=semver,pattern={{major}}.{{minor}}
-        type=semver,pattern={{major}}.{{minor}}.{{patch}}
-        type=raw,value=latest
-      set-meta-labels: true
-      set-meta-annotations: true
-    secrets:
-      registry-auths: |
-        - registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,55 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    uses: $/.github/workflows/_lint.yml
+    permissions:
+      contents: read
+      security-events: write # zizmor uploads SARIF to code scanning when available
+
+  tests:
+    name: Tests
+    if: github.event.pull_request.draft == false
+    uses: $/.github/workflows/_tests.yml
+    permissions:
+      contents: read
+      pull-requests: read # change detection lists the PR's changed files
+    with:
+      detect-changes: true
+      upload-coverage: true
+
+  # The single check to require in branch protection. A reusable workflow call
+  # fails if any job inside it fails, and jobs skipped by change detection
+  # count as success, so this only needs to look at the top-level calls.
+  pr-required:
+    name: PR Required
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: ${{ !cancelled() }}
+    needs:
+      - lint
+      - tests
+    steps:
+      - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # v1.3.0
+        with:
+          jobs: ${{ toJSON(needs) }}
+          # Tests are skipped on draft PRs; lint always runs.
+          allowed-skips: tests

@@ -5,13 +5,20 @@ on:
     - cron: '0 */12 * * *'
   workflow_dispatch:
 
+# Pushing the branch, opening the PR and enabling automerge all use PR_TOKEN,
+# so the workflow token only needs to read.
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 
 jobs:
   expo-update:
+    name: Sync Expo Dependencies
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout

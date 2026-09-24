@@ -12,14 +12,21 @@ on:
       - edited
       - reopened
 
-permissions:
-  contents: write
-  pull-requests: write
+permissions: {}
+
+# Each run recomputes the draft from scratch, so a newer run supersedes an older one.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   label:
     name: Autolabel & Update Draft
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write # create and update the draft release
+      pull-requests: write # apply labels to the PR
     steps:
       - uses: release-drafter/release-drafter@34d80673e067bdc0c24568d3af899c216adcfaa9 # v7.7.0
         with:

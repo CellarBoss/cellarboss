@@ -71,7 +71,7 @@ See [docs/backend.md](docs/backend.md) and [docs/web.md](docs/web.md) for more d
 3. **Ensure tests pass** locally before opening a PR.
 
 4. **Open a pull request** against `main`. Include:
-   - A descriptive title, prefixed with the type of PR you're submitting
+   - A descriptive title, prefixed with the type of PR you're submitting: one of `feat`, `fix`, `refactor`, `chore`, `docs` or `deps` (checked automatically)
      - Bugfix example: `fix: Bottle count off-by-one error in web Wine list view`
      - Documentation example: `docs: Add detailed steps for Bottle creation on mobile`
      - Feature example: `feat: Add new average price graph to web Dashboard page`
@@ -80,13 +80,15 @@ See [docs/backend.md](docs/backend.md) and [docs/web.md](docs/web.md) for more d
    - Steps to test the change
    - Screenshots for any UI changes
 
-5. **Address review feedback** — the PR will be merged once approved.
+5. **Check CI** — formatting, a workflow security scan, and the tests relevant to the files you changed run automatically once the PR is ready for review, and must pass before merging. See [docs/ci.md](docs/ci.md) for details.
+
+6. **Address review feedback** — the PR will be merged once approved.
 
 ## Code Style
 
 - TypeScript is used throughout; avoid `any` where possible
 - Formatting is enforced by Prettier — a Lefthook pre-commit hook formats staged files automatically, or run `pnpm format` to format the whole repo manually
-- Linting is enforced by ESLint — run `pnpm lint` to check
+- ESLint is configured for the web and mobile apps (not yet run in CI) — check with `pnpm --filter @cellarboss/web lint` or `pnpm --filter @cellarboss/mobile lint`
 - Prefer editing existing abstractions over introducing new ones unless clearly necessary
 
 ## Commit Messages

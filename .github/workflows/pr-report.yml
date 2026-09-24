@@ -9,10 +9,15 @@ on:
 # Default to no permissions; jobs that comment on PRs elevate their own.
 permissions: {}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
 jobs:
   coverage:
     name: Coverage Summary
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: github.event.workflow_run.event == 'pull_request'
     permissions:
       actions: read # download artifacts from the triggering workflow run
@@ -112,6 +117,7 @@ jobs:
   playwright:
     name: Post Playwright Report
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: github.event.workflow_run.event == 'pull_request'
     permissions:
       actions: read # download artifacts from the triggering workflow run
