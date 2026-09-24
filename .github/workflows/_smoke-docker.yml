@@ -10,8 +10,7 @@ permissions:
 jobs:
   # Builds each image natively per architecture and runs it, so a broken
   # image (e.g. a native module failing on arm64) blocks the release before
-  # anything is pushed. Only reads the release publish job's cache: that cache
-  # is signed by docker/github-builder, so it must not be written from here.
+  # anything is pushed. 
   docker-smoke:
     name: Smoke Test ${{ matrix.image.name }} (${{ matrix.platform.slug }})
     runs-on: ${{ matrix.platform.runner }}
@@ -64,7 +63,6 @@ jobs:
           tags: smoke-test:local
           build-args: |
             APP_VERSION=${{ github.ref_name }}
-          cache-from: type=gha,scope=${{ matrix.image.name }}-linux-${{ matrix.platform.slug }}
 
       - name: Smoke test
         env:
