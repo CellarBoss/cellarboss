@@ -4,21 +4,21 @@ All CI runs on GitHub Actions. Workflows are defined in `.github/workflows/`, sh
 
 ## Workflows Overview
 
-Files prefixed with `_` are reusable workflows (`workflow_call`) and never trigger on their own events.
+Files prefixed with `_` are reusable workflows (`workflow_call`), called by the entry-point workflows. The two smoke-test workflows can also be run manually from the Actions tab.
 
-| File                 | Trigger                    | Purpose                                                     |
-| -------------------- | -------------------------- | ----------------------------------------------------------- |
-| `pr.yml`             | PRs to main                | Lint + tests behind a single required check (`PR Required`) |
-| `pr-title.yml`       | PRs to main (incl. edited) | Validates the semantic PR title                             |
-| `pr-report.yml`      | After PR Checks complete   | Posts coverage and Playwright summaries on the PR           |
-| `pr-labeler.yml`     | Push to main / PR opened   | Auto-labels PRs, maintains the release draft                |
-| `release.yml`        | Version tags (`v*.*.*`)    | Full release pipeline                                       |
-| `renovate.yml`       | Every 2 hours              | Automated dependency updates via Renovate                   |
-| `expo-update.yml`    | Every 12 hours             | Syncs Expo SDK dependency versions                          |
-| `_lint.yml`          | Called by other workflows  | Prettier formatting check and zizmor workflow security scan |
-| `_tests.yml`         | Called by other workflows  | Reusable test suite (all test and validation jobs)          |
-| `_smoke-android.yml` | Called / manual dispatch   | Android E2E smoke tests on an emulator                      |
-| `_smoke-docker.yml`  | Called / manual dispatch   | Builds and runs each Docker image on amd64 and arm64        |
+| File                 | Trigger                            | Purpose                                                     |
+| -------------------- | ---------------------------------- | ----------------------------------------------------------- |
+| `pr.yml`             | PRs to main                        | Lint + tests behind a single required check (`PR Required`) |
+| `pr-title.yml`       | PRs to main (incl. edited)         | Validates the semantic PR title                             |
+| `pr-report.yml`      | After PR Checks complete           | Posts coverage and Playwright summaries on the PR           |
+| `pr-labeler.yml`     | Push to main / PR opened or edited | Auto-labels PRs, maintains the release draft                |
+| `release.yml`        | Version tags (`v*.*.*`)            | Full release pipeline                                       |
+| `renovate.yml`       | Every 2 hours                      | Automated dependency updates via Renovate                   |
+| `expo-update.yml`    | Every 12 hours                     | Syncs Expo SDK dependency versions                          |
+| `_lint.yml`          | Called by other workflows          | Prettier formatting check and zizmor workflow security scan |
+| `_tests.yml`         | Called by other workflows          | Reusable test suite (all test and validation jobs)          |
+| `_smoke-android.yml` | Called / manual dispatch           | Android E2E smoke tests on an emulator                      |
+| `_smoke-docker.yml`  | Called / manual dispatch           | Builds and runs each Docker image on amd64 and arm64        |
 
 ## Composite Actions
 
@@ -35,8 +35,8 @@ Workflows reference local actions and reusable workflows as `$/.github/...`, whi
 ## Conventions
 
 - Top-level `permissions` are read-only (or `{}`); jobs that need more elevate their own, with a comment saying why.
-- Every workflow sets `concurrency`. PR workflows cancel superseded runs; release, Renovate and Expo update queue instead.
-- Every job sets `timeout-minutes`.
+- Every entry-point workflow sets `concurrency`. PR workflows cancel superseded runs; release, Renovate and Expo update queue instead. Reusable workflows don't set it: the group would resolve in the caller's context and could cancel the caller.
+- Every job that runs steps sets `timeout-minutes`. Jobs that call a reusable workflow can't; the jobs inside it carry their own.
 - Secrets reach scripts only through `env:`, never as `${{ }}` inside `run:`.
 - Tool versions not managed by an action (Maestro, expo-doctor) are pinned in a `*_VERSION` env var with a `# renovate:` comment, picked up by Renovate's `customManagers:githubActionsVersions` preset.
 
@@ -106,7 +106,7 @@ When called with `upload-coverage: true`, each test job runs `test:coverage` and
 
 ## Android Smoke Tests (`_smoke-android.yml`)
 
-Reusable workflow (also triggerable manually). Runs on every release as a gate before doc builds and Docker pushes.
+Reusable workflow (also triggerable manually). Runs in the release's verify stage.
 
 1. `setup-android`: Java, Android SDK, cached Expo prebuild and Gradle dependencies
 2. Builds an x86_64 release APK (`assembleRelease`) and uploads it as `android-test-apk` (retained 1 day) for the release's mobile doc screenshots
@@ -116,7 +116,7 @@ Reusable workflow (also triggerable manually). Runs on every release as a gate b
 
 ## Docker Smoke Tests (`_smoke-docker.yml`)
 
-Reusable workflow (also triggerable manually). Matrix of image × platform (`linux/amd64`, `linux/arm64` on native runners): builds each image, runs it and checks it responds. Pushes nothing, and only reads the Docker layer cache that the release's publish job writes (that cache is signed by `docker/github-builder`).
+Reusable workflow (also triggerable manually). Runs in the release's verify stage. Matrix of image × platform (`linux/amd64`, `linux/arm64` on native runners): builds each image, runs it and checks it responds. Pushes nothing, and only reads the Docker layer cache that the release's publish job writes (that cache is signed by `docker/github-builder`).
 
 ## Release (`release.yml`)
 
