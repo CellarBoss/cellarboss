@@ -19,6 +19,11 @@ jobs:
   changes:
     name: Detect Changes
     runs-on: ubuntu-latest
+    # paths-filter lists the PR's changed files through the API. Callers must
+    # grant pull-requests: read too, or the run fails to start.
+    permissions:
+      contents: read
+      pull-requests: read
     outputs:
       web: ${{ steps.filter.outputs.web || 'true' }}
       backend: ${{ steps.filter.outputs.backend || 'true' }}

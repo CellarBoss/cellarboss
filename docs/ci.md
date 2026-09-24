@@ -66,7 +66,7 @@ A reusable workflow call fails if any job inside it fails, and jobs skipped by c
 
 ## Tests (`_tests.yml`)
 
-Reusable workflow called by `pr.yml` and `release.yml`. With `detect-changes: true`, change detection (`dorny/paths-filter`) skips jobs whose inputs haven't changed; without it every job runs.
+Reusable workflow called by `pr.yml` and `release.yml`; callers must grant `pull-requests: read` for change detection. With `detect-changes: true`, change detection (`dorny/paths-filter`) skips jobs whose inputs haven't changed; without it every job runs.
 
 ### Change detection paths
 
@@ -116,7 +116,7 @@ Reusable workflow (also triggerable manually). Runs in the release's verify stag
 
 ## Docker Smoke Tests (`_smoke-docker.yml`)
 
-Reusable workflow (also triggerable manually). Runs in the release's verify stage. Matrix of image × platform (`linux/amd64`, `linux/arm64` on native runners): builds each image, runs it and checks it responds. Pushes nothing, and only reads the Docker layer cache that the release's publish job writes (that cache is signed by `docker/github-builder`).
+Reusable workflow (also triggerable manually). Runs in the release's verify stage. Matrix of image × platform (`linux/amd64`, `linux/arm64` on native runners): builds each image, runs it and checks it responds. Pushes nothing and builds without a layer cache: each release tag is its own cache scope and nothing on `main` builds the images, so a cache would never be hit.
 
 ## Release (`release.yml`)
 

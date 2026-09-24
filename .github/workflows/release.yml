@@ -34,6 +34,9 @@ jobs:
   tests:
     name: Tests
     uses: $/.github/workflows/_tests.yml
+    permissions:
+      contents: read
+      pull-requests: read # requested by the change-detection job, even though it is off here
 
   smoke-android:
     name: Android Smoke Tests

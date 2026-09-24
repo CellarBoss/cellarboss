@@ -29,6 +29,9 @@ jobs:
     name: Tests
     if: github.event.pull_request.draft == false
     uses: $/.github/workflows/_tests.yml
+    permissions:
+      contents: read
+      pull-requests: read # change detection lists the PR's changed files
     with:
       detect-changes: true
       upload-coverage: true
