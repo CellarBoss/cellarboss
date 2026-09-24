@@ -356,7 +356,7 @@ jobs:
   create-release:
     name: Publish GitHub Release
     runs-on: ubuntu-latest
-    needs: [docker-frontend, docker-backend, build-android]
+    needs: [docker-publish, build-android]
     permissions:
       contents: write
       pull-requests: read
@@ -392,13 +392,41 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_TAG: ${{ github.ref_name }}
 
-  docker-frontend:
-    name: Build & Push Frontend Image
-    runs-on: ubuntu-latest
-    needs: [prettier, tests, smoketest-android]
-    permissions:
-      contents: read
-      packages: write
+  # Builds each image natively per architecture and runs it, so a broken
+  # image (e.g. a native module failing on arm64) blocks the release before
+  # anything is pushed. Only reads the publish job's cache: that cache is
+  # signed by docker/github-builder, so it must not be written from here.
+  docker-smoke:
+    name: Smoke Test ${{ matrix.image.name }} (${{ matrix.platform.slug }})
+    runs-on: ${{ matrix.platform.runner }}
+    strategy:
+      fail-fast: true
+      matrix:
+        image:
+          - name: cellarboss-web
+            file: apps/web/Dockerfile
+            port: 3000
+            smoke-path: /login
+            smoke-env: |
+              CELLARBOSS_SERVER=http://localhost:5000
+              BETTER_AUTH_SECRET=smoke-test-secret
+              BETTER_AUTH_URL=http://localhost:5000
+          - name: cellarboss-backend
+            file: apps/backend/Dockerfile
+            port: 5000
+            smoke-path: /api/version
+            smoke-env: |
+              DATABASE_TYPE=sqlite
+              DATABASE_URL=/tmp/smoke.sqlite
+              BETTER_AUTH_SECRET=smoke-test-secret
+              BETTER_AUTH_URL=http://localhost:5000
+        platform:
+          - arch: linux/amd64
+            runner: ubuntu-24.04
+            slug: amd64
+          - arch: linux/arm64
+            runner: ubuntu-24.04-arm
+            slug: arm64
 
     steps:
       - name: Checkout
@@ -409,81 +437,80 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
 
-      - name: Log in to GHCR
-        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
-        with:
-          images: ghcr.io/${{ github.repository_owner }}/cellarboss-web
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}.{{minor}}.{{patch}}
-            type=raw,value=latest
-
-      - name: Build and push
+      - name: Build
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
-          file: apps/web/Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          file: ${{ matrix.image.file }}
+          platforms: ${{ matrix.platform.arch }}
+          load: true
+          tags: smoke-test:local
           build-args: |
             APP_VERSION=${{ github.ref_name }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ matrix.image.name }}-linux-${{ matrix.platform.slug }}
 
-  docker-backend:
-    name: Build & Push Backend Image
-    runs-on: ubuntu-latest
-    needs: [prettier, tests, smoketest-android]
+      - name: Smoke test
+        env:
+          PORT: ${{ matrix.image.port }}
+          SMOKE_PATH: ${{ matrix.image.smoke-path }}
+          SMOKE_ENV: ${{ matrix.image.smoke-env }}
+        run: |
+          printf '%s\n' "$SMOKE_ENV" > "$RUNNER_TEMP/smoke.env"
+          docker run -d --name smoke -p "${PORT}:${PORT}" --env-file "$RUNNER_TEMP/smoke.env" smoke-test:local
+
+          TIMEOUT=120
+          ELAPSED=0
+          until curl -sf "http://localhost:${PORT}${SMOKE_PATH}" > /dev/null 2>&1; do
+            if [ "$ELAPSED" -ge "$TIMEOUT" ] || [ "$(docker inspect -f '{{.State.Running}}' smoke)" != "true" ]; then
+              echo "Container did not respond on ${SMOKE_PATH} after ${ELAPSED}s"
+              docker logs smoke
+              exit 1
+            fi
+            sleep 2
+            ELAPSED=$((ELAPSED + 2))
+          done
+          echo "Container responded on ${SMOKE_PATH} after ${ELAPSED}s"
+          docker rm -f smoke
+
+  # docker/github-builder distributes the build across native runners per
+  # platform, merges the multi-arch manifest, and signs the attestations.
+  docker-publish:
+    name: Publish ${{ matrix.image.name }}
+    needs: [prettier, tests, smoketest-android, docker-smoke]
     permissions:
       contents: read
       packages: write
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
-
-      - name: Log in to GHCR
-        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
-        with:
-          registry: ghcr.io
+      id-token: write # signs attestations and cache entries via GitHub OIDC
+    strategy:
+      matrix:
+        image:
+          - name: cellarboss-web
+            file: apps/web/Dockerfile
+          - name: cellarboss-backend
+            file: apps/backend/Dockerfile
+    uses: docker/github-builder/.github/workflows/build.yml@58cb9f5b71b1836d6f690c1e95effdeb9b98cb8a # v1.17.0
+    with:
+      output: image
+      push: true
+      platforms: linux/amd64,linux/arm64
+      file: ${{ matrix.image.file }}
+      build-args: |
+        APP_VERSION=${{ github.ref_name }}
+      cache: true
+      cache-scope: ${{ matrix.image.name }}
+      cache-mode: max
+      job-name-prefix: ${{ matrix.image.name }}
+      # Registry names must be lowercase, so the org is not derived from github.repository_owner.
+      meta-images: ghcr.io/cellarboss/${{ matrix.image.name }}
+      meta-tags: |
+        type=semver,pattern={{version}}
+        type=semver,pattern={{major}}.{{minor}}
+        type=semver,pattern={{major}}.{{minor}}.{{patch}}
+        type=raw,value=latest
+      set-meta-labels: true
+      set-meta-annotations: true
+    secrets:
+      registry-auths: |
+        - registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
-        with:
-          images: ghcr.io/${{ github.repository_owner }}/cellarboss-backend
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}.{{minor}}.{{patch}}
-            type=raw,value=latest
-
-      - name: Build and push
-        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
-        with:
-          context: .
-          file: apps/backend/Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            APP_VERSION=${{ github.ref_name }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max

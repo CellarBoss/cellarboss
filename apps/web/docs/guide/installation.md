@@ -9,7 +9,7 @@ In future, there are plans for mobile & tablet user interfaces as well.
 
 ## Docker
 
-It is recommended to run CellarBoss through the provided Docker images.
+It is recommended to run CellarBoss through the provided Docker images. Images are published for `linux/amd64` and `linux/arm64`.
 
 ```
 version: "3.7"

@@ -89,20 +89,20 @@ Triggered by version tags (`v*.*.*`). Gate jobs run in parallel; downstream jobs
 
 ### Release jobs
 
-| Job                        | Depends on                                     | What it does                                                                     |
-| -------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------- |
-| **prettier**               | —                                              | Formatting check                                                                 |
-| **tests**                  | —                                              | Calls `ci-tests.yml` (no change detection, no coverage upload)                   |
-| **smoketest-android**      | —                                              | Calls `smoketest-android.yml`                                                    |
-| **build-api-docs**         | gates                                          | Generates API docs with version stamp, uploads artifact                          |
-| **build-webui-user-docs**  | gates                                          | Takes Playwright screenshots, builds VitePress docs, uploads artifact            |
-| **build-mobile-user-docs** | gates                                          | Builds Android APK, takes Maestro screenshots on emulator, builds VitePress docs |
-| **deploy-docs**            | doc builds                                     | Assembles `/api`, `/web`, `/mobile` under `_site/`, deploys to GitHub Pages      |
-| **docker-frontend**        | gates                                          | Builds and pushes `ghcr.io/.../cellarboss-web` with semver tags                  |
-| **docker-backend**         | gates                                          | Builds and pushes `ghcr.io/.../cellarboss-backend` with semver tags              |
-| **build-android**          | gates                                          | Builds signed AAB using keystore secrets                                         |
-| **deploy-android**         | build-android                                  | Uploads AAB to Google Play internal testing track (draft status)                 |
-| **create-release**         | docker-frontend, docker-backend, build-android | Publishes GitHub release via release-drafter, attaches versioned AAB             |
+| Job                        | Depends on                    | What it does                                                                                                                                                     |
+| -------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **prettier**               | —                             | Formatting check                                                                                                                                                 |
+| **tests**                  | —                             | Calls `ci-tests.yml` (no change detection, no coverage upload)                                                                                                   |
+| **smoketest-android**      | —                             | Calls `smoketest-android.yml`                                                                                                                                    |
+| **build-api-docs**         | gates                         | Generates API docs with version stamp, uploads artifact                                                                                                          |
+| **build-webui-user-docs**  | gates                         | Takes Playwright screenshots, builds VitePress docs, uploads artifact                                                                                            |
+| **build-mobile-user-docs** | gates                         | Builds Android APK, takes Maestro screenshots on emulator, builds VitePress docs                                                                                 |
+| **deploy-docs**            | doc builds                    | Assembles `/api`, `/web`, `/mobile` under `_site/`, deploys to GitHub Pages                                                                                      |
+| **docker-smoke**           | —                             | Matrix of image × platform (`linux/amd64`, `linux/arm64` on native runners). Builds each image, runs it and checks it responds. Pushes nothing                   |
+| **docker-publish**         | gates, docker-smoke           | Per image, calls `docker/github-builder` to build natively per platform and push signed multi-arch `ghcr.io/.../cellarboss-{web,backend}` semver + `latest` tags |
+| **build-android**          | gates                         | Builds signed AAB using keystore secrets                                                                                                                         |
+| **deploy-android**         | build-android                 | Uploads AAB to Google Play internal testing track (draft status)                                                                                                 |
+| **create-release**         | docker-publish, build-android | Publishes GitHub release via release-drafter, attaches versioned AAB                                                                                             |
 
 ## Dependency Updates (Renovate)
 
