@@ -2,6 +2,9 @@ name: Setup Android
 description: Setup Java + Android SDK and generate the native Android project with Expo prebuild
 
 inputs:
+  native-project:
+    description: 'Generate the native Android project and restore the Gradle cache. Set to false when only the SDK is needed, e.g. to run a prebuilt APK on the emulator.'
+    default: 'true'
   prebuild-cache:
     description: 'Reuse a cached Expo prebuild. Release builds set this to false so they always prebuild clean with their own APP_VERSION.'
     default: 'true'
@@ -22,7 +25,7 @@ runs:
       uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
 
     - name: Cache Expo prebuild
-      if: inputs.prebuild-cache == 'true'
+      if: inputs.native-project == 'true' && inputs.prebuild-cache == 'true'
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       id: expo-prebuild-cache
       with:
@@ -30,7 +33,7 @@ runs:
         key: expo-prebuild-android-${{ hashFiles('apps/mobile/package.json', 'apps/mobile/app.config.ts') }}
 
     - name: Expo prebuild (Android)
-      if: steps.expo-prebuild-cache.outputs.cache-hit != 'true'
+      if: inputs.native-project == 'true' && steps.expo-prebuild-cache.outputs.cache-hit != 'true'
       shell: bash
       working-directory: apps/mobile
       env:
@@ -38,6 +41,7 @@ runs:
       run: npx expo prebuild --platform android --clean
 
     - name: Cache Gradle
+      if: inputs.native-project == 'true'
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: |

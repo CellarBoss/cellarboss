@@ -23,6 +23,15 @@ jobs:
         working-directory: apps/mobile/android
         run: ./gradlew assembleRelease -PreactNativeArchitectures=x86_64 --no-daemon --build-cache
 
+      # The release reuses this emulator APK for mobile doc screenshots rather
+      # than building it a second time.
+      - name: Upload test APK
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: android-test-apk
+          path: apps/mobile/android/app/build/outputs/apk/release/app-release.apk
+          retention-days: 1
+
       - uses: $/.github/actions/start-mock-server
 
       - uses: $/.github/actions/run-android-emulator

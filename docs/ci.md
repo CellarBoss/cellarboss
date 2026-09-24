@@ -18,16 +18,17 @@ Files prefixed with `_` are reusable workflows (`workflow_call`) and never trigg
 | `_lint.yml`          | Called by other workflows  | Prettier formatting check and zizmor workflow security scan |
 | `_tests.yml`         | Called by other workflows  | Reusable test suite (all test and validation jobs)          |
 | `_smoke-android.yml` | Called / manual dispatch   | Android E2E smoke tests on an emulator                      |
+| `_smoke-docker.yml`  | Called / manual dispatch   | Builds and runs each Docker image on amd64 and arm64        |
 
 ## Composite Actions
 
-| Action                 | What it does                                                                                         |
-| ---------------------- | ---------------------------------------------------------------------------------------------------- |
-| `setup-node`           | pnpm + Node.js 24.21.0, `pnpm install --frozen-lockfile`                                             |
-| `setup-playwright`     | Caches and installs Playwright Chromium and its system dependencies                                  |
-| `setup-android`        | Java 17, Android SDK, Expo prebuild (cached unless `prebuild-cache: false`), Gradle cache            |
-| `run-android-emulator` | API 31 AVD (cached), KVM, Maestro; boots the emulator, installs an APK, then runs the given `script` |
-| `start-mock-server`    | Starts `@cellarboss/mock-server` in the background and waits for its health check                    |
+| Action                 | What it does                                                                                                                               |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `setup-node`           | pnpm + Node.js 24.21.0, `pnpm install --frozen-lockfile`                                                                                   |
+| `setup-playwright`     | Caches and installs Playwright Chromium and its system dependencies                                                                        |
+| `setup-android`        | Java 17, Android SDK, Expo prebuild (cached unless `prebuild-cache: false`), Gradle cache. `native-project: false` sets up only Java + SDK |
+| `run-android-emulator` | API 31 AVD (cached), KVM, Maestro; boots the emulator, installs an APK, then runs the given `script`                                       |
+| `start-mock-server`    | Starts `@cellarboss/mock-server` in the background and waits for its health check                                                          |
 
 Workflows reference local actions and reusable workflows as `$/.github/...`, which GitHub resolves to this repository at the triggering commit.
 
@@ -108,31 +109,41 @@ When called with `upload-coverage: true`, each test job runs `test:coverage` and
 Reusable workflow (also triggerable manually). Runs on every release as a gate before doc builds and Docker pushes.
 
 1. `setup-android`: Java, Android SDK, cached Expo prebuild and Gradle dependencies
-2. Builds an x86_64 release APK (`assembleRelease`)
+2. Builds an x86_64 release APK (`assembleRelease`) and uploads it as `android-test-apk` (retained 1 day) for the release's mobile doc screenshots
 3. `start-mock-server`
 4. `run-android-emulator`: runs the Maestro smoke flows from `apps/mobile/e2e/smoke/`
 5. Uploads Maestro debug output as an artifact (retained 7 days)
 
+## Docker Smoke Tests (`_smoke-docker.yml`)
+
+Reusable workflow (also triggerable manually). Matrix of image × platform (`linux/amd64`, `linux/arm64` on native runners): builds each image, runs it and checks it responds. Pushes nothing, and only reads the Docker layer cache that the release's publish job writes (that cache is signed by `docker/github-builder`).
+
 ## Release (`release.yml`)
 
-Triggered by version tags (`v*.*.*`). Only one release runs at a time and none is cancelled part-way. Gate jobs run in parallel; downstream jobs wait on all gates.
+Triggered by version tags (`v*.*.*`). Only one release runs at a time and none is cancelled part-way.
+
+Jobs run in three stages, each waiting on every job in the one before, so nothing is published unless everything has verified and built:
+
+1. **Verify** — lint, tests, Android and Docker smoke tests (in parallel)
+2. **Build** — docs sites and the signed Android bundle
+3. **Publish** — Docker images, docs, Play Store, then the GitHub release last
 
 ### Release jobs
 
-| Job                        | Depends on                    | What it does                                                                                                                                                     |
-| -------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **lint**                   | —                             | Calls `_lint.yml`                                                                                                                                                |
-| **tests**                  | —                             | Calls `_tests.yml` (no change detection, no coverage upload)                                                                                                     |
-| **smoke-android**          | —                             | Calls `_smoke-android.yml`                                                                                                                                       |
-| **build-api-docs**         | gates                         | Generates API docs with version stamp, uploads artifact                                                                                                          |
-| **build-webui-user-docs**  | gates                         | Takes Playwright screenshots, builds VitePress docs, uploads artifact                                                                                            |
-| **build-mobile-user-docs** | gates                         | Builds Android APK, takes Maestro screenshots on emulator, builds VitePress docs                                                                                 |
-| **deploy-docs**            | doc builds                    | Assembles `/api`, `/web`, `/mobile` under `_site/`, deploys to GitHub Pages                                                                                      |
-| **docker-smoke**           | —                             | Matrix of image × platform (`linux/amd64`, `linux/arm64` on native runners). Builds each image, runs it and checks it responds. Pushes nothing                   |
-| **docker-publish**         | gates, docker-smoke           | Per image, calls `docker/github-builder` to build natively per platform and push signed multi-arch `ghcr.io/.../cellarboss-{web,backend}` semver + `latest` tags |
-| **build-android**          | gates                         | Clean prebuild with the release version, builds signed AAB using keystore secrets                                                                                |
-| **deploy-android**         | build-android                 | Uploads AAB to Google Play internal testing track (draft status)                                                                                                 |
-| **create-release**         | docker-publish, build-android | Publishes GitHub release via release-drafter, attaches versioned AAB                                                                                             |
+| Stage   | Job                        | What it does                                                                                                                                                     |
+| ------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Verify  | **lint**                   | Calls `_lint.yml`                                                                                                                                                |
+| Verify  | **tests**                  | Calls `_tests.yml` (no change detection, no coverage upload)                                                                                                     |
+| Verify  | **smoke-android**          | Calls `_smoke-android.yml`                                                                                                                                       |
+| Verify  | **smoke-docker**           | Calls `_smoke-docker.yml`                                                                                                                                        |
+| Build   | **build-api-docs**         | Generates API docs with version stamp, uploads artifact                                                                                                          |
+| Build   | **build-webui-user-docs**  | Takes Playwright screenshots, builds VitePress docs, uploads artifact                                                                                            |
+| Build   | **build-mobile-user-docs** | Installs the smoke test's APK, takes Maestro screenshots on the emulator, builds VitePress docs                                                                  |
+| Build   | **build-android**          | Clean prebuild with the release version, builds signed AAB using keystore secrets                                                                                |
+| Publish | **docker-publish**         | Per image, calls `docker/github-builder` to build natively per platform and push signed multi-arch `ghcr.io/.../cellarboss-{web,backend}` semver + `latest` tags |
+| Publish | **deploy-docs**            | Assembles `/api`, `/web`, `/mobile` under `_site/`, deploys to GitHub Pages                                                                                      |
+| Publish | **deploy-android**         | Uploads AAB to Google Play internal testing track (draft status)                                                                                                 |
+| Publish | **create-release**         | After the other publish jobs: publishes the GitHub release via release-drafter, attaches the versioned AAB                                                       |
 
 ## Dependency Updates (Renovate)
 
