@@ -16,32 +16,26 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  prettier:
-    name: Check Formatting
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: $/.github/actions/setup-node
-
-      - name: Check formatting
-        run: pnpm prettier --check "**/*.{ts,tsx,md}"
+  lint:
+    name: Lint
+    uses: $/.github/workflows/_lint.yml
+    permissions:
+      contents: read
+      security-events: write # zizmor uploads SARIF to code scanning when available
 
   tests:
     name: Tests
-    uses: $/.github/workflows/ci-tests.yml
+    uses: $/.github/workflows/_tests.yml
 
-  smoketest-android:
+  smoke-android:
     name: Android Smoke Tests
-    uses: $/.github/workflows/smoketest-android.yml
+    uses: $/.github/workflows/_smoke-android.yml
 
   build-api-docs:
     name: Build API Docs
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [prettier, tests, smoketest-android]
+    needs: [lint, tests, smoke-android]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -64,7 +58,7 @@ jobs:
     name: Build WebUI User Docs
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [prettier, tests, smoketest-android]
+    needs: [lint, tests, smoke-android]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -94,7 +88,7 @@ jobs:
     name: Build Mobile User Docs
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    needs: [prettier, tests, smoketest-android]
+    needs: [lint, tests, smoke-android]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -188,7 +182,7 @@ jobs:
     name: Build Android APK
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    needs: [prettier, tests, smoketest-android]
+    needs: [lint, tests, smoke-android]
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -385,7 +379,7 @@ jobs:
   # platform, merges the multi-arch manifest, and signs the attestations.
   docker-publish:
     name: Publish ${{ matrix.image.name }}
-    needs: [prettier, tests, smoketest-android, docker-smoke]
+    needs: [lint, tests, smoke-android, docker-smoke]
     permissions:
       contents: read
       packages: write

@@ -1,21 +1,10 @@
-name: PR Validation
+name: Lint
 
 on:
-  pull_request:
-    branches:
-      - main
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
+  workflow_call:
 
 permissions:
   contents: read
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
 
 jobs:
   prettier:
@@ -35,6 +24,7 @@ jobs:
     name: Workflow Security Scan
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # Callers must grant security-events: write for the SARIF upload.
     permissions:
       contents: read
       security-events: write # upload SARIF to code scanning when available
