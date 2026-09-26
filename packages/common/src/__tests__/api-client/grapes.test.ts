@@ -24,7 +24,7 @@ describe("grapesResource", () => {
 
   it("create calls POST grape with JSON body", async () => {
     const grape = { id: 0, name: "Nebbiolo" };
-    await grapes.create(grape as any);
+    await grapes.create(grape);
     expect(mockRequest).toHaveBeenCalledWith(
       "grape",
       "POST",
@@ -34,7 +34,7 @@ describe("grapesResource", () => {
 
   it("update calls PUT grape/{id} with JSON body", async () => {
     const grape = { id: 2, name: "Sangiovese" };
-    await grapes.update(grape as any);
+    await grapes.update(grape);
     expect(mockRequest).toHaveBeenCalledWith(
       "grape/2",
       "PUT",
