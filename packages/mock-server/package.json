@@ -12,6 +12,7 @@
     "lint": "eslint --max-warnings 0"
   },
   "dependencies": {
+    "@cellarboss/types": "workspace:*",
     "@cellarboss/validators": "workspace:*",
     "@hono/node-server": "2.1.1",
     "hono": "4.13.8"
