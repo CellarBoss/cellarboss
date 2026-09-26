@@ -12,6 +12,12 @@ describe("imageResponseSchema", () => {
     createdAt: "2024-06-15T10:00:00.000Z",
   };
 
+  function without(key: keyof typeof valid) {
+    const copy: Partial<typeof valid> = { ...valid };
+    delete copy[key];
+    return copy;
+  }
+
   it("accepts a valid image response", () => {
     const result = imageResponseSchema.safeParse(valid);
     expect(result.success).toBe(true);
@@ -31,14 +37,12 @@ describe("imageResponseSchema", () => {
   });
 
   it("rejects when vintageId is missing", () => {
-    const { vintageId: _, ...rest } = valid;
-    const result = imageResponseSchema.safeParse(rest);
+    const result = imageResponseSchema.safeParse(without("vintageId"));
     expect(result.success).toBe(false);
   });
 
   it("rejects when filename is missing", () => {
-    const { filename: _, ...rest } = valid;
-    const result = imageResponseSchema.safeParse(rest);
+    const result = imageResponseSchema.safeParse(without("filename"));
     expect(result.success).toBe(false);
   });
 
@@ -53,8 +57,7 @@ describe("imageResponseSchema", () => {
   });
 
   it("rejects when createdAt is missing", () => {
-    const { createdAt: _, ...rest } = valid;
-    const result = imageResponseSchema.safeParse(rest);
+    const result = imageResponseSchema.safeParse(without("createdAt"));
     expect(result.success).toBe(false);
   });
 });
