@@ -1,7 +1,7 @@
-import type { Kysely } from "kysely";
+import type { UntypedKysely } from "@schema/untyped.js";
 import { addIdColumn, shortText } from "@utils/migration-helpers.js";
 
-export async function up(db: Kysely<any>): Promise<void> {
+export async function up(db: UntypedKysely): Promise<void> {
   await addIdColumn(db.schema.createTable("image"))
     .addColumn("vintageId", "integer", (col) =>
       col.notNull().references("vintage.id").onDelete("cascade"),
@@ -25,7 +25,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .execute();
 }
 
-export async function down(db: Kysely<any>): Promise<void> {
+export async function down(db: UntypedKysely): Promise<void> {
   await db.schema.dropIndex("idx_image_vintageId").on("image").execute();
   await db.schema.dropTable("image").execute();
 }

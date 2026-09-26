@@ -1,3 +1,4 @@
+import type { Database } from "@schema/database.js";
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -34,7 +35,7 @@ const databaseType = process.env.DATABASE_TYPE ?? "sqlite";
 
 let auth: typeof AuthType;
 let sqliteFilePath: string;
-let testDb: Kysely<any> | undefined;
+let testDb: Kysely<Database> | undefined;
 
 describe.runIf(databaseType === "sqlite")("auth schema", () => {
   beforeAll(async () => {
@@ -50,7 +51,7 @@ describe.runIf(databaseType === "sqlite")("auth schema", () => {
     });
 
     const fixture = await import("./fixtures/auth-plain.config.js");
-    testDb = new Kysely<any>({ dialect: fixture.buildDialect() });
+    testDb = new Kysely<Database>({ dialect: fixture.buildDialect() });
     await runMigrations(testDb);
 
     auth = fixture.auth;

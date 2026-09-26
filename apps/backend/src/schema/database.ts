@@ -67,15 +67,24 @@ export interface ImageTable extends Omit<Image, "id" | "isFavourite"> {
   isFavourite: ColumnType<number, number | undefined, number>;
 }
 
-export interface SettingTable extends Setting {}
+export type SettingTable = Setting;
 
-export interface PreferenceTable extends Preference {}
+export type PreferenceTable = Preference;
 
-// Better Auth managed table - only fields needed for joins
+// Better Auth managed table. Dates and booleans come back in each dialect's
+// native shape (Date or ISO string, boolean or 0/1).
 export interface UserTable {
   id: string;
   name: string;
   email: string;
+  emailVerified: boolean | number;
+  image: string | null;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  role: string | null;
+  banned: boolean | number | null;
+  banReason: string | null;
+  banExpires: Date | string | null;
 }
 
 // Database interface for Kysely

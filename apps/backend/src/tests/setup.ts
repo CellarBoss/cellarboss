@@ -317,7 +317,7 @@ export async function createTestUser(
 ) {
   await ensureUserTable(db);
 
-  const query = (db as Kysely<any>).insertInto("user").values({
+  const query = db.insertInto("user").values({
     id,
     name,
     email,
@@ -329,6 +329,6 @@ export async function createTestUser(
   await (
     env.DATABASE_TYPE === "mysql"
       ? query.ignore()
-      : query.onConflict((oc: any) => oc.column("id").doNothing())
+      : query.onConflict((oc) => oc.column("id").doNothing())
   ).execute();
 }
