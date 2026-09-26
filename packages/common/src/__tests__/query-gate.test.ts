@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import React from "react";
 import { queryGateCore } from "../query-gate";
 import type { UseApiQueryResult } from "../hooks/use-api-query";
@@ -20,7 +20,7 @@ function makeQuery<T>(
     fetchStatus: "idle",
     failureCount: 0,
     failureReason: null,
-    refetch: (() => {}) as any,
+    refetch: vi.fn(),
     dataUpdatedAt: 0,
     errorUpdatedAt: 0,
     isLoadingError: false,
@@ -31,7 +31,6 @@ function makeQuery<T>(
     isFetched: false,
     isFetchedAfterMount: false,
     errorUpdateCount: 0,
-    promise: Promise.resolve() as any,
     ...overrides,
   } as UseApiQueryResult<T>;
 }
