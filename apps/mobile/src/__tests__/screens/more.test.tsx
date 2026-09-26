@@ -1,8 +1,9 @@
-import "../helpers/mock-navigation";
+import { mockRouter } from "../helpers/mock-navigation";
 import "../helpers/mock-safe-area";
 import { screen, fireEvent } from "@testing-library/react-native";
-import { mockRouter } from "../helpers/mock-navigation";
 import { renderWithProviders } from "../helpers/test-utils";
+
+import MoreScreen from "@/app/(app)/(tabs)/(more)/more";
 
 // Mock auth context
 const mockSignOut = jest.fn().mockResolvedValue(undefined);
@@ -19,8 +20,6 @@ jest.mock("@/contexts/auth-context", () => ({
     signOut: mockSignOut,
   }),
 }));
-
-import MoreScreen from "@/app/(app)/(tabs)/(more)/more";
 
 describe("MoreScreen", () => {
   beforeEach(() => {

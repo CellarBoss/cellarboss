@@ -3,6 +3,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { mockOk } from "../helpers/mock-api";
 
+// Import after mock
+import { useSettings, useSetting } from "@/hooks/use-settings";
+
 // Mock the api client
 const mockGetAll = jest.fn();
 const mockUpdate = jest.fn();
@@ -15,9 +18,6 @@ jest.mock("@/lib/api/client", () => ({
     },
   },
 }));
-
-// Import after mock
-import { useSettings, useSetting } from "@/hooks/use-settings";
 
 function createWrapper() {
   const queryClient = new QueryClient({

@@ -1,16 +1,18 @@
-import "../../helpers/mock-navigation";
+import { mockRouter } from "../../helpers/mock-navigation";
 import "../../helpers/mock-haptics";
 import "../../helpers/mock-safe-area";
 import { mockApi } from "../../helpers/mock-api-client";
 import { mockOk } from "../../helpers/mock-api";
 import { screen, waitFor, fireEvent } from "@testing-library/react-native";
 import { renderWithProviders } from "../../helpers/test-utils";
-import { mockRouter } from "../../helpers/mock-navigation";
 import { wines, winemakers, regions, countries } from "../../helpers/fixtures";
+
+import WinesScreen from "@/app/(app)/(tabs)/(wines)/wines";
 
 // Mock gesture handler for swipeable
 jest.mock("react-native-gesture-handler/ReanimatedSwipeable", () => {
-  const { View } = require("react-native");
+  const { View } =
+    jest.requireActual<typeof import("react-native")>("react-native");
   return {
     __esModule: true,
     default: ({ children }: { children: React.ReactNode }) => (
@@ -18,8 +20,6 @@ jest.mock("react-native-gesture-handler/ReanimatedSwipeable", () => {
     ),
   };
 });
-
-import WinesScreen from "@/app/(app)/(tabs)/(wines)/wines";
 
 describe("WinesScreen", () => {
   beforeEach(() => {

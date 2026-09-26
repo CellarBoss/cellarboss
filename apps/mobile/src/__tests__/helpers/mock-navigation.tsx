@@ -14,7 +14,8 @@ jest.mock("expo-router", () => ({
   useGlobalSearchParams: () => ({}),
   usePathname: () => "/",
   Redirect: ({ href }: { href: string }) => {
-    const { Text } = require("react-native");
+    const { Text } =
+      jest.requireActual<typeof import("react-native")>("react-native");
     return <Text testID="redirect">{href}</Text>;
   },
 }));

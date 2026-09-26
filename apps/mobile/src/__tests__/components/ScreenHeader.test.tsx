@@ -1,7 +1,6 @@
-import "../helpers/mock-navigation";
+import { mockRouter } from "../helpers/mock-navigation";
 import { screen, fireEvent } from "@testing-library/react-native";
 import { ScreenHeader } from "@/components/ScreenHeader";
-import { mockRouter } from "../helpers/mock-navigation";
 import { renderWithProviders } from "../helpers/test-utils";
 
 function renderHeader(

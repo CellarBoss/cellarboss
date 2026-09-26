@@ -6,7 +6,8 @@ import { DataList } from "@/components/DataList";
 
 // Mock gesture handler
 jest.mock("react-native-gesture-handler/ReanimatedSwipeable", () => {
-  const { View } = require("react-native");
+  const { View } =
+    jest.requireActual<typeof import("react-native")>("react-native");
   return {
     __esModule: true,
     default: ({ children }: { children: ReactNode }) => <View>{children}</View>,

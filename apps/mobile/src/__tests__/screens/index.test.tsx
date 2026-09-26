@@ -1,9 +1,12 @@
 import { render, screen } from "@testing-library/react-native";
 
+import Index from "@/app/index";
+
 // Must mock expo-router before importing component
 jest.mock("expo-router", () => ({
   Redirect: ({ href }: { href: string }) => {
-    const { Text } = require("react-native");
+    const { Text } =
+      jest.requireActual<typeof import("react-native")>("react-native");
     return <Text testID="redirect">{href}</Text>;
   },
 }));
@@ -13,8 +16,6 @@ const mockUseAuth = jest.fn();
 jest.mock("@/contexts/auth-context", () => ({
   useAuth: () => mockUseAuth(),
 }));
-
-import Index from "@/app/index";
 
 describe("Index (root gateway)", () => {
   it("redirects to setup when needs-setup", () => {
