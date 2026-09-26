@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { storagesResource } from "../../resources/storages";
 import type { RequestFn } from "../../types";
+import type { Storage } from "@cellarboss/types";
 
 describe("storagesResource", () => {
   const mockRequest = vi.fn() as unknown as RequestFn;
@@ -26,10 +27,10 @@ describe("storagesResource", () => {
     const storage = {
       id: 0,
       name: "Rack A",
-      locationId: "3" as any,
-      parent: "1" as any,
+      locationId: "3",
+      parent: "1",
     };
-    await storages.create(storage as any);
+    await storages.create(storage as unknown as Storage);
 
     const body = JSON.parse(vi.mocked(mockRequest).mock.calls[0][2]!);
     expect(body.locationId).toBe(3);
@@ -43,7 +44,7 @@ describe("storagesResource", () => {
       locationId: null,
       parent: null,
     };
-    await storages.create(storage as any);
+    await storages.create(storage);
 
     const body = JSON.parse(vi.mocked(mockRequest).mock.calls[0][2]!);
     expect(body.locationId).toBeNull();
@@ -54,10 +55,10 @@ describe("storagesResource", () => {
     const storage = {
       id: 5,
       name: "Rack A",
-      locationId: "3" as any,
-      parent: "1" as any,
+      locationId: "3",
+      parent: "1",
     };
-    await storages.update(storage as any);
+    await storages.update(storage as unknown as Storage);
 
     expect(mockRequest).toHaveBeenCalledWith(
       "storage/5",
