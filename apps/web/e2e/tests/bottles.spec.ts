@@ -227,6 +227,25 @@ test.describe("Bottles page", () => {
     ).toBeVisible();
   });
 
+  test("deselecting the vintage keeps the wine selected", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/bottles/1/edit");
+
+    await page.getByRole("combobox").filter({ hasText: "2015" }).last().click();
+    await page.getByRole("option", { name: "2015" }).click();
+
+    await expect(
+      page.getByRole("combobox").filter({ hasText: "Château Margaux 2015" }),
+    ).toBeVisible();
+    await expect(
+      page
+        .getByRole("combobox")
+        .filter({ hasText: "Choose a vintage year..." }),
+    ).toBeVisible();
+  });
+
   test("deselecting the wine clears it and the vintage", async ({
     adminContext,
   }) => {

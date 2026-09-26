@@ -123,7 +123,13 @@ export function WineVintageSelector({
 
   function handleVintageSelect(vintageId: number) {
     const id = vintageId.toString();
-    field.handleChange(id === currentVintageId ? "" : id);
+    if (id === currentVintageId) {
+      // Keep the wine that was derived from this vintage once it is cleared
+      setSelectedWineId(selectedWineId);
+      field.handleChange("");
+    } else {
+      field.handleChange(id);
+    }
     setVintageOpen(false);
   }
 
