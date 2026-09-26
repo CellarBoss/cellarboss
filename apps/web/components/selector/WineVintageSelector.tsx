@@ -1,5 +1,6 @@
 "use client";
 
+import type { AnyFieldApi } from "@tanstack/react-form";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
@@ -25,7 +26,7 @@ import { getWinemakers } from "@/lib/api/winemakers";
 import { getVintages } from "@/lib/api/vintages";
 
 type WineVintageSelectorProps = {
-  field: any;
+  field: AnyFieldApi;
   editable: boolean;
 };
 

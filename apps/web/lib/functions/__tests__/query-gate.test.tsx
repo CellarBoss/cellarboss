@@ -18,7 +18,7 @@ function makeLoadingQuery<T>(): UseApiQueryResult<T> {
     isPending: true,
     isError: false,
     error: null,
-  } as any;
+  } as unknown as UseApiQueryResult<T>;
 }
 
 function makeErrorQuery<T>(message: string): UseApiQueryResult<T> {
@@ -27,8 +27,8 @@ function makeErrorQuery<T>(message: string): UseApiQueryResult<T> {
     isLoading: false,
     isPending: false,
     isError: true,
-    error: { apiError: { message } } as any,
-  } as any;
+    error: { apiError: { message } },
+  } as unknown as UseApiQueryResult<T>;
 }
 
 function makeSuccessQuery<T>(data: T): UseApiQueryResult<T> {
@@ -38,7 +38,7 @@ function makeSuccessQuery<T>(data: T): UseApiQueryResult<T> {
     isPending: false,
     isError: false,
     error: null,
-  } as any;
+  } as unknown as UseApiQueryResult<T>;
 }
 
 describe("queryGate", () => {
@@ -58,7 +58,11 @@ describe("queryGate", () => {
 
   it("returns gate when data is undefined", () => {
     const q1 = makeSuccessQuery("data1");
-    const q2 = { data: undefined, isLoading: false, error: null } as any;
+    const q2 = {
+      data: undefined,
+      isLoading: false,
+      error: null,
+    } as unknown as UseApiQueryResult<string>;
     const result = queryGate([q1, q2]);
     expect(result.ready).toBe(false);
   });

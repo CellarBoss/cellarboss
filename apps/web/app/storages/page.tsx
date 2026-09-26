@@ -48,12 +48,14 @@ export default function StoragesPage() {
 
   async function handleBulkEdit(
     rows: TreeNode<Storage>[],
-    partial: Record<string, any>,
+    partial: Record<string, string | number>,
   ): Promise<void> {
     for (const row of rows) {
-      const { subRows: _, ...storageData } = row;
       const result = await updateStorage({
-        ...storageData,
+        id: row.id,
+        name: row.name,
+        locationId: row.locationId,
+        parent: row.parent,
         ...(partial.locationId
           ? { locationId: Number(partial.locationId) }
           : {}),

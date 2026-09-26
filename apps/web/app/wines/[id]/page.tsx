@@ -114,14 +114,12 @@ export default function ViewWinePage() {
 
   const vintageIds = new Set(vintages.map((v) => v.id));
   const bottleCountByVintage = new Map<number, number>();
-  let totalStoredBottles = 0;
   for (const bottle of allBottles) {
     if (vintageIds.has(bottle.vintageId) && bottle.status === "stored") {
       bottleCountByVintage.set(
         bottle.vintageId,
         (bottleCountByVintage.get(bottle.vintageId) ?? 0) + 1,
       );
-      totalStoredBottles++;
     }
   }
 

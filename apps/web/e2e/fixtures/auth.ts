@@ -73,7 +73,7 @@ export { expect } from "@playwright/test";
 
 export const MOCK_SERVER = MOCK_SERVER_URL;
 
-export async function setState(partial: Record<string, any>) {
+export async function setState(partial: Record<string, unknown>) {
   await fetch(`${MOCK_SERVER_URL}/__test/set-state`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

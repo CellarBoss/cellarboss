@@ -45,7 +45,7 @@ export default function RegionsPage() {
 
   async function handleBulkEdit(
     rows: Region[],
-    partial: Record<string, any>,
+    partial: Record<string, string | number>,
   ): Promise<void> {
     for (const row of rows) {
       const result = await updateRegion({

@@ -7,10 +7,10 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import type { SelectOption } from "@/lib/types/field";
+import type { SelectOption, FieldBinding } from "@/lib/types/field";
 
 type FixedListFieldProps = {
-  field: any;
+  field: FieldBinding;
   editable: boolean;
   options: SelectOption[];
 };

@@ -1,3 +1,4 @@
+import type { FieldBinding } from "@/lib/types/field";
 import {
   Popover,
   PopoverContent,
@@ -25,7 +26,7 @@ export default function MultiSelector<T extends GenericType>({
   options: T[];
   isInvalid: boolean;
   editable: boolean;
-  field: any;
+  field: FieldBinding<string[]>;
 }) {
   const selectedIds: string[] = Array.isArray(field.state.value)
     ? field.state.value

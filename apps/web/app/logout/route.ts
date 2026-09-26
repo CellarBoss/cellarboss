@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { webEnv } from "@/lib/env";
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   const headersList = await headers();
   const cookie = headersList.get("cookie") ?? "";
 

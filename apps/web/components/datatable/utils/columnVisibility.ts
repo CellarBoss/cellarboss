@@ -11,7 +11,7 @@ export function columnPreferenceKey(tableId: string): string {
 }
 
 function columnId<T extends RowData>(col: AppColumnDef<T>): string | undefined {
-  return (col as any).id ?? (col as any).accessorKey;
+  return col.id ?? ("accessorKey" in col ? String(col.accessorKey) : undefined);
 }
 
 /**

@@ -1,25 +1,22 @@
 import { useMemo } from "react";
 import { Wine, Grape, Banknote, Clock } from "lucide-react";
-import type { Bottle, Vintage, Wine as WineType } from "@cellarboss/types";
+import type { Bottle, Vintage } from "@cellarboss/types";
 import { StatCard } from "./StatCard";
 import { formatPrice, formatDrinkingStatus } from "@/lib/functions/format";
 
 interface CellarOverviewStatsProps {
   bottles: Bottle[];
   vintages: Vintage[];
-  wines: WineType[];
   currency: string;
 }
 
 export function CellarOverviewStats({
   bottles,
   vintages,
-  wines,
   currency,
 }: CellarOverviewStatsProps) {
   const stats = useMemo(() => {
     const vintageMap = new Map(vintages.map((v) => [v.id, v]));
-    const wineMap = new Map(wines.map((w) => [w.id, w]));
     const storedBottles = bottles.filter((b) => b.status === "stored");
     const currentYear = new Date().getFullYear();
 
@@ -50,7 +47,7 @@ export function CellarOverviewStats({
     }).length;
 
     return { totalBottles, uniqueWines, cellarValue, readyToDrink };
-  }, [bottles, vintages, wines]);
+  }, [bottles, vintages]);
 
   return (
     <>

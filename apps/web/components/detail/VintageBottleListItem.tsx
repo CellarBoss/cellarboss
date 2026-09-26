@@ -4,11 +4,7 @@ import type { Bottle } from "@cellarboss/types";
 import type { BottleSize, WineType } from "@cellarboss/validators/constants";
 import { Badge } from "@/components/ui/badge";
 import { BottleSizeIcon } from "@/components/bottles/BottleSizeIcon";
-import {
-  formatStatus,
-  formatBottleSize,
-  formatDate,
-} from "@/lib/functions/format";
+import { formatStatus, formatDate } from "@/lib/functions/format";
 
 type VintageBottleListItemProps = {
   bottle: Bottle;

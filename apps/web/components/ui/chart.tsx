@@ -129,8 +129,8 @@ function ChartTooltipContent({
     payload: ReadonlyArray<Payload>,
   ) => React.ReactNode;
   formatter?: (
-    value: any,
-    name: any,
+    value: Payload["value"],
+    name: Payload["name"],
     item: Payload,
     index: number,
     payload: ReadonlyArray<Payload>,
