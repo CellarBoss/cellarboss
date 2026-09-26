@@ -1,4 +1,4 @@
-import { createRoute, type z } from "@hono/zod-openapi";
+import { createRoute, z } from "@hono/zod-openapi";
 import type { ZodType } from "zod";
 import { errorSchema, idParamSchema, successSchema } from "./schemas";
 
@@ -38,10 +38,7 @@ export function createCrudRoutes(config: CrudRouteConfig) {
     security,
     summary: `List all ${resourceName}s`,
     responses: {
-      200: jsonContent(
-        (responseSchema as any).array(),
-        `List of ${resourceName}s`,
-      ),
+      200: jsonContent(z.array(responseSchema), `List of ${resourceName}s`),
       401: jsonContent(errorSchema, "Unauthorized"),
     },
   });

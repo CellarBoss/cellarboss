@@ -97,13 +97,8 @@ function startServer() {
 
 async function cleanupImages(db: Kysely<Database>) {
   try {
-    const rows = await (db as Kysely<any>)
-      .selectFrom("image")
-      .select("filename")
-      .execute();
-    const validFilenames = new Set<string>(
-      rows.map((r: { filename: string }) => r.filename),
-    );
+    const rows = await db.selectFrom("image").select("filename").execute();
+    const validFilenames = new Set(rows.map((r) => r.filename));
     await cleanupOrphanedFiles(validFilenames);
   } catch (err) {
     // image table may not exist yet on first run — migrations will create it

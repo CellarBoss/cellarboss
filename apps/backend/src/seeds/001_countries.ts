@@ -1,4 +1,4 @@
-import type { Kysely } from "kysely";
+import type { UntypedKysely } from "@schema/untyped.js";
 import { env } from "@utils/env.js";
 
 const countries = [
@@ -59,7 +59,7 @@ const countries = [
   "Uzbekistan",
 ];
 
-export async function seed(db: Kysely<any>): Promise<void> {
+export async function seed(db: UntypedKysely): Promise<void> {
   for (const name of countries) {
     const query = db.insertInto("country").values({ name });
     await (

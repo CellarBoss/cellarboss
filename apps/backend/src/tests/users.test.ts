@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, beforeAll } from "vitest";
 import type { OpenAPIHono } from "@hono/zod-openapi";
-import { Kysely } from "kysely";
 import {
   createTestApp,
   createTestAppWithAuth,
@@ -11,8 +10,6 @@ import {
 } from "./setup";
 import { registerUserRoutes } from "@routes/users.routes.js";
 import { db } from "@utils/database.js";
-
-const userDb = db as Kysely<any>;
 
 describe("User API", () => {
   let testUserId: string;
@@ -28,7 +25,7 @@ describe("User API", () => {
     );
 
     // Override role to 'user' (createTestUser defaults to 'admin')
-    await userDb
+    await db
       .updateTable("user")
       .set({ role: "user" })
       .where("id", "=", "user-for-test")
