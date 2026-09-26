@@ -677,6 +677,9 @@ importers:
 
   packages/mock-server:
     dependencies:
+      '@cellarboss/types':
+        specifier: workspace:*
+        version: link:../types
       '@cellarboss/validators':
         specifier: workspace:*
         version: link:../validators
