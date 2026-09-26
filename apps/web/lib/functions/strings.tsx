@@ -1,4 +1,11 @@
-export function stringifyValues<T>(data: T): any {
+export type StringifiedValue =
+  string | StringifiedValue[] | { [key: string]: StringifiedValue };
+
+export function stringifyValues(data: null | undefined): "";
+export function stringifyValues(data: readonly unknown[]): StringifiedValue[];
+export function stringifyValues(data: object): Record<string, StringifiedValue>;
+export function stringifyValues(data: unknown): StringifiedValue;
+export function stringifyValues(data: unknown): StringifiedValue {
   if (data === null || data === undefined) {
     return "";
   }
@@ -8,9 +15,9 @@ export function stringifyValues<T>(data: T): any {
   }
 
   if (typeof data === "object") {
-    const result: Record<string, any> = {};
-    for (const key in data) {
-      result[key] = stringifyValues((data as Record<string, any>)[key]);
+    const result: Record<string, StringifiedValue> = {};
+    for (const [key, value] of Object.entries(data)) {
+      result[key] = stringifyValues(value);
     }
     return result;
   }

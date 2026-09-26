@@ -167,15 +167,15 @@ export default function BottlesPage() {
       throw new Error("Error deleting bottle: " + errors.join(", "));
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function handleBulkEdit(
     rows: Bottle[],
-    partial: Record<string, any>,
+    partial: Record<string, string | number>,
   ): Promise<void> {
+    const status = BOTTLE_STATUSES.find((s) => s === partial.status);
     for (const row of rows) {
       const result = await updateBottle({
         ...row,
-        ...(partial.status ? { status: partial.status } : {}),
+        ...(status ? { status } : {}),
         ...(partial.storageId ? { storageId: Number(partial.storageId) } : {}),
       });
       if (!result.ok)

@@ -8,7 +8,16 @@ import { Textarea } from "../ui/textarea";
 import { DateField } from "./DateField";
 import { FixedListField } from "./FixedListField";
 import { WineGlassRating } from "./WineGlassRating";
+import type { ReactNode } from "react";
+import type { AnyFieldApi } from "@tanstack/react-form";
 import type { SelectorConfig, SelectOption } from "@/lib/types/field";
+
+type FieldHost = {
+  Field(props: {
+    name: string;
+    children: (field: AnyFieldApi) => ReactNode;
+  }): ReactNode | Promise<ReactNode>;
+};
 
 type FieldProps = {
   name: string;
@@ -28,7 +37,7 @@ type FieldProps = {
   selectorConfig?: SelectorConfig;
   options?: SelectOption[];
   onChange?: (value: string) => void;
-  form: any;
+  form: FieldHost;
 };
 
 export function GenericField({
@@ -43,7 +52,7 @@ export function GenericField({
 }: FieldProps) {
   return (
     <form.Field name={name}>
-      {(field: any) => {
+      {(field) => {
         const isInvalid =
           editable && field.state.meta.isTouched && !field.state.meta.isValid;
 

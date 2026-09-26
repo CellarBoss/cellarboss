@@ -96,7 +96,9 @@ export function AppSidebar() {
 
   const handleLogout = async () => {
     await fetch("/logout", { method: "POST" });
-    window.location.href = "/login";
+    // Full page load (not router.push) so no client-side state from the
+    // signed-out session survives; replace() keeps it out of history.
+    window.location.replace("/login");
   };
 
   const sections = [

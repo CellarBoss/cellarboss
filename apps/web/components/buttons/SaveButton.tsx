@@ -3,16 +3,14 @@ import { Save, Loader2 } from "lucide-react";
 
 type SaveButtonProps = {
   isProcessing: boolean;
-  form: any;
 };
-export function SaveButton({ isProcessing, form }: SaveButtonProps) {
+export function SaveButton({ isProcessing }: SaveButtonProps) {
   return (
     <Button
       size="lg"
       variant="outline"
       disabled={isProcessing}
       type="submit"
-      form={form.name}
       className="cursor-pointer"
     >
       <Save />

@@ -24,9 +24,9 @@ export default function DataTableHeader<T extends RowData>({
 
   return (
     <TableHeader>
-      {table.getHeaderGroups().map((headerGroup: any) => (
+      {table.getHeaderGroups().map((headerGroup) => (
         <TableRow key={headerGroup.id}>
-          {headerGroup.headers.map((header: any) => {
+          {headerGroup.headers.map((header) => {
             const sortDirection = sorting.find(
               (s) => s.id === header.column.id,
             );
@@ -40,7 +40,7 @@ export default function DataTableHeader<T extends RowData>({
                 }
                 className="bg-table-header"
                 style={
-                  (header.column.columnDef.meta as any)?._hasExplicitSize
+                  header.column.columnDef.meta?._hasExplicitSize
                     ? { width: `${header.column.getSize()}px` }
                     : undefined
                 }

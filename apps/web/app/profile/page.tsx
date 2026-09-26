@@ -21,7 +21,9 @@ async function handleSave(
     };
   }
 
-  const updateData: any = {
+  const updateData: Parameters<typeof authClient.updateUser>[0] & {
+    password?: string;
+  } = {
     name: formData.name,
   };
 
@@ -48,13 +50,14 @@ async function handleSave(
 
     return {
       ok: true,
-      data: result.data as any,
+      data: formData,
     };
-  } catch (err: any) {
+  } catch (err) {
     return {
       ok: false,
       error: {
-        message: err.message || "Something went wrong",
+        message:
+          (err instanceof Error && err.message) || "Something went wrong",
         status: 500,
       },
     };
@@ -77,7 +80,7 @@ export default function ProfilePage() {
   }
 
   const initialData: ProfileFormData = {
-    id: user.id as any,
+    id: user.id,
     name: user.name || "",
     email: user.email || "",
     password: "",
