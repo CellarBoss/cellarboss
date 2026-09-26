@@ -29,11 +29,14 @@ export async function setMockSession(role: SessionRole) {
   });
 }
 
+// Fixture callbacks name Playwright's "provide the value" argument `provide`
+// rather than the conventional `use`, which the React hooks lint rules would
+// otherwise mistake for React's use() hook.
 export const test = base.extend<{
   adminContext: BrowserContext;
   userContext: BrowserContext;
 }>({
-  adminContext: async ({ browser }, use) => {
+  adminContext: async ({ browser }, provide) => {
     await setMockSession("admin");
     const context = await browser.newContext();
     // Middleware only checks presence of this cookie, not its value
@@ -47,11 +50,11 @@ export const test = base.extend<{
         sameSite: "Lax",
       },
     ]);
-    await use(context);
+    await provide(context);
     await context.close();
   },
 
-  userContext: async ({ browser }, use) => {
+  userContext: async ({ browser }, provide) => {
     await setMockSession("user");
     const context = await browser.newContext();
     await context.addCookies([
@@ -64,7 +67,7 @@ export const test = base.extend<{
         sameSite: "Lax",
       },
     ]);
-    await use(context);
+    await provide(context);
     await context.close();
   },
 });
