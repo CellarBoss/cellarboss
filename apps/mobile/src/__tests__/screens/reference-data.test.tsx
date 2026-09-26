@@ -1,11 +1,10 @@
-import "../helpers/mock-navigation";
+import { mockRouter } from "../helpers/mock-navigation";
 import "../helpers/mock-haptics";
 import "../helpers/mock-safe-area";
 import { mockApi } from "../helpers/mock-api-client";
 import { mockOk, mockError } from "../helpers/mock-api";
 import { screen, waitFor, fireEvent } from "@testing-library/react-native";
 import { renderWithProviders } from "../helpers/test-utils";
-import { mockRouter } from "../helpers/mock-navigation";
 import {
   bottles,
   countries,
@@ -15,17 +14,6 @@ import {
   locations,
   storages,
 } from "../helpers/fixtures";
-
-// Mock gesture handler for swipeable
-jest.mock("react-native-gesture-handler/ReanimatedSwipeable", () => {
-  const { View } = require("react-native");
-  return {
-    __esModule: true,
-    default: ({ children }: { children: React.ReactNode }) => (
-      <View>{children}</View>
-    ),
-  };
-});
 
 // Import all list screens
 import CountriesScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/countries/index";
@@ -40,6 +28,18 @@ import LocationsScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages
 import NewLocationScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/locations/new";
 import StoragesScreen from "@/app/(app)/(tabs)/(storages)/storages/index";
 import NewStorageScreen from "@/app/(app)/(tabs)/(dashboard,cellar,wines,storages,more)/storages/new";
+
+// Mock gesture handler for swipeable
+jest.mock("react-native-gesture-handler/ReanimatedSwipeable", () => {
+  const { View } =
+    jest.requireActual<typeof import("react-native")>("react-native");
+  return {
+    __esModule: true,
+    default: ({ children }: { children: React.ReactNode }) => (
+      <View>{children}</View>
+    ),
+  };
+});
 
 describe("Reference Data Screens", () => {
   beforeEach(() => {

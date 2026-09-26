@@ -36,14 +36,6 @@ export default function DashboardScreen() {
     queryKey: ["winemakers"],
     queryFn: () => api.winemakers.getAll(),
   });
-  const regionQuery = useApiQuery({
-    queryKey: ["regions"],
-    queryFn: () => api.regions.getAll(),
-  });
-  const countryQuery = useApiQuery({
-    queryKey: ["countries"],
-    queryFn: () => api.countries.getAll(),
-  });
   const tastingNoteQuery = useApiQuery({
     queryKey: ["tastingNotes"],
     queryFn: () => api.tastingNotes.getAll(),
@@ -56,22 +48,12 @@ export default function DashboardScreen() {
     vintageQuery,
     wineQuery,
     winemakerQuery,
-    regionQuery,
-    countryQuery,
     tastingNoteQuery,
   ]);
 
   if (!result.ready) return result.gate;
 
-  const [
-    bottles,
-    vintages,
-    wines,
-    winemakers,
-    _regions,
-    _countries,
-    tastingNotes,
-  ] = result.data;
+  const [bottles, vintages, wines, winemakers, tastingNotes] = result.data;
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -79,7 +61,6 @@ export default function DashboardScreen() {
         <CellarOverviewStats
           bottles={bottles}
           vintages={vintages}
-          wines={wines}
           currency={currency}
         />
         <WineTypeBreakdown

@@ -24,8 +24,8 @@ function buildFlatTree(
   storages: Storage[],
   parentId: number | null = null,
   depth = 0,
-): Array<{ storage: Storage; depth: number }> {
-  const result: Array<{ storage: Storage; depth: number }> = [];
+): { storage: Storage; depth: number }[] {
+  const result: { storage: Storage; depth: number }[] = [];
   for (const s of storages) {
     if ((s.parent ?? null) === parentId) {
       result.push({ storage: s, depth });

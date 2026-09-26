@@ -4,11 +4,6 @@ import expoConfig from "eslint-config-expo/flat.js";
 
 const eslintConfig = defineConfig([
   ...fixupConfigRules(expoConfig),
-  {
-    rules: {
-      "react/no-children-prop": "warn",
-    },
-  },
   globalIgnores([
     "dist/**",
     "coverage/**",

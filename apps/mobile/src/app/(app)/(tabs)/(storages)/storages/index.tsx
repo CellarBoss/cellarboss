@@ -7,14 +7,13 @@ import { useRouter } from "expo-router";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { DataList } from "@/components/DataList";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { ScreenHeader } from "@/components/ScreenHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { useCommonStyles } from "@/styles/common";
 import { useAppTheme } from "@/hooks/use-app-theme";
 import { BottleCountBadge } from "@/components/storage/BottleCountBadge";
-import type { Storage, Bottle } from "@cellarboss/types";
+import type { Storage } from "@cellarboss/types";
 
 type TreeNode = Storage & { subRows: TreeNode[] };
 type FlatNode = { storage: Storage; depth: number };

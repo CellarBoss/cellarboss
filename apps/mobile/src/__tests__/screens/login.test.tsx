@@ -1,12 +1,13 @@
-import "../helpers/mock-navigation";
+import { mockRouter } from "../helpers/mock-navigation";
 import {
   render,
   screen,
   fireEvent,
   waitFor,
 } from "@testing-library/react-native";
-import { mockRouter } from "../helpers/mock-navigation";
 import { lightTheme } from "@/lib/theme";
+
+import LoginScreen from "@/app/(auth)/login";
 
 const mockUseAppTheme = jest.fn();
 
@@ -30,8 +31,6 @@ jest.mock("@/lib/auth/secure-store", () => ({
   getSavedEmail: jest.fn().mockResolvedValue("admin@test.com"),
   getServerUrl: jest.fn().mockResolvedValue("https://cellar.example.com"),
 }));
-
-import LoginScreen from "@/app/(auth)/login";
 
 describe("LoginScreen", () => {
   beforeEach(() => {
