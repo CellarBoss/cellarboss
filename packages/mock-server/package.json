@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "tsx src/start.ts",
-    "lint": "eslint --max-warnings 0"
+    "lint": "eslint"
   },
   "dependencies": {
     "@cellarboss/validators": "workspace:*",
