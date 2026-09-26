@@ -11,7 +11,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "lint": "eslint",
+    "lint": "eslint --max-warnings 0",
     "test:e2e": "maestro test e2e/smoke/",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
