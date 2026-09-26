@@ -13,7 +13,7 @@
     "migrate:down": "tsx src/utils/migrate.ts down",
     "seed": "tsx src/utils/seed-cli.ts",
     "generate:docs": "tsx scripts/generate-docs.ts",
-    "lint": "eslint"
+    "lint": "eslint --max-warnings 0"
   },
   "dependencies": {
     "@cellarboss/types": "workspace:*",
