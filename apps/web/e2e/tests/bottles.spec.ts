@@ -189,4 +189,58 @@ test.describe("Bottles page", () => {
     await expect(page.getByText("Château Margaux 2015").first()).toBeVisible();
     await expect(page.getByText("Blanc de Blancs")).toBeHidden();
   });
+
+  test("bulk edit sets the chosen status on the selected bottles", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/bottles");
+
+    await page.getByRole("row").nth(1).getByRole("checkbox").click();
+    await page
+      .getByText("1 selected")
+      .locator("..")
+      .getByRole("button", { name: "Edit" })
+      .click();
+
+    await page.getByRole("dialog").getByLabel("Status").click();
+    await page.getByRole("option", { name: "Sold" }).click();
+    await page.getByRole("button", { name: "Apply to 1 item" }).click();
+    await expect(page.getByRole("dialog")).toBeHidden();
+
+    const res = await fetch("http://localhost:5173/api/bottle");
+    const bottles: { id: number; status: string }[] = await res.json();
+    expect(bottles.map((b) => b.status).sort()).toEqual(["sold", "stored"]);
+  });
+
+  test("edit form shows the bottle's current wine and vintage", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/bottles/1/edit");
+
+    await expect(
+      page.getByRole("combobox").filter({ hasText: "Château Margaux 2015" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("combobox").filter({ hasText: "2015" }).last(),
+    ).toBeVisible();
+  });
+
+  test("deselecting the wine clears it and the vintage", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/bottles/1/edit");
+
+    await page
+      .getByRole("combobox")
+      .filter({ hasText: "Château Margaux 2015" })
+      .click();
+    await page.getByRole("option", { name: "Château Margaux 2015" }).click();
+
+    await expect(
+      page.getByRole("combobox").filter({ hasText: "Choose a wine..." }),
+    ).toBeVisible();
+  });
 });
