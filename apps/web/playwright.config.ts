@@ -25,7 +25,10 @@ export default defineConfig({
   globalSetup: "./e2e/global-setup.ts",
   globalTeardown: "./e2e/global-teardown.ts",
   webServer: {
-    command: "pnpm build && pnpm start",
+    // Invoke next directly rather than via `pnpm build && pnpm start`: since
+    // pnpm 12.6 runs scripts in their own process group, so Playwright's
+    // process-group kill on teardown leaves the server running and hangs CI.
+    command: "next build && next start",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     env: {
