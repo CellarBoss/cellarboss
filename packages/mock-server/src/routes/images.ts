@@ -35,13 +35,13 @@ export function registerImageRoutes(app: Hono, state: MockState) {
     return c.json(image, 201);
   });
 
-  app.get("/api/image/:id/file", (c) => {
+  app.get("/api/image/:id/file", () => {
     return new Response(MINIMAL_JPEG, {
       headers: { "content-type": "image/jpeg" },
     });
   });
 
-  app.get("/api/image/:id/thumb", (c) => {
+  app.get("/api/image/:id/thumb", () => {
     return new Response(MINIMAL_JPEG, {
       headers: { "content-type": "image/jpeg" },
     });

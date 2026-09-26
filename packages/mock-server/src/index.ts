@@ -18,6 +18,22 @@ import { registerWinegrapeRoutes } from "./routes/winegrapes";
 import { registerTastingNoteRoutes } from "./routes/tasting-notes";
 import { registerImageRoutes } from "./routes/images";
 import { defaultState } from "./defaults";
+import type {
+  Bottle,
+  Country,
+  Grape,
+  Image,
+  Location,
+  Preference,
+  Region,
+  Setting,
+  Storage,
+  TastingNote,
+  Vintage,
+  Wine,
+  WineGrape,
+  WineMaker,
+} from "@cellarboss/types";
 
 export type SessionPayload = {
   user: {
@@ -33,23 +49,33 @@ export type SessionPayload = {
   };
 };
 
+export type MockUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  createdAt: string;
+  banned: boolean | null;
+  banReason: string | null;
+};
+
 export type MockState = {
   session: SessionPayload | null;
-  wines: any[];
-  winemakers: any[];
-  vintages: any[];
-  regions: any[];
-  countries: any[];
-  grapes: any[];
-  bottles: any[];
-  storages: any[];
-  locations: any[];
-  settings: any[];
-  preferences: any[];
-  users: any[];
-  wineGrapes: any[];
-  tastingNotes: any[];
-  images: any[];
+  wines: Wine[];
+  winemakers: WineMaker[];
+  vintages: Vintage[];
+  regions: Region[];
+  countries: Country[];
+  grapes: Grape[];
+  bottles: Bottle[];
+  storages: Storage[];
+  locations: Location[];
+  settings: Setting[];
+  preferences: Preference[];
+  users: MockUser[];
+  wineGrapes: WineGrape[];
+  tastingNotes: TastingNote[];
+  images: Image[];
 };
 
 let server: ServerType | null = null;
