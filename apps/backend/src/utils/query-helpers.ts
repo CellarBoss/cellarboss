@@ -6,9 +6,19 @@ import type {
   Selectable,
 } from "kysely";
 import type { Database } from "@schema/database.js";
+import type { UntypedKysely } from "@schema/untyped.js";
 import { env } from "./env.js";
 
 type DbOrTrx = Kysely<Database> | Transaction<Database>;
+
+/**
+ * Kysely can't resolve column references against a table picked by a generic
+ * parameter, so the helpers below build their queries untyped. Their
+ * signatures keep callers fully typed.
+ */
+function untyped(dbOrTrx: DbOrTrx): UntypedKysely {
+  return dbOrTrx as unknown as UntypedKysely;
+}
 
 /**
  * Coerce a database boolean value to a JS boolean.
@@ -49,9 +59,10 @@ export async function insertReturning<T extends keyof Database & string>(
   table: T,
   values: InsertObject<Database, T>,
 ): Promise<Selectable<Database[T]>> {
+  const tableName: string = table;
   if (env.DATABASE_TYPE === "mysql") {
-    const result = await (dbOrTrx as any)
-      .insertInto(table)
+    const result = await untyped(dbOrTrx)
+      .insertInto(tableName)
       .values(values)
       .executeTakeFirstOrThrow();
     const id = Number(result.insertId);
@@ -61,18 +72,18 @@ export async function insertReturning<T extends keyof Database & string>(
           `This helper requires an auto-increment primary key on MySQL.`,
       );
     }
-    return await (dbOrTrx as any)
-      .selectFrom(table)
+    return (await untyped(dbOrTrx)
+      .selectFrom(tableName)
       .selectAll()
       .where("id", "=", id)
-      .executeTakeFirstOrThrow();
+      .executeTakeFirstOrThrow()) as Selectable<Database[T]>;
   }
 
-  return await (dbOrTrx as any)
-    .insertInto(table)
+  return (await untyped(dbOrTrx)
+    .insertInto(tableName)
     .values(values)
     .returningAll()
-    .executeTakeFirstOrThrow();
+    .executeTakeFirstOrThrow()) as Selectable<Database[T]>;
 }
 
 /**
@@ -86,23 +97,24 @@ export async function updateReturning<T extends keyof Database & string>(
   values: UpdateObject<Database, T>,
   idColumn: string = "id",
 ): Promise<Selectable<Database[T]>> {
+  const tableName: string = table;
   if (env.DATABASE_TYPE === "mysql") {
-    await (dbOrTrx as any)
-      .updateTable(table)
+    await untyped(dbOrTrx)
+      .updateTable(tableName)
       .set(values)
       .where(idColumn, "=", id)
       .execute();
-    return await (dbOrTrx as any)
-      .selectFrom(table)
+    return (await untyped(dbOrTrx)
+      .selectFrom(tableName)
       .selectAll()
       .where(idColumn, "=", id)
-      .executeTakeFirstOrThrow();
+      .executeTakeFirstOrThrow()) as Selectable<Database[T]>;
   }
 
-  return await (dbOrTrx as any)
-    .updateTable(table)
+  return (await untyped(dbOrTrx)
+    .updateTable(tableName)
     .set(values)
     .where(idColumn, "=", id)
     .returningAll()
-    .executeTakeFirstOrThrow();
+    .executeTakeFirstOrThrow()) as Selectable<Database[T]>;
 }
