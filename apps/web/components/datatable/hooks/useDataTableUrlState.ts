@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useCallback } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import type {
   ColumnFiltersState,
@@ -153,6 +153,10 @@ function fromExpandedState(
 
 // --- Hook ---
 
+// Shared so the "is this the default?" identity check in fromExpandedState
+// holds across renders when no default is given.
+const NO_EXPANSION: ExpandedState = {};
+
 export function useDataTableUrlState({
   filters,
   filterColumnName,
@@ -166,14 +170,14 @@ export function useDataTableUrlState({
   hasExpansion?: boolean;
   defaultExpanded?: ExpandedState;
 }) {
-  const resolvedDefaultExpanded = defaultExpanded ?? {};
+  const resolvedDefaultExpanded = defaultExpanded ?? NO_EXPANSION;
 
   // Parsers are computed once — filters and filterColumnName are always stable
   // (defined at module level in pages, never change at runtime)
-  const strParsers = useRef(
+  const [strParsers] = useState(() =>
     buildStringParsers(filters, filterColumnName, hasExpansion),
-  ).current;
-  const intParsers = useRef(buildIntParsers(filters)).current;
+  );
+  const [intParsers] = useState(() => buildIntParsers(filters));
 
   const [strState, setStrState] = useQueryStates(strParsers, NUQS_OPTIONS);
   const [intState, setIntState] = useQueryStates(intParsers, NUQS_OPTIONS);
@@ -186,7 +190,7 @@ export function useDataTableUrlState({
         filters,
         filterColumnName,
       ),
-    [strState, intState], // eslint-disable-line react-hooks/exhaustive-deps
+    [strState, intState, filters, filterColumnName],
   );
 
   const pagination = useMemo(
@@ -197,16 +201,13 @@ export function useDataTableUrlState({
           ? (intState.pageSize as number)
           : defaultPageSize,
     }),
-    [intState.page, intState.pageSize, defaultPageSize], // eslint-disable-line react-hooks/exhaustive-deps
+    [intState.page, intState.pageSize, defaultPageSize],
   );
 
+  const expandedParam = (strState as StrState).expanded ?? null;
   const expanded = useMemo(
-    () =>
-      toExpandedState(
-        (strState as StrState).expanded ?? null,
-        resolvedDefaultExpanded,
-      ),
-    [(strState as StrState).expanded], // eslint-disable-line react-hooks/exhaustive-deps
+    () => toExpandedState(expandedParam, resolvedDefaultExpanded),
+    [expandedParam, resolvedDefaultExpanded],
   );
 
   function setColumnFilters(
