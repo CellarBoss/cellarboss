@@ -1,6 +1,6 @@
 import type { GenericType } from "./generic";
 
-export interface Country extends GenericType {}
+export type Country = GenericType;
 
 export type CreateCountry = Omit<Country, "id">;
 
