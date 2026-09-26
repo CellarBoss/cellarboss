@@ -8,7 +8,8 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "start": "tsx src/start.ts"
+    "start": "tsx src/start.ts",
+    "lint": "eslint"
   },
   "dependencies": {
     "@cellarboss/validators": "workspace:*",
@@ -16,7 +17,11 @@
     "hono": "4.13.8"
   },
   "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.11.0",
+    "globals": "16.4.0",
     "tsx": "4.23.15",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.67.0"
   }
 }
