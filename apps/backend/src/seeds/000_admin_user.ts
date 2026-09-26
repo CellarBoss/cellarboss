@@ -1,12 +1,12 @@
 import "dotenv/config";
-import type { Kysely } from "kysely";
+import type { UntypedKysely } from "@schema/untyped.js";
 import { auth } from "../utils/auth";
 
 const ADMIN_EMAIL = "admin@cellarboss.org";
 const ADMIN_PASSWORD = "adminpassword";
 const ADMIN_NAME = "Admin";
 
-export async function seed(db: Kysely<any>): Promise<void> {
+export async function seed(db: UntypedKysely): Promise<void> {
   // Check if admin user already exists
   const existing = await db
     .selectFrom("user")

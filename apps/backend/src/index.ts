@@ -10,7 +10,6 @@ import { registerMcpRoutes } from "@mcp/route.js";
 import { errorHandler } from "@middleware/error.middleware.js";
 import { honoLogLayer, type HonoLogLayerVariables } from "@loglayer/hono";
 import { logger } from "@utils/logger.js";
-import { log } from "console";
 
 const app = new OpenAPIHono<{ Variables: HonoLogLayerVariables }>();
 

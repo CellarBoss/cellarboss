@@ -1,4 +1,4 @@
-import type { Kysely } from "kysely";
+import type { UntypedKysely } from "@schema/untyped.js";
 import { env } from "@utils/env.js";
 
 const grapes = [
@@ -159,7 +159,7 @@ const grapes = [
   "Zweigelt",
 ];
 
-export async function seed(db: Kysely<any>): Promise<void> {
+export async function seed(db: UntypedKysely): Promise<void> {
   for (const name of grapes) {
     const query = db.insertInto("grape").values({ name });
     await (

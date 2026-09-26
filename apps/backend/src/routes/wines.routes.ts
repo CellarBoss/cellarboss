@@ -74,8 +74,8 @@ export function registerWineRoutes(app: OpenAPIHono) {
     try {
       await winesController.remove(id);
       return c.json({ success: true }, 200);
-    } catch (e: any) {
-      if (e.message?.includes("still has vintages")) {
+    } catch (e) {
+      if (e instanceof Error && e.message.includes("still has vintages")) {
         return c.json({ error: e.message }, 409);
       }
       throw e;

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { regionsResource } from "../../resources/regions";
 import type { RequestFn } from "../../types";
+import type { Region } from "@cellarboss/types";
 
 describe("regionsResource", () => {
   const mockRequest = vi.fn() as unknown as RequestFn;
@@ -24,7 +25,7 @@ describe("regionsResource", () => {
 
   it("create calls POST region with JSON body", async () => {
     const region = { id: 0, name: "Barolo" };
-    await regions.create(region as any);
+    await regions.create(region as Region);
     expect(mockRequest).toHaveBeenCalledWith(
       "region",
       "POST",
@@ -34,7 +35,7 @@ describe("regionsResource", () => {
 
   it("update calls PUT region/{id} with JSON body", async () => {
     const region = { id: 5, name: "Chianti" };
-    await regions.update(region as any);
+    await regions.update(region as Region);
     expect(mockRequest).toHaveBeenCalledWith(
       "region/5",
       "PUT",

@@ -28,7 +28,7 @@ export async function upsert(
 
   if (env.DATABASE_TYPE === "mysql") {
     // MySQL: INSERT ... ON DUPLICATE KEY UPDATE
-    await (db as any)
+    await db
       .insertInto("preference")
       .values(record)
       .onDuplicateKeyUpdate({ value: data.value })

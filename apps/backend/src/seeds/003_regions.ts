@@ -1,4 +1,4 @@
-import type { Kysely } from "kysely";
+import type { UntypedKysely } from "@schema/untyped.js";
 import { env } from "@utils/env.js";
 
 const regionsByCountry: Record<string, string[]> = {
@@ -286,7 +286,7 @@ const regionsByCountry: Record<string, string[]> = {
   India: ["Karnataka", "Maharashtra"],
 };
 
-export async function seed(db: Kysely<any>): Promise<void> {
+export async function seed(db: UntypedKysely): Promise<void> {
   let regionCount = 0;
 
   for (const [countryName, regions] of Object.entries(regionsByCountry)) {
