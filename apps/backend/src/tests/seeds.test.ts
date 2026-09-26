@@ -40,12 +40,13 @@ async function snapshot(): Promise<Record<string, number>> {
 }
 
 async function ledger(): Promise<string[]> {
-  const rows = await (db as Kysely<any>)
+  const rows = await db
+    .withTables<{ seed_history: { name: string } }>()
     .selectFrom("seed_history")
     .select("name")
     .orderBy("name")
     .execute();
-  return rows.map((r: { name: string }) => r.name);
+  return rows.map((r) => r.name);
 }
 
 const expectedSeeds = () =>

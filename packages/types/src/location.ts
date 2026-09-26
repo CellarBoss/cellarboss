@@ -1,6 +1,6 @@
 import type { GenericType } from "./generic";
 
-export interface Location extends GenericType {}
+export type Location = GenericType;
 
 export type CreateLocation = Omit<Location, "id">;
 

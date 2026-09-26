@@ -17,8 +17,7 @@ type GenericCardProps<T extends { id: number | string }> = {
   mode: "view" | "edit" | "create" | "clone";
   data?: T;
   fields: FieldConfig<T>[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  processSave?: (data: any) => Promise<ApiResult<T>>;
+  processSave?: (data: T) => Promise<ApiResult<T>>;
   redirectTo?: string;
 };
 
@@ -46,8 +45,13 @@ export function GenericCard<T extends { id: number | string }>({
 
   const zodSchema = z.object(zodShape);
 
+  // We must stringify to allow proper comparison within Select elements
+  const defaultValues: Record<string, unknown> = data
+    ? stringifyValues(data)
+    : {};
+
   const form = useForm({
-    defaultValues: stringifyValues(data), // We must stringify to allow proper comparison within Select elements
+    defaultValues,
     validators: {
       onChange: zodSchema,
       onSubmit: zodSchema,
@@ -61,7 +65,9 @@ export function GenericCard<T extends { id: number | string }>({
       setErrorMessage(null);
       setSuccessMessage(null);
       try {
-        const result = await processSave(value);
+        // Values are still the stringified form state; each resource's API
+        // helper coerces them back to their real types before sending.
+        const result = await processSave(value as T);
 
         if (!result.ok) {
           const errors = [];
@@ -126,7 +132,7 @@ export function GenericCard<T extends { id: number | string }>({
           {mode === "edit" && (
             <ResetButton isProcessing={isProcessing} form={form} />
           )}
-          {editable && <SaveButton isProcessing={isProcessing} form={form} />}
+          {editable && <SaveButton isProcessing={isProcessing} />}
           {errorMessage && (
             <span className="mx-2 text-red-600">{errorMessage}</span>
           )}

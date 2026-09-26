@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { bottlesResource } from "../../resources/bottles";
 import type { RequestFn } from "../../types";
+import type { Bottle, CreateBottle } from "@cellarboss/types";
 
 describe("bottlesResource", () => {
   const mockRequest = vi.fn() as unknown as RequestFn;
@@ -35,14 +36,14 @@ describe("bottlesResource", () => {
   it("create picks specific fields and coerces numbers", async () => {
     const bottle = {
       purchaseDate: "2024-01-01",
-      purchasePrice: "25.50" as any,
-      vintageId: "3" as any,
-      storageId: "1" as any,
+      purchasePrice: "25.50",
+      vintageId: "3",
+      storageId: "1",
       status: "In Cellar",
       size: "750ml",
       extraField: "should be excluded",
     };
-    await bottles.create(bottle as any);
+    await bottles.create(bottle as unknown as CreateBottle);
 
     const body = JSON.parse(vi.mocked(mockRequest).mock.calls[0][2]!);
     expect(body.purchasePrice).toBe(25.5);
@@ -62,7 +63,7 @@ describe("bottlesResource", () => {
       status: "In Cellar",
       size: "750ml",
     };
-    await bottles.create(bottle as any);
+    await bottles.create(bottle as CreateBottle);
 
     const body = JSON.parse(vi.mocked(mockRequest).mock.calls[0][2]!);
     expect(body.storageId).toBeNull();
@@ -72,13 +73,13 @@ describe("bottlesResource", () => {
     const bottle = {
       id: 5,
       purchaseDate: "2024-01-01",
-      purchasePrice: "30" as any,
-      vintageId: "2" as any,
-      storageId: "4" as any,
+      purchasePrice: "30",
+      vintageId: "2",
+      storageId: "4",
       status: "Consumed",
       size: "750ml",
     };
-    await bottles.update(bottle as any);
+    await bottles.update(bottle as unknown as Bottle);
 
     expect(mockRequest).toHaveBeenCalledWith(
       "bottle/5",

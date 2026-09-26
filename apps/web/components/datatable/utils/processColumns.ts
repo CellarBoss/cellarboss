@@ -17,12 +17,13 @@ export function processColumnsWithFilters<T extends RowData>(
   const allColumns = [...selectionColumn, ...columns];
 
   return allColumns.map((col) => {
-    const colId = (col as any).id ?? (col as any).accessorKey;
+    const colId =
+      col.id ?? ("accessorKey" in col ? String(col.accessorKey) : undefined);
     const filterDef = filters?.find((f) => f.columnId === colId);
     const filterFn = filterDef
       ? filterDef.type === FilterType.Range
-        ? rangeFilter
-        : multiSelectFilter
+        ? rangeFilter<T>()
+        : multiSelectFilter<T>()
       : undefined;
     const meta = col.meta;
     // Suppressed columns and columns explicitly marked non-hideable cannot be

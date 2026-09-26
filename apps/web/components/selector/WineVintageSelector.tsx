@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import type { AnyFieldApi } from "@tanstack/react-form";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import {
@@ -25,7 +26,7 @@ import { getWinemakers } from "@/lib/api/winemakers";
 import { getVintages } from "@/lib/api/vintages";
 
 type WineVintageSelectorProps = {
-  field: any;
+  field: AnyFieldApi;
   editable: boolean;
 };
 
@@ -56,22 +57,22 @@ export function WineVintageSelector({
     },
   );
 
-  const [selectedWineId, setSelectedWineId] = useState<number | null>(null);
+  // undefined until the user picks (or clears) a wine themselves
+  const [chosenWineId, setSelectedWineId] = useState<number | null>();
   const [wineOpen, setWineOpen] = useState(false);
   const [vintageOpen, setVintageOpen] = useState(false);
 
-  // Pre-populate wine from existing vintageId (edit mode) or initialWineId
-  useEffect(() => {
-    if (selectedWineId !== null) return;
-    if (currentVintageId && vintages) {
-      const vintage = vintages.find(
-        (v) => v.id.toString() === currentVintageId,
-      );
-      if (vintage) setSelectedWineId(vintage.wineId);
-    } else if (initialWineId) {
-      setSelectedWineId(Number(initialWineId));
-    }
-  }, [vintages, currentVintageId, selectedWineId, initialWineId]);
+  // Until then, pre-populate from the existing vintageId (edit mode) or the
+  // initialWineId search param
+  const selectedWineId =
+    chosenWineId !== undefined
+      ? chosenWineId
+      : currentVintageId
+        ? (vintages?.find((v) => v.id.toString() === currentVintageId)
+            ?.wineId ?? null)
+        : initialWineId
+          ? Number(initialWineId)
+          : null;
 
   if (winesLoading || winemakersLoading || vintagesLoading) {
     return <span className="text-sm text-muted-foreground">Loading...</span>;

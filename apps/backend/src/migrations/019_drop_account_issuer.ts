@@ -1,4 +1,4 @@
-import type { Kysely } from "kysely";
+import type { UntypedKysely } from "@schema/untyped.js";
 import { sql } from "kysely";
 import { dialect, shortText } from "@utils/migration-helpers.js";
 
@@ -31,19 +31,19 @@ import { dialect, shortText } from "@utils/migration-helpers.js";
 const INDEX_NAME = "account_issuer_accountId_uidx";
 const CREDENTIAL_ISSUER = "local:credential";
 
-async function tableExists(db: Kysely<any>, name: string): Promise<boolean> {
+async function tableExists(db: UntypedKysely, name: string): Promise<boolean> {
   const tables = await db.introspection.getTables();
   return tables.some((t) => t.name === name);
 }
 
-async function getColumn(db: Kysely<any>, table: string, column: string) {
+async function getColumn(db: UntypedKysely, table: string, column: string) {
   const tables = await db.introspection.getTables();
   return tables
     .find((t) => t.name === table)
     ?.columns.find((c) => c.name === column);
 }
 
-async function mysqlIndexExists(db: Kysely<any>): Promise<boolean> {
+async function mysqlIndexExists(db: UntypedKysely): Promise<boolean> {
   const existing = await sql<{ count: number }>`
     SELECT COUNT(*) as count FROM information_schema.statistics
     WHERE table_schema = DATABASE() AND table_name = 'account' AND index_name = ${INDEX_NAME}
@@ -51,7 +51,7 @@ async function mysqlIndexExists(db: Kysely<any>): Promise<boolean> {
   return Number(existing.rows[0]?.count ?? 0) > 0;
 }
 
-async function dropUniqueIndex(db: Kysely<any>): Promise<void> {
+async function dropUniqueIndex(db: UntypedKysely): Promise<void> {
   if (dialect === "mysql") {
     if (!(await mysqlIndexExists(db))) return;
     await sql`ALTER TABLE \`account\` DROP INDEX \`${sql.raw(INDEX_NAME)}\``.execute(
@@ -62,7 +62,7 @@ async function dropUniqueIndex(db: Kysely<any>): Promise<void> {
   await sql`DROP INDEX IF EXISTS "${sql.raw(INDEX_NAME)}"`.execute(db);
 }
 
-export async function up(db: Kysely<any>): Promise<void> {
+export async function up(db: UntypedKysely): Promise<void> {
   if (!(await tableExists(db, "account"))) return;
   if (!(await getColumn(db, "account", "issuer"))) return;
 
@@ -88,7 +88,7 @@ export async function up(db: Kysely<any>): Promise<void> {
  * NULL would recreate the exact state that breaks 1.7.3, so a down/up cycle
  * on a 1.7.3 deployment would leave sign-up broken.
  */
-export async function down(db: Kysely<any>): Promise<void> {
+export async function down(db: UntypedKysely): Promise<void> {
   if (!(await tableExists(db, "account"))) return;
   if (await getColumn(db, "account", "issuer")) return;
 

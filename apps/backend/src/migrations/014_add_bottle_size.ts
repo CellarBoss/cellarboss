@@ -1,7 +1,7 @@
-import type { Kysely } from "kysely";
+import type { UntypedKysely } from "@schema/untyped.js";
 import { shortText } from "@utils/migration-helpers.js";
 
-export async function up(db: Kysely<any>): Promise<void> {
+export async function up(db: UntypedKysely): Promise<void> {
   await db.schema
     .alterTable("bottle")
     // shortText (not longText) — MySQL TEXT columns cannot have a default.
@@ -11,6 +11,6 @@ export async function up(db: Kysely<any>): Promise<void> {
     .execute();
 }
 
-export async function down(db: Kysely<any>): Promise<void> {
+export async function down(db: UntypedKysely): Promise<void> {
   await db.schema.alterTable("bottle").dropColumn("size").execute();
 }

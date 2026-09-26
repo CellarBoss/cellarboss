@@ -7,7 +7,7 @@ import {
   createWineGrape,
   deleteWineGrape,
 } from "@/lib/api/winegrapes";
-import type { Wine, WineGrape } from "@cellarboss/types";
+import type { WineGrape } from "@cellarboss/types";
 import { GenericCard } from "@/components/cards/GenericCard";
 import { wineFields, WineFormData } from "@/lib/fields/wines";
 import { ApiResult } from "@/lib/api/types";
@@ -44,15 +44,17 @@ export default function EditWinePage() {
     grapeIds: currentGrapeIds,
   };
 
-  async function handleUpdate(formData: any): Promise<ApiResult<WineFormData>> {
+  async function handleUpdate(
+    formData: WineFormData,
+  ): Promise<ApiResult<WineFormData>> {
     const { grapeIds, ...wineData } = formData;
 
-    const result = await updateWine(wineData as Wine);
+    const result = await updateWine(wineData);
     if (!result.ok) return result;
 
     // Sync grape associations
     const newGrapeIds: number[] = Array.isArray(grapeIds)
-      ? grapeIds.map((id: string) => Number(id))
+      ? grapeIds.map(Number)
       : [];
 
     // Delete removed grapes

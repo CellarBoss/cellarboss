@@ -12,7 +12,6 @@ type BottleListItemProps = {
   wineYear: string;
   winemakerName: string;
   wineType?: WineType;
-  drinkingStatus: string;
   storagePath?: string;
 };
 
@@ -34,7 +33,6 @@ export function BottleListItem({
   wineYear,
   winemakerName,
   wineType,
-  drinkingStatus,
   storagePath,
 }: BottleListItemProps) {
   return (

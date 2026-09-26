@@ -1,5 +1,6 @@
 "use client";
 
+import type { FieldBinding } from "@/lib/types/field";
 import { useState, useMemo } from "react";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import {
@@ -52,7 +53,7 @@ export default function HierarchicalSingleSelector({
   options: GenericType[];
   isInvalid: boolean;
   editable: boolean;
-  field: any;
+  field: FieldBinding;
 }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");

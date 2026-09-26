@@ -24,7 +24,7 @@ describe("winegrapesResource", () => {
 
   it("create calls POST winegrape with JSON body", async () => {
     const data = { wineId: 1, grapeId: 2, percentage: 100 };
-    await winegrapes.create(data as any);
+    await winegrapes.create(data);
     expect(mockRequest).toHaveBeenCalledWith(
       "winegrape",
       "POST",

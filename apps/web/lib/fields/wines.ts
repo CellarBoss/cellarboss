@@ -60,7 +60,7 @@ export const wineFields: FieldConfig<WineFormData>[] = [
     },
     validator: z.preprocess((val) => {
       if (!Array.isArray(val)) return [];
-      return val.map((v: any) => Number(v));
-    }, z.array(z.number().int().positive())) as any,
+      return val.map((v) => Number(v));
+    }, z.array(z.number().int().positive())),
   },
 ];
