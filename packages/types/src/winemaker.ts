@@ -1,6 +1,6 @@
 import type { GenericType } from "./generic";
 
-export interface WineMaker extends GenericType {}
+export type WineMaker = GenericType;
 
 export type CreateWineMaker = Omit<WineMaker, "id">;
 
