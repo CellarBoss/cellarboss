@@ -13,7 +13,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api/client";
 import { useAppTheme } from "@/hooks/use-app-theme";
-import type { Wine, WineMaker, Vintage } from "@cellarboss/types";
+import type { Wine, WineMaker } from "@cellarboss/types";
 
 type WineVintageSelectorProps = {
   label: string;
@@ -84,7 +84,7 @@ export function WineVintageSelector({
   const groupedWines = useMemo(() => {
     if (!wines || !winemakers) return [];
     const search = wineSearch.toLowerCase();
-    const groups: Array<{ winemaker: WineMaker; wines: Wine[] }> = [];
+    const groups: { winemaker: WineMaker; wines: Wine[] }[] = [];
 
     for (const wm of winemakers) {
       const wmWines = wines

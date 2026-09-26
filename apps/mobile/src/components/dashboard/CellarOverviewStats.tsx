@@ -1,5 +1,5 @@
 import { View, StyleSheet } from "react-native";
-import type { Bottle, Vintage, Wine } from "@cellarboss/types";
+import type { Bottle, Vintage } from "@cellarboss/types";
 import { StatCard } from "./StatCard";
 import { formatPrice, formatDrinkingStatus } from "@/lib/functions/format";
 import { useRouter } from "expo-router";
@@ -8,14 +8,12 @@ import { useAppTheme } from "@/hooks/use-app-theme";
 type CellarOverviewStatsProps = {
   bottles: Bottle[];
   vintages: Vintage[];
-  wines: Wine[];
   currency: string;
 };
 
 export function CellarOverviewStats({
   bottles,
   vintages,
-  wines,
   currency,
 }: CellarOverviewStatsProps) {
   const theme = useAppTheme();
@@ -23,7 +21,6 @@ export function CellarOverviewStats({
   const currentYear = new Date().getFullYear();
 
   const vintageMap = new Map(vintages.map((v) => [v.id, v]));
-  const wineMap = new Map(wines.map((w) => [w.id, w]));
 
   const storedBottles = bottles.filter((b) => b.status === "stored");
 

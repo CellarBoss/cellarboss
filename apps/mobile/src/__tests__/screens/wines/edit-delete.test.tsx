@@ -1,9 +1,8 @@
-import "../../helpers/mock-navigation";
+import { mockSearchParams } from "../../helpers/mock-navigation";
 import "../../helpers/mock-haptics";
 import "../../helpers/mock-safe-area";
 import { mockApi } from "../../helpers/mock-api-client";
 import { mockOk, mockError } from "../../helpers/mock-api";
-import { mockSearchParams } from "../../helpers/mock-navigation";
 import { screen, waitFor, fireEvent } from "@testing-library/react-native";
 import { renderWithProviders } from "../../helpers/test-utils";
 import { wines } from "../../helpers/fixtures";

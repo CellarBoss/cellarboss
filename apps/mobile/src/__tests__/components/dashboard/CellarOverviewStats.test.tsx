@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react-native";
 import { PaperProvider } from "react-native-paper";
 import { CellarOverviewStats } from "@/components/dashboard/CellarOverviewStats";
-import { bottles, vintages, wines } from "../../helpers/fixtures";
+import { bottles, vintages } from "../../helpers/fixtures";
 
 function renderStats(currency = "USD") {
   return render(
@@ -9,7 +9,6 @@ function renderStats(currency = "USD") {
       <CellarOverviewStats
         bottles={bottles}
         vintages={vintages}
-        wines={wines}
         currency={currency}
       />
     </PaperProvider>,
