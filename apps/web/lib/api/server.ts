@@ -54,7 +54,7 @@ export async function makeServerRequest<T>(
     const text = await res.text();
 
     if (!res.ok) {
-      let data: any = null;
+      let data: unknown = null;
       try {
         data = text ? JSON.parse(text) : null;
       } catch {

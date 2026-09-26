@@ -103,7 +103,7 @@ export function DataTable<T extends RowData>({
     filterColumnName,
     defaultPageSize,
     hasExpansion,
-    defaultExpanded: defaultExpanded ?? (getSubRows ? true : {}),
+    defaultExpanded: defaultExpanded ?? (getSubRows ? true : undefined),
   });
 
   // React state: sorting, row selection, dialogs

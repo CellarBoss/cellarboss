@@ -1,9 +1,10 @@
 "use client";
 
+import type { FieldBinding } from "@/lib/types/field";
 import { useState } from "react";
 
 type WineGlassRatingProps = {
-  field: any;
+  field: FieldBinding;
   editable: boolean;
 };
 

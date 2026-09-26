@@ -325,11 +325,7 @@ test.describe("Dashboard page", () => {
     const page = await adminContext.newPage();
     await page.goto("/");
 
-    // Find the Grand Vin link within the top rated section and click it
-    const topRated = page.locator(
-      ":has(> :text('Top Rated Wines')) >> a:has-text('Grand Vin')",
-    );
-    // Use a more specific locator for the wine link
+    // Find the Grand Vin link and click it
     const wineLink = page.getByRole("link", { name: "Grand Vin" }).first();
     await wineLink.click();
     await expect(page).toHaveURL("/wines/1");

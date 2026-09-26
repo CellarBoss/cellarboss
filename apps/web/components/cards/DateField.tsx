@@ -1,5 +1,6 @@
 "use client";
 
+import type { FieldBinding } from "@/lib/types/field";
 import { useState } from "react";
 import { CalendarIcon } from "lucide-react";
 import {
@@ -13,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { formatDateOnly, parseDateOnly } from "@/lib/functions/date";
 
 type DateFieldProps = {
-  field: any;
+  field: FieldBinding;
   editable: boolean;
 };
 

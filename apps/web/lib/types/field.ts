@@ -20,6 +20,15 @@ export type SelectorConfig = {
 
 export type SelectOption = { value: string; label: string };
 
+/**
+ * The part of a TanStack Form field that the field components read and write,
+ * so they can also be driven by plain component state (e.g. inside a dialog).
+ */
+export type FieldBinding<TValue = string> = {
+  state: { value?: TValue | null };
+  handleChange: (value: TValue) => void;
+};
+
 export type FieldConfig<T, K extends keyof T = keyof T> = {
   key: keyof T;
   label: string;

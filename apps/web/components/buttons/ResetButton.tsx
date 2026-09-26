@@ -3,7 +3,7 @@ import { PencilOff } from "lucide-react";
 
 type ResetButtonProps = {
   isProcessing: boolean;
-  form: any;
+  form: { reset: () => void };
 };
 export function ResetButton({ isProcessing, form }: ResetButtonProps) {
   return (

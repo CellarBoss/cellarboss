@@ -65,12 +65,13 @@ export default function WinesPage() {
 
   async function handleBulkEdit(
     rows: Wine[],
-    partial: Record<string, any>,
+    partial: Record<string, string | number>,
   ): Promise<void> {
+    const type = WINE_TYPES.find((t) => t === partial.type);
     for (const row of rows) {
       const result = await updateWine({
         ...row,
-        ...(partial.type ? { type: partial.type } : {}),
+        ...(type ? { type } : {}),
         ...(partial.wineMakerId
           ? { wineMakerId: Number(partial.wineMakerId) }
           : {}),

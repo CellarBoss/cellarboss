@@ -26,7 +26,6 @@ import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { Badge } from "@/components/ui/badge";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
-import { formatDrinkingStatus } from "@/lib/functions/format";
 import type { Storage } from "@cellarboss/types";
 import type { WineType } from "@cellarboss/validators/constants";
 
@@ -121,8 +120,6 @@ export default function ViewStoragePage() {
   const storedBottles = allBottles.filter(
     (b) => b.storageId === storageId && b.status === "stored",
   );
-
-  const currentYear = new Date().getFullYear();
 
   function getWineName(vintageId: number): string {
     const vintage = vintageMap.get(vintageId);
@@ -246,11 +243,6 @@ export default function ViewStoragePage() {
           const vintage = vintageMap.get(bottle.vintageId);
           const wine = vintage ? wineMap.get(vintage.wineId) : undefined;
           const maker = wine ? winemakerMap.get(wine.wineMakerId) : undefined;
-          const drinkingStatus = formatDrinkingStatus(
-            vintage?.drinkFrom ?? null,
-            vintage?.drinkUntil ?? null,
-            currentYear,
-          );
           return (
             <BottleListItem
               key={bottle.id}
@@ -259,7 +251,6 @@ export default function ViewStoragePage() {
               wineYear={vintage?.year != null ? String(vintage.year) : "NV"}
               winemakerName={maker?.name ?? ""}
               wineType={wine?.type as WineType | undefined}
-              drinkingStatus={drinkingStatus}
             />
           );
         })}
