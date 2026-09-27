@@ -1,11 +1,10 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import { nextId } from "../ids";
 import {
   createCountrySchema,
   updateCountrySchema,
 } from "@cellarboss/validators";
-
-let nextId = 1000;
 
 export function registerCountryRoutes(app: Hono, state: MockState) {
   app.get("/api/country", (c) => c.json(state.countries));
@@ -21,7 +20,7 @@ export function registerCountryRoutes(app: Hono, state: MockState) {
     const body = await c.req.json();
     const result = createCountrySchema.safeParse(body);
     if (!result.success) return c.json({ error: result.error.issues }, 400);
-    const country = { id: ++nextId, ...result.data };
+    const country = { id: nextId(state.countries), ...result.data };
     state.countries.push(country);
     return c.json(country, 201);
   });

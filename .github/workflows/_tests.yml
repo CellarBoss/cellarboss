@@ -139,6 +139,21 @@ jobs:
           path: packages/common/coverage/
           retention-days: 1
 
+  test-mock-server:
+    name: Test Mock Server
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: changes
+    if: needs.changes.outputs.packages == 'true' || needs.changes.outputs.mock-server == 'true' || needs.changes.outputs.structure == 'true'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: $/.github/actions/setup-node
+
+      - name: Run mock server unit tests
+        run: pnpm --filter @cellarboss/mock-server test
+
   test-backend:
     name: Test Backend (${{ matrix.db }})
     runs-on: ubuntu-latest
