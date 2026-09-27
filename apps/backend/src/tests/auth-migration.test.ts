@@ -92,4 +92,101 @@ describe("real better-auth migration + sign-up/sign-in", () => {
     expect(signIn.user?.email).toBe(email);
     expect(signIn.token).toBeTruthy();
   });
+
+  // The web app relies on these endpoints to change passwords. update-user
+  // silently drops a password, which is how the profile page came to report
+  // success without changing anything (#1066).
+  describe("password changes", () => {
+    async function signUpAndIn(email: string, password: string) {
+      await auth.api.signUpEmail({
+        body: { email, password, name: email },
+      });
+      const signIn = await auth.api.signInEmail({
+        body: { email, password },
+        asResponse: false,
+      });
+      return new Headers({ authorization: `Bearer ${signIn.token}` });
+    }
+
+    async function canSignIn(email: string, password: string) {
+      try {
+        await auth.api.signInEmail({ body: { email, password } });
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    it("update-user ignores a password", async () => {
+      const email = "auth-update-user-password@cellarboss.org";
+      const headers = await signUpAndIn(email, "Original-password-1");
+
+      await auth.api.updateUser({
+        headers,
+        body: { name: "Renamed", password: "Ignored-password-1" } as {
+          name: string;
+        },
+      });
+
+      expect(await canSignIn(email, "Original-password-1")).toBe(true);
+      expect(await canSignIn(email, "Ignored-password-1")).toBe(false);
+    });
+
+    it("change-password replaces the user's own password", async () => {
+      const email = "auth-change-password@cellarboss.org";
+      const headers = await signUpAndIn(email, "Original-password-1");
+
+      await auth.api.changePassword({
+        headers,
+        body: {
+          currentPassword: "Original-password-1",
+          newPassword: "Changed-password-1",
+          revokeOtherSessions: true,
+        },
+      });
+
+      expect(await canSignIn(email, "Changed-password-1")).toBe(true);
+      expect(await canSignIn(email, "Original-password-1")).toBe(false);
+    });
+
+    it("change-password rejects a wrong current password", async () => {
+      const email = "auth-change-password-wrong@cellarboss.org";
+      const headers = await signUpAndIn(email, "Original-password-1");
+
+      await expect(
+        auth.api.changePassword({
+          headers,
+          body: {
+            currentPassword: "Not-the-password-1",
+            newPassword: "Changed-password-1",
+          },
+        }),
+      ).rejects.toMatchObject({ body: { code: "INVALID_PASSWORD" } });
+
+      expect(await canSignIn(email, "Original-password-1")).toBe(true);
+    });
+
+    it("admin set-user-password replaces another user's password", async () => {
+      const adminEmail = "auth-admin-set-password@cellarboss.org";
+      const adminHeaders = await signUpAndIn(adminEmail, "Admin-password-1");
+      await testDb!
+        .updateTable(`${MODEL_PREFIX}_user`)
+        .set({ role: "admin" })
+        .where("email", "=", adminEmail)
+        .execute();
+
+      const email = "auth-admin-set-password-target@cellarboss.org";
+      const signUp = await auth.api.signUpEmail({
+        body: { email, password: "Original-password-1", name: email },
+      });
+
+      await auth.api.setUserPassword({
+        headers: adminHeaders,
+        body: { userId: signUp.user.id, newPassword: "Reset-password-1" },
+      });
+
+      expect(await canSignIn(email, "Reset-password-1")).toBe(true);
+      expect(await canSignIn(email, "Original-password-1")).toBe(false);
+    });
+  });
 });

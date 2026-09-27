@@ -25,6 +25,28 @@ export function registerAuthRoutes(app: Hono, state: MockState) {
     return c.json(state.session);
   });
 
+  // Mirrors Better Auth: update-user only changes the name and image, and
+  // silently ignores anything else (including a password)
+  app.post("/api/auth/update-user", async (c) => {
+    if (!state.session) return c.json({ message: "Unauthorized" }, 401);
+    const body = await c.req.json();
+    if (body.name !== undefined) state.session.user.name = body.name;
+    return c.json({ status: true });
+  });
+
+  app.post("/api/auth/change-password", async (c) => {
+    if (!state.session) return c.json({ message: "Unauthorized" }, 401);
+    const body = await c.req.json();
+    if (body.currentPassword === "wrongpassword") {
+      return c.json(
+        { code: "INVALID_PASSWORD", message: "Invalid password" },
+        400,
+      );
+    }
+    state.userPasswords[state.session.user.id] = body.newPassword;
+    return c.json({ token: null, user: state.session.user });
+  });
+
   // Catch-all for other auth routes
   app.all("/api/auth/*", (c) => {
     return c.json({ error: "Not implemented in mock" }, 501);

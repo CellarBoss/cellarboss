@@ -76,6 +76,9 @@ export type MockState = {
   wineGrapes: WineGrape[];
   tastingNotes: TastingNote[];
   images: Image[];
+  // Passwords set through the auth endpoints, keyed by user id, so tests can
+  // check a password change actually reached the right endpoint
+  userPasswords: Record<string, string>;
 };
 
 let server: ServerType | null = null;
@@ -93,6 +96,10 @@ export async function startMockServer(port: number): Promise<ServerType> {
   // Control endpoints for test setup
   app.get("/__test/healthcheck", (c) => {
     return c.json({ ok: true });
+  });
+
+  app.get("/__test/state", (c) => {
+    return c.json(state);
   });
 
   app.post("/__test/set-session", async (c) => {

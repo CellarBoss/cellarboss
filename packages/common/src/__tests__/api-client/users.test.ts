@@ -180,6 +180,103 @@ describe("usersResource", () => {
       expect(mockRequest).toHaveBeenCalledTimes(2);
       expect(result).toEqual({ ok: false, error });
     });
+
+    it("sets the password through the admin endpoint when one is given", async () => {
+      const user = {
+        id: "u1",
+        name: "Alice",
+        email: "a@b.com",
+        role: "admin",
+        createdAt: "",
+        banned: null,
+        banReason: null,
+      };
+      vi.mocked(mockRequest)
+        .mockResolvedValueOnce({ ok: true, data: user })
+        .mockResolvedValueOnce({ ok: true, data: user })
+        .mockResolvedValueOnce({ ok: true, data: { status: true } });
+
+      const result = await users.update({
+        id: "u1",
+        name: "Alice",
+        email: "a@b.com",
+        role: "admin",
+        password: "NewPass1!",
+      });
+
+      expect(mockRequest).toHaveBeenCalledTimes(3);
+      // The profile update must not carry the password: it would be ignored
+      expect(mockRequest).toHaveBeenNthCalledWith(
+        1,
+        "user/u1",
+        "PUT",
+        JSON.stringify({ name: "Alice", email: "a@b.com" }),
+      );
+      expect(mockRequest).toHaveBeenNthCalledWith(
+        3,
+        "auth/admin/set-user-password",
+        "POST",
+        JSON.stringify({ userId: "u1", newPassword: "NewPass1!" }),
+      );
+      expect(result).toEqual({ ok: true, data: user });
+    });
+
+    it("does not set the password when it is left blank", async () => {
+      const user = {
+        id: "u1",
+        name: "Alice",
+        email: "a@b.com",
+        role: "admin",
+        createdAt: "",
+        banned: null,
+        banReason: null,
+      };
+      vi.mocked(mockRequest)
+        .mockResolvedValueOnce({ ok: true, data: user })
+        .mockResolvedValueOnce({ ok: true, data: user });
+
+      await users.update({
+        id: "u1",
+        name: "Alice",
+        email: "a@b.com",
+        role: "admin",
+        password: "",
+      });
+
+      expect(mockRequest).toHaveBeenCalledTimes(2);
+      expect(mockRequest).not.toHaveBeenCalledWith(
+        "auth/admin/set-user-password",
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it("returns error if password request fails", async () => {
+      const user = {
+        id: "u1",
+        name: "Alice",
+        email: "a@b.com",
+        role: "admin",
+        createdAt: "",
+        banned: null,
+        banReason: null,
+      };
+      const error = { message: "Password too short", status: 400 };
+      vi.mocked(mockRequest)
+        .mockResolvedValueOnce({ ok: true, data: user })
+        .mockResolvedValueOnce({ ok: true, data: user })
+        .mockResolvedValueOnce({ ok: false, error });
+
+      const result = await users.update({
+        id: "u1",
+        name: "Alice",
+        email: "a@b.com",
+        role: "admin",
+        password: "NewPass1!",
+      });
+
+      expect(result).toEqual({ ok: false, error });
+    });
   });
 
   describe("delete", () => {

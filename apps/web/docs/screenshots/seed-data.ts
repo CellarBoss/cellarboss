@@ -299,6 +299,7 @@ export const docsSeedData: Omit<MockState, "session"> = {
     },
   ],
   images: [],
+  userPasswords: {},
   settings: [
     { key: "currency", value: "USD" },
     { key: "date", value: "yyyy-MM-dd" },
