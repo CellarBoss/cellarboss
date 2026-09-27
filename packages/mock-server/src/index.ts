@@ -18,6 +18,7 @@ import { registerWinegrapeRoutes } from "./routes/winegrapes";
 import { registerTastingNoteRoutes } from "./routes/tasting-notes";
 import { registerImageRoutes } from "./routes/images";
 import { defaultState } from "./defaults";
+import { trackIds } from "./ids";
 import type {
   Bottle,
   Country,
@@ -91,6 +92,7 @@ export function getMockState(): MockState {
  * issuing requests.
  */
 export function createMockApp(state: MockState): Hono {
+  trackIds(state);
   const app = new Hono();
 
   // Control endpoints for test setup
@@ -106,6 +108,7 @@ export function createMockApp(state: MockState): Hono {
   app.post("/__test/set-state", async (c) => {
     const partial = await c.req.json();
     Object.assign(state, partial);
+    trackIds(state);
     return c.json({ ok: true });
   });
 
@@ -119,6 +122,7 @@ export function createMockApp(state: MockState): Hono {
     );
     Object.assign(state, fresh);
     state.session = session;
+    trackIds(state);
     return c.json({ ok: true });
   });
 

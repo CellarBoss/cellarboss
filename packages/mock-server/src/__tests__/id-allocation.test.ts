@@ -50,6 +50,26 @@ describe("mock server ID allocation", () => {
     expect(await createCountry(app, "Portugal")).toBe(id + 1);
   });
 
+  it("does not reuse the id of a deleted seeded record", async () => {
+    const seededIds = state.countries.map((c) => c.id);
+    const maxSeeded = Math.max(...seededIds);
+    const res = await app.request(`/api/country/${maxSeeded}`, {
+      method: "DELETE",
+    });
+    expect(res.status).toBe(200);
+
+    expect(await createCountry(app, "Spain")).toBe(maxSeeded + 1);
+  });
+
+  it("does not reuse the id of a deleted record installed by set-state", async () => {
+    await post(app, "/__test/set-state", {
+      countries: [{ id: 5000, name: "Portugal" }],
+    });
+    await app.request("/api/country/5000", { method: "DELETE" });
+
+    expect(await createCountry(app, "Spain")).toBe(5001);
+  });
+
   it("allocates the same ids again after /__test/reset", async () => {
     const first = await createCountry(app, "Spain");
     await post(app, "/__test/reset", {});

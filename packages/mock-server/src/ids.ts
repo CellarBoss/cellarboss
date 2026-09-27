@@ -1,7 +1,42 @@
+import type { MockState } from "./index";
+
+const USER_ID_PREFIX = "user-";
+
 // Highest ID handed out per collection array. Keyed on the array itself, so a
 // collection replaced by /__test/set-state or /__test/reset starts afresh from
 // its contents, while deleting rows (which mutates the array) never frees an ID.
 const issued = new WeakMap<object, number>();
+
+function highest<T>(
+  rows: ReadonlyArray<T>,
+  toNumber: (row: T) => number | undefined,
+): number {
+  return rows.reduce(
+    (max, row) => Math.max(max, toNumber(row) ?? 0),
+    issued.get(rows) ?? 0,
+  );
+}
+
+function allocate<T>(
+  rows: ReadonlyArray<T>,
+  toNumber: (row: T) => number | undefined,
+): number {
+  const n = highest(rows, toNumber) + 1;
+  issued.set(rows, n);
+  return n;
+}
+
+function numericId(row: { id: number }): number {
+  return row.id;
+}
+
+function prefixedNumber(prefix: string) {
+  return (row: { id: string }): number | undefined => {
+    if (!row.id.startsWith(prefix)) return undefined;
+    const value = Number(row.id.slice(prefix.length));
+    return Number.isInteger(value) ? value : undefined;
+  };
+}
 
 /**
  * Returns the next free numeric ID for a collection: one more than the highest
@@ -10,10 +45,7 @@ const issued = new WeakMap<object, number>();
  * installs arbitrary IDs, and deterministic after /__test/reset.
  */
 export function nextId(rows: ReadonlyArray<{ id: number }>): number {
-  const id =
-    rows.reduce((max, row) => Math.max(max, row.id), issued.get(rows) ?? 0) + 1;
-  issued.set(rows, id);
-  return id;
+  return allocate(rows, numericId);
 }
 
 /**
@@ -24,15 +56,38 @@ export function nextPrefixedId(
   rows: ReadonlyArray<{ id: string }>,
   prefix: string,
 ): string {
-  const n =
-    rows.reduce(
-      (max, row) => {
-        if (!row.id.startsWith(prefix)) return max;
-        const value = Number(row.id.slice(prefix.length));
-        return Number.isInteger(value) ? Math.max(max, value) : max;
-      },
-      issued.get(rows) ?? 0,
-    ) + 1;
-  issued.set(rows, n);
-  return `${prefix}${n}`;
+  return `${prefix}${allocate(rows, prefixedNumber(prefix))}`;
+}
+
+/**
+ * Returns the next free user ID, following the same rules as nextId.
+ */
+export function nextUserId(users: MockState["users"]): string {
+  return nextPrefixedId(users, USER_ID_PREFIX);
+}
+
+/**
+ * Records the IDs already present in every collection, so deleting the newest
+ * row before anything is created still can't free its ID. Call whenever state
+ * is installed.
+ */
+export function trackIds(state: MockState): void {
+  const collections = [
+    state.wines,
+    state.winemakers,
+    state.vintages,
+    state.regions,
+    state.countries,
+    state.grapes,
+    state.bottles,
+    state.storages,
+    state.locations,
+    state.wineGrapes,
+    state.tastingNotes,
+    state.images,
+  ];
+  for (const rows of collections) {
+    issued.set(rows, highest(rows, numericId));
+  }
+  issued.set(state.users, highest(state.users, prefixedNumber(USER_ID_PREFIX)));
 }

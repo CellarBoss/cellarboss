@@ -1,6 +1,6 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
-import { nextPrefixedId } from "../ids";
+import { nextUserId } from "../ids";
 
 export function registerUserRoutes(app: Hono, state: MockState) {
   // Better Auth admin list-users endpoint
@@ -12,7 +12,7 @@ export function registerUserRoutes(app: Hono, state: MockState) {
   app.post("/api/auth/admin/create-user", async (c) => {
     const body = await c.req.json();
     const user = {
-      id: nextPrefixedId(state.users, "user-"),
+      id: nextUserId(state.users),
       name: body.name,
       email: body.email,
       role: body.role || "user",
