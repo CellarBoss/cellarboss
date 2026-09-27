@@ -24,6 +24,7 @@ import { useApiQuery } from "@/hooks/use-api-query";
 import { getWines } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
 import { getVintages } from "@/lib/api/vintages";
+import { parseIdParam } from "@/lib/functions/strings";
 
 type WineVintageSelectorProps = {
   field: AnyFieldApi;
@@ -37,8 +38,11 @@ export function WineVintageSelector({
   // Ideally we have an existing vintageId to pre-populate the form in edit mode
   // If not we can also accept an initial wineId from the URL search params (e.g. when creating a new vintage from a wine page)
   const searchParams = useSearchParams();
-  const initialWineId = searchParams.get("wineId");
+  const initialWineId = parseIdParam(searchParams.get("wineId"));
   const currentVintageId = field.state.value ?? "";
+  // New forms default vintageId to 0, which the form stores as "0"; only a
+  // positive ID counts as an existing vintage
+  const hasVintage = parseIdParam(currentVintageId) !== null;
 
   const { data: wines, isLoading: winesLoading } = useApiQuery<Wine[]>({
     queryKey: ["wines"],
@@ -67,12 +71,10 @@ export function WineVintageSelector({
   const selectedWineId =
     chosenWineId !== undefined
       ? chosenWineId
-      : currentVintageId
+      : hasVintage
         ? (vintages?.find((v) => v.id.toString() === currentVintageId)
             ?.wineId ?? null)
-        : initialWineId
-          ? Number(initialWineId)
-          : null;
+        : initialWineId;
 
   if (winesLoading || winemakersLoading || vintagesLoading) {
     return <span className="text-sm text-muted-foreground">Loading...</span>;

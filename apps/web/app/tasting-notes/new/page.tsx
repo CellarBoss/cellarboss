@@ -8,6 +8,7 @@ import { tastingNoteCreateFields } from "@/lib/fields/tastingNotes";
 import { createTastingNote } from "@/lib/api/tastingNotes";
 import type { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
+import { parseIdParam } from "@/lib/functions/strings";
 
 async function handleCreate(
   data: TastingNote,
@@ -22,12 +23,12 @@ async function handleCreate(
 
 function NewTastingNoteForm() {
   const searchParams = useSearchParams();
-  const vintageId = searchParams.get("vintageId");
-  const wineId = searchParams.get("wineId");
+  const vintageId = parseIdParam(searchParams.get("vintageId"));
+  const wineId = parseIdParam(searchParams.get("wineId"));
 
   const defaultData: TastingNote = {
     id: 0,
-    vintageId: vintageId ? Number(vintageId) : 0,
+    vintageId: vintageId ?? 0,
     date: "",
     authorId: "",
     author: "",
