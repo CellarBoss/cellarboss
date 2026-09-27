@@ -1,4 +1,4 @@
-import { test, expect, setState, resetState } from "../fixtures/auth";
+import { test, expect, setState } from "../fixtures/auth";
 import { fieldCombobox } from "../fixtures/form";
 
 test.describe("Wines page", () => {
@@ -39,12 +39,7 @@ test.describe("Wines page", () => {
     });
   });
 
-  test.afterEach(async () => {
-    await resetState();
-  });
-
-  test("renders wines table with all wines", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("renders wines table with all wines", async ({ adminPage: page }) => {
     await page.goto("/wines");
 
     await expect(page.getByText("Margaux Reserve")).toBeVisible();
@@ -52,72 +47,51 @@ test.describe("Wines page", () => {
     await expect(page.getByText("Rosé d'Été")).toBeVisible();
   });
 
-  test("shows Wines heading", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("shows Wines heading", async ({ adminPage: page }) => {
     await page.goto("/wines");
 
     await expect(page.getByRole("heading", { name: "Wines" })).toBeVisible();
   });
 
-  test("search filters wines and updates URL", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("search filters wines and updates URL", async ({ adminPage: page }) => {
     await page.goto("/wines");
-
     await expect(page.getByText("Margaux Reserve")).toBeVisible();
 
-    const searchInput = page
-      .getByRole("textbox", { name: /search/i })
-      .or(page.locator("input[placeholder*='Search']"))
-      .or(page.locator("input[placeholder*='search']"))
-      .first();
-    await searchInput.fill("blanc");
+    await page.getByPlaceholder("Search...").fill("blanc");
 
     await expect(page.getByText("Blanc de Blanc")).toBeVisible();
     await expect(page.getByText("Margaux Reserve")).not.toBeVisible();
-  });
-
-  test("search term appears in URL", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
-    await page.goto("/wines");
-
-    const searchInput = page
-      .locator("input[placeholder*='Search'], input[placeholder*='search']")
-      .first();
-    await searchInput.fill("margaux");
-
-    await expect(page).toHaveURL(/search=margaux/);
+    await expect(page).toHaveURL(/search=blanc/);
   });
 
   test("Add Wine button navigates to new wine page", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/wines");
 
     await page.getByRole("button", { name: /create new wine/i }).click();
     await expect(page).toHaveURL("/wines/new");
   });
 
-  test("empty table shows no results message", async ({ adminContext }) => {
+  test("empty table shows no results message", async ({ adminPage: page }) => {
     await setState({ wines: [] });
-    const page = await adminContext.newPage();
     await page.goto("/wines");
 
     await expect(page.getByText("No results.")).toBeVisible();
   });
 
   test("clicking wine name navigates to detail page", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/wines");
 
     await page.getByRole("link", { name: "Margaux Reserve" }).click();
     await expect(page).toHaveURL("/wines/1");
   });
 
-  test("winemaker name links to winemaker detail", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("winemaker name links to winemaker detail", async ({
+    adminPage: page,
+  }) => {
     await page.goto("/wines");
 
     await expect(
@@ -126,9 +100,8 @@ test.describe("Wines page", () => {
   });
 
   test("new wine form pre-selects winemaker from URL parameter", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/wines/new?winemakerId=2");
 
     await expect(fieldCombobox(page, "Winemaker")).toHaveText(
@@ -137,18 +110,16 @@ test.describe("Wines page", () => {
   });
 
   test("new wine form pre-selects region from URL parameter", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/wines/new?regionId=2");
 
     await expect(fieldCombobox(page, "Region")).toHaveText(/Burgundy/);
   });
 
   test("new wine form has no selection without URL parameters", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/wines/new");
 
     await expect(fieldCombobox(page, "Winemaker")).toHaveText(
@@ -158,9 +129,8 @@ test.describe("Wines page", () => {
   });
 
   test("Add wine from winemaker page pre-selects that winemaker", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/winemakers/1");
 
     await page.getByRole("link", { name: "Add wine" }).click();
@@ -172,9 +142,8 @@ test.describe("Wines page", () => {
   });
 
   test("Add wine from region page pre-selects that region", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/regions/2");
 
     await page.getByRole("link", { name: "Add wine" }).click();

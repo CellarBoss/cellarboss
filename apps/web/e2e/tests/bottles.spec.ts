@@ -1,4 +1,4 @@
-import { test, expect, setState, resetState } from "../fixtures/auth";
+import { test, expect, setState, getState } from "../fixtures/auth";
 
 const BOTTLE_SEED = {
   winemakers: [{ id: 1, name: "Château Margaux" }],
@@ -53,19 +53,13 @@ test.describe("Bottles page", () => {
     await setState(BOTTLE_SEED);
   });
 
-  test.afterEach(async () => {
-    await resetState();
-  });
-
-  test("renders bottles table", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("renders bottles table", async ({ adminPage: page }) => {
     await page.goto("/bottles");
 
     await expect(page.getByRole("heading", { name: "Bottles" })).toBeVisible();
   });
 
-  test("shows bottle data in table", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("shows bottle data in table", async ({ adminPage: page }) => {
     await page.goto("/bottles");
 
     // Bottles page shows the vintage/wine name
@@ -73,9 +67,8 @@ test.describe("Bottles page", () => {
   });
 
   test("Add Bottle button navigates to new bottle page", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/bottles");
 
     await page.getByRole("button", { name: /create new bottle/i }).click();
@@ -83,9 +76,8 @@ test.describe("Bottles page", () => {
   });
 
   test("keeps selected purchase date from date picker", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/bottles/new");
 
     const selectedDate = await page.evaluate(() => {
@@ -112,23 +104,20 @@ test.describe("Bottles page", () => {
   });
 
   test("shows purchase price formatted with currency", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/bottles");
 
     await expect(page.getByText("$150.00")).toBeVisible();
   });
 
-  test("shows bottle status", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("shows bottle status", async ({ adminPage: page }) => {
     await page.goto("/bottles");
 
     await expect(page.getByText("Stored").first()).toBeVisible();
   });
 
-  test("shows bottle size on hover", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("shows bottle size on hover", async ({ adminPage: page }) => {
     await page.goto("/bottles");
 
     // Bottle sizes are shown as icons with tooltips on hover
@@ -149,7 +138,7 @@ test.describe("Bottles page", () => {
 
   // The dashboard wine-type chart links here as /bottles?type=<type>
   test("wine type filter from the URL is applied on load", async ({
-    adminContext,
+    adminPage: page,
   }) => {
     await setState({
       wines: [
@@ -180,8 +169,6 @@ test.describe("Bottles page", () => {
       ],
     });
 
-    const page = await adminContext.newPage();
-
     await page.goto("/bottles");
     await expect(page.getByText("Blanc de Blancs")).toBeVisible();
 
@@ -191,9 +178,8 @@ test.describe("Bottles page", () => {
   });
 
   test("bulk edit sets the chosen status on the selected bottles", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/bottles");
 
     await page.getByRole("row").nth(1).getByRole("checkbox").click();
@@ -208,15 +194,13 @@ test.describe("Bottles page", () => {
     await page.getByRole("button", { name: "Apply to 1 item" }).click();
     await expect(page.getByRole("dialog")).toBeHidden();
 
-    const res = await fetch("http://localhost:5173/api/bottle");
-    const bottles: { id: number; status: string }[] = await res.json();
+    const { bottles } = await getState();
     expect(bottles.map((b) => b.status).sort()).toEqual(["sold", "stored"]);
   });
 
   test("edit form shows the bottle's current wine and vintage", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/bottles/1/edit");
 
     await expect(
@@ -228,9 +212,8 @@ test.describe("Bottles page", () => {
   });
 
   test("deselecting the vintage keeps the wine selected", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/bottles/1/edit");
 
     await page.getByRole("combobox").filter({ hasText: "2015" }).last().click();
@@ -247,9 +230,8 @@ test.describe("Bottles page", () => {
   });
 
   test("deselecting the wine clears it and the vintage", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/bottles/1/edit");
 
     await page
@@ -264,9 +246,8 @@ test.describe("Bottles page", () => {
   });
 
   test("new bottle form preselects the wine from the URL", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/bottles/new?wineId=1");
 
     await expect(
