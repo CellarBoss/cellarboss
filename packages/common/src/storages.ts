@@ -16,24 +16,23 @@ export function buildDescendantsMap(
     }
   }
 
+  // Walk each storage's subtree separately so circular parent references in
+  // bad data can't leave a cached set incomplete
   const result = new Map<number, Set<number>>();
-  const visiting = new Set<number>();
-
-  function collect(id: number): Set<number> {
-    if (result.has(id)) return result.get(id)!;
-    const desc = new Set<number>([id]);
-    // Guard against circular parent references in bad data
-    if (visiting.has(id)) return desc;
-    visiting.add(id);
-    for (const childId of childrenMap.get(id) ?? []) {
-      for (const d of collect(childId)) desc.add(d);
+  for (const s of storages) {
+    const desc = new Set<number>([s.id]);
+    const stack = [s.id];
+    while (stack.length > 0) {
+      const id = stack.pop()!;
+      for (const childId of childrenMap.get(id) ?? []) {
+        if (!desc.has(childId)) {
+          desc.add(childId);
+          stack.push(childId);
+        }
+      }
     }
-    visiting.delete(id);
-    result.set(id, desc);
-    return desc;
+    result.set(s.id, desc);
   }
-
-  for (const s of storages) collect(s.id);
   return result;
 }
 

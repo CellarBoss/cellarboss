@@ -45,6 +45,18 @@ describe("buildDescendantsMap", () => {
     expect(map.get(1)?.has(2)).toBe(true);
     expect(map.get(2)?.has(1)).toBe(true);
   });
+
+  it("gives every storage in a cycle the cycle's full subtree", () => {
+    const circular: Storage[] = [
+      { id: 1, name: "A", parent: 2, locationId: 1 },
+      { id: 2, name: "B", parent: 1, locationId: 1 },
+      { id: 3, name: "C", parent: 1, locationId: 1 },
+    ];
+    const map = buildDescendantsMap(circular);
+    expect([...map.get(1)!].sort()).toEqual([1, 2, 3]);
+    expect([...map.get(2)!].sort()).toEqual([1, 2, 3]);
+    expect([...map.get(3)!]).toEqual([3]);
+  });
 });
 
 describe("getStorageAncestry", () => {
