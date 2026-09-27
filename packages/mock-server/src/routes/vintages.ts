@@ -1,11 +1,10 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import { nextId } from "../ids";
 import {
   createVintageSchema,
   updateVintageSchema,
 } from "@cellarboss/validators";
-
-let nextId = 1000;
 
 export function registerVintageRoutes(app: Hono, state: MockState) {
   app.get("/api/vintage", (c) => {
@@ -29,7 +28,7 @@ export function registerVintageRoutes(app: Hono, state: MockState) {
     const body = await c.req.json();
     const result = createVintageSchema.safeParse(body);
     if (!result.success) return c.json({ error: result.error.issues }, 400);
-    const vintage = { id: ++nextId, ...result.data };
+    const vintage = { id: nextId(state.vintages), ...result.data };
     state.vintages.push(vintage);
     return c.json(vintage, 201);
   });

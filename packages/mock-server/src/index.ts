@@ -85,9 +85,12 @@ export function getMockState(): MockState {
   return state;
 }
 
-export async function startMockServer(port: number): Promise<ServerType> {
-  state = JSON.parse(JSON.stringify(defaultState));
-
+/**
+ * Builds the mock API app around the given state object. Route handlers keep a
+ * reference to `state` and mutate it in place, so callers can inspect it after
+ * issuing requests.
+ */
+export function createMockApp(state: MockState): Hono {
   const app = new Hono();
 
   // Control endpoints for test setup
@@ -108,7 +111,7 @@ export async function startMockServer(port: number): Promise<ServerType> {
 
   app.post("/__test/reset", (c) => {
     const { session } = state;
-    const fresh = JSON.parse(JSON.stringify(defaultState));
+    const fresh = createDefaultState();
     // Mutate in place so route handler closures (which captured the original
     // object reference) continue to see the updated state after reset.
     (Object.keys(state) as Array<keyof MockState>).forEach(
@@ -141,6 +144,17 @@ export async function startMockServer(port: number): Promise<ServerType> {
   registerWinegrapeRoutes(app, state);
   registerTastingNoteRoutes(app, state);
   registerImageRoutes(app, state);
+
+  return app;
+}
+
+export function createDefaultState(): MockState {
+  return JSON.parse(JSON.stringify(defaultState));
+}
+
+export async function startMockServer(port: number): Promise<ServerType> {
+  state = createDefaultState();
+  const app = createMockApp(state);
 
   return new Promise((resolve) => {
     server = serve({ fetch: app.fetch, port }, () => {

@@ -1,8 +1,7 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import { nextId } from "../ids";
 import { createGrapeSchema, updateGrapeSchema } from "@cellarboss/validators";
-
-let nextId = 1000;
 
 export function registerGrapeRoutes(app: Hono, state: MockState) {
   app.get("/api/grape", (c) => c.json(state.grapes));
@@ -18,7 +17,7 @@ export function registerGrapeRoutes(app: Hono, state: MockState) {
     const body = await c.req.json();
     const result = createGrapeSchema.safeParse(body);
     if (!result.success) return c.json({ error: result.error.issues }, 400);
-    const grape = { id: ++nextId, ...result.data };
+    const grape = { id: nextId(state.grapes), ...result.data };
     state.grapes.push(grape);
     return c.json(grape, 201);
   });

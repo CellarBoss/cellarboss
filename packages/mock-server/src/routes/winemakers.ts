@@ -1,11 +1,10 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import { nextId } from "../ids";
 import {
   createWineMakerSchema,
   updateWineMakerSchema,
 } from "@cellarboss/validators";
-
-let nextId = 1000;
 
 export function registerWinemakerRoutes(app: Hono, state: MockState) {
   app.get("/api/winemaker", (c) => {
@@ -23,7 +22,7 @@ export function registerWinemakerRoutes(app: Hono, state: MockState) {
     const body = await c.req.json();
     const result = createWineMakerSchema.safeParse(body);
     if (!result.success) return c.json({ error: result.error.issues }, 400);
-    const winemaker = { id: ++nextId, ...result.data };
+    const winemaker = { id: nextId(state.winemakers), ...result.data };
     state.winemakers.push(winemaker);
     return c.json(winemaker, 201);
   });

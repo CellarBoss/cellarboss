@@ -1,11 +1,10 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import { nextId } from "../ids";
 import {
   createLocationSchema,
   updateLocationSchema,
 } from "@cellarboss/validators";
-
-let nextId = 1000;
 
 export function registerLocationRoutes(app: Hono, state: MockState) {
   app.get("/api/location", (c) => c.json(state.locations));
@@ -21,7 +20,7 @@ export function registerLocationRoutes(app: Hono, state: MockState) {
     const body = await c.req.json();
     const result = createLocationSchema.safeParse(body);
     if (!result.success) return c.json({ error: result.error.issues }, 400);
-    const location = { id: ++nextId, ...result.data };
+    const location = { id: nextId(state.locations), ...result.data };
     state.locations.push(location);
     return c.json(location, 201);
   });
