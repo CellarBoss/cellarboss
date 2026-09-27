@@ -46,7 +46,12 @@ export const FETCH_LIMITS = {
   maxRedirects: 5,
 };
 
-export const USER_AGENT = `CellarBoss/${env.APP_VERSION} (+https://cellarboss.org)`;
+/**
+ * Identifies CellarBoss in the "compatible" form crawlers use. Some sites'
+ * firewalls (Vivino's, for one) reject a user agent that starts with an
+ * unknown product name.
+ */
+export const USER_AGENT = `Mozilla/5.0 (compatible; CellarBoss/${env.APP_VERSION}; +https://cellarboss.org)`;
 
 /** Only public unicast addresses may be fetched: no loopback, private or link-local. */
 export function isPublicAddress(address: string): boolean {

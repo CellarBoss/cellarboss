@@ -1,0 +1,18 @@
+{
+  "url": "https://www.nakedwines.co.uk/wines/bota-bota-organic-rosado-2024",
+  "importer": "naked-wines",
+  "recordedAt": "2026-09-27T20:24:57.113Z",
+  "currentYear": 2026,
+  "reviewed": true,
+  "fields": {
+    "name": "Bota Bota Organic Rosado",
+    "winemaker": "Ray O'Connor",
+    "country": "Spain",
+    "regions": ["Aragon"],
+    "grapes": ["Garnacha"],
+    "type": "rose",
+    "vintage": 2024,
+    "drinkFrom": 2026,
+    "drinkUntil": 2027
+  }
+}

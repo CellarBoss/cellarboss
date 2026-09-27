@@ -44,8 +44,11 @@ export const exampleImporter = defineLabelTableImporter({
 ```
 
 Otherwise extend `BaseImporter` and override only what the site needs:
-`extractSite()` for page knowledge, and `apiRequests()` with `extractApi()`
-for a site JSON endpoint. List the adapter in `sites/index.ts`, then record
+`extractSite()` for page knowledge, `apiRequests()` with `extractApi()` for a
+site JSON endpoint, and `inlineObjects` for JSON a page assigns in an inline
+script (read it with `readInlineObject()`). See `sites/` for one of each:
+The Wine Society reads the page, Naked Wines an inline object and Vivino
+its API. List the adapter in `sites/index.ts`, then record
 at least two pages and review their `expected.json`.
 
 Name variants that should match existing records (Shiraz for Syrah, Toscana

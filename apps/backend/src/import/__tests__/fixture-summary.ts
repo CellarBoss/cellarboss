@@ -20,6 +20,8 @@ export interface FixtureExpectation {
   /** "Now" in a drinking window means this year, so results don't drift. */
   currentYear: number;
   reviewed: boolean;
+  /** What the import gets wrong or leaves out on this page, and why. */
+  notes?: string;
   fields: FixtureFields;
 }
 

@@ -5,9 +5,9 @@
  *   pnpm --filter @cellarboss/backend import:recon <url> --html <saved-page.html>
  *
  * Without --html it loads the page once in Chromium (Playwright), keeping the
- * HTML as served plus any JSON the page fetched from its own site. With
- * --html it uses a page saved from your own browser instead, for sites that
- * need a login or block automated browsers.
+ * HTML as served. With --html it uses a page saved from your own browser
+ * instead, for sites that need a login or block automated browsers. Either
+ * way it then fetches the importer's `apiRequests()`, as the backend would.
  *
  * Browsers come from Playwright's cache (`pnpm --filter web exec playwright
  * install chromium`); set PLAYWRIGHT_CHROMIUM_PATH to use another Chromium.
@@ -19,80 +19,140 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import { parseArgs } from "util";
 import { load } from "cheerio";
-import { buildContext, ImporterRegistry } from "../src/import/index.js";
+import {
+  buildContext,
+  ImporterRegistry,
+  type BaseImporter,
+} from "../src/import/index.js";
+import { readAssignment } from "../src/import/extractors/index.js";
 import {
   summarise,
   type FixtureExpectation,
 } from "../src/import/__tests__/fixture-summary.js";
 
+interface Api {
+  url: string;
+  body: string;
+}
+
 const FIXTURES = path.join(
   import.meta.dirname,
   "../src/import/__tests__/fixtures",
 );
-const USER_AGENT = "CellarBoss/dev (+https://cellarboss.org) import-recon";
+const USER_AGENT =
+  "Mozilla/5.0 (compatible; CellarBoss/dev; +https://cellarboss.org) import-recon";
 
-interface Recording {
-  html: string;
-  api: { url: string; body: string }[];
-}
-
-async function record(url: URL): Promise<Recording> {
+/** Loads the page once in Chromium and keeps the HTML as served. */
+async function recordPage(url: URL): Promise<string> {
   const { chromium } = await import("playwright-core");
   const browser = await chromium.launch({
     executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined,
   });
   try {
     const page = await browser.newPage({ userAgent: USER_AGENT });
-    const api: Recording["api"] = [];
-    const pending: Promise<void>[] = [];
-
-    page.on("response", (response) => {
-      const responseUrl = new URL(response.url());
-      const type = response.headers()["content-type"] ?? "";
-      if (!type.includes("json") || !sameSite(responseUrl, url)) return;
-      pending.push(
-        response
-          .text()
-          .then((body) => void api.push({ url: responseUrl.href, body }))
-          .catch(() => undefined),
-      );
-    });
-
     const main = await page.goto(url.href, {
-      waitUntil: "networkidle",
+      waitUntil: "load",
       timeout: 60_000,
     });
     if (!main?.ok())
       throw new Error(`Page returned HTTP ${main?.status() ?? "no response"}`);
-    const html = await main.text();
-    await Promise.all(pending);
-    return { html, api };
+    return await main.text();
   } finally {
     await browser.close();
   }
 }
 
-/** Same registrable domain, near enough: "www.example.com" and "api.example.com". */
-function sameSite(a: URL, b: URL): boolean {
-  const base = (host: string) => host.split(".").slice(-2).join(".");
-  return base(a.hostname) === base(b.hostname);
+/**
+ * Fetches the importer's own API requests, as the backend would: first
+ * those it can make from the URL alone, then those it reads from the page.
+ * Other JSON the page loads (reviews, baskets) is never recorded.
+ */
+async function recordApi(
+  importer: BaseImporter,
+  url: URL,
+  html: string,
+): Promise<Api[]> {
+  const requests = [
+    ...importer.apiRequests(buildContext({ url, html: "" })),
+    ...importer.apiRequests(buildContext({ url, html })),
+  ];
+  const unique = [...new Map(requests.map((u) => [u.href, u])).values()];
+  if (!unique.length) return [];
+
+  const { request } = await import("playwright-core");
+  const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
+  const context = await request.newContext({
+    userAgent: USER_AGENT,
+    extraHTTPHeaders: { accept: "application/json" },
+    proxy: proxy ? { server: proxy } : undefined,
+  });
+  try {
+    const api: Api[] = [];
+    for (const apiUrl of unique) {
+      const response = await context.get(apiUrl.href, { timeout: 30_000 });
+      if (!response.ok()) {
+        console.warn(`API ${apiUrl.href} returned HTTP ${response.status()}`);
+        continue;
+      }
+      api.push({ url: apiUrl.href, body: await response.text() });
+    }
+    return api;
+  } finally {
+    await context.dispose();
+  }
 }
 
-/** Keeps what the extractors read and drops the rest of the retailer's page. */
-function trim(html: string, url: URL): string {
+/**
+ * Keeps what the extractors read and drops the rest of the retailer's page.
+ * Inline scripts are dropped too, except the objects the importer reads,
+ * which are kept on their own.
+ */
+function trim(html: string, url: URL, importer: BaseImporter): string {
   const $ = load(html);
   $("script")
     .not(
       '[type="application/ld+json"], [type="application/json"], #__NEXT_DATA__',
     )
-    .remove();
-  $("style, noscript, iframe, svg, link, template").remove();
+    .each((_, el) => {
+      const script = $(el);
+      const kept = script.attr("src")
+        ? []
+        : importer.inlineObjects.flatMap((name) => {
+            const value = readAssignment(script.text(), name);
+            return value === undefined
+              ? []
+              : [`const ${name} = ${JSON.stringify(value)};`];
+          });
+      if (kept.length)
+        script.replaceWith(`<script>${kept.join("\n")}</script>`);
+      else script.remove();
+    });
+  // Icons can label facts (The Wine Society's characteristics), so keep
+  // which icon each one is but not its drawing.
+  $("svg").each((_, el) => {
+    const use = $(el).find("use").first();
+    const icon = use.attr("href") ?? use.attr("xlink:href");
+    if (icon)
+      $(el).replaceWith(
+        `<svg><use xlink:href="${icon.replace(/"/g, "&quot;")}"></use></svg>`,
+      );
+    else $(el).remove();
+  });
+  $("style, noscript, iframe, link, template").remove();
   $.root()
     .find("*")
     .addBack()
     .contents()
     .filter((_, node) => node.type === "comment")
     .remove();
+  // Server-rendered app state (Vivino's data-ssr-props runs to megabytes)
+  // isn't read by any extractor, so long attribute values go.
+  $("*").each((_, el) => {
+    if (!("attribs" in el)) return;
+    for (const [name, value] of Object.entries(el.attribs)) {
+      if (value.length > 10_000) $(el).removeAttr(name);
+    }
+  });
   $("[srcset]").removeAttr("srcset");
   $("[style]").removeAttr("style");
   const header = `<!-- Recorded from ${url.href} on ${new Date().toISOString().slice(0, 10)} for CellarBoss import tests. Trimmed; not the full page. -->\n`;
@@ -119,23 +179,24 @@ async function main() {
   }
 
   const url = new URL(positionals[0]);
-  const recording: Recording = values.html
-    ? { html: readFileSync(values.html, "utf8"), api: [] }
-    : await record(url);
-
-  const html = trim(recording.html, url);
-  const currentYear = new Date().getFullYear();
-  const ctx = buildContext({ url, html, api: recording.api, currentYear });
   const importer = new ImporterRegistry().forUrl(url);
+  const served = values.html
+    ? readFileSync(values.html, "utf8")
+    : await recordPage(url);
+  const api = await recordApi(importer, url, served);
+
+  const html = trim(served, url, importer);
+  const currentYear = new Date().getFullYear();
+  const ctx = buildContext({ url, html, api, currentYear });
   const wine = importer.extract(ctx);
 
   const dir = path.join(FIXTURES, importer.id, values.name ?? slugFor(url));
   mkdirSync(dir, { recursive: true });
   writeFileSync(path.join(dir, "page.html"), html);
 
-  if (recording.api.length) {
+  if (api.length) {
     mkdirSync(path.join(dir, "api"), { recursive: true });
-    recording.api.forEach((response, i) =>
+    api.forEach((response, i) =>
       writeFileSync(
         path.join(dir, "api", `${String(i + 1).padStart(2, "0")}.json`),
         JSON.stringify(response, null, 2) + "\n",
@@ -160,7 +221,7 @@ async function main() {
     `Saved ${path.relative(process.cwd(), dir)} (importer: ${importer.id})`,
   );
   console.log(
-    `JSON-LD blocks: ${ctx.jsonLd.length}, embedded JSON: ${ctx.embeddedJson.length}, API responses: ${recording.api.length}`,
+    `JSON-LD blocks: ${ctx.jsonLd.length}, embedded JSON: ${ctx.embeddedJson.length}, API responses: ${api.length}`,
   );
   console.log("Extracted:", JSON.stringify(summarise(wine), null, 2));
   for (const d of wine.diagnostics) console.log(`${d.level}: ${d.message}`);
