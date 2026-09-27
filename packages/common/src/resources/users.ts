@@ -71,7 +71,15 @@ export function usersResource(request: RequestFn) {
           "POST",
           JSON.stringify({ userId: data.id, newPassword: data.password }),
         );
-        if (!passwordResult.ok) return passwordResult;
+        if (!passwordResult.ok) {
+          return {
+            ok: false,
+            error: {
+              ...passwordResult.error,
+              message: `Name, email and role were updated, but the password could not be set: ${passwordResult.error.message}`,
+            },
+          };
+        }
       }
 
       return updateResult;

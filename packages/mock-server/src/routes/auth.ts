@@ -37,7 +37,7 @@ export function registerAuthRoutes(app: Hono, state: MockState) {
   app.post("/api/auth/change-password", async (c) => {
     if (!state.session) return c.json({ message: "Unauthorized" }, 401);
     const body = await c.req.json();
-    if (body.currentPassword === "wrongpassword") {
+    if (body.currentPassword !== state.userPasswords[state.session.user.id]) {
       return c.json(
         { code: "INVALID_PASSWORD", message: "Invalid password" },
         400,

@@ -13,7 +13,7 @@ test.describe("Profile password change", () => {
     const page = await userContext.newPage();
     await page.goto("/profile");
 
-    await page.getByLabel(/^Current Password/).fill("OldPass1!");
+    await page.getByLabel(/^Current Password/).fill("UserPass1!");
     await page.getByLabel(/^New Password/).fill("NewPass1!");
     await page.getByLabel("Confirm New Password").fill("NewPass1!");
 
@@ -36,7 +36,7 @@ test.describe("Profile password change", () => {
     const page = await userContext.newPage();
     await page.goto("/profile");
 
-    await page.getByLabel(/^Current Password/).fill("wrongpassword");
+    await page.getByLabel(/^Current Password/).fill("WrongPass1!");
     await page.getByLabel(/^New Password/).fill("NewPass1!");
     await page.getByLabel("Confirm New Password").fill("NewPass1!");
     await page.getByRole("button", { name: "Save" }).click();
@@ -44,7 +44,7 @@ test.describe("Profile password change", () => {
     await expect(page.getByText(/Current password is incorrect/)).toBeVisible();
 
     const { userPasswords } = await getState<PasswordState>();
-    expect(userPasswords["regular-user-1"]).toBeUndefined();
+    expect(userPasswords["regular-user-1"]).toBe("UserPass1!");
   });
 });
 

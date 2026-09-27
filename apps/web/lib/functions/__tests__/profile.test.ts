@@ -158,6 +158,58 @@ describe("saveProfile", () => {
     });
   });
 
+  it("says the password changed when the name update then fails", async () => {
+    authClient.updateUser.mockResolvedValue({
+      data: null,
+      error: { message: "Nope", status: 500 },
+    });
+
+    const result = await saveProfile({
+      ...baseForm,
+      currentPassword: "OldPass1!",
+      password: "NewPass1!",
+      confirmPassword: "NewPass1!",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: {
+        message:
+          "Password was changed, but the name could not be updated: Nope",
+        status: 400,
+      },
+    });
+  });
+
+  it("says the password changed when the name update then throws", async () => {
+    authClient.updateUser.mockRejectedValue(new Error("Network down"));
+
+    const result = await saveProfile({
+      ...baseForm,
+      currentPassword: "OldPass1!",
+      password: "NewPass1!",
+      confirmPassword: "NewPass1!",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: {
+        message:
+          "Password was changed, but the name could not be updated: Network down",
+        status: 500,
+      },
+    });
+  });
+
+  it("still succeeds when only the session refresh fails", async () => {
+    authClient.getSession.mockRejectedValue(new Error("Network down"));
+
+    const result = await saveProfile(baseForm);
+
+    expect(result).toEqual({ ok: true, data: baseForm });
+    expect(authClient.updateUser).toHaveBeenCalled();
+  });
+
   it("returns a 500 when the client throws", async () => {
     authClient.updateUser.mockRejectedValue(new Error("Network down"));
 

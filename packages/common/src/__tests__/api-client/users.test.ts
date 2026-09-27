@@ -275,7 +275,15 @@ describe("usersResource", () => {
         password: "NewPass1!",
       });
 
-      expect(result).toEqual({ ok: false, error });
+      // The other fields were already saved, so the error must say so
+      expect(result).toEqual({
+        ok: false,
+        error: {
+          message:
+            "Name, email and role were updated, but the password could not be set: Password too short",
+          status: 400,
+        },
+      });
     });
   });
 

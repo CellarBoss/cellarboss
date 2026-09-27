@@ -16,6 +16,21 @@ function validationError(
   };
 }
 
+function unexpectedError(
+  err: unknown,
+  prefix = "",
+): ApiResult<ProfileFormData> {
+  return {
+    ok: false,
+    error: {
+      message:
+        prefix +
+        ((err instanceof Error && err.message) || "Something went wrong"),
+      status: 500,
+    },
+  };
+}
+
 /**
  * Saves the signed-in user's profile.
  *
@@ -37,8 +52,10 @@ export async function saveProfile(
     }
   }
 
-  try {
-    if (formData.password && formData.currentPassword) {
+  let passwordChanged = false;
+
+  if (formData.password && formData.currentPassword) {
+    try {
       const passwordResult = await authClient.changePassword({
         currentPassword: formData.currentPassword,
         newPassword: formData.password,
@@ -61,35 +78,46 @@ export async function saveProfile(
           },
         };
       }
+      passwordChanged = true;
+    } catch (err) {
+      return unexpectedError(err);
     }
+  }
 
+  // Once the password has changed, a failure below must not read as if
+  // nothing was saved
+  const nameFailurePrefix = passwordChanged
+    ? "Password was changed, but the name could not be updated: "
+    : "";
+
+  try {
     const result = await authClient.updateUser({ name: formData.name });
 
     if (!result.data) {
       return {
         ok: false,
         error: {
-          message: result.error?.message || "Failed to update profile",
+          message:
+            nameFailurePrefix +
+            (result.error?.message || "Failed to update profile"),
           status: 400,
         },
       };
     }
-
-    // Refresh the session to get updated user data
-    await authClient.getSession();
-
-    return {
-      ok: true,
-      data: formData,
-    };
   } catch (err) {
-    return {
-      ok: false,
-      error: {
-        message:
-          (err instanceof Error && err.message) || "Something went wrong",
-        status: 500,
-      },
-    };
+    return unexpectedError(err, nameFailurePrefix);
   }
+
+  // Refresh the session to get updated user data. Everything is already
+  // saved by now, so a failed refresh is not a failed save.
+  try {
+    await authClient.getSession();
+  } catch {
+    // The session hook refetches on its own
+  }
+
+  return {
+    ok: true,
+    data: formData,
+  };
 }
