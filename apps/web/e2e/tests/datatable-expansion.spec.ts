@@ -1,4 +1,4 @@
-import { test, expect, setState, resetState } from "../fixtures/auth";
+import { test, expect, setState } from "../fixtures/auth";
 
 test.describe("DataTable row expansion URL state", () => {
   test.beforeEach(async () => {
@@ -27,12 +27,7 @@ test.describe("DataTable row expansion URL state", () => {
     });
   });
 
-  test.afterEach(async () => {
-    await resetState();
-  });
-
-  test("expanding a row updates the URL", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("expanding a row updates the URL", async ({ adminPage: page }) => {
     await page.goto("/wines");
 
     // Expand the first row
@@ -46,9 +41,8 @@ test.describe("DataTable row expansion URL state", () => {
   });
 
   test("collapsing all rows clears the URL parameter", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/wines");
 
     // Expand then collapse
@@ -67,8 +61,9 @@ test.describe("DataTable row expansion URL state", () => {
     await expect(page).not.toHaveURL(/expanded=1/);
   });
 
-  test("multiple rows can be expanded via clicks", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("multiple rows can be expanded via clicks", async ({
+    adminPage: page,
+  }) => {
     await page.goto("/wines");
 
     // Expand the first two rows
@@ -86,9 +81,8 @@ test.describe("DataTable row expansion URL state", () => {
   });
 
   test("expanded state persists across page refresh", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/wines");
 
     // Expand the first row
@@ -110,9 +104,8 @@ test.describe("DataTable row expansion URL state", () => {
   });
 
   test("navigating to URL with expanded param restores expansion", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/wines?expanded=2");
 
     // The second wine's row should be expanded
@@ -168,12 +161,7 @@ test.describe("DataTable row expansion with hierarchical (getSubRows) data", () 
     await setState({ locations: [{ id: 1, name: "Main Cellar" }], storages });
   });
 
-  test.afterEach(async () => {
-    await resetState();
-  });
-
-  test("all rows are expanded by default", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("all rows are expanded by default", async ({ adminPage: page }) => {
     await page.goto("/storages");
 
     await expect(page.getByText("Shelf 1", { exact: true })).toBeVisible();
@@ -181,9 +169,8 @@ test.describe("DataTable row expansion with hierarchical (getSubRows) data", () 
   });
 
   test("collapsing one row leaves other rows expanded (regression: v9 auto-reset was clobbering expanded state on every re-render)", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/storages");
 
     await expect(page.getByText("Shelf 1", { exact: true })).toBeVisible();
@@ -203,8 +190,7 @@ test.describe("DataTable row expansion with hierarchical (getSubRows) data", () 
     await expect(page.getByText("Shelf 2", { exact: true })).toBeVisible();
   });
 
-  test("a collapsed row can be re-expanded", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("a collapsed row can be re-expanded", async ({ adminPage: page }) => {
     await page.goto("/storages");
 
     const rack1Row = page.locator("tr").filter({ hasText: /Rack 1(?!\d)/ });
