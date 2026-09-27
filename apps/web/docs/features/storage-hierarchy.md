@@ -27,6 +27,12 @@ For example, a shelf might be displayed as:
 
 **Room A** > **Rack 1** > Shelf 1
 
+## Bottles in Sub-storages
+
+A storage's page lists the bottles stored directly in it. When the storage has sub-storages, turn on **Include sub-storages** in the header of the Bottles section to also list every bottle held beneath it, at any depth. Each of those bottles shows its path from the current storage, such as **Top Shelf** > **Left Box**, so you know where to find it.
+
+The setting is saved to your account, so it applies to every storage page on both the web and mobile apps until you turn it off.
+
 ## Creating Nested Storages
 
 When creating a new storage, select an existing storage as the **Parent** to nest it within that storage. Leave the parent empty to create a top-level storage within a location.

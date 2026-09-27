@@ -26,6 +26,13 @@ export {
 // Preferences
 export { parsePreference } from "./preferences";
 
+// Storages
+export {
+  buildDescendantsMap,
+  getStorageAncestry,
+  INCLUDE_SUB_STORAGES_PREFERENCE,
+} from "./storages";
+
 // Settings
 export {
   type SettingValueType,

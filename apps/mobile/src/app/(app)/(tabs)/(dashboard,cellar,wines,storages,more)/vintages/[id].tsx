@@ -15,7 +15,7 @@ import { useAppTheme } from "@/hooks/use-app-theme";
 import { VintageTastingNotesList } from "@/components/tasting-notes/TastingNotesList";
 import { ImageGallery } from "@/components/images/ImageGallery";
 import { ImageUpload } from "@/components/images/ImageUpload";
-import type { Storage } from "@cellarboss/types";
+import { getStorageAncestry } from "@cellarboss/common/storages";
 import type { WineType } from "@cellarboss/validators/constants";
 
 export default function ViewVintageScreen() {
@@ -98,15 +98,7 @@ export default function ViewVintageScreen() {
   );
 
   function getStorageHierarchy(storageId: number | null): string[] {
-    if (storageId == null) return [];
-    const path: string[] = [];
-    let current: Storage | undefined = storageMap.get(storageId);
-    while (current) {
-      path.unshift(current.name);
-      current =
-        current.parent != null ? storageMap.get(current.parent) : undefined;
-    }
-    return path;
+    return getStorageAncestry(storageId, storageMap).map((s) => s.name);
   }
 
   const vintageBottles = bottles

@@ -1,10 +1,6 @@
 import { describe, it, expect } from "vitest";
-import {
-  getVintageName,
-  buildDescendantsMap,
-  buildWineGroupedOptions,
-} from "../bottles";
-import type { Vintage, Wine, WineMaker, Storage } from "@cellarboss/types";
+import { getVintageName, buildWineGroupedOptions } from "../bottles";
+import type { Vintage, Wine, WineMaker } from "@cellarboss/types";
 
 describe("getVintageName", () => {
   const vintageMap = new Map<number, Vintage>([
@@ -59,41 +55,6 @@ describe("getVintageName", () => {
     ]);
     const name = getVintageName(2, nvVintageMap, wineMap, winemakerMap);
     expect(name).toBe("Domaine Test - Château Margaux NV");
-  });
-});
-
-describe("buildDescendantsMap", () => {
-  const storages: Storage[] = [
-    { id: 1, name: "Root", parent: null, locationId: 1 },
-    { id: 2, name: "Child A", parent: 1, locationId: 1 },
-    { id: 3, name: "Child B", parent: 1, locationId: 1 },
-    { id: 4, name: "Grandchild", parent: 2, locationId: 1 },
-  ];
-
-  it("includes self in descendants set", () => {
-    const map = buildDescendantsMap(storages);
-    expect(map.get(1)?.has(1)).toBe(true);
-  });
-
-  it("root includes all descendants", () => {
-    const map = buildDescendantsMap(storages);
-    const rootDescendants = map.get(1)!;
-    expect(rootDescendants.has(1)).toBe(true);
-    expect(rootDescendants.has(2)).toBe(true);
-    expect(rootDescendants.has(3)).toBe(true);
-    expect(rootDescendants.has(4)).toBe(true);
-  });
-
-  it("leaf node only contains itself", () => {
-    const map = buildDescendantsMap(storages);
-    const leafDescendants = map.get(3)!;
-    expect(leafDescendants.size).toBe(1);
-    expect(leafDescendants.has(3)).toBe(true);
-  });
-
-  it("handles empty storage list", () => {
-    const map = buildDescendantsMap([]);
-    expect(map.size).toBe(0);
   });
 });
 

@@ -18,6 +18,7 @@ import { getWinemakers } from "@/lib/api/winemakers";
 import { getRegions } from "@/lib/api/regions";
 import { getCountries } from "@/lib/api/countries";
 import { getStorages } from "@/lib/api/storages";
+import { getStorageAncestry } from "@cellarboss/common/storages";
 import { getLocations } from "@/lib/api/locations";
 import { PageHeader } from "@/components/page/PageHeader";
 import { DetailCard } from "@/components/detail/DetailCard";
@@ -130,20 +131,7 @@ export default function ViewBottlePage() {
 
   const storageMap = new Map(allStorages.map((s) => [s.id, s]));
 
-  // Build storage hierarchy path
-  function getStorageHierarchy(): Array<{ id: number; name: string }> {
-    if (bottle.storageId === null) return [];
-    const path: Array<{ id: number; name: string }> = [];
-    let current = storageMap.get(bottle.storageId);
-    while (current) {
-      path.unshift({ id: current.id, name: current.name });
-      current =
-        current.parent !== null ? storageMap.get(current.parent) : undefined;
-    }
-    return path;
-  }
-
-  const storagePath = getStorageHierarchy();
+  const storagePath = getStorageAncestry(bottle.storageId, storageMap);
   const storage = bottle.storageId
     ? storageMap.get(bottle.storageId)
     : undefined;
