@@ -262,4 +262,20 @@ test.describe("Bottles page", () => {
       page.getByRole("combobox").filter({ hasText: "Choose a wine..." }),
     ).toBeVisible();
   });
+
+  test("new bottle form preselects the wine from the URL", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/bottles/new?wineId=1");
+
+    await expect(
+      page.getByRole("combobox").filter({ hasText: "Château Margaux 2015" }),
+    ).toBeVisible();
+    await expect(
+      page
+        .getByRole("combobox")
+        .filter({ hasText: "Choose a vintage year..." }),
+    ).toBeVisible();
+  });
 });

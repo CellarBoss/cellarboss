@@ -1,8 +1,7 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import { nextId } from "../ids";
 import { createBottleSchema, updateBottleSchema } from "@cellarboss/validators";
-
-let nextId = 1000;
 
 export function registerBottleRoutes(app: Hono, state: MockState) {
   app.get("/api/bottle", (c) => {
@@ -43,7 +42,7 @@ export function registerBottleRoutes(app: Hono, state: MockState) {
     if (!result.success) {
       return c.json({ error: result.error.issues }, 400);
     }
-    const bottle = { id: ++nextId, ...result.data };
+    const bottle = { id: nextId(state.bottles), ...result.data };
     state.bottles.push(bottle);
     return c.json(bottle, 201);
   });

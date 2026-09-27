@@ -1,8 +1,7 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import { nextId } from "../ids";
 import { createRegionSchema, updateRegionSchema } from "@cellarboss/validators";
-
-let nextId = 1000;
 
 export function registerRegionRoutes(app: Hono, state: MockState) {
   app.get("/api/region", (c) => c.json(state.regions));
@@ -18,7 +17,7 @@ export function registerRegionRoutes(app: Hono, state: MockState) {
     const body = await c.req.json();
     const result = createRegionSchema.safeParse(body);
     if (!result.success) return c.json({ error: result.error.issues }, 400);
-    const region = { id: ++nextId, ...result.data };
+    const region = { id: nextId(state.regions), ...result.data };
     state.regions.push(region);
     return c.json(region, 201);
   });

@@ -1,5 +1,6 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import { nextId } from "../ids";
 
 // Minimal valid JFIF JPEG (SOI + APP0 + EOI) — enough for the content-type to be
 // correct without failing, even if it doesn't render a visible image.
@@ -7,8 +8,6 @@ const MINIMAL_JPEG = new Uint8Array([
   0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46, 0x00, 0x01, 0x01,
   0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0xff, 0xd9,
 ]);
-
-let nextId = 3000;
 
 export function registerImageRoutes(app: Hono, state: MockState) {
   app.get("/api/image/vintage/:vintageId", (c) => {
@@ -22,10 +21,11 @@ export function registerImageRoutes(app: Hono, state: MockState) {
     const vintageId = Number(formData.get("vintageId"));
     const file = formData.get("file") as File | null;
     if (!file || !vintageId) return c.json({ error: "Bad request" }, 400);
+    const id = nextId(state.images);
     const image = {
-      id: ++nextId,
+      id,
       vintageId,
-      filename: `${nextId}.jpg`,
+      filename: `${id}.jpg`,
       size: file.size,
       isFavourite: false,
       createdBy: state.session?.user.id ?? "unknown",

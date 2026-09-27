@@ -1,11 +1,10 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import { nextId } from "../ids";
 import {
   createTastingNoteSchema,
   updateTastingNoteSchema,
 } from "@cellarboss/validators";
-
-let nextId = 1000;
 
 export function registerTastingNoteRoutes(app: Hono, state: MockState) {
   app.get("/api/tasting-note", (c) => {
@@ -39,7 +38,7 @@ export function registerTastingNoteRoutes(app: Hono, state: MockState) {
     const result = createTastingNoteSchema.safeParse(body);
     if (!result.success) return c.json({ error: result.error.issues }, 400);
     const note = {
-      id: ++nextId,
+      id: nextId(state.tastingNotes),
       ...result.data,
       authorId: state.session?.user.id ?? "unknown",
       author: state.session?.user.name ?? "Unknown",
