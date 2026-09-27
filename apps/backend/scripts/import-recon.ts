@@ -15,8 +15,16 @@
  * It writes src/import/__tests__/fixtures/<importer>/<slug>/ and a draft
  * expected.json to review before committing.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import { parseArgs } from "util";
 import { load } from "cheerio";
 import { buildContext, ImporterRegistry } from "../src/import/index.js";
@@ -26,7 +34,7 @@ import {
 } from "../src/import/__tests__/fixture-summary.js";
 
 const FIXTURES = path.join(
-  import.meta.dirname,
+  path.dirname(fileURLToPath(import.meta.url)),
   "../src/import/__tests__/fixtures",
 );
 const USER_AGENT = "CellarBoss/dev (+https://cellarboss.org) import-recon";
@@ -49,7 +57,9 @@ async function record(url: URL): Promise<Recording> {
     page.on("response", (response) => {
       const responseUrl = new URL(response.url());
       const type = response.headers()["content-type"] ?? "";
-      if (!type.includes("json") || !sameSite(responseUrl, url)) return;
+      // Only the product's own host: another site's JSON (analytics, ads)
+      // doesn't belong in a fixture.
+      if (!type.includes("json") || responseUrl.host !== url.host) return;
       pending.push(
         response
           .text()
@@ -72,12 +82,6 @@ async function record(url: URL): Promise<Recording> {
   }
 }
 
-/** Same registrable domain, near enough: "www.example.com" and "api.example.com". */
-function sameSite(a: URL, b: URL): boolean {
-  const base = (host: string) => host.split(".").slice(-2).join(".");
-  return base(a.hostname) === base(b.hostname);
-}
-
 /** Keeps what the extractors read and drops the rest of the retailer's page. */
 function trim(html: string, url: URL): string {
   const $ = load(html);
@@ -97,6 +101,21 @@ function trim(html: string, url: URL): string {
   $("[style]").removeAttr("style");
   const header = `<!-- Recorded from ${url.href} on ${new Date().toISOString().slice(0, 10)} for CellarBoss import tests. Trimmed; not the full page. -->\n`;
   return header + $.html();
+}
+
+/** A fixture's page and API responses, without the dated header line. */
+function recordedInputs(dir: string): string {
+  const page = path.join(dir, "page.html");
+  const apiDir = path.join(dir, "api");
+  const html = existsSync(page)
+    ? readFileSync(page, "utf8").replace(/^<!-- Recorded from .*-->\n/, "")
+    : "";
+  const api = existsSync(apiDir)
+    ? readdirSync(apiDir)
+        .sort()
+        .map((file) => readFileSync(path.join(apiDir, file), "utf8"))
+    : [];
+  return [html, ...api].join("\n");
 }
 
 function slugFor(url: URL): string {
@@ -131,20 +150,34 @@ async function main() {
 
   const dir = path.join(FIXTURES, importer.id, values.name ?? slugFor(url));
   mkdirSync(dir, { recursive: true });
+  const before = recordedInputs(dir);
   writeFileSync(path.join(dir, "page.html"), html);
 
+  // Replace the API responses as a set, so none from an earlier recording stay.
+  const apiDir = path.join(dir, "api");
+  rmSync(apiDir, { recursive: true, force: true });
   if (recording.api.length) {
-    mkdirSync(path.join(dir, "api"), { recursive: true });
+    mkdirSync(apiDir, { recursive: true });
     recording.api.forEach((response, i) =>
       writeFileSync(
-        path.join(dir, "api", `${String(i + 1).padStart(2, "0")}.json`),
+        path.join(apiDir, `${String(i + 1).padStart(2, "0")}.json`),
         JSON.stringify(response, null, 2) + "\n",
       ),
     );
   }
 
   const expectedPath = path.join(dir, "expected.json");
-  if (!existsSync(expectedPath)) {
+  if (existsSync(expectedPath)) {
+    // A reviewed fixture whose page changed needs reviewing again.
+    const expected = JSON.parse(
+      readFileSync(expectedPath, "utf8"),
+    ) as FixtureExpectation;
+    if (expected.reviewed && before !== recordedInputs(dir)) {
+      expected.reviewed = false;
+      writeFileSync(expectedPath, JSON.stringify(expected, null, 2) + "\n");
+      console.log("The recorded page changed, so expected.json is unreviewed.");
+    }
+  } else {
     const expected: FixtureExpectation = {
       url: url.href,
       importer: importer.id,
