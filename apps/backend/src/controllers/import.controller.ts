@@ -378,8 +378,10 @@ async function resolveRef(
     if (!row) throw new ImportCommitError(`${table} ${ref.id} not found`, 404);
     return row.id;
   }
-  // Re-check by name inside the transaction so a double submit or a record
-  // created since the preview doesn't make a duplicate.
+  // Re-check by name inside the transaction so a repeat submit or a record
+  // created since the preview is reused. This doesn't stop two commits that
+  // run at the same moment on Postgres or MySQL from both inserting: names
+  // match accent- and case-insensitively, which a unique index can't express.
   const key = foldKey(ref.name);
   const rows = await trx.selectFrom(table).select(["id", "name"]).execute();
   const match = rows.find((row) => foldKey(row.name) === key);

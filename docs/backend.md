@@ -27,7 +27,7 @@ MCP_ENABLED=false
 IMPORT_PROXY_URL=http://proxy.internal:3128
 ```
 
-`IMPORT_PROXY_URL` is optional. When set, pages fetched for "Import from URL" go through that proxy (`http://`, `https://` or `socks5://`). Without it, the standard `HTTPS_PROXY` / `HTTP_PROXY` / `NO_PROXY` variables are honoured. With no proxy, the backend refuses to connect to private, loopback and link-local addresses.
+`IMPORT_PROXY_URL` is optional. When set, pages fetched for "Import from URL" go through that proxy (`http://`, `https://` or `socks5://`). Without it, the standard `HTTPS_PROXY` / `HTTP_PROXY` / `NO_PROXY` variables are honoured. The backend refuses to connect to private, loopback and link-local addresses itself, including for `NO_PROXY` hosts. Through a proxy it checks the address before sending the request, but the proxy makes the connection, so a proxy you configure should also block those ranges.
 
 ## Scripts
 
