@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { GenericType } from "@cellarboss/types";
 import type { OptionGroup } from "./DataSelector";
+import { pendingName, pendingValue } from "@/lib/functions/import";
+import { CreateOption } from "./CreateOption";
 
 export default function SingleSelector<T extends GenericType>({
   options,
@@ -25,24 +27,27 @@ export default function SingleSelector<T extends GenericType>({
   editable,
   field,
   groups,
+  allowCreate = false,
 }: {
   options: T[];
   isInvalid: boolean;
   editable: boolean;
   field: FieldBinding;
   groups?: OptionGroup[];
+  allowCreate?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
 
   const currentValue = field.state.value ?? "";
+  const pending = pendingName(currentValue);
   const selectedOption = options.find((o) => o.id.toString() === currentValue);
+  const selectedLabel = pending ? `${pending} (new)` : selectedOption?.name;
 
   if (!editable) {
     return (
       <div className="flex min-h-9 items-center px-3 py-2 border rounded-md bg-muted text-sm">
-        {selectedOption?.name ?? (
-          <span className="text-muted-foreground">None</span>
-        )}
+        {selectedLabel ?? <span className="text-muted-foreground">None</span>}
       </div>
     );
   }
@@ -70,7 +75,13 @@ export default function SingleSelector<T extends GenericType>({
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next);
+        if (!next) setSearch("");
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -80,7 +91,7 @@ export default function SingleSelector<T extends GenericType>({
           aria-invalid={isInvalid}
           className="w-full justify-between font-normal"
         >
-          {selectedOption ? selectedOption.name : "Choose an option..."}
+          {selectedLabel ?? "Choose an option..."}
           <ChevronsUpDownIcon className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -89,9 +100,24 @@ export default function SingleSelector<T extends GenericType>({
         align="start"
       >
         <Command>
-          <CommandInput placeholder="Search..." />
+          <CommandInput
+            placeholder="Search..."
+            value={search}
+            onValueChange={setSearch}
+          />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
+            {allowCreate && (
+              <CreateOption
+                search={search}
+                options={options}
+                onCreate={(name) => {
+                  field.handleChange(pendingValue(name));
+                  setOpen(false);
+                  setSearch("");
+                }}
+              />
+            )}
             {groups ? (
               groups.map((group) => (
                 <CommandGroup key={group.label} heading={group.label}>

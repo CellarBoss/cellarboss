@@ -37,6 +37,16 @@ const CANNED: Record<string, Omit<ImportedWineDetails, "sourceUrl">> = {
       drinkUntil: field(2040, 0.7),
     },
   },
+  "bordeaux-superieur": {
+    importerId: "generic",
+    title: field("Château Petit Bordeaux Supérieur 2020"),
+    name: field("Bordeaux Supérieur"),
+    type: field("red" as const),
+    winemaker: field("Château Petit"),
+    country: field("France"),
+    regions: field(["Bordeaux Supérieur"]),
+    vintage: { year: field(2020) },
+  },
   "partial-rose": {
     importerId: "generic",
     title: field("House Rosé"),
@@ -54,8 +64,16 @@ function resolve(
 ): ImportResolution {
   if (!name) return { status: "absent" };
   const match = rows.find((r) => fold(r.name) === fold(name));
-  return match
-    ? { status: "matched", id: match.id, name: match.name, score: 1 }
+  if (match)
+    return { status: "matched", id: match.id, name: match.name, score: 1 };
+  // A stand-in for fuzzy matching: an existing name inside the new one.
+  const close = rows.find((r) => fold(name).includes(fold(r.name)));
+  return close
+    ? {
+        status: "suggested",
+        proposedName: name,
+        candidates: [{ id: close.id, name: close.name, score: 0.3 }],
+      }
     : { status: "new", proposedName: name };
 }
 
