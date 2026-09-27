@@ -1,6 +1,6 @@
 import type { GenericType } from "./generic";
 
-export interface Grape extends GenericType {}
+export type Grape = GenericType;
 
 export type CreateGrape = Omit<Grape, "id">;
 
