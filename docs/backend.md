@@ -42,6 +42,7 @@ MCP_ENABLED=false
 | `pnpm seed`          | Seed the database with initial data            |
 | `pnpm format`        | Format code with Prettier                      |
 | `pnpm generate:docs` | Generate API documentation                     |
+| `pnpm import:recon`  | Record a page as an import test fixture        |
 
 ## Architecture
 
@@ -49,6 +50,7 @@ MCP_ENABLED=false
 src/
 ├── index.ts           # Entry point — creates Hono app, registers routes
 ├── controllers/       # Business logic (CRUD operations per entity)
+├── import/            # Import from URL: extractors, site adapters, matching
 ├── routes/            # API route definitions with OpenAPI schemas
 ├── mcp/                # Optional read-only MCP server (server.ts, route.ts)
 ├── middleware/        # auth.ts, admin.ts, error.ts

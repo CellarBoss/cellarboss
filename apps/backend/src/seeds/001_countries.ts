@@ -1,7 +1,7 @@
 import type { UntypedKysely } from "@schema/untyped.js";
 import { env } from "@utils/env.js";
 
-const countries = [
+export const countries = [
   "Albania",
   "Algeria",
   "Argentina",
