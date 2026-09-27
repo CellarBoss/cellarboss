@@ -1,4 +1,4 @@
-import type { Kysely } from "kysely";
+import type { UntypedKysely } from "@schema/untyped.js";
 import { sql } from "kysely";
 import { dialect, shortText } from "@utils/migration-helpers.js";
 
@@ -44,19 +44,19 @@ import { dialect, shortText } from "@utils/migration-helpers.js";
 const CREDENTIAL_ISSUER = "local:credential";
 const INDEX_NAME = "account_issuer_accountId_uidx";
 
-async function tableExists(db: Kysely<any>, name: string): Promise<boolean> {
+async function tableExists(db: UntypedKysely, name: string): Promise<boolean> {
   const tables = await db.introspection.getTables();
   return tables.some((t) => t.name === name);
 }
 
-async function getColumn(db: Kysely<any>, table: string, column: string) {
+async function getColumn(db: UntypedKysely, table: string, column: string) {
   const tables = await db.introspection.getTables();
   return tables
     .find((t) => t.name === table)
     ?.columns.find((c) => c.name === column);
 }
 
-async function assertOnlyKnownProviders(db: Kysely<any>): Promise<void> {
+async function assertOnlyKnownProviders(db: UntypedKysely): Promise<void> {
   const rows = await db
     .selectFrom("account")
     .select("providerId")
@@ -64,8 +64,8 @@ async function assertOnlyKnownProviders(db: Kysely<any>): Promise<void> {
     .execute();
 
   const unknown = rows
-    .map((r: { providerId: string }) => r.providerId)
-    .filter((id: string) => id !== "credential");
+    .map((r) => String(r.providerId))
+    .filter((id) => id !== "credential");
 
   if (unknown.length > 0) {
     throw new Error(
@@ -77,18 +77,18 @@ async function assertOnlyKnownProviders(db: Kysely<any>): Promise<void> {
   }
 }
 
-async function backfillIssuer(db: Kysely<any>): Promise<void> {
+async function backfillIssuer(db: UntypedKysely): Promise<void> {
   await db
     .updateTable("account")
     .set({ issuer: CREDENTIAL_ISSUER })
     .where("providerId", "=", "credential")
-    .where((eb: any) =>
+    .where((eb) =>
       eb.or([eb("issuer", "is", null), eb("issuer", "!=", CREDENTIAL_ISSUER)]),
     )
     .execute();
 }
 
-async function enforceNotNull(db: Kysely<any>): Promise<void> {
+async function enforceNotNull(db: UntypedKysely): Promise<void> {
   if (dialect === "postgres") {
     await sql`ALTER TABLE "account" ALTER COLUMN "issuer" SET NOT NULL`.execute(
       db,
@@ -100,7 +100,7 @@ async function enforceNotNull(db: Kysely<any>): Promise<void> {
   }
 }
 
-async function mysqlIndexExists(db: Kysely<any>): Promise<boolean> {
+async function mysqlIndexExists(db: UntypedKysely): Promise<boolean> {
   const existing = await sql<{ count: number }>`
     SELECT COUNT(*) as count FROM information_schema.statistics
     WHERE table_schema = DATABASE() AND table_name = 'account' AND index_name = ${INDEX_NAME}
@@ -108,7 +108,7 @@ async function mysqlIndexExists(db: Kysely<any>): Promise<boolean> {
   return Number(existing.rows[0]?.count ?? 0) > 0;
 }
 
-async function ensureUniqueIndex(db: Kysely<any>): Promise<void> {
+async function ensureUniqueIndex(db: UntypedKysely): Promise<void> {
   if (dialect === "mysql") {
     if (await mysqlIndexExists(db)) return;
     await sql`CREATE UNIQUE INDEX \`${sql.raw(INDEX_NAME)}\` ON \`account\` (\`issuer\`, \`accountId\`)`.execute(
@@ -121,7 +121,7 @@ async function ensureUniqueIndex(db: Kysely<any>): Promise<void> {
   }
 }
 
-async function rebuildSqliteAccountTable(db: Kysely<any>): Promise<void> {
+async function rebuildSqliteAccountTable(db: UntypedKysely): Promise<void> {
   // SQLite can't add a NOT NULL column with no default to a populated table,
   // and can't ALTER a column's nullability either way — rebuild the table.
   await sql`PRAGMA foreign_keys = OFF`.execute(db);
@@ -177,7 +177,7 @@ async function rebuildSqliteAccountTable(db: Kysely<any>): Promise<void> {
   await sql`PRAGMA foreign_keys = ON`.execute(db);
 }
 
-export async function up(db: Kysely<any>): Promise<void> {
+export async function up(db: UntypedKysely): Promise<void> {
   if (!(await tableExists(db, "account"))) {
     return;
   }
@@ -217,7 +217,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   await ensureUniqueIndex(db);
 }
 
-export async function down(db: Kysely<any>): Promise<void> {
+export async function down(db: UntypedKysely): Promise<void> {
   const issuerColumn = await getColumn(db, "account", "issuer");
   if (!issuerColumn) return;
 

@@ -1,4 +1,4 @@
-import type { Hono } from "hono";
+import type { Env, Hono } from "hono";
 import { StreamableHTTPTransport } from "@hono/mcp";
 import { createMcpServer } from "./server.js";
 
@@ -8,7 +8,7 @@ import { createMcpServer } from "./server.js";
 // internal request-id bookkeeping when two clients happen to reuse the same
 // JSON-RPC id, and the SDK throws if connect() is called twice on the same
 // server without an intervening close().
-export function registerMcpRoutes(app: Hono<any>) {
+export function registerMcpRoutes<E extends Env>(app: Hono<E>) {
   app.all("/mcp", async (c) => {
     const mcpServer = createMcpServer();
     const transport = new StreamableHTTPTransport({ enableJsonResponse: true });

@@ -1,3 +1,4 @@
+import type { UntypedKysely } from "@schema/untyped.js";
 import { promises as fs } from "fs";
 import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
@@ -18,7 +19,7 @@ const SEED_LOCK_TABLE = "seed_history_lock";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 interface SeedModule {
-  seed: (db: Kysely<any>) => Promise<void>;
+  seed: (db: UntypedKysely) => Promise<void>;
 }
 
 class SeedProvider implements MigrationProvider {
@@ -49,7 +50,7 @@ class SeedProvider implements MigrationProvider {
 
 export function createSeeder(db: Kysely<Database>, seedFolder?: string) {
   return new Migrator({
-    db: db as Kysely<any>,
+    db,
     provider: new SeedProvider(
       seedFolder ?? path.resolve(__dirname, "../seeds"),
     ),

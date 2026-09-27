@@ -1,7 +1,9 @@
 import type { Context } from "hono";
 import { NoResultError } from "kysely";
 
-function isUniqueConstraintError(err: any): boolean {
+function isUniqueConstraintError(
+  err: Error & { code?: unknown; errno?: unknown },
+): boolean {
   // SQLite
   if (err.code === "SQLITE_CONSTRAINT_UNIQUE") return true;
   // PostgreSQL

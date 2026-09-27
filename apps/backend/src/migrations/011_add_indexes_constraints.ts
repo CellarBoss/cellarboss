@@ -1,6 +1,6 @@
-import type { Kysely } from "kysely";
+import type { UntypedKysely } from "@schema/untyped.js";
 
-export async function up(db: Kysely<any>): Promise<void> {
+export async function up(db: UntypedKysely): Promise<void> {
   // Foreign key indexes for query performance
   await db.schema
     .createIndex("idx_region_countryId")
@@ -86,7 +86,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .execute();
 }
 
-export async function down(db: Kysely<any>): Promise<void> {
+export async function down(db: UntypedKysely): Promise<void> {
   await db.schema.dropIndex("idx_region_countryId").on("region").execute();
   await db.schema.dropIndex("idx_wine_wineMakerId").on("wine").execute();
   await db.schema.dropIndex("idx_wine_regionId").on("wine").execute();

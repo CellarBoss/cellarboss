@@ -1,4 +1,4 @@
-import type { Kysely } from "kysely";
+import type { UntypedKysely } from "@schema/untyped.js";
 import { sql } from "kysely";
 import { dialect } from "@utils/migration-helpers.js";
 
@@ -14,7 +14,7 @@ import { dialect } from "@utils/migration-helpers.js";
  * On PostgreSQL and MySQL this migration is a no-op (fresh installs already
  * have the correct type from the rewritten migration 010).
  */
-export async function up(db: Kysely<any>): Promise<void> {
+export async function up(db: UntypedKysely): Promise<void> {
   if (dialect !== "sqlite") return;
 
   // SQLite doesn't support ALTER COLUMN, so we rebuild the table
@@ -51,7 +51,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   );
 }
 
-export async function down(db: Kysely<any>): Promise<void> {
+export async function down(): Promise<void> {
   // No-op: reverting would change numeric(12,2) back to real,
   // but the data is compatible either way on SQLite.
 }

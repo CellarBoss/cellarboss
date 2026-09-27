@@ -1,3 +1,4 @@
+import type { UntypedKysely, UntypedDatabase } from "@schema/untyped.js";
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -22,7 +23,7 @@ let isolatedUrl: string;
 let sqliteFilePath: string | undefined;
 let auth: typeof AuthType;
 let MODEL_PREFIX: string;
-let testDb: Kysely<any> | undefined;
+let testDb: UntypedKysely | undefined;
 
 describe("real better-auth migration + sign-up/sign-in", () => {
   beforeAll(async () => {
@@ -49,7 +50,7 @@ describe("real better-auth migration + sign-up/sign-in", () => {
     MODEL_PREFIX = fixture.MODEL_PREFIX;
     // Same (memoized) dialect better-auth's own adapter uses, so destroying
     // this one connection in afterAll closes both.
-    testDb = new Kysely<any>({ dialect: fixture.buildDialect() });
+    testDb = new Kysely<UntypedDatabase>({ dialect: fixture.buildDialect() });
   }, 30_000);
 
   afterAll(async () => {

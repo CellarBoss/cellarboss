@@ -18,13 +18,14 @@ export function getDialect(): Dialect {
   if (!env.DATABASE_URL) throw new Error("DATABASE_URL not set");
 
   switch (env.DATABASE_TYPE) {
-    case "sqlite":
+    case "sqlite": {
       const sqlite = new SQLite(env.DATABASE_URL);
       // Enable foreign key enforcement in SQLite
       sqlite.pragma("foreign_keys = ON");
       return new SqliteDialect({
         database: sqlite,
       });
+    }
 
     case "postgres":
       return new PostgresDialect({

@@ -1,3 +1,4 @@
+import type { UntypedDatabase } from "@schema/untyped.js";
 import "dotenv/config";
 import { logger } from "./logger.js";
 import * as path from "node:path";
@@ -34,7 +35,7 @@ const provider: MigrationProvider = {
   },
 };
 
-const db = new Kysely<any>({ dialect: getDialect() });
+const db = new Kysely<UntypedDatabase>({ dialect: getDialect() });
 const migrator = new Migrator({ db, provider });
 
 const command = process.argv[2] ?? "latest";
