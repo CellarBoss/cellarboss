@@ -107,7 +107,12 @@ function createDispatcher(): { dispatcher: Dispatcher; proxied: boolean } {
     process.env.https_proxy ||
     process.env.http_proxy
   ) {
-    return { dispatcher: new EnvHttpProxyAgent(), proxied: true };
+    // `connect` only reaches the direct agent used for NO_PROXY hosts; the
+    // proxy agents build their own connectors.
+    return {
+      dispatcher: new EnvHttpProxyAgent({ connect: { lookup: guardedLookup } }),
+      proxied: true,
+    };
   }
   return {
     dispatcher: new Agent({ connect: { lookup: guardedLookup } }),
@@ -120,8 +125,8 @@ let shared: { dispatcher: Dispatcher; proxied: boolean } | undefined;
 /**
  * Checks a URL before any request: http(s) only, and a host that resolves
  * to public addresses. With a proxy the proxy resolves the host, so this
- * pre-check is the guard; without one, `guardedLookup` also checks at
- * connect time.
+ * pre-check is the guard; for direct connections (no proxy, or a NO_PROXY
+ * host) `guardedLookup` also checks at connect time.
  */
 async function assertFetchable(
   url: URL,
