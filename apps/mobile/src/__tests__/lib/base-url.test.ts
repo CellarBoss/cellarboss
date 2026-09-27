@@ -1,19 +1,24 @@
 // Mock secure store
+import { getApiBaseUrl } from "@/lib/api/base-url";
+
 const mockGetServerUrl = jest.fn();
 jest.mock("@/lib/auth/secure-store", () => ({
   getServerUrl: () => mockGetServerUrl(),
 }));
 
-// Mock env
+// Mock env (read lazily so each test can change it)
+const DEFAULT_ENV_URL = "http://localhost:5000";
+const mockEnv: { apiBaseUrl?: string } = { apiBaseUrl: DEFAULT_ENV_URL };
 jest.mock("@/lib/env", () => ({
-  mobileEnv: { apiBaseUrl: "http://localhost:5000" },
+  get mobileEnv() {
+    return mockEnv;
+  },
 }));
-
-import { getApiBaseUrl } from "@/lib/api/base-url";
 
 describe("getApiBaseUrl", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockEnv.apiBaseUrl = DEFAULT_ENV_URL;
   });
 
   it("returns stored URL when present", async () => {
@@ -30,18 +35,9 @@ describe("getApiBaseUrl", () => {
 
   it("returns null when neither stored nor env URL exists", async () => {
     mockGetServerUrl.mockResolvedValue(null);
+    mockEnv.apiBaseUrl = undefined;
 
-    // Re-mock env with no URL
-    jest.resetModules();
-    jest.mock("@/lib/auth/secure-store", () => ({
-      getServerUrl: () => Promise.resolve(null),
-    }));
-    jest.mock("@/lib/env", () => ({
-      mobileEnv: { apiBaseUrl: undefined },
-    }));
-
-    const { getApiBaseUrl: freshGetApiBaseUrl } = require("@/lib/api/base-url");
-    const result = await freshGetApiBaseUrl();
+    const result = await getApiBaseUrl();
     expect(result).toBeNull();
   });
 });

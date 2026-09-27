@@ -162,7 +162,8 @@ export function FormCard<T extends { id: number | string }>({
                     }
                   : undefined
               }
-              children={(fieldApi) =>
+            >
+              {(fieldApi) =>
                 field.type === "wine-vintage" ? (
                   <WineVintageSelector
                     label={field.label}
@@ -208,7 +209,7 @@ export function FormCard<T extends { id: number | string }>({
                   />
                 )
               }
-            />
+            </form.Field>
           ))}
         </View>
 

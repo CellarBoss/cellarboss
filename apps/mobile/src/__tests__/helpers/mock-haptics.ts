@@ -18,7 +18,8 @@ jest.mock("react-native-worklets", () => ({
 }));
 
 jest.mock("react-native-reanimated", () => {
-  const { View } = require("react-native");
+  const { View } =
+    jest.requireActual<typeof import("react-native")>("react-native");
   return {
     __esModule: true,
     default: { View },

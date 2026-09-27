@@ -1,4 +1,4 @@
-import { screen, fireEvent, waitFor, act } from "@testing-library/react-native";
+import { screen, fireEvent, waitFor } from "@testing-library/react-native";
 
 /**
  * Select an item from a DataSelector by opening its modal and pressing the item.

@@ -1,11 +1,12 @@
-import "../helpers/mock-navigation";
+import { mockRouter } from "../helpers/mock-navigation";
 import {
   render,
   screen,
   fireEvent,
   waitFor,
 } from "@testing-library/react-native";
-import { mockRouter } from "../helpers/mock-navigation";
+
+import SetupScreen from "@/app/(auth)/setup";
 
 // Mock auth context
 const mockMarkServerConfigured = jest.fn();
@@ -29,8 +30,6 @@ const mockTestServerConnection = jest.fn();
 jest.mock("@/lib/auth/auth-service", () => ({
   testServerConnection: (url: string) => mockTestServerConnection(url),
 }));
-
-import SetupScreen from "@/app/(auth)/setup";
 
 describe("SetupScreen", () => {
   beforeEach(() => {

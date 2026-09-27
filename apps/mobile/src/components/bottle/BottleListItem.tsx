@@ -18,7 +18,11 @@ import {
   getDrinkingStatusColors,
   DRINKING_STATUS_ICONS,
 } from "@/lib/constants/drinking-status";
-import type { BottleStatus } from "@cellarboss/validators/constants";
+import type {
+  BottleStatus,
+  WineType,
+  BottleSize,
+} from "@cellarboss/validators/constants";
 import { api } from "@/lib/api/client";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { StatusPickerModal } from "./StatusPickerModal";
@@ -26,7 +30,6 @@ import { StoragePickerModal } from "./StoragePickerModal";
 
 import { useAppTheme } from "@/hooks/use-app-theme";
 import type { Bottle } from "@cellarboss/types";
-import type { WineType, BottleSize } from "@cellarboss/validators/constants";
 import type { DrinkingStatus } from "@/lib/functions/format";
 
 function DrunkSwipeReveal({ progress }: { progress: SharedValue<number> }) {
