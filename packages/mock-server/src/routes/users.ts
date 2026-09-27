@@ -1,14 +1,6 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
-
-// Derived from state (not the clock) so two users created in the same
-// millisecond can't share an ID.
-function nextUserId(users: MockState["users"]): string {
-  const ids = new Set(users.map((u) => u.id));
-  let n = users.length + 1;
-  while (ids.has(`user-${n}`)) n++;
-  return `user-${n}`;
-}
+import { nextPrefixedId } from "../ids";
 
 export function registerUserRoutes(app: Hono, state: MockState) {
   // Better Auth admin list-users endpoint
@@ -20,7 +12,7 @@ export function registerUserRoutes(app: Hono, state: MockState) {
   app.post("/api/auth/admin/create-user", async (c) => {
     const body = await c.req.json();
     const user = {
-      id: nextUserId(state.users),
+      id: nextPrefixedId(state.users, "user-"),
       name: body.name,
       email: body.email,
       role: body.role || "user",

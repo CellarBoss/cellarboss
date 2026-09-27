@@ -42,6 +42,14 @@ describe("mock server ID allocation", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  it("does not reuse the id of a deleted record", async () => {
+    const id = await createCountry(app, "Spain");
+    const res = await app.request(`/api/country/${id}`, { method: "DELETE" });
+    expect(res.status).toBe(200);
+
+    expect(await createCountry(app, "Portugal")).toBe(id + 1);
+  });
+
   it("allocates the same ids again after /__test/reset", async () => {
     const first = await createCountry(app, "Spain");
     await post(app, "/__test/reset", {});
