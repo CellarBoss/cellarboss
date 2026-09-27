@@ -18,6 +18,7 @@ import { registerWinegrapeRoutes } from "./routes/winegrapes";
 import { registerTastingNoteRoutes } from "./routes/tasting-notes";
 import { registerImageRoutes } from "./routes/images";
 import { defaultState } from "./defaults";
+import { trackIds } from "./ids";
 import type {
   Bottle,
   Country,
@@ -76,6 +77,9 @@ export type MockState = {
   wineGrapes: WineGrape[];
   tastingNotes: TastingNote[];
   images: Image[];
+  // Passwords set through the auth endpoints, keyed by user id, so tests can
+  // check a password change actually reached the right endpoint
+  userPasswords: Record<string, string>;
 };
 
 let server: ServerType | null = null;
@@ -85,14 +89,22 @@ export function getMockState(): MockState {
   return state;
 }
 
-export async function startMockServer(port: number): Promise<ServerType> {
-  state = JSON.parse(JSON.stringify(defaultState));
-
+/**
+ * Builds the mock API app around the given state object. Route handlers keep a
+ * reference to `state` and mutate it in place, so callers can inspect it after
+ * issuing requests.
+ */
+export function createMockApp(state: MockState): Hono {
+  trackIds(state);
   const app = new Hono();
 
   // Control endpoints for test setup
   app.get("/__test/healthcheck", (c) => {
     return c.json({ ok: true });
+  });
+
+  app.get("/__test/state", (c) => {
+    return c.json(state);
   });
 
   app.post("/__test/set-session", async (c) => {
@@ -103,12 +115,13 @@ export async function startMockServer(port: number): Promise<ServerType> {
   app.post("/__test/set-state", async (c) => {
     const partial = await c.req.json();
     Object.assign(state, partial);
+    trackIds(state);
     return c.json({ ok: true });
   });
 
   app.post("/__test/reset", (c) => {
     const { session } = state;
-    const fresh = JSON.parse(JSON.stringify(defaultState));
+    const fresh = createDefaultState();
     // Mutate in place so route handler closures (which captured the original
     // object reference) continue to see the updated state after reset.
     (Object.keys(state) as Array<keyof MockState>).forEach(
@@ -116,6 +129,7 @@ export async function startMockServer(port: number): Promise<ServerType> {
     );
     Object.assign(state, fresh);
     state.session = session;
+    trackIds(state);
     return c.json({ ok: true });
   });
 
@@ -141,6 +155,17 @@ export async function startMockServer(port: number): Promise<ServerType> {
   registerWinegrapeRoutes(app, state);
   registerTastingNoteRoutes(app, state);
   registerImageRoutes(app, state);
+
+  return app;
+}
+
+export function createDefaultState(): MockState {
+  return JSON.parse(JSON.stringify(defaultState));
+}
+
+export async function startMockServer(port: number): Promise<ServerType> {
+  state = createDefaultState();
+  const app = createMockApp(state);
 
   return new Promise((resolve) => {
     server = serve({ fetch: app.fetch, port }, () => {

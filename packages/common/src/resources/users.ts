@@ -63,6 +63,25 @@ export function usersResource(request: RequestFn) {
       );
       if (!roleResult.ok) return roleResult;
 
+      // The profile update above only covers name and email, so a new
+      // password has to go through Better Auth's admin endpoint
+      if (data.password) {
+        const passwordResult = await request<{ status: boolean }>(
+          "auth/admin/set-user-password",
+          "POST",
+          JSON.stringify({ userId: data.id, newPassword: data.password }),
+        );
+        if (!passwordResult.ok) {
+          return {
+            ok: false,
+            error: {
+              ...passwordResult.error,
+              message: `Name, email and role were updated, but the password could not be set: ${passwordResult.error.message}`,
+            },
+          };
+        }
+      }
+
       return updateResult;
     },
 

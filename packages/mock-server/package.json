@@ -9,6 +9,8 @@
   },
   "scripts": {
     "start": "tsx src/start.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "eslint --max-warnings 0"
   },
   "dependencies": {
@@ -23,6 +25,7 @@
     "globals": "16.5.0",
     "tsx": "4.23.15",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.67.0"
+    "typescript-eslint": "8.67.0",
+    "vitest": "5.0.1"
   }
 }

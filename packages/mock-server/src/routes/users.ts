@@ -1,5 +1,6 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
+import { nextUserId } from "../ids";
 
 export function registerUserRoutes(app: Hono, state: MockState) {
   // Better Auth admin list-users endpoint
@@ -11,7 +12,7 @@ export function registerUserRoutes(app: Hono, state: MockState) {
   app.post("/api/auth/admin/create-user", async (c) => {
     const body = await c.req.json();
     const user = {
-      id: `user-${Date.now()}`,
+      id: nextUserId(state.users),
       name: body.name,
       email: body.email,
       role: body.role || "user",
@@ -39,6 +40,16 @@ export function registerUserRoutes(app: Hono, state: MockState) {
     if (idx === -1) return c.json({ error: "Not found" }, 404);
     state.users[idx].role = body.role;
     return c.json(state.users[idx]);
+  });
+
+  // Better Auth admin set-user-password endpoint
+  app.post("/api/auth/admin/set-user-password", async (c) => {
+    const body = await c.req.json();
+    if (!state.users.some((u) => u.id === body.userId)) {
+      return c.json({ error: "Not found" }, 404);
+    }
+    state.userPasswords[body.userId] = body.newPassword;
+    return c.json({ status: true });
   });
 
   // Individual user endpoints

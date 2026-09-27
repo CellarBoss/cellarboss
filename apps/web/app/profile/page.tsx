@@ -4,65 +4,7 @@ import { authClient } from "@/lib/auth-client";
 import { PageHeader } from "@/components/page/PageHeader";
 import { GenericCard } from "@/components/cards/GenericCard";
 import { profileFields, type ProfileFormData } from "@/lib/fields/profile";
-import { ApiResult } from "@/lib/api/types";
-
-async function handleSave(
-  formData: ProfileFormData,
-): Promise<ApiResult<ProfileFormData>> {
-  // Validate password confirmation if password is being changed
-  if (formData.password && formData.password !== formData.confirmPassword) {
-    return {
-      ok: false,
-      error: {
-        message: "Passwords do not match",
-        errors: { confirmPassword: "Passwords do not match" },
-        status: 400,
-      },
-    };
-  }
-
-  const updateData: Parameters<typeof authClient.updateUser>[0] & {
-    password?: string;
-  } = {
-    name: formData.name,
-  };
-
-  // Only include password if it's being changed
-  if (formData.password) {
-    updateData.password = formData.password;
-  }
-
-  try {
-    const result = await authClient.updateUser(updateData);
-
-    if (!result.data) {
-      return {
-        ok: false,
-        error: {
-          message: result.error?.message || "Failed to update profile",
-          status: 400,
-        },
-      };
-    }
-
-    // Refresh the session to get updated user data
-    await authClient.getSession();
-
-    return {
-      ok: true,
-      data: formData,
-    };
-  } catch (err) {
-    return {
-      ok: false,
-      error: {
-        message:
-          (err instanceof Error && err.message) || "Something went wrong",
-        status: 500,
-      },
-    };
-  }
-}
+import { saveProfile } from "@/lib/functions/profile";
 
 export default function ProfilePage() {
   const session = authClient.useSession();
@@ -83,6 +25,7 @@ export default function ProfilePage() {
     id: user.id,
     name: user.name || "",
     email: user.email || "",
+    currentPassword: "",
     password: "",
     confirmPassword: "",
   };
@@ -94,7 +37,7 @@ export default function ProfilePage() {
         mode="edit"
         data={initialData}
         fields={profileFields}
-        processSave={handleSave}
+        processSave={saveProfile}
         redirectTo="/profile"
       />
     </section>

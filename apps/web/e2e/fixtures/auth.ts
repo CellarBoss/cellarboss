@@ -87,3 +87,8 @@ export async function setState(partial: Record<string, unknown>) {
 export async function resetState() {
   await fetch(`${MOCK_SERVER_URL}/__test/reset`, { method: "POST" });
 }
+
+export async function getState<T = Record<string, unknown>>(): Promise<T> {
+  const res = await fetch(`${MOCK_SERVER_URL}/__test/state`);
+  return (await res.json()) as T;
+}

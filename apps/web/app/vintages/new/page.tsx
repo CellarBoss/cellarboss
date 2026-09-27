@@ -8,6 +8,7 @@ import { vintageFields } from "@/lib/fields/vintages";
 import { createVintage } from "@/lib/api/vintages";
 import { ApiResult } from "@/lib/api/types";
 import { PageHeader } from "@/components/page/PageHeader";
+import { parseIdParam } from "@/lib/functions/strings";
 
 async function handleCreate(
   vintage: CreateVintage,
@@ -17,13 +18,13 @@ async function handleCreate(
 
 function NewVintageForm() {
   const searchParams = useSearchParams();
-  const wineId = searchParams.get("wineId");
+  const wineId = parseIdParam(searchParams.get("wineId"));
 
   const defaultData = wineId
     ? ({
         id: 0,
         year: null,
-        wineId: Number(wineId),
+        wineId,
         drinkFrom: null,
         drinkUntil: null,
       } as Vintage)

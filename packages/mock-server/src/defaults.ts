@@ -88,6 +88,11 @@ export const defaultState: MockState = {
     { id: 2, wineId: 2, grapeId: 2 },
   ],
   images: [],
+  // Current passwords of the e2e fixture users (see apps/web/e2e/fixtures)
+  userPasswords: {
+    "admin-user-1": "AdminPass1!",
+    "regular-user-1": "UserPass1!",
+  },
   tastingNotes: [
     {
       id: 1,
