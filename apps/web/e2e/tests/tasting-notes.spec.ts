@@ -134,4 +134,43 @@ test.describe("Tasting Notes page", () => {
       .click();
     await expect(page).toHaveURL(/\/wines\/\d+#tasting-notes$/);
   });
+
+  test("new note from a wine page preselects that wine", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/tasting-notes/new?wineId=2");
+
+    await expect(
+      page.getByRole("combobox").filter({ hasText: "Blanc de Blanc" }),
+    ).toBeVisible();
+    await expect(
+      page
+        .getByRole("combobox")
+        .filter({ hasText: "Choose a vintage year..." }),
+    ).toBeVisible();
+  });
+
+  test("new note from a vintage page preselects that wine and vintage", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/tasting-notes/new?vintageId=1");
+
+    await expect(
+      page.getByRole("combobox").filter({ hasText: "Margaux Reserve" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("combobox").filter({ hasText: "2015" }),
+    ).toBeVisible();
+  });
+
+  test("new note ignores an invalid wineId", async ({ adminContext }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/tasting-notes/new?wineId=abc");
+
+    await expect(
+      page.getByRole("combobox").filter({ hasText: "Choose a wine..." }),
+    ).toBeVisible();
+  });
 });
