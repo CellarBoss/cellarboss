@@ -1,4 +1,4 @@
-import type { Storage, Vintage, Wine, WineMaker } from "@cellarboss/types";
+import type { Vintage, Wine, WineMaker } from "@cellarboss/types";
 
 export function getVintageName(
   vintageId: number,
@@ -12,34 +12,6 @@ export function getVintageName(
   if (!wine) return `Unknown Wine ${vintage.year ?? "NV"}`;
   const winemakerName = winemakerMap.get(wine.wineMakerId)?.name;
   return `${winemakerName ? winemakerName + " - " : ""}${wine.name} ${vintage.year ?? "NV"}`;
-}
-
-/** Build a map from each storage ID to the set of all its descendant IDs (including itself). */
-export function buildDescendantsMap(
-  storages: Storage[],
-): Map<number, Set<number>> {
-  const childrenMap = new Map<number, number[]>();
-  for (const s of storages) {
-    if (s.parent != null) {
-      if (!childrenMap.has(s.parent)) childrenMap.set(s.parent, []);
-      childrenMap.get(s.parent)!.push(s.id);
-    }
-  }
-
-  const result = new Map<number, Set<number>>();
-
-  function collect(id: number): Set<number> {
-    if (result.has(id)) return result.get(id)!;
-    const desc = new Set<number>([id]);
-    for (const childId of childrenMap.get(id) ?? []) {
-      for (const d of collect(childId)) desc.add(d);
-    }
-    result.set(id, desc);
-    return desc;
-  }
-
-  for (const s of storages) collect(s.id);
-  return result;
 }
 
 export function buildWineGroupedOptions(

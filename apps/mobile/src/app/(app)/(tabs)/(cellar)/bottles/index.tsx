@@ -17,7 +17,8 @@ import {
   WINE_TYPE_FILTER_OPTIONS,
 } from "@/lib/constants/bottles";
 import { DRINKING_STATUS_LABELS } from "@/lib/constants/drinking-status";
-import type { Bottle, Storage } from "@cellarboss/types";
+import { getStorageAncestry } from "@cellarboss/common/storages";
+import type { Bottle } from "@cellarboss/types";
 import type { WineType } from "@cellarboss/validators/constants";
 
 const SORT_OPTIONS = [
@@ -110,15 +111,7 @@ export default function CellarScreen() {
   }
 
   function getStorageHierarchy(bottle: Bottle): string[] {
-    if (!bottle.storageId) return [];
-    const path: string[] = [];
-    let current: Storage | undefined = storageMap.get(bottle.storageId);
-    while (current) {
-      path.unshift(current.name);
-      current =
-        current.parent != null ? storageMap.get(current.parent) : undefined;
-    }
-    return path;
+    return getStorageAncestry(bottle.storageId, storageMap).map((s) => s.name);
   }
 
   function getWineType(bottle: Bottle): WineType | undefined {
