@@ -77,8 +77,10 @@ export function parsePrice(
 
   let digits = match[0].replace(/\s/g, "").replace(/[.,]$/, "");
   const lastSep = Math.max(digits.lastIndexOf("."), digits.lastIndexOf(","));
-  if (lastSep !== -1 && digits.length - lastSep - 1 === 2) {
-    // The last separator is the decimal point; the rest are thousands separators.
+  const decimals = digits.length - lastSep - 1;
+  if (lastSep !== -1 && decimals >= 1 && decimals <= 2) {
+    // The last separator is the decimal point ("12.5", "12,50"); the rest are
+    // thousands separators. Three digits after it means thousands ("1.234").
     digits =
       digits.slice(0, lastSep).replace(/[.,]/g, "") +
       "." +
