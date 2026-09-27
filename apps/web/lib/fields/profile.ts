@@ -5,6 +5,7 @@ export type ProfileFormData = {
   id: string;
   name: string;
   email: string;
+  currentPassword?: string;
   password?: string;
   confirmPassword?: string;
 };
@@ -22,6 +23,12 @@ export const profileFields: FieldConfig<ProfileFormData>[] = [
     type: "text",
     validator: z.email("Invalid email address"),
     editable: false,
+  },
+  {
+    key: "currentPassword",
+    label: "Current Password (required to set a new password)",
+    type: "password",
+    validator: z.string(),
   },
   {
     key: "password",

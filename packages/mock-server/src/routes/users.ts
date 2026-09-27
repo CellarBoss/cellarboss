@@ -42,6 +42,16 @@ export function registerUserRoutes(app: Hono, state: MockState) {
     return c.json(state.users[idx]);
   });
 
+  // Better Auth admin set-user-password endpoint
+  app.post("/api/auth/admin/set-user-password", async (c) => {
+    const body = await c.req.json();
+    if (!state.users.some((u) => u.id === body.userId)) {
+      return c.json({ error: "Not found" }, 404);
+    }
+    state.userPasswords[body.userId] = body.newPassword;
+    return c.json({ status: true });
+  });
+
   // Individual user endpoints
   app.get("/api/user/:id", (c) => {
     const id = c.req.param("id");
