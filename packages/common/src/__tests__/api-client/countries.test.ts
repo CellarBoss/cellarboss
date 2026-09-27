@@ -24,7 +24,7 @@ describe("countriesResource", () => {
 
   it("create calls POST country with JSON body", async () => {
     const country = { id: 0, name: "France" };
-    await countries.create(country as any);
+    await countries.create(country);
     expect(mockRequest).toHaveBeenCalledWith(
       "country",
       "POST",
@@ -34,7 +34,7 @@ describe("countriesResource", () => {
 
   it("update calls PUT country/{id} with JSON body", async () => {
     const country = { id: 3, name: "Italy" };
-    await countries.update(country as any);
+    await countries.update(country);
     expect(mockRequest).toHaveBeenCalledWith(
       "country/3",
       "PUT",

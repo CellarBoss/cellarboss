@@ -12,12 +12,6 @@ const eslintConfig = defineConfig([
     languageOptions: {
       globals: globals.node,
     },
-    rules: {
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-empty-object-type": "warn",
-      "@typescript-eslint/no-unused-vars": "warn",
-      "no-case-declarations": "warn",
-    },
   },
   globalIgnores(["dist/**", "coverage/**"]),
 ]);

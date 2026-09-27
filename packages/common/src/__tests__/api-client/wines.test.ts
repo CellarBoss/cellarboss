@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { winesResource } from "../../resources/wines";
 import type { RequestFn } from "../../types";
+import type { Wine } from "@cellarboss/types";
 
 describe("winesResource", () => {
   const mockRequest = vi.fn() as unknown as RequestFn;
@@ -26,11 +27,11 @@ describe("winesResource", () => {
     const wine = {
       id: 0,
       name: "Barolo",
-      wineMakerId: "5" as any,
-      regionId: "3" as any,
+      wineMakerId: "5",
+      regionId: "3",
       type: "Red",
     };
-    await wines.create(wine as any);
+    await wines.create(wine as unknown as Wine);
 
     const body = JSON.parse(vi.mocked(mockRequest).mock.calls[0][2]!);
     expect(body.wineMakerId).toBe(5);
@@ -44,7 +45,7 @@ describe("winesResource", () => {
       wineMakerId: 1,
       regionId: null,
     };
-    await wines.create(wine as any);
+    await wines.create(wine as Wine);
 
     const body = JSON.parse(vi.mocked(mockRequest).mock.calls[0][2]!);
     expect(body.regionId).toBeNull();
@@ -54,10 +55,10 @@ describe("winesResource", () => {
     const wine = {
       id: 10,
       name: "Barolo",
-      wineMakerId: "5" as any,
-      regionId: "3" as any,
+      wineMakerId: "5",
+      regionId: "3",
     };
-    await wines.update(wine as any);
+    await wines.update(wine as unknown as Wine);
 
     expect(mockRequest).toHaveBeenCalledWith(
       "wine/10",

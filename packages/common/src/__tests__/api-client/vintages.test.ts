@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { vintagesResource } from "../../resources/vintages";
 import type { RequestFn } from "../../types";
+import type { CreateVintage, Vintage } from "@cellarboss/types";
 
 describe("vintagesResource", () => {
   const mockRequest = vi.fn() as unknown as RequestFn;
@@ -29,12 +30,12 @@ describe("vintagesResource", () => {
 
   it("create coerces numeric fields", async () => {
     const vintage = {
-      year: "2020" as any,
-      wineId: "3" as any,
-      drinkFrom: "2025" as any,
-      drinkUntil: "2035" as any,
+      year: "2020",
+      wineId: "3",
+      drinkFrom: "2025",
+      drinkUntil: "2035",
     };
-    await vintages.create(vintage as any);
+    await vintages.create(vintage as unknown as CreateVintage);
 
     const body = JSON.parse(vi.mocked(mockRequest).mock.calls[0][2]!);
     expect(body.year).toBe(2020);
@@ -50,7 +51,7 @@ describe("vintagesResource", () => {
       drinkFrom: null,
       drinkUntil: null,
     };
-    await vintages.create(vintage as any);
+    await vintages.create(vintage);
 
     const body = JSON.parse(vi.mocked(mockRequest).mock.calls[0][2]!);
     expect(body.year).toBeNull();
@@ -62,12 +63,12 @@ describe("vintagesResource", () => {
   it("update coerces numeric fields and uses correct path", async () => {
     const vintage = {
       id: 7,
-      year: "2018" as any,
-      wineId: "2" as any,
+      year: "2018",
+      wineId: "2",
       drinkFrom: null,
-      drinkUntil: "2030" as any,
+      drinkUntil: "2030",
     };
-    await vintages.update(vintage as any);
+    await vintages.update(vintage as unknown as Vintage);
 
     expect(mockRequest).toHaveBeenCalledWith(
       "vintage/7",

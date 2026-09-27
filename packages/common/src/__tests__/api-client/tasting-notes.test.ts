@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { tastingNotesResource } from "../../resources/tasting-notes";
 import type { RequestFn } from "../../types";
+import type { CreateTastingNote } from "@cellarboss/types";
 
 describe("tastingNotesResource", () => {
   const mockRequest = vi.fn() as unknown as RequestFn;
@@ -34,11 +35,11 @@ describe("tastingNotesResource", () => {
 
   it("create coerces vintageId and score to numbers", async () => {
     const data = {
-      vintageId: "3" as any,
-      score: "90" as any,
+      vintageId: "3",
+      score: "90",
       notes: "Excellent wine",
     };
-    await tastingNotes.create(data as any);
+    await tastingNotes.create(data as unknown as CreateTastingNote);
 
     const body = JSON.parse(vi.mocked(mockRequest).mock.calls[0][2]!);
     expect(body.vintageId).toBe(3);
@@ -48,7 +49,7 @@ describe("tastingNotesResource", () => {
 
   it("update calls PUT tasting-note/{id} with data", async () => {
     const data = { score: 85, notes: "Updated notes" };
-    await tastingNotes.update(7, data as any);
+    await tastingNotes.update(7, data);
 
     expect(mockRequest).toHaveBeenCalledWith(
       "tasting-note/7",

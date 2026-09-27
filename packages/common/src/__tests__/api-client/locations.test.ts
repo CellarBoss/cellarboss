@@ -24,7 +24,7 @@ describe("locationsResource", () => {
 
   it("create calls POST location with JSON body", async () => {
     const location = { id: 0, name: "Wine Cellar" };
-    await locations.create(location as any);
+    await locations.create(location);
     expect(mockRequest).toHaveBeenCalledWith(
       "location",
       "POST",
@@ -34,7 +34,7 @@ describe("locationsResource", () => {
 
   it("update calls PUT location/{id} with JSON body", async () => {
     const location = { id: 3, name: "Kitchen" };
-    await locations.update(location as any);
+    await locations.update(location);
     expect(mockRequest).toHaveBeenCalledWith(
       "location/3",
       "PUT",

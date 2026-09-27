@@ -24,7 +24,7 @@ describe("winemakersResource", () => {
 
   it("create calls POST winemaker with JSON body", async () => {
     const winemaker = { id: 0, name: "Giacomo Conterno" };
-    await winemakers.create(winemaker as any);
+    await winemakers.create(winemaker);
     expect(mockRequest).toHaveBeenCalledWith(
       "winemaker",
       "POST",
@@ -34,7 +34,7 @@ describe("winemakersResource", () => {
 
   it("update calls PUT winemaker/{id} with JSON body", async () => {
     const winemaker = { id: 4, name: "Bruno Giacosa" };
-    await winemakers.update(winemaker as any);
+    await winemakers.update(winemaker);
     expect(mockRequest).toHaveBeenCalledWith(
       "winemaker/4",
       "PUT",
