@@ -1,3 +1,4 @@
+import type { FieldBinding } from "@/lib/types/field";
 import { useState } from "react";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import {
@@ -28,7 +29,7 @@ export default function SingleSelector<T extends GenericType>({
   options: T[];
   isInvalid: boolean;
   editable: boolean;
-  field: any;
+  field: FieldBinding;
   groups?: OptionGroup[];
 }) {
   const [open, setOpen] = useState(false);

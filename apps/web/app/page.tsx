@@ -91,7 +91,6 @@ export default function Home() {
         <CellarOverviewStats
           bottles={bottles}
           vintages={vintages}
-          wines={wines}
           currency={currency}
         />
       </div>

@@ -121,4 +121,17 @@ test.describe("Tasting Notes page", () => {
     await editButtons.first().click();
     await expect(page).toHaveURL(/\/tasting-notes\/\d+\/edit/);
   });
+
+  test("tasting notes button on the wines list opens the wine's notes", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/wines");
+
+    await page
+      .getByRole("button", { name: "View Tasting Notes" })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/\/wines\/\d+#tasting-notes$/);
+  });
 });

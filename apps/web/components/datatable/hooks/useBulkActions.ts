@@ -4,7 +4,9 @@ import { RowSelectionState } from "@tanstack/react-table";
 
 export interface BulkActionHandlers {
   handleBulkDeleteConfirm: () => Promise<void>;
-  handleBulkEditSave: (partial: Record<string, any>) => Promise<void>;
+  handleBulkEditSave: (
+    partial: Record<string, string | number>,
+  ) => Promise<void>;
 }
 
 export function useBulkActions<T>(
@@ -22,7 +24,7 @@ export function useBulkActions<T>(
     setRowSelection({});
   }
 
-  async function handleBulkEditSave(partial: Record<string, any>) {
+  async function handleBulkEditSave(partial: Record<string, string | number>) {
     if (!onBulkEdit) return;
     await onBulkEdit(selectedRows, partial);
     setRowSelection({});

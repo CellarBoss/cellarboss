@@ -60,7 +60,7 @@ describe("buildHierarchicalOptions", () => {
       { id: 1, name: "A", parent: null, subRows: [] },
       { id: 2, name: "B", parent: null, subRows: [] },
     ];
-    const options = buildHierarchicalOptions(items as any);
+    const options = buildHierarchicalOptions(items);
     expect(options).toHaveLength(2);
     expect(options[0]).toEqual({ value: "1", label: "A" });
     expect(options[1]).toEqual({ value: "2", label: "B" });
@@ -74,7 +74,7 @@ describe("buildHierarchicalOptions", () => {
       ],
       "parent",
     );
-    const options = buildHierarchicalOptions(tree as any);
+    const options = buildHierarchicalOptions(tree);
     expect(options).toHaveLength(2);
     expect(options[0].label).toBe("Root");
     // Child should have indentation prefix

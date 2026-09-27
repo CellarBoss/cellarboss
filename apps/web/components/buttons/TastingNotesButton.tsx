@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 import { useApiQuery } from "@/hooks/use-api-query";
 import {
   getTastingNotesByVintageId,
@@ -12,6 +13,7 @@ type TastingNotesButtonProps = {
 };
 
 export function WineTastingNotesButton({ wineId }: { wineId: number }) {
+  const router = useRouter();
   const wineNotesQuery = useApiQuery({
     queryKey: ["tastingNotes", "wine", wineId],
     queryFn: () => getTastingNotesByWineId(wineId!),
@@ -23,7 +25,7 @@ export function WineTastingNotesButton({ wineId }: { wineId: number }) {
   return (
     <TastingNotesButton
       count={count}
-      onClick={() => (window.location.href = `/wines/${wineId}#tasting-notes`)}
+      onClick={() => router.push(`/wines/${wineId}#tasting-notes`)}
     />
   );
 }
@@ -33,6 +35,7 @@ export function VintageTastingNotesButton({
 }: {
   vintageId: number;
 }) {
+  const router = useRouter();
   const vintageNotesQuery = useApiQuery({
     queryKey: ["tastingNotes", "vintage", vintageId],
     queryFn: () => getTastingNotesByVintageId(vintageId!),
@@ -44,9 +47,7 @@ export function VintageTastingNotesButton({
   return (
     <TastingNotesButton
       count={count}
-      onClick={() =>
-        (window.location.href = `/vintages/${vintageId}#tasting-notes`)
-      }
+      onClick={() => router.push(`/vintages/${vintageId}#tasting-notes`)}
     />
   );
 }

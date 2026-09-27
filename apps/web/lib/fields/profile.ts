@@ -2,7 +2,7 @@ import type { FieldConfig } from "@/lib/types/field";
 import * as z from "zod";
 
 export type ProfileFormData = {
-  id: number;
+  id: string;
   name: string;
   email: string;
   password?: string;

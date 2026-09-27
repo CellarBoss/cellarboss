@@ -1,5 +1,6 @@
 "use client";
 
+import type { AnyFieldApi } from "@tanstack/react-form";
 import { skipToken } from "@tanstack/react-query";
 import type { SelectorConfig } from "@/lib/types/field";
 import type { GenericType } from "@cellarboss/types";
@@ -15,7 +16,7 @@ export type OptionGroup = {
 
 type DataSelectorProps = {
   selectorConfig: SelectorConfig;
-  field: any;
+  field: AnyFieldApi;
   editable: boolean;
 };
 
