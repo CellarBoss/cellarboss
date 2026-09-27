@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Last updated:** April 4, 2026
+**Last updated:** September 27, 2026
 
 CellarBoss ("we", "our", or "us") operates the CellarBoss mobile application (the "App"). This Privacy Policy explains how we handle your information when you use our App.
 
@@ -19,6 +19,10 @@ The App allows you to catalogue and manage your wine collection. The data you en
 ### Photos and Camera Access
 
 The App requests access to your device's camera and photo library to allow you to photograph wine labels, bottles, and vintages. Photos are uploaded to your self-hosted server solely to associate them with your wine collection entries. We do not access your camera or photo library for any other purpose, and photos are never sent to us or any third party.
+
+### Importing Wines from a Web Page
+
+If you use "Import from URL", the web address you enter is sent to your self-hosted server, which fetches that page from the retailer's website (or through a proxy your server operator has configured) to read the wine's details. The retailer sees a request from your server, identified as CellarBoss, just as it would a visit from a browser. The page is kept in your server's memory for up to 10 minutes and is not stored. Your server logs the address (without any query string) and which details were found, to help diagnose failed imports. Nothing is sent to us.
 
 ### Device Permissions
 
