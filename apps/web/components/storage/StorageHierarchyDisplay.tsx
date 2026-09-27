@@ -4,6 +4,7 @@ import { ChevronRight } from "lucide-react";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { getStorages } from "@/lib/api/storages";
 import Link from "next/link";
+import { getStorageAncestry } from "@cellarboss/common/storages";
 
 export function StorageHierarchyDisplay({
   storageId,
@@ -21,18 +22,8 @@ export function StorageHierarchyDisplay({
   if (!storageQuery.data)
     return <span className="text-muted-foreground">Unknown</span>;
 
-  const storages = storageQuery.data;
-  const nameMap = new Map(storages.map((s) => [s.id, s.name]));
-  const parentMap = new Map(storages.map((s) => [s.id, s.parent]));
-
-  const segments: { id: number; name: string }[] = [];
-  let current: number | null = storageId;
-  while (current !== null) {
-    const name = nameMap.get(current);
-    if (!name) break;
-    segments.unshift({ id: current, name });
-    current = parentMap.get(current) ?? null;
-  }
+  const storageMap = new Map(storageQuery.data.map((s) => [s.id, s]));
+  const segments = getStorageAncestry(storageId, storageMap);
 
   if (segments.length === 0)
     return <span className="text-muted-foreground">Unknown</span>;

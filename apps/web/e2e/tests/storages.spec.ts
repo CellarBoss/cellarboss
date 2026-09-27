@@ -83,3 +83,120 @@ test.describe("Storages page", () => {
     await expect(fieldCombobox(page, "Location")).toHaveText(/Garage/);
   });
 });
+
+test.describe("Storage page sub-storage bottles", () => {
+  test.beforeEach(async () => {
+    await setState({
+      winemakers: [{ id: 1, name: "Felton Road" }],
+      countries: [{ id: 1, name: "New Zealand" }],
+      regions: [{ id: 1, name: "Central Otago", countryId: 1 }],
+      wines: [
+        { id: 1, name: "Pinot Noir", type: "red", wineMakerId: 1, regionId: 1 },
+        { id: 2, name: "Riesling", type: "white", wineMakerId: 1, regionId: 1 },
+        {
+          id: 3,
+          name: "Chardonnay",
+          type: "white",
+          wineMakerId: 1,
+          regionId: 1,
+        },
+      ],
+      vintages: [
+        { id: 1, wineId: 1, year: 2021, drinkFrom: null, drinkUntil: null },
+        { id: 2, wineId: 2, year: 2022, drinkFrom: null, drinkUntil: null },
+        { id: 3, wineId: 3, year: 2020, drinkFrom: null, drinkUntil: null },
+      ],
+      locations: [{ id: 1, name: "Garage" }],
+      storages: [
+        { id: 1, name: "Fridge", locationId: 1, parent: null },
+        { id: 2, name: "Top Shelf", locationId: 1, parent: 1 },
+        { id: 3, name: "Left Box", locationId: 1, parent: 2 },
+      ],
+      bottles: [
+        {
+          id: 1,
+          vintageId: 1,
+          storageId: 1,
+          purchaseDate: "2024-01-01",
+          purchasePrice: 40,
+          status: "stored",
+          size: "standard",
+        },
+        {
+          id: 2,
+          vintageId: 2,
+          storageId: 2,
+          purchaseDate: "2024-01-01",
+          purchasePrice: 40,
+          status: "stored",
+          size: "standard",
+        },
+        {
+          id: 3,
+          vintageId: 3,
+          storageId: 3,
+          purchaseDate: "2024-01-01",
+          purchasePrice: 40,
+          status: "stored",
+          size: "standard",
+        },
+      ],
+      preferences: [],
+      settings: [],
+      grapes: [],
+    });
+  });
+
+  test.afterEach(async () => {
+    await resetState();
+  });
+
+  test("toggle includes bottles from sub-storages at every depth", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/storages/1");
+
+    const toggle = page.getByRole("switch", { name: "Include sub-storages" });
+    await expect(toggle).not.toBeChecked();
+    await expect(page.getByText("Pinot Noir 2021")).toBeVisible();
+    await expect(page.getByText("Riesling 2022")).toHaveCount(0);
+    await expect(page.getByText("Chardonnay 2020")).toHaveCount(0);
+
+    await toggle.click();
+
+    await expect(toggle).toBeChecked();
+    await expect(page.getByText("Pinot Noir 2021")).toBeVisible();
+    await expect(page.getByText("Riesling 2022")).toBeVisible();
+    await expect(page.getByText("Chardonnay 2020")).toBeVisible();
+    await expect(page.getByText("Top Shelf > Left Box")).toBeVisible();
+  });
+
+  test("toggle choice is remembered", async ({ adminContext }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/storages/1");
+
+    await page.getByRole("switch", { name: "Include sub-storages" }).click();
+
+    // The preference saves in the background, so retry the reload until it lands
+    await expect(async () => {
+      await page.goto("/storages/2");
+      await expect(
+        page.getByRole("switch", { name: "Include sub-storages" }),
+      ).toBeChecked({ timeout: 1000 });
+    }).toPass();
+    await expect(page.getByText("Chardonnay 2020")).toBeVisible();
+  });
+
+  test("toggle is hidden when a storage has no sub-storages", async ({
+    adminContext,
+  }) => {
+    const page = await adminContext.newPage();
+    await page.goto("/storages/3");
+
+    await expect(page.getByText("Chardonnay 2020")).toBeVisible();
+    await expect(
+      page.getByRole("switch", { name: "Include sub-storages" }),
+    ).toHaveCount(0);
+  });
+});

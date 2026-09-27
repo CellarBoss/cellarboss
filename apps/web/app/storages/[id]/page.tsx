@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -24,9 +25,18 @@ import { BottleListItem } from "@/components/detail/BottleListItem";
 import { EditButton } from "@/components/buttons/EditButton";
 import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { usePreferencesContext } from "@/contexts/preferences-context";
+import { useUpsertPreference } from "@/hooks/use-preferences";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
-import type { Storage } from "@cellarboss/types";
+import { parsePreference } from "@cellarboss/common/preferences";
+import {
+  buildDescendantsMap,
+  getStorageAncestry,
+  INCLUDE_SUB_STORAGES_PREFERENCE,
+} from "@cellarboss/common/storages";
 import type { WineType } from "@cellarboss/validators/constants";
 
 export default function ViewStoragePage() {
@@ -70,6 +80,20 @@ export default function ViewStoragePage() {
     queryFn: getWinemakers,
   });
 
+  const preferences = usePreferencesContext();
+  const upsertPreference = useUpsertPreference();
+  const [includeSubStorages, setIncludeSubStorages] = useState(() =>
+    parsePreference(preferences.get(INCLUDE_SUB_STORAGES_PREFERENCE), false),
+  );
+
+  function handleIncludeSubStoragesChange(checked: boolean) {
+    setIncludeSubStorages(checked);
+    upsertPreference.mutate({
+      key: INCLUDE_SUB_STORAGES_PREFERENCE,
+      value: JSON.stringify(checked),
+    });
+  }
+
   const result = queryGate([
     storageQuery,
     allStoragesQuery,
@@ -100,26 +124,30 @@ export default function ViewStoragePage() {
     ? allLocations.find((l) => l.id === storage.locationId)
     : undefined;
 
-  // Build parent hierarchy
-  const hierarchyPath: Storage[] = [];
-  let current: Storage | undefined = storage;
-  while (current?.parent != null) {
-    const parent = storageMap.get(current.parent);
-    if (parent) {
-      hierarchyPath.unshift(parent);
-      current = parent;
-    } else {
-      break;
-    }
-  }
+  // Ancestors of this storage, excluding itself
+  const hierarchyPath = getStorageAncestry(storageId, storageMap).slice(0, -1);
 
   const childStorages = allStorages
     .filter((s) => s.parent === storageId)
     .sort((a, b) => a.name.localeCompare(b.name));
 
-  const storedBottles = allBottles.filter(
+  const hasSubStorages = childStorages.length > 0;
+  const showSubStorageBottles = includeSubStorages && hasSubStorages;
+  const descendantIds =
+    buildDescendantsMap(allStorages).get(storageId) ?? new Set([storageId]);
+
+  const directBottles = allBottles.filter(
     (b) => b.storageId === storageId && b.status === "stored",
   );
+  const allDescendantBottles = allBottles.filter(
+    (b) =>
+      b.storageId !== null &&
+      descendantIds.has(b.storageId) &&
+      b.status === "stored",
+  );
+  const storedBottles = showSubStorageBottles
+    ? allDescendantBottles
+    : directBottles;
 
   function getWineName(vintageId: number): string {
     const vintage = vintageMap.get(vintageId);
@@ -204,8 +232,10 @@ export default function ViewStoragePage() {
             </DetailRow>
           )}
           <DetailRow icon={BottleWine}>
-            {storedBottles.length}{" "}
-            {storedBottles.length === 1 ? "bottle" : "bottles"} stored
+            {directBottles.length}{" "}
+            {directBottles.length === 1 ? "bottle" : "bottles"} stored
+            {allDescendantBottles.length !== directBottles.length &&
+              ` · ${allDescendantBottles.length} including sub-storages`}
           </DetailRow>
         </DetailCard>
 
@@ -237,7 +267,28 @@ export default function ViewStoragePage() {
       <RelatedResourceSection
         heading="Bottles"
         count={storedBottles.length}
-        emptyMessage="No bottles in this storage"
+        emptyMessage={
+          showSubStorageBottles
+            ? "No bottles in this storage or its sub-storages"
+            : "No bottles in this storage"
+        }
+        actions={
+          hasSubStorages && (
+            <div className="flex items-center gap-2">
+              <Label
+                htmlFor="include-sub-storages"
+                className="font-normal text-muted-foreground"
+              >
+                Include sub-storages
+              </Label>
+              <Switch
+                id="include-sub-storages"
+                checked={includeSubStorages}
+                onCheckedChange={handleIncludeSubStoragesChange}
+              />
+            </div>
+          )
+        }
       >
         {sortedBottles.map((bottle) => {
           const vintage = vintageMap.get(bottle.vintageId);
@@ -251,6 +302,13 @@ export default function ViewStoragePage() {
               wineYear={vintage?.year != null ? String(vintage.year) : "NV"}
               winemakerName={maker?.name ?? ""}
               wineType={wine?.type as WineType | undefined}
+              storagePath={getStorageAncestry(
+                bottle.storageId,
+                storageMap,
+                storageId,
+              )
+                .map((s) => s.name)
+                .join(" > ")}
             />
           );
         })}

@@ -1,10 +1,12 @@
+import { useState } from "react";
 import { View, ScrollView, Pressable, StyleSheet } from "react-native";
-import { Text, Icon } from "react-native-paper";
+import { Text, Icon, Switch } from "react-native-paper";
 import { useCommonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { useApiQuery } from "@/hooks/use-api-query";
+import { usePreference, useUpsertPreference } from "@/hooks/use-preferences";
 import { api } from "@/lib/api/client";
 import { queryGate } from "@/lib/functions/query-gate";
 import { shadows } from "@/lib/theme";
@@ -12,7 +14,12 @@ import { useAppTheme } from "@/hooks/use-app-theme";
 import { formatDrinkingStatus } from "@/lib/functions/format";
 import { BottleListItem } from "@/components/bottle/BottleListItem";
 import { BottleCountBadge } from "@/components/storage/BottleCountBadge";
-import type { Storage } from "@cellarboss/types";
+import { parsePreference } from "@cellarboss/common/preferences";
+import {
+  buildDescendantsMap,
+  getStorageAncestry,
+  INCLUDE_SUB_STORAGES_PREFERENCE,
+} from "@cellarboss/common/storages";
 import type { WineType } from "@cellarboss/validators/constants";
 
 export default function ViewStorageScreen() {
@@ -72,6 +79,25 @@ export default function ViewStorageScreen() {
     section: {
       marginTop: 16,
     },
+    sectionHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: 8,
+    },
+    sectionHeading: {
+      color: theme.colors.onSurface,
+      paddingHorizontal: 4,
+    },
+    toggleRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+    },
+    toggleLabel: {
+      fontSize: 13,
+      color: theme.colors.onSurfaceVariant,
+    },
     empty: {
       fontSize: 13,
       color: theme.colors.onSurfaceVariant,
@@ -128,6 +154,26 @@ export default function ViewStorageScreen() {
     queryFn: () => api.winemakers.getAll(),
   });
 
+  const includeSubStoragesPreference = usePreference(
+    INCLUDE_SUB_STORAGES_PREFERENCE,
+  );
+  const upsertPreference = useUpsertPreference();
+  // Local override so the switch responds immediately while the save is in flight
+  const [includeSubStoragesOverride, setIncludeSubStoragesOverride] = useState<
+    boolean | null
+  >(null);
+  const includeSubStorages =
+    includeSubStoragesOverride ??
+    parsePreference(includeSubStoragesPreference.data, false);
+
+  function handleIncludeSubStoragesChange(checked: boolean) {
+    setIncludeSubStoragesOverride(checked);
+    upsertPreference.mutate({
+      key: INCLUDE_SUB_STORAGES_PREFERENCE,
+      value: JSON.stringify(checked),
+    });
+  }
+
   const result = queryGate([
     storageQuery,
     allStoragesQuery,
@@ -155,18 +201,8 @@ export default function ViewStorageScreen() {
   const wineMap = new Map(wines.map((w) => [w.id, w]));
   const winemakerMap = new Map(winemakers.map((m) => [m.id, m]));
 
-  // Build parent hierarchy path
-  const hierarchyPath: Storage[] = [];
-  let current: Storage | undefined = storage;
-  while (current?.parent != null) {
-    const parent = storageMap.get(current.parent);
-    if (parent) {
-      hierarchyPath.unshift(parent);
-      current = parent;
-    } else {
-      break;
-    }
-  }
+  // Ancestors of this storage, excluding itself
+  const hierarchyPath = getStorageAncestry(storage.id, storageMap).slice(0, -1);
 
   const location = storage.locationId
     ? locationMap.get(storage.locationId)
@@ -178,10 +214,23 @@ export default function ViewStorageScreen() {
 
   const currentYear = new Date().getFullYear();
 
-  // Filter bottles stored in this storage
-  const storedBottles = bottles.filter(
+  const hasSubStorages = childStorages.length > 0;
+  const showSubStorageBottles = includeSubStorages && hasSubStorages;
+  const descendantIds =
+    buildDescendantsMap(allStorages).get(storage.id) ?? new Set([storage.id]);
+
+  const directBottles = bottles.filter(
     (b) => b.storageId === storage.id && b.status === "stored",
   );
+  const allDescendantBottles = bottles.filter(
+    (b) =>
+      b.storageId !== null &&
+      descendantIds.has(b.storageId) &&
+      b.status === "stored",
+  );
+  const storedBottles = showSubStorageBottles
+    ? allDescendantBottles
+    : directBottles;
 
   function getWineName(bottle: { vintageId: number }): string {
     const vintage = vintageMap.get(bottle.vintageId);
@@ -275,8 +324,10 @@ export default function ViewStorageScreen() {
                   color={theme.colors.onSurfaceVariant}
                 />
                 <Text variant="bodyMedium" style={styles.detailText}>
-                  {storedBottles.length}{" "}
-                  {storedBottles.length === 1 ? "bottle" : "bottles"} stored
+                  {directBottles.length}{" "}
+                  {directBottles.length === 1 ? "bottle" : "bottles"} stored
+                  {allDescendantBottles.length !== directBottles.length &&
+                    ` · ${allDescendantBottles.length} including sub-storages`}
                 </Text>
               </View>
             </View>
@@ -317,12 +368,28 @@ export default function ViewStorageScreen() {
         )}
 
         <View style={styles.section}>
-          <Text variant="titleSmall" style={styles.heading}>
-            Bottles
-          </Text>
+          <View style={styles.sectionHeader}>
+            <Text variant="titleSmall" style={styles.sectionHeading}>
+              Bottles
+            </Text>
+            {hasSubStorages && (
+              <View style={styles.toggleRow}>
+                <Text style={styles.toggleLabel}>Include sub-storages</Text>
+                <Switch
+                  value={includeSubStorages}
+                  onValueChange={handleIncludeSubStoragesChange}
+                  accessibilityLabel="Include sub-storages"
+                />
+              </View>
+            )}
+          </View>
           <View style={styles.bottlesCard}>
             {sortedBottles.length === 0 ? (
-              <Text style={styles.empty}>No bottles in this storage</Text>
+              <Text style={styles.empty}>
+                {showSubStorageBottles
+                  ? "No bottles in this storage or its sub-storages"
+                  : "No bottles in this storage"}
+              </Text>
             ) : (
               sortedBottles.map((bottle) => {
                 const vintage = vintageMap.get(bottle.vintageId);
@@ -346,6 +413,11 @@ export default function ViewStorageScreen() {
                     winemakerName={maker?.name ?? ""}
                     wineType={wine?.type as WineType | undefined}
                     drinkingStatus={drinkingStatus}
+                    storageHierarchy={getStorageAncestry(
+                      bottle.storageId,
+                      storageMap,
+                      storage.id,
+                    ).map((s) => s.name)}
                     onPress={() => router.push(`/bottles/${bottle.id}`)}
                     swipeable
                   />

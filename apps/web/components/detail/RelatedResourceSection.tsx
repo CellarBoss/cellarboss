@@ -8,6 +8,7 @@ type RelatedResourceSectionProps = {
   addHref?: string;
   addLabel?: string;
   emptyMessage?: string;
+  actions?: React.ReactNode;
   className?: string;
   children?: React.ReactNode;
 };
@@ -18,6 +19,7 @@ export function RelatedResourceSection({
   addHref,
   addLabel = "Add",
   emptyMessage = "None yet",
+  actions,
   className = "mt-6",
   children,
 }: RelatedResourceSectionProps) {
@@ -31,6 +33,7 @@ export function RelatedResourceSection({
           {heading}
           {count !== undefined && <span className="ml-1">({count})</span>}
         </h2>
+        {actions}
         {addHref && (
           <Link
             href={addHref}

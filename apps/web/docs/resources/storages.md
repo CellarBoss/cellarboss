@@ -59,6 +59,8 @@ Click the name of the storage to view the storage's details.
 
 ![Storage detail](/screenshots/storages-detail.png)
 
+To also see bottles held in its sub-storages, turn on **Include sub-storages** above the bottle list. See [Storage Hierarchy](/features/storage-hierarchy#bottles-in-sub-storages).
+
 ## Editing a Storage
 
 Click the **Edit** button to modify the storage's information.

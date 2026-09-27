@@ -8,6 +8,7 @@ import { getRegions } from "@/lib/api/regions";
 import { getCountries } from "@/lib/api/countries";
 import { getBottlesByVintageId } from "@/lib/api/bottles";
 import { getStorages } from "@/lib/api/storages";
+import { getStorageAncestry } from "@cellarboss/common/storages";
 import { getLocations } from "@/lib/api/locations";
 import { PageHeader } from "@/components/page/PageHeader";
 import { RelatedResourceSection } from "@/components/detail/RelatedResourceSection";
@@ -106,15 +107,9 @@ export default function ViewVintagePage() {
   const locationMap = new Map(allLocations.map((l) => [l.id, l]));
 
   function getStoragePath(storageId: number | null): string {
-    if (storageId === null) return "";
-    const parts: string[] = [];
-    let current = storageMap.get(storageId);
-    while (current) {
-      parts.unshift(current.name);
-      current =
-        current.parent !== null ? storageMap.get(current.parent) : undefined;
-    }
-    return parts.join(" > ");
+    return getStorageAncestry(storageId, storageMap)
+      .map((s) => s.name)
+      .join(" > ");
   }
 
   const sortedBottles = [...bottles].sort((a, b) => {

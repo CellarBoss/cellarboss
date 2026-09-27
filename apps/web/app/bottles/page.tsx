@@ -15,9 +15,9 @@ import {
 } from "@/lib/functions/tree";
 import {
   getVintageName,
-  buildDescendantsMap,
   buildWineGroupedOptions,
 } from "@/lib/functions/bottles";
+import { buildDescendantsMap } from "@cellarboss/common/storages";
 import {
   DataTable,
   type BulkEditField,
