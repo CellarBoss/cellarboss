@@ -98,9 +98,11 @@ async function recordApi(
     const api: Api[] = [];
     for (const apiUrl of unique) {
       const response = await context.get(apiUrl.href, { timeout: 30_000 });
+      // Stop before anything is written, so the fixture on disk stays whole.
       if (!response.ok()) {
-        console.warn(`API ${apiUrl.href} returned HTTP ${response.status()}`);
-        continue;
+        throw new Error(
+          `API ${apiUrl.href} returned HTTP ${response.status()}; nothing saved`,
+        );
       }
       api.push({ url: apiUrl.href, body: await response.text() });
     }
@@ -127,9 +129,12 @@ function trim(html: string, url: URL, importer: BaseImporter): string {
         ? []
         : importer.inlineObjects.flatMap((name) => {
             const value = readAssignment(script.text(), name);
+            // Escape "<" so a "</script>" inside a string can't end the tag.
             return value === undefined
               ? []
-              : [`const ${name} = ${JSON.stringify(value)};`];
+              : [
+                  `const ${name} = ${JSON.stringify(value).replace(/</g, "\\u003c")};`,
+                ];
           });
       if (kept.length)
         script.replaceWith(`<script>${kept.join("\n")}</script>`);

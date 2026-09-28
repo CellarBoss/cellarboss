@@ -75,14 +75,14 @@ export class VivinoImporter extends BaseImporter {
   }
 }
 
+/** The vintage the page shows, else the one the link names. */
 function vintageId(ctx: ImportContext): string | undefined {
-  const fromUrl = ctx.url.searchParams.get("vintage_id");
-  if (fromUrl && /^\d+$/.test(fromUrl)) return fromUrl;
   for (const key of APP_LINK_META) {
     const match = /[?&]vintage_id=(\d+)/.exec(ctx.meta.get(key) ?? "");
     if (match) return match[1];
   }
-  return undefined;
+  const fromUrl = ctx.url.searchParams.get("vintage_id");
+  return fromUrl && /^\d+$/.test(fromUrl) ? fromUrl : undefined;
 }
 
 function grapeNames(value: unknown): string[] {

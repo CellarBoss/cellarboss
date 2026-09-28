@@ -44,6 +44,22 @@ describe("VivinoImporter.apiRequests", () => {
       importer.apiRequests(buildContext({ url, html })).map((u) => u.href),
     ).toEqual(["https://www.vivino.com/api/vintages/173991458"]);
   });
+
+  it("prefers the page's vintage over the link's, falling back to the link", () => {
+    const linked = `${url}&vintage_id=42`;
+    const html =
+      '<meta property="al:android:url" content="vivino://?vintage_id=173991458">';
+    expect(
+      importer
+        .apiRequests(buildContext({ url: linked, html }))
+        .map((u) => u.href),
+    ).toEqual(["https://www.vivino.com/api/vintages/173991458"]);
+    expect(
+      importer
+        .apiRequests(buildContext({ url: linked, html: "" }))
+        .map((u) => u.href),
+    ).toEqual(["https://www.vivino.com/api/vintages/42"]);
+  });
 });
 
 describe("readInlineObject", () => {
