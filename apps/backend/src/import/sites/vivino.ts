@@ -39,9 +39,16 @@ export class VivinoImporter extends BaseImporter {
   }
 
   protected override extractApi(ctx: ImportContext): RawWine {
+    // A vintage_id in the link can name another wine's vintage, so only use
+    // a vintage of the wine the page is for. Without a match the page is
+    // fetched and its own vintage id is used.
+    const wineId = /\/w\/(\d+)/.exec(ctx.url.pathname)?.[1];
     const vintage = ctx.api
       .map(({ data }) => (isRecord(data) ? data.vintage : undefined))
-      .find(isRecord);
+      .filter(isRecord)
+      .find(
+        (v) => !wineId || (isRecord(v.wine) && String(v.wine.id) === wineId),
+      );
     if (!vintage) return {};
 
     const wine = isRecord(vintage.wine) ? vintage.wine : {};

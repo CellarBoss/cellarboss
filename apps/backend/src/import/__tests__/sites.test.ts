@@ -62,6 +62,38 @@ describe("VivinoImporter.apiRequests", () => {
   });
 });
 
+describe("VivinoImporter.extract", () => {
+  const url = "https://www.vivino.com/GB/en/x/w/66284?vintage_id=42";
+  const importer = importerFor(url);
+  const vintageOf = (wineId: number) => ({
+    url: "https://www.vivino.com/api/vintages/42",
+    body: JSON.stringify({
+      vintage: {
+        year: 2021,
+        wine: {
+          id: wineId,
+          name: "Cabernet",
+          type_id: 1,
+          winery: { name: "Caymus" },
+        },
+      },
+    }),
+  });
+
+  it("uses a vintage of the page's wine", () => {
+    const wine = importer.extract(
+      buildContext({ url, html: "", api: [vintageOf(66284)] }),
+    );
+    expect(wine.name?.value).toBe("Cabernet");
+  });
+
+  it("ignores a vintage of another wine, so the page gets fetched", () => {
+    const ctx = buildContext({ url, html: "", api: [vintageOf(999)] });
+    expect(importer.extract(ctx).name).toBeUndefined();
+    expect(importer.missing(importer.extract(ctx))).toContain("name");
+  });
+});
+
 describe("readInlineObject", () => {
   it("reads the JSON a script assigns, ignoring braces in strings", () => {
     const $ = load(
