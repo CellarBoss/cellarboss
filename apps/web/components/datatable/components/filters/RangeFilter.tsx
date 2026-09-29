@@ -19,6 +19,7 @@ type Props<T extends RowData> = {
   activeValue: RangeFilterValue | undefined;
 };
 
+/** Minimum and maximum inputs for a numeric range filter. */
 export function RangeFilter<T extends RowData>({
   filter,
   table,
@@ -39,6 +40,7 @@ export function RangeFilter<T extends RowData>({
       <Input
         type="number"
         placeholder="Min"
+        aria-label={`${filter.label} minimum`}
         min="0"
         value={minInput}
         onChange={(e) => {
@@ -58,6 +60,7 @@ export function RangeFilter<T extends RowData>({
       <Input
         type="number"
         placeholder="Max"
+        aria-label={`${filter.label} maximum`}
         min="0"
         value={maxInput}
         onChange={(e) => {

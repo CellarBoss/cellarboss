@@ -14,6 +14,7 @@ type Props<T extends RowData> = {
   activeValues: string[] | undefined;
 };
 
+/** Checkbox list of a multi-select filter's options, under group headings. */
 export function GroupedMultiSelectFilter<T extends RowData>({
   filter,
   table,

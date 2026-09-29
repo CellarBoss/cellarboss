@@ -18,6 +18,7 @@ export type ActiveFilter<D extends AnyFilterDef = AnyFilterDef> = {
   summary: string;
 };
 
+/** The current value of a column's filter, if any. */
 export function getFilterValue(
   columnFilters: ColumnFiltersState,
   columnId: string,
@@ -25,6 +26,7 @@ export function getFilterValue(
   return columnFilters.find((cf) => cf.id === columnId)?.value;
 }
 
+/** Whether a filter value narrows the table (a non-empty selection or a range bound). */
 export function isFilterValueActive(
   filter: AnyFilterDef,
   value: unknown,
@@ -44,6 +46,7 @@ function optionsOf(filter: AnyFilterDef): MultiSelectOption[] {
   return [];
 }
 
+/** Short text for an active filter's tag, such as "Red, White", "3 selected" or "≥ 10". */
 export function summarizeFilterValue(
   filter: AnyFilterDef,
   value: unknown,

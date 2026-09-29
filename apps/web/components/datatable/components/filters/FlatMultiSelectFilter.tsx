@@ -14,6 +14,7 @@ type Props<T extends RowData> = {
   activeValues: string[] | undefined;
 };
 
+/** Checkbox list of a multi-select filter's options. */
 export function FlatMultiSelectFilter<T extends RowData>({
   filter,
   table,
