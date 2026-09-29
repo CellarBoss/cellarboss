@@ -1,15 +1,10 @@
-import { test, expect, resetState } from "../fixtures/auth";
+import { test, expect } from "../fixtures/auth";
 
 test.describe("Sidebar", () => {
-  test.afterEach(async () => {
-    await resetState();
-  });
-
   test.describe("Collapse and expand", () => {
     test("collapse button toggles sidebar to icon-only mode", async ({
-      adminContext,
+      adminPage: page,
     }) => {
-      const page = await adminContext.newPage();
       await page.goto("/wines");
 
       const sidebar = page.locator("[data-state][data-collapsible]");
@@ -25,9 +20,8 @@ test.describe("Sidebar", () => {
     });
 
     test("collapsed state persists across navigation", async ({
-      adminContext,
+      adminPage: page,
     }) => {
-      const page = await adminContext.newPage();
       await page.goto("/wines");
 
       const sidebar = page.locator("[data-state][data-collapsible]");
@@ -43,9 +37,8 @@ test.describe("Sidebar", () => {
     });
 
     test("menu items show tooltips when sidebar is collapsed", async ({
-      adminContext,
+      adminPage: page,
     }) => {
-      const page = await adminContext.newPage();
       await page.goto("/wines");
 
       // Collapse the sidebar via user menu
@@ -65,9 +58,8 @@ test.describe("Sidebar", () => {
 
   test.describe("Dark mode", () => {
     test("toggle switches between light and dark mode", async ({
-      adminContext,
+      adminPage: page,
     }) => {
-      const page = await adminContext.newPage();
       await page.goto("/wines");
 
       const html = page.locator("html");

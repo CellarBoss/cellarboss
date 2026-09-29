@@ -1,4 +1,4 @@
-import { test, expect, setState, resetState } from "../fixtures/auth";
+import { test, expect, setState } from "../fixtures/auth";
 import type { Bottle } from "@cellarboss/types";
 
 const today = new Date().toISOString().split("T")[0]; // e.g. "2026-03-18"
@@ -158,12 +158,7 @@ test.describe("Dashboard page", () => {
     await setState(buildDashboardState());
   });
 
-  test.afterEach(async () => {
-    await resetState();
-  });
-
-  test("renders dashboard heading", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("renders dashboard heading", async ({ adminPage: page }) => {
     await page.goto("/");
 
     await expect(
@@ -172,8 +167,7 @@ test.describe("Dashboard page", () => {
     await expect(page.getByText("Your cellar at a glance")).toBeVisible();
   });
 
-  test("displays cellar overview stat cards", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("displays cellar overview stat cards", async ({ adminPage: page }) => {
     await page.goto("/");
 
     // Total Bottles: 4 stored (ids 1-4, id 5 is consumed)
@@ -192,16 +186,14 @@ test.describe("Dashboard page", () => {
     ).toBeVisible();
   });
 
-  test("shows wine type breakdown chart", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("shows wine type breakdown chart", async ({ adminPage: page }) => {
     await page.goto("/");
 
     await expect(page.getByText("Wine Types")).toBeVisible();
     await expect(page.getByText("Bottles by wine type")).toBeVisible();
   });
 
-  test("shows drinking window timeline", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("shows drinking window timeline", async ({ adminPage: page }) => {
     await page.goto("/");
 
     await expect(page.getByText("Drinking Window Timeline")).toBeVisible();
@@ -209,7 +201,7 @@ test.describe("Dashboard page", () => {
 
   for (const status of ["ordered", "in-primeur"] as const) {
     test(`includes ${status} bottles in drinking window timeline`, async ({
-      adminContext,
+      adminPage: page,
     }) => {
       const state = buildDashboardState();
       state.bottles = [
@@ -225,7 +217,6 @@ test.describe("Dashboard page", () => {
       ];
       await setState(state);
 
-      const page = await adminContext.newPage();
       await page.goto("/");
 
       await expect(page.getByText("Drinking Window Timeline")).toBeVisible();
@@ -247,15 +238,13 @@ test.describe("Dashboard page", () => {
     });
   }
 
-  test("shows cellar value over time chart", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("shows cellar value over time chart", async ({ adminPage: page }) => {
     await page.goto("/");
 
     await expect(page.getByText("Cellar Value Over Time")).toBeVisible();
   });
 
-  test("displays top rated wines with scores", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("displays top rated wines with scores", async ({ adminPage: page }) => {
     await page.goto("/");
 
     await expect(page.getByText("Top Rated Wines")).toBeVisible();
@@ -276,9 +265,8 @@ test.describe("Dashboard page", () => {
   });
 
   test("displays drinking suggestions for wines near end of window", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/");
 
     await expect(page.getByText("Drink Soon")).toBeVisible();
@@ -292,9 +280,8 @@ test.describe("Dashboard page", () => {
   });
 
   test("displays recent activity with purchases and tastings", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/");
 
     await expect(page.getByText("Recent Activity")).toBeVisible();
@@ -309,8 +296,7 @@ test.describe("Dashboard page", () => {
     await expect(page.getByText(/Scored 9\/10 by Test Admin/)).toBeVisible();
   });
 
-  test("displays country distribution chart", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("displays country distribution chart", async ({ adminPage: page }) => {
     await page.goto("/");
 
     await expect(page.getByText("Top Countries")).toBeVisible();
@@ -320,9 +306,8 @@ test.describe("Dashboard page", () => {
   });
 
   test("top rated wine name links to wine detail page", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/");
 
     // Find the Grand Vin link and click it
@@ -332,9 +317,8 @@ test.describe("Dashboard page", () => {
   });
 
   test("drinking suggestions wine name links to wine page", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/");
 
     // Grand Vin appears in drink soon since drinkUntil is within 2 years
@@ -351,9 +335,8 @@ test.describe("Dashboard page", () => {
   });
 
   test("recent activity winemaker links to winemaker page", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/");
 
     // Find a winemaker link in recent activity
@@ -369,11 +352,9 @@ test.describe("Dashboard page", () => {
 });
 
 test.describe("Dashboard empty states", () => {
-  test.afterEach(async () => {
-    await resetState();
-  });
-
-  test("shows empty state when no bottles exist", async ({ adminContext }) => {
+  test("shows empty state when no bottles exist", async ({
+    adminPage: page,
+  }) => {
     await setState({
       bottles: [],
       vintages: [],
@@ -386,7 +367,6 @@ test.describe("Dashboard empty states", () => {
       wineGrapes: [],
     });
 
-    const page = await adminContext.newPage();
     await page.goto("/");
 
     await expect(
@@ -409,7 +389,7 @@ test.describe("Dashboard empty states", () => {
   });
 
   test("shows empty chart states with no stored bottles", async ({
-    adminContext,
+    adminPage: page,
   }) => {
     await setState({
       bottles: [],
@@ -423,7 +403,6 @@ test.describe("Dashboard empty states", () => {
       wineGrapes: [],
     });
 
-    const page = await adminContext.newPage();
     await page.goto("/");
 
     await expect(

@@ -24,6 +24,7 @@ export function WineGlassRating({ field, editable }: WineGlassRatingProps) {
             <button
               key={i}
               type="button"
+              aria-label={`Score ${i + 1} out of 10`}
               disabled={!editable}
               onMouseEnter={() => editable && setHoverIndex(i)}
               onClick={() => {
