@@ -1,0 +1,16 @@
+{
+  "url": "https://www.vivino.com/GB/en/veuve-clicquot-brut-carte-jaune-champagne/w/1128385",
+  "importer": "vivino",
+  "recordedAt": "2026-09-27T20:25:14.512Z",
+  "currentYear": 2026,
+  "reviewed": true,
+  "fields": {
+    "name": "Brut (Carte Jaune) Champagne",
+    "winemaker": "Veuve Clicquot",
+    "country": "France",
+    "regions": ["Champagne"],
+    "grapes": ["Pinot Meunier", "Pinot Noir", "Chardonnay"],
+    "type": "sparkling",
+    "vintage": null
+  }
+}

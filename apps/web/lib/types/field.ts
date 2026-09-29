@@ -16,6 +16,11 @@ export type SelectorConfig = {
   allowMultiple?: boolean;
   groupBy?: GroupByConfig;
   hierarchical?: boolean;
+  /**
+   * Offers a Create "…" option when the search matches nothing. The value is
+   * then a pending name (see `pendingValue`) for the caller to create on save.
+   */
+  allowCreate?: boolean;
 };
 
 export type SelectOption = { value: string; label: string };

@@ -31,6 +31,7 @@ export function DataSelector({
     allowMultiple = false,
     groupBy,
     hierarchical = false,
+    allowCreate = false,
   } = selectorConfig;
 
   const { data, isLoading } = useApiQuery<GenericType[]>({
@@ -82,6 +83,7 @@ export function DataSelector({
         isInvalid={isInvalid}
         editable={editable}
         field={field}
+        allowCreate={allowCreate}
       />
     );
   }
@@ -93,6 +95,7 @@ export function DataSelector({
       editable={editable}
       field={field}
       groups={groups}
+      allowCreate={allowCreate}
     />
   );
 }

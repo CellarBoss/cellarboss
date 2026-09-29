@@ -1,7 +1,7 @@
 import type { UntypedKysely } from "@schema/untyped.js";
 import { env } from "@utils/env.js";
 
-const grapes = [
+export const grapes = [
   "Agiorgitiko",
   "Aglianico",
   "Airen",

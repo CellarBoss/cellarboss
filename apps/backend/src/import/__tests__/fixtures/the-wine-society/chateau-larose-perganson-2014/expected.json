@@ -1,0 +1,18 @@
+{
+  "url": "https://www.thewinesociety.com/product/chateau-larose-perganson-haut-medoc-2014-en.aspx",
+  "importer": "the-wine-society",
+  "recordedAt": "2026-09-27T20:24:19.990Z",
+  "currentYear": 2026,
+  "reviewed": true,
+  "notes": "No producer on the page (its profile is \"Generic Producer\"), so no winemaker.",
+  "fields": {
+    "name": "Château Larose-Perganson, Haut-Médoc",
+    "country": "France",
+    "regions": ["Bordeaux"],
+    "grapes": ["Cabernet Sauvignon"],
+    "type": "red",
+    "vintage": 2014,
+    "drinkFrom": 2026,
+    "drinkUntil": 2027
+  }
+}

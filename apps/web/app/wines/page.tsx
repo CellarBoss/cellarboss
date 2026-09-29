@@ -21,6 +21,7 @@ import { DeleteButton } from "@/components/buttons/DeleteButton";
 import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/page/PageHeader";
 import { AddButton } from "@/components/buttons/AddButton";
+import { ImportButton } from "@/components/buttons/ImportButton";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { queryGate } from "@/lib/functions/query-gate";
 import WineDetailRow from "@/components/datatable/components/detail/WineDetailRow";
@@ -308,6 +309,10 @@ export default function WinesPage() {
             onClick={async () => router.push(`/wines/new`)}
             subject="Wine"
             key="add"
+          />,
+          <ImportButton
+            onClick={async () => router.push(`/wines/import`)}
+            key="import"
           />,
         ]}
       />

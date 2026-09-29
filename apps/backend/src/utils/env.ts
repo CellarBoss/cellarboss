@@ -16,6 +16,10 @@ export const env = z
       .enum(["trace", "debug", "info", "warn", "error"])
       .default("info"),
     MCP_ENABLED: z.stringbool().default(false),
+    // Sends only import requests (fetching retailer pages) through this
+    // proxy: http://, https:// or socks5://. HTTPS_PROXY and NO_PROXY are
+    // honoured for import requests when this is unset.
+    IMPORT_PROXY_URL: z.url().optional(),
     UPLOAD_DIR: z
       .string()
       .refine((p) => existsSync(p), {

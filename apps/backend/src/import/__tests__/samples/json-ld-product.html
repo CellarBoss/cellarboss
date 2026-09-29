@@ -1,0 +1,54 @@
+<!doctype html>
+<!-- Synthetic sample page for unit tests; not a recorded retailer page. -->
+<html>
+  <head>
+    <title>Buy Ch&acirc;teau Example Margaux 2015 | Example Wines</title>
+    <meta
+      property="og:title"
+      content="Château Example Margaux 2015 | Example Wines"
+    />
+    <meta property="og:image" content="https://cdn.example.com/og.jpg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          { "@type": "BreadcrumbList", "itemListElement": [] },
+          {
+            "@type": "Product",
+            "name": "Ch&acirc;teau Example, Margaux 2015",
+            "brand": { "@type": "Brand", "name": "Château Example" },
+            "image": ["/images/bottle.jpg"],
+            "countryOfOrigin": { "@type": "Country", "name": "France" },
+            "additionalProperty": [
+              {
+                "@type": "PropertyValue",
+                "name": "Grape Variety",
+                "value": "65% Cabernet Sauvignon, 35% Merlot"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Region",
+                "value": "Margaux, Bordeaux"
+              },
+              { "@type": "PropertyValue", "name": "Colour", "value": "Red" },
+              {
+                "@type": "PropertyValue",
+                "name": "Bottle Size",
+                "value": "75cl"
+              }
+            ],
+            "offers": {
+              "@type": "AggregateOffer",
+              "offers": [
+                { "@type": "Offer", "price": "45.00", "priceCurrency": "GBP" }
+              ]
+            }
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Château Example, Margaux 2015</h1>
+  </body>
+</html>
