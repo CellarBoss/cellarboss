@@ -144,10 +144,15 @@ describe("Embedded counts on wine and vintage reads", () => {
       });
     });
 
-    it("GET /vintage returns zero counts for a vintage with no bottles or notes", async () => {
+    it("GET /vintage returns counts for populated and empty vintages", async () => {
       const res = await app.request("/vintage");
       expect(res.status).toBe(200);
       const data = await res.json();
+      const populated = data.find((v: { id: number }) => v.id === vintage2015);
+      expect(populated).toMatchObject({
+        tastingNotesCount: 2,
+        bottles: { stored: 2, drunk: 1, ordered: 0 },
+      });
       const empty = data.find((v: { id: number }) => v.id === emptyVintage);
       expect(empty.tastingNotesCount).toBe(0);
       expect(Object.values(empty.bottles)).toEqual([0, 0, 0, 0, 0, 0]);

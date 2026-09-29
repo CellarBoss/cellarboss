@@ -41,6 +41,13 @@ describe("mock server embedded counts", () => {
       expect(total).toBe(
         state.bottles.filter((b) => b.vintageId === vintage.id).length,
       );
+      for (const [status, count] of Object.entries(vintage.bottles)) {
+        expect(count).toBe(
+          state.bottles.filter(
+            (b) => b.vintageId === vintage.id && b.status === status,
+          ).length,
+        );
+      }
     }
   });
 });
