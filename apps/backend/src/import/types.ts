@@ -58,7 +58,7 @@ export interface ImportedWine extends ImportedWineDetails {
 }
 
 /** How a page's data is obtained. The backend tries an adapter's strategies in order. */
-export type Strategy = "api" | "http" | "supplied";
+export type Strategy = "api" | "http";
 
 export interface FetchedDocument {
   url: URL;

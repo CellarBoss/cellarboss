@@ -1,21 +1,11 @@
 import { z } from "zod";
 import { WINE_TYPES } from "./constants";
 
-/** Largest page a client may send for the "supplied" strategy. */
-export const IMPORT_MAX_HTML_LENGTH = 3_000_000;
-
 export const importPreviewSchema = z.object({
   url: z
     .url({ protocol: /^https?$/ })
     .max(2048)
     .describe("Product page to import from"),
-  html: z
-    .string()
-    .max(IMPORT_MAX_HTML_LENGTH)
-    .optional()
-    .describe(
-      "The page's HTML, sent from the user's own browser instead of fetching it",
-    ),
 });
 
 const id = z.number().int().positive();

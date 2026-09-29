@@ -45,7 +45,9 @@ test.describe("Import wine", () => {
     await expect(
       page.getByRole("heading", { name: "Import Wine" }),
     ).toBeVisible();
-    await expect(page.getByText(/Works best with/)).toContainText("Vivino");
+    await expect(
+      page.getByText("Paste a link to a wine’s page on a shop’s website."),
+    ).toBeVisible();
   });
 
   test("imports a new wine and vintage", async ({ adminContext }) => {

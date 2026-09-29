@@ -25,7 +25,7 @@ export function defineLabelTableImporter(
     readonly id = config.id;
     readonly label = config.label;
     readonly hosts = config.hosts;
-    override readonly strategies = config.strategies ?? ["http", "supplied"];
+    override readonly strategies = config.strategies ?? ["http"];
     override readonly required = config.required ?? ["name", "winemaker"];
 
     protected override extractSite({ $ }: ImportContext): RawWine {

@@ -34,9 +34,7 @@ You can pick a different value in any field, or type a new name in a selector an
 
 ## When a link doesn't work
 
-If CellarBoss can't read the page, you'll see "Couldn't get details from this link" and an empty form to fill in yourself.
-
-Some shops block requests from servers. If that happens, open the page in your browser, view its source (usually **Ctrl+U** or **Cmd+Option+U**), copy it, click **Paste the page source instead**, and paste it in alongside the link.
+If CellarBoss can't read the page, you'll see "Couldn't get details from this link" and an empty form to fill in yourself. Some shops block requests from servers, so their links may never work.
 
 ## For server operators
 

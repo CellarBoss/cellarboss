@@ -11,7 +11,7 @@ import {
 } from "./setup";
 import { registerImportRoutes } from "@routes/import.routes.js";
 import * as importController from "@controllers/import.controller.js";
-import { RemoteFetchError } from "@utils/fetch-remote.js";
+import { RemoteFetchError, SafeFetcher } from "@utils/fetch-remote.js";
 import { db } from "@utils/database.js";
 import { insertReturning } from "@utils/query-helpers.js";
 import type { Fetcher } from "../import/index.js";
@@ -101,11 +101,16 @@ describe("Import API", () => {
       expect(Array.isArray(await res.json())).toBe(true);
     });
 
-    it("POST /import/preview reads supplied HTML", async () => {
-      const res = await post(app, "/import/preview", {
-        url: PRODUCT_URL,
-        html: sample("json-ld-product.html"),
-      });
+    /** Answers the routes' page fetches with `body` instead of the network. */
+    function servePage(body: string) {
+      vi.spyOn(SafeFetcher.prototype, "fetch").mockImplementation(
+        async ({ url }) => ({ url, contentType: "html", body, via: "http" }),
+      );
+    }
+
+    it("POST /import/preview reads the page", async () => {
+      servePage(sample("json-ld-product.html"));
+      const res = await post(app, "/import/preview", { url: PRODUCT_URL });
       expect(res.status).toBe(200);
       const data = await res.json();
       expect(data.wine.name.value).toBe("Margaux");
@@ -122,10 +127,8 @@ describe("Import API", () => {
     });
 
     it("POST /import/preview returns IMPORT_FAILED when nothing is found", async () => {
-      const res = await post(app, "/import/preview", {
-        url: PRODUCT_URL,
-        html: "<html><body>Nothing here</body></html>",
-      });
+      servePage("<html><body>Nothing here</body></html>");
+      const res = await post(app, "/import/preview", { url: PRODUCT_URL });
       expect(res.status).toBe(422);
       expect(await res.json()).toEqual({ error: "IMPORT_FAILED" });
     });
@@ -243,23 +246,22 @@ describe("Import API", () => {
 
     it("rate limits each user", async () => {
       const fetcher = fetcherReturning(sample("json-ld-product.html"));
-      const html = sample("json-ld-product.html");
       for (let i = 0; i < 10; i++) {
         const result = await importController.preview(
-          { url: PRODUCT_URL, html },
+          { url: PRODUCT_URL },
           USER_ID,
           fetcher,
         );
         expect(result.ok).toBe(true);
       }
       const limited = await importController.preview(
-        { url: PRODUCT_URL, html },
+        { url: PRODUCT_URL },
         USER_ID,
         fetcher,
       );
       expect(limited).toEqual({ ok: false, reason: "rate_limited" });
       const other = await importController.preview(
-        { url: PRODUCT_URL, html },
+        { url: PRODUCT_URL },
         "other-user",
         fetcher,
       );
@@ -282,8 +284,9 @@ describe("Import API", () => {
       });
 
       const result = await importController.preview(
-        { url: PRODUCT_URL, html: sample("json-ld-product.html") },
+        { url: PRODUCT_URL },
         USER_ID,
+        fetcherReturning(sample("json-ld-product.html")),
       );
       expect(result.ok).toBe(true);
       if (!result.ok) return;
