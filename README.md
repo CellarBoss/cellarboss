@@ -29,6 +29,7 @@
 ## Features
 
 - [Wine database](https://docs.cellarboss.org/web/resources/wines.html) with detailed attributes (country, region, grape, winemaker, vintage)
+- [Import wines from a link](https://docs.cellarboss.org/web/features/import.html) to The Wine Society, Naked Wines, Vivino and other shops
 - [Bottle inventory](https://docs.cellarboss.org/web/resources/bottles.html) with per-bottle storage location tracking
 - [Store images](https://docs.cellarboss.org/web/resources/vintages.html#images) of your collection
 - [Drinking window tracking](https://docs.cellarboss.org/web/resources/vintages.html) per vintage
@@ -93,7 +94,7 @@ Developer documentation lives in the [docs/](docs/) directory:
 - ~~Multi-database support (SQLite, PostgreSQL, MySQL)~~
 - ~~Upload images of your collection~~
 - ~~Tasting notes~~
-- Import wine details from 3rd party websites (Vivino, Wine Society, Naked Wines etc)
+- ~~Import wine details from 3rd party websites (Vivino, Wine Society, Naked Wines etc)~~
 - i18n
 - Build & automatically deploy styled wine menus
 

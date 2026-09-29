@@ -8,6 +8,8 @@ Instead of typing a wine in by hand, you can paste a link to it on a shop's webs
 2. Paste the link to the wine's product page and click **Get details**.
 3. Check the form, change anything that's wrong, and click **Save**.
 
+![Import a wine from a link](/screenshots/wines-import.png)
+
 Saving creates the wine and its vintage, along with any new winemaker, country, region or grapes, and opens the new vintage so you can add bottles straight away.
 
 ## Supported shops
@@ -18,12 +20,13 @@ Importing works best with **The Wine Society**, **Naked Wines** and **Vivino**, 
 
 Each winemaker, country, region and grape is matched against what's already in your cellar, and a note with a coloured icon under the field says what will happen:
 
-| Icon               | Note                       | Meaning                                                                                                                                     |
-| ------------------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Green tick         | Matched                    | The page's value matches one you already have, and that one will be used.                                                                   |
-| Blue tick          | New                        | Nothing similar exists, so a new one will be created when you save.                                                                         |
-| Yellow exclamation | Check: close match for "…" | The page's value is similar to one you already have, and that one is selected. Click **Create "…" instead** if it's really a different one. |
-| Yellow exclamation | Check                      | The page didn't say this clearly, so it's worth a look.                                                                                     |
+| Icon               | Note                            | Meaning                                                                                                                                     |
+| ------------------ | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Green tick         | Matched                         | The page's value matches one you already have, and that one will be used.                                                                   |
+| Blue tick          | New                             | Nothing similar exists, so a new one will be created when you save.                                                                         |
+| Yellow exclamation | Check: close match for "…"      | The page's value is similar to one you already have, and that one is selected. Click **Create "…" instead** if it's really a different one. |
+| Yellow exclamation | Check                           | The page didn't say this clearly, so it's worth a look.                                                                                     |
+| Grey reset arrow   | Changed from what the page said | You picked a different value. Click **Reset to "…"** to go back to what the import found.                                                   |
 
 You can pick a different value in any field, or type a new name in a selector and choose **Create "…"**. If you change a winemaker, country, region or grapes by mistake, click **Reset to "…"** under the field to go back to what the import found.
 

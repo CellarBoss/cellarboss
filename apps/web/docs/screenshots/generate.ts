@@ -114,6 +114,7 @@ import { capture as captureBottles } from "./flows/bottles";
 import { capture as captureCountries } from "./flows/countries";
 import { capture as captureDatatable } from "./flows/datatable";
 import { capture as captureGrapes } from "./flows/grapes";
+import { capture as captureImport } from "./flows/import";
 import { capture as captureLocations } from "./flows/locations";
 import { capture as capturePages } from "./flows/pages";
 import { capture as captureRegions } from "./flows/regions";
@@ -136,6 +137,7 @@ const flows: Array<{ name: string; capture: FlowFn }> = [
   { name: "countries", capture: captureCountries },
   { name: "datatable", capture: captureDatatable },
   { name: "grapes", capture: captureGrapes },
+  { name: "import", capture: captureImport },
   { name: "locations", capture: captureLocations },
   { name: "pages", capture: capturePages },
   { name: "regions", capture: captureRegions },
