@@ -17,6 +17,10 @@ Storages represent physical storage units within a [location](/resources/locatio
 
 For more on how the hierarchy display works, see [Storage Hierarchy](/features/storage-hierarchy).
 
+### Filtering
+
+Use the Filters button above the table to show only the storages at particular locations. See [DataTable Features](/features/datatable) for full details.
+
 ## Creating a Storage
 
 Click **Create new Storage** to add a new storage unit.
