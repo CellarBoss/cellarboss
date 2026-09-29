@@ -242,11 +242,17 @@ async function main() {
     const expected = JSON.parse(
       readFileSync(expectedPath, "utf8"),
     ) as FixtureExpectation;
-    if (expected.reviewed && before !== recordedInputs(dir)) {
+    const changed =
+      before !== recordedInputs(dir) ||
+      expected.url !== url.href ||
+      expected.currentYear !== currentYear;
+    expected.url = url.href;
+    expected.currentYear = currentYear;
+    if (expected.reviewed && changed) {
       expected.reviewed = false;
-      writeFileSync(expectedPath, JSON.stringify(expected, null, 2) + "\n");
-      console.log("The recorded page changed, so expected.json is unreviewed.");
+      console.log("The recording changed, so expected.json is unreviewed.");
     }
+    writeFileSync(expectedPath, JSON.stringify(expected, null, 2) + "\n");
   } else {
     const expected: FixtureExpectation = {
       url: url.href,
