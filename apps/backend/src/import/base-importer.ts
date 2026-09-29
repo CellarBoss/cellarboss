@@ -34,6 +34,13 @@ export abstract class BaseImporter {
 
   readonly required: RequiredField[] = ["name"];
 
+  /**
+   * Variables assigned JSON in the page's inline scripts that this importer
+   * reads, e.g. "product" for `const product = {...}`. The recon script keeps
+   * these when it trims a recorded page.
+   */
+  readonly inlineObjects: string[] = [];
+
   canHandle(url: URL): boolean {
     const host = url.hostname.toLowerCase();
     return this.hosts.some((h) => host === h || host.endsWith(`.${h}`));

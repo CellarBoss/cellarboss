@@ -1,0 +1,18 @@
+{
+  "url": "https://www.vivino.com/GB/en/caymus-vineyards-cabernet-sauvignon/w/66284?year=2021",
+  "importer": "vivino",
+  "recordedAt": "2026-09-27T20:25:05.593Z",
+  "currentYear": 2026,
+  "reviewed": true,
+  "fields": {
+    "name": "Cabernet Sauvignon",
+    "winemaker": "Caymus Vineyards",
+    "country": "United States",
+    "regions": ["Napa Valley"],
+    "grapes": ["Cabernet Sauvignon"],
+    "type": "red",
+    "vintage": 2021,
+    "drinkFrom": 2024,
+    "drinkUntil": 2031
+  }
+}

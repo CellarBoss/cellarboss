@@ -8,3 +8,4 @@ export {
   LABEL_FIELDS,
 } from "./label-table.js";
 export { found, fromSite, fromApi, isRecord } from "./helpers.js";
+export { readInlineObject, readAssignment } from "./inline-script.js";

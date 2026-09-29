@@ -1,0 +1,16 @@
+{
+  "url": "https://www.thewinesociety.com/product/the-societys-champagne-brut-non-vintage/",
+  "importer": "the-wine-society",
+  "recordedAt": "2026-09-27T20:24:30.665Z",
+  "currentYear": 2026,
+  "reviewed": true,
+  "notes": "The page lists the grapes as one space-separated string (\"Pinot Noir Meunier Chardonnay\"), which can't be split reliably, so grapes are not checked.",
+  "fields": {
+    "name": "The Society's Champagne Brut",
+    "winemaker": "Champagne Alfred Gratien",
+    "country": "France",
+    "regions": ["Champagne"],
+    "type": "sparkling",
+    "vintage": null
+  }
+}
