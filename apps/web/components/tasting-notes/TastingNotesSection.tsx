@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { invalidateEmbeddedCounts } from "@/lib/functions/invalidate-counts";
 import type { TastingNote, Vintage } from "@cellarboss/types";
 import { useApiQuery } from "@/hooks/use-api-query";
 import {
@@ -63,6 +64,7 @@ export function TastingNotesSection({
         ? ["tastingNotes", "vintage", props.vintageId]
         : ["tastingNotes", "wine", props.wineId],
     });
+    invalidateEmbeddedCounts(queryClient);
   }
 
   const addHref = isVintageMode

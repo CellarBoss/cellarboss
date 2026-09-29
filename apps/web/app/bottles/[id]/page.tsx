@@ -41,6 +41,7 @@ import {
 } from "@/lib/functions/format";
 import { useSettingsContext } from "@/contexts/settings-context";
 import { useQueryClient } from "@tanstack/react-query";
+import { invalidateEmbeddedCounts } from "@/lib/functions/invalidate-counts";
 
 export default function ViewBottlePage() {
   const params = useParams();
@@ -154,6 +155,7 @@ export default function ViewBottlePage() {
                 queryClient.invalidateQueries({
                   queryKey: ["bottle", bottleId],
                 });
+                invalidateEmbeddedCounts(queryClient);
               }}
             />
             <MoveBottleButton

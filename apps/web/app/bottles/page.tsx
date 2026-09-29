@@ -1,6 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
+import { invalidateEmbeddedCounts } from "@/lib/functions/invalidate-counts";
 import { useRouter } from "next/navigation";
 import { getBottles, deleteBottle, updateBottle } from "@/lib/api/bottles";
 import { getVintages } from "@/lib/api/vintages";
@@ -132,6 +133,7 @@ export default function BottlesPage() {
     if (!delResult.ok)
       throw new Error("Error deleting bottle: " + delResult.error.message);
     queryClient.invalidateQueries({ queryKey: ["bottles"] });
+    invalidateEmbeddedCounts(queryClient);
     return true;
   }
 
@@ -142,6 +144,7 @@ export default function BottlesPage() {
     const result = await updateBottle({ ...bottle, storageId: newStorageId });
     if (!result.ok) throw new Error(result.error.message);
     queryClient.invalidateQueries({ queryKey: ["bottles"] });
+    invalidateEmbeddedCounts(queryClient);
   }
 
   async function handleChangeStatus(
@@ -151,6 +154,7 @@ export default function BottlesPage() {
     const result = await updateBottle({ ...bottle, status: newStatus });
     if (!result.ok) throw new Error(result.error.message);
     queryClient.invalidateQueries({ queryKey: ["bottles"] });
+    invalidateEmbeddedCounts(queryClient);
   }
 
   async function handleBulkDelete(rows: Bottle[]): Promise<void> {
@@ -162,6 +166,7 @@ export default function BottlesPage() {
       }
     } finally {
       queryClient.invalidateQueries({ queryKey: ["bottles"] });
+      invalidateEmbeddedCounts(queryClient);
     }
     if (errors.length)
       throw new Error("Error deleting bottle: " + errors.join(", "));
@@ -182,6 +187,7 @@ export default function BottlesPage() {
         throw new Error("Error updating bottle: " + result.error.message);
     }
     queryClient.invalidateQueries({ queryKey: ["bottles"] });
+    invalidateEmbeddedCounts(queryClient);
   }
 
   const bulkEditFields: BulkEditField<Bottle>[] = [

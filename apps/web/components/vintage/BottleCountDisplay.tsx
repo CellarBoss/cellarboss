@@ -1,40 +1,32 @@
 import Link from "next/link";
-import { useApiQuery } from "@/hooks/use-api-query";
-import { getBottleCountsByVintageId } from "@/lib/api/bottles";
+import type { VintageDetail } from "@cellarboss/types";
+import { BOTTLE_STATUSES } from "@cellarboss/validators/constants";
 import { formatStatus } from "@/lib/functions/format";
-import { getVintageById } from "@/lib/api/vintages";
 
-export function BottleCountDisplay({ vintageId }: { vintageId: number }) {
-  const bottleCountsQuery = useApiQuery({
-    queryKey: ["bottleCounts", vintageId],
-    queryFn: () => getBottleCountsByVintageId(vintageId),
-  });
+const HIDDEN_STATUSES = ["drunk", "gifted", "sold"];
 
-  const vintageQuery = useApiQuery({
-    queryKey: ["vintage", vintageId],
-    queryFn: () => getVintageById(vintageId),
-  });
+export function BottleCountDisplay({ vintage }: { vintage: VintageDetail }) {
+  const visible = BOTTLE_STATUSES.filter(
+    (status) =>
+      !HIDDEN_STATUSES.includes(status) && vintage.bottles[status] > 0,
+  );
 
-  if (bottleCountsQuery.isLoading || vintageQuery.isLoading)
-    return <span className="text-muted-foreground">...</span>;
-  if (!bottleCountsQuery.data || bottleCountsQuery.data.length === 0)
+  if (visible.length === 0)
     return <span className="text-muted-foreground">0</span>;
 
   return (
     <span>
-      {bottleCountsQuery.data
-        .filter((item) => !["drunk", "gifted", "sold"].includes(item.status))
-        .map((item, index, filtered) => (
-          <span key={item.status}>
-            <Link
-              href={`/bottles?wineId=${vintageQuery.data?.wineId}&yearMin=${vintageQuery.data?.year}&yearMax=${vintageQuery.data?.year}&status=${item.status}`}
-              className="hover:underline"
-            >
-              {item.count} {formatStatus(item.status)}
-            </Link>
-            {index < filtered.length - 1 && ", "}
-          </span>
-        ))}
+      {visible.map((status, index) => (
+        <span key={status}>
+          <Link
+            href={`/bottles?wineId=${vintage.wineId}&yearMin=${vintage.year}&yearMax=${vintage.year}&status=${status}`}
+            className="hover:underline"
+          >
+            {vintage.bottles[status]} {formatStatus(status)}
+          </Link>
+          {index < visible.length - 1 && ", "}
+        </span>
+      ))}
     </span>
   );
 }
