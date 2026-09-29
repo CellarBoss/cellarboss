@@ -1,9 +1,20 @@
 import type { ImportResolution } from "@cellarboss/types";
-import { CircleAlert, CircleCheck, type LucideIcon } from "lucide-react";
+import {
+  CircleAlert,
+  CircleCheck,
+  RotateCcw,
+  type LucideIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { fieldStatus, pendingName, pendingValue } from "@/lib/functions/import";
+import {
+  fieldStatus,
+  grapesResetTarget,
+  pendingName,
+  pendingValue,
+  resetTarget,
+} from "@/lib/functions/import";
 
-type StatusKind = "matched" | "new" | "check";
+type StatusKind = "matched" | "new" | "check" | "changed";
 
 const statusIcons: Record<StatusKind, { Icon: LucideIcon; className: string }> =
   {
@@ -16,6 +27,7 @@ const statusIcons: Record<StatusKind, { Icon: LucideIcon; className: string }> =
       Icon: CircleAlert,
       className: "text-amber-500 dark:text-amber-400",
     },
+    changed: { Icon: RotateCcw, className: "text-muted-foreground" },
   };
 
 function StatusText({
@@ -38,12 +50,12 @@ function StatusText({
   );
 }
 
-function CreateInstead({
-  name,
+function LinkButton({
   onClick,
+  children,
 }: {
-  name: string;
   onClick: () => void;
+  children: React.ReactNode;
 }) {
   return (
     <Button
@@ -52,23 +64,56 @@ function CreateInstead({
       className="h-auto p-0 text-xs"
       onClick={onClick}
     >
-      Create &ldquo;{name}&rdquo; instead
+      {children}
     </Button>
   );
 }
 
-/** How a selector's current value relates to what the page said. */
+function CreateInstead({
+  name,
+  onClick,
+}: {
+  name: string;
+  onClick: () => void;
+}) {
+  return (
+    <LinkButton onClick={onClick}>
+      Create &ldquo;{name}&rdquo; instead
+    </LinkButton>
+  );
+}
+
+function ResetTo({ name, onClick }: { name: string; onClick: () => void }) {
+  return (
+    <LinkButton onClick={onClick}>Reset to &ldquo;{name}&rdquo;</LinkButton>
+  );
+}
+
+/**
+ * How a selector's current value relates to what the page said, with a way
+ * back to the import's value once the user has changed it.
+ */
 export function FieldStatusLine({
   resolution,
   value,
-  onCreateInstead,
+  onChange,
 }: {
   resolution: ImportResolution | undefined;
   value: string;
-  onCreateInstead: (value: string) => void;
+  onChange: (value: string) => void;
 }) {
   const status = fieldStatus(resolution, value);
-  if (!status) return null;
+  const reset = resetTarget(resolution, value);
+  const resetLink = reset && (
+    <ResetTo name={reset.name} onClick={() => onChange(reset.value)} />
+  );
+  if (!status) {
+    return resetLink ? (
+      <StatusText kind="changed">
+        Changed from what the page said. {resetLink}
+      </StatusText>
+    ) : null;
+  }
   switch (status.kind) {
     case "matched":
       return (
@@ -78,7 +123,10 @@ export function FieldStatusLine({
       );
     case "new":
       return (
-        <StatusText kind="new">New: will be created when you save</StatusText>
+        <StatusText kind="new">
+          New: will be created when you save.{resetLink && " "}
+          {resetLink}
+        </StatusText>
       );
     case "suggested":
       return (
@@ -87,7 +135,7 @@ export function FieldStatusLine({
           the one you already have.{" "}
           <CreateInstead
             name={status.proposedName}
-            onClick={() => onCreateInstead(pendingValue(status.proposedName))}
+            onClick={() => onChange(pendingValue(status.proposedName))}
           />
         </StatusText>
       );
@@ -112,6 +160,7 @@ export function GrapeStatusLines({
   const created = values
     .map(pendingName)
     .filter((name): name is string => name !== null);
+  const reset = grapesResetTarget(resolutions, values);
 
   return (
     <>
@@ -134,6 +183,14 @@ export function GrapeStatusLines({
       {created.length > 0 && (
         <StatusText kind="new">
           New: {created.join(", ")} will be created when you save
+        </StatusText>
+      )}
+      {reset && (
+        <StatusText kind="changed">
+          Changed from what the page said.{" "}
+          <LinkButton onClick={() => onChange(reset.values)}>
+            Reset to {reset.names.join(", ")}
+          </LinkButton>
         </StatusText>
       )}
     </>

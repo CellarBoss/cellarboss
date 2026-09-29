@@ -25,7 +25,7 @@ Each winemaker, country, region and grape is matched against what's already in y
 | Yellow exclamation | Check: close match for "…" | The page's value is similar to one you already have, and that one is selected. Click **Create "…" instead** if it's really a different one. |
 | Yellow exclamation | Check                      | The page didn't say this clearly, so it's worth a look.                                                                                     |
 
-You can pick a different value in any field, or type a new name in a selector and choose **Create "…"**.
+You can pick a different value in any field, or type a new name in a selector and choose **Create "…"**. If you change a winemaker, country, region or grapes by mistake, click **Reset to "…"** under the field to go back to what the import found.
 
 ## When you already have the wine
 

@@ -5,8 +5,10 @@ import {
   EMPTY_IMPORT_FORM,
   fieldStatus,
   formValuesFromPreview,
+  grapesResetTarget,
   pendingName,
   pendingValue,
+  resetTarget,
   toRef,
   valueFor,
 } from "../import";
@@ -142,5 +144,58 @@ describe("fieldStatus", () => {
 
   it("reports a pending record as new", () => {
     expect(fieldStatus(undefined, "new:Syrah")).toEqual({ kind: "new" });
+  });
+});
+
+describe("resetTarget", () => {
+  const { winemaker, country, region } = preview.resolution;
+
+  it("is null while the value is the import's", () => {
+    expect(resetTarget(country, "1")).toBeNull();
+    expect(resetTarget(region, "4")).toBeNull();
+    expect(resetTarget(winemaker, pendingValue("Château Example"))).toBeNull();
+  });
+
+  it("offers the import's record once the value changes", () => {
+    expect(resetTarget(country, "7")).toEqual({ value: "1", name: "France" });
+    expect(resetTarget(country, "")).toEqual({ value: "1", name: "France" });
+    expect(resetTarget(winemaker, "3")).toEqual({
+      value: pendingValue("Château Example"),
+      name: "Château Example",
+    });
+  });
+
+  it("offers the close match back after creating the new name instead", () => {
+    expect(resetTarget(region, pendingValue("Bordeaux Supérieur"))).toEqual({
+      value: "4",
+      name: "Bordeaux",
+    });
+  });
+
+  it("is null when the import had nothing", () => {
+    expect(resetTarget(undefined, "3")).toBeNull();
+    expect(resetTarget({ status: "absent" }, "3")).toBeNull();
+  });
+});
+
+describe("grapesResetTarget", () => {
+  const { grapes } = preview.resolution;
+  const original = ["2", pendingValue("Petit Verdot")];
+
+  it("is null while the grapes are the import's, in any order", () => {
+    expect(grapesResetTarget(grapes, original)).toBeNull();
+    expect(grapesResetTarget(grapes, [...original].reverse())).toBeNull();
+  });
+
+  it("offers the import's grapes once they change", () => {
+    expect(grapesResetTarget(grapes, ["2"])).toEqual({
+      values: original,
+      names: ["Merlot", "Petit Verdot"],
+    });
+    expect(grapesResetTarget(grapes, [...original, "9"])).not.toBeNull();
+  });
+
+  it("is null when the import found no grapes", () => {
+    expect(grapesResetTarget([], ["9"])).toBeNull();
   });
 });
