@@ -2,7 +2,9 @@ import { useCommonStyles } from "@/styles/common";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScreenHeader } from "@/components/ScreenHeader";
 import { FormCard } from "@/components/form/FormCard";
+import { useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api/client";
+import { invalidateEmbeddedCounts } from "@/lib/functions/invalidate-counts";
 import { bottleFields } from "@/lib/fields/bottles";
 import type { FieldConfig } from "@/lib/types/field";
 import type { ApiResult } from "@cellarboss/common";
@@ -53,6 +55,13 @@ const processSave = async (
 
 export default function NewBottleScreen() {
   const commonStyles = useCommonStyles();
+  const queryClient = useQueryClient();
+
+  const saveAndInvalidate = async (data: Record<string, string>) => {
+    const result = await processSave(data);
+    if (result.ok) invalidateEmbeddedCounts(queryClient);
+    return result;
+  };
   return (
     <SafeAreaView style={commonStyles.screenContainer} edges={["top"]}>
       <ScreenHeader title="New Bottle" showBack />
@@ -60,7 +69,7 @@ export default function NewBottleScreen() {
         mode="create"
         data={defaultData}
         fields={bottleCreateFields}
-        processSave={processSave}
+        processSave={saveAndInvalidate}
       />
     </SafeAreaView>
   );

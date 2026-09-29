@@ -23,6 +23,7 @@ import type {
   WineType,
   BottleSize,
 } from "@cellarboss/validators/constants";
+import { invalidateEmbeddedCounts } from "@/lib/functions/invalidate-counts";
 import { api } from "@/lib/api/client";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { StatusPickerModal } from "./StatusPickerModal";
@@ -99,6 +100,7 @@ export function BottleListItem({
     mutationFn: (updated: Bottle) => api.bottles.update(updated),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bottles"] });
+      invalidateEmbeddedCounts(queryClient);
     },
   });
 
@@ -106,6 +108,7 @@ export function BottleListItem({
     mutationFn: (id: number) => api.bottles.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bottles"] });
+      invalidateEmbeddedCounts(queryClient);
       setDeleteConfirmVisible(false);
     },
   });

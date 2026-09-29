@@ -22,6 +22,7 @@ export const mockApi = {
   },
   vintages: {
     getAll: jest.fn().mockResolvedValue(mockOk(vintages)),
+    getByWineId: jest.fn(),
     getById: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
