@@ -1,4 +1,4 @@
-import { test, expect, setState, resetState } from "../fixtures/auth";
+import { test, expect, setState } from "../fixtures/auth";
 import { fieldCombobox } from "../fixtures/form";
 
 test.describe("Storages page", () => {
@@ -15,12 +15,9 @@ test.describe("Storages page", () => {
     });
   });
 
-  test.afterEach(async () => {
-    await resetState();
-  });
-
-  test("renders storages table with all storages", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("renders storages table with all storages", async ({
+    adminPage: page,
+  }) => {
     await page.goto("/storages");
 
     await expect(page.getByText("Rack A", { exact: true })).toBeVisible();
@@ -28,27 +25,24 @@ test.describe("Storages page", () => {
   });
 
   test("new storage form pre-selects location from URL parameter", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/storages/new?locationId=2");
 
     await expect(fieldCombobox(page, "Location")).toHaveText(/Kitchen/);
   });
 
   test("new storage form pre-selects parent from URL parameter", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/storages/new?parentId=1");
 
     await expect(fieldCombobox(page, "Parent Storage")).toHaveText(/Rack A/);
   });
 
   test("new storage form has no selection without URL parameters", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/storages/new");
 
     await expect(fieldCombobox(page, "Location")).toHaveText(
@@ -60,9 +54,8 @@ test.describe("Storages page", () => {
   });
 
   test("Add sub-storage from storage page pre-selects that parent", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/storages/2");
 
     await page.getByRole("link", { name: "Add sub-storage" }).click();
@@ -72,9 +65,8 @@ test.describe("Storages page", () => {
   });
 
   test("Add storage from location page pre-selects that location", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/locations/1");
 
     await page.getByRole("link", { name: "Add storage" }).click();
@@ -147,14 +139,9 @@ test.describe("Storage page sub-storage bottles", () => {
     });
   });
 
-  test.afterEach(async () => {
-    await resetState();
-  });
-
   test("toggle includes bottles from sub-storages at every depth", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/storages/1");
 
     const toggle = page.getByRole("switch", { name: "Include sub-storages" });
@@ -172,8 +159,7 @@ test.describe("Storage page sub-storage bottles", () => {
     await expect(page.getByText("Top Shelf > Left Box")).toBeVisible();
   });
 
-  test("toggle choice is remembered", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("toggle choice is remembered", async ({ adminPage: page }) => {
     await page.goto("/storages/1");
 
     await page.getByRole("switch", { name: "Include sub-storages" }).click();
@@ -189,9 +175,8 @@ test.describe("Storage page sub-storage bottles", () => {
   });
 
   test("toggle is hidden when a storage has no sub-storages", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/storages/3");
 
     await expect(page.getByText("Chardonnay 2020")).toBeVisible();
