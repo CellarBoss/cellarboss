@@ -114,6 +114,7 @@ describe("parsePrice", () => {
     ["45", undefined, { amount: 45, currency: null }],
     ["12.5", undefined, { amount: 12.5, currency: null }],
     ["1.234", undefined, { amount: 1234, currency: null }],
+    ["AUD $24.99", undefined, { amount: 24.99, currency: "AUD" }],
   ])("reads %s", (input, currency, expected) => {
     expect(parsePrice(input, currency)).toEqual(expected);
   });

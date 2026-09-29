@@ -93,9 +93,10 @@ export function parsePrice(
   if (!Number.isFinite(amount)) return undefined;
 
   const symbol = Object.keys(CURRENCY_SYMBOLS).find((s) => value.includes(s));
+  // An ISO code beats a symbol, since "$" alone can't tell AUD from USD.
   const code =
     currency?.trim().toUpperCase() ||
-    (symbol ? CURRENCY_SYMBOLS[symbol] : undefined) ||
-    value.match(/\b([A-Z]{3})\b/)?.[1];
+    value.match(/\b([A-Z]{3})\b/)?.[1] ||
+    (symbol ? CURRENCY_SYMBOLS[symbol] : undefined);
   return { amount, currency: code ?? null };
 }
