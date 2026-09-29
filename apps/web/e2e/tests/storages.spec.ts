@@ -24,6 +24,22 @@ test.describe("Storages page", () => {
     await expect(page.getByText("Rack B", { exact: true })).toBeVisible();
   });
 
+  test("filters storages by location", async ({ adminPage: page }) => {
+    await page.goto("/storages");
+
+    await page.getByRole("button", { name: /^Filters/ }).click();
+    await page.getByRole("button", { name: "Location" }).click();
+    await page.getByRole("checkbox", { name: "Kitchen" }).click();
+    await page.keyboard.press("Escape");
+
+    await expect(page).toHaveURL(/locationId=2/);
+    await expect(page.getByText("Rack B", { exact: true })).toBeVisible();
+    await expect(page.getByText("Rack A", { exact: true })).toBeHidden();
+
+    await page.getByRole("button", { name: "Remove Location filter" }).click();
+    await expect(page.getByText("Rack A", { exact: true })).toBeVisible();
+  });
+
   test("new storage form pre-selects location from URL parameter", async ({
     adminPage: page,
   }) => {

@@ -10,7 +10,7 @@ Type in the search box above the table to filter rows by text content. The searc
 
 ## Filtering
 
-Click the filter buttons above the table to open multi-select filter dropdowns. Select one or more values to narrow the displayed results. Active filters are shown as badges.
+Click **Filters** above the table to open the filter panel. Pick a filter from the list on the left, then select one or more values (or enter a minimum and maximum for ranges) to narrow the displayed results. Each active filter appears as a tag next to the Filters button; click its ✕ to remove it, or use **Clear all** to reset every filter.
 
 ![DataTable filters](/screenshots/datatable-filter.png)
 

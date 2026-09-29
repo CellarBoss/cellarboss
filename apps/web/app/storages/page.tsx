@@ -7,7 +7,9 @@ import { getStorages, deleteStorage, updateStorage } from "@/lib/api/storages";
 import { getLocations } from "@/lib/api/locations";
 import {
   DataTable,
+  FilterType,
   type BulkEditField,
+  type FilterDef,
 } from "@/components/datatable/components/DataTable";
 import type {
   AppColumnDef,
@@ -103,6 +105,19 @@ export default function StoragesPage() {
     },
   ];
 
+  const filters: FilterDef[] = [
+    {
+      type: FilterType.MultiSelect,
+      columnId: "locationId",
+      label: "Location",
+      urlParamName: "locationId",
+      options: locationList.map((l) => ({
+        value: String(l.id),
+        label: l.name,
+      })),
+    },
+  ];
+
   const columns: AppColumnDef<TreeNode<Storage>>[] = [
     {
       accessorKey: "name",
@@ -143,6 +158,15 @@ export default function StoragesPage() {
       },
     },
     {
+      // Hidden column used for filtering by location
+      id: "locationId",
+      header: "",
+      enableColumnFilter: true,
+      enableSorting: false,
+      meta: { isSuppressed: true },
+      accessorFn: (row: TreeNode<Storage>) => String(row.locationId ?? ""),
+    },
+    {
       accessorKey: "options",
       id: "options",
       header: "",
@@ -173,6 +197,7 @@ export default function StoragesPage() {
         defaultSortColumn="name"
         getSubRows={(row) => row.subRows}
         defaultExpanded={true}
+        filters={filters}
         onBulkDelete={handleBulkDelete}
         bulkEditFields={bulkEditFields}
         onBulkEdit={handleBulkEdit}
