@@ -1,4 +1,4 @@
-import type { Locator, Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 
 /**
  * Locates a GenericCard form control by its visible label.
@@ -16,4 +16,20 @@ export function fieldCombobox(page: Page, label: string): Locator {
     .getByRole("group")
     .filter({ hasText: label })
     .getByRole("combobox");
+}
+
+/** Picks an option from a GenericCard single-select or fixed-list field. */
+export async function chooseOption(
+  page: Page,
+  label: string,
+  option: string,
+): Promise<void> {
+  await fieldCombobox(page, label).click();
+  await page.getByRole("option", { name: option, exact: true }).click();
+}
+
+/** Submits a GenericCard form and waits for it to report success. */
+export async function saveForm(page: Page): Promise<void> {
+  await page.getByRole("button", { name: "Save" }).click();
+  await expect(page.getByText("Changes saved successfully!")).toBeVisible();
 }
