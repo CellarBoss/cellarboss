@@ -55,6 +55,26 @@ describe("GenericImporter", () => {
     expect(wine.bottle?.size?.value).toBe("standard");
   });
 
+  it("falls back to the h1 and reads labels headed inside their cell", () => {
+    const wine = importSample("headed-cells.html");
+
+    expect(wine.title).toMatchObject({
+      value: "Example Ridge Pinot Noir 2022 750ml",
+      source: "heuristic",
+    });
+    expect(wine.name?.value).toBe("Example Ridge Pinot Noir");
+    expect(wine.regions).toMatchObject({
+      value: ["Central Otago"],
+      source: "label-table",
+    });
+    expect(wine.vintage?.year).toMatchObject({
+      value: 2022,
+      source: "label-table",
+    });
+    // The nav's "Style" menu has no bare text, so it isn't read as a type.
+    expect(wine.type?.source).not.toBe("label-table");
+  });
+
   it("reads microdata, ignoring the brand's nested name", () => {
     const wine = importSample("microdata.html");
 

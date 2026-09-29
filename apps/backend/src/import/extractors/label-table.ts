@@ -95,6 +95,25 @@ export function collectLabelPairs(
     }
   });
 
+  // A label element followed by bare text in the same cell:
+  // <td><div class="header">Region</div> North Canterbury</td>. Only bare
+  // text counts, so a menu item with a nested list is never read as a value.
+  scope.find("td, th, dd, li, div, p").each((_, el) => {
+    const children = $(el)
+      .contents()
+      .toArray()
+      .filter((node) => node.type !== "comment");
+    const first = children.find(
+      (node) => node.type !== "text" || $(node).text().trim(),
+    );
+    if (first?.type !== "tag") return;
+    const rest = children.filter(
+      (node) => node.type === "text" && $(node).text().trim(),
+    );
+    if (!rest.length) return;
+    add($(first).text(), rest.map((node) => $(node).text()).join(" "));
+  });
+
   return pairs;
 }
 
