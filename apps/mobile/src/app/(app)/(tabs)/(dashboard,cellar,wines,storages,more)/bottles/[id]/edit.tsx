@@ -6,7 +6,7 @@ import { FormCard } from "@/components/form/FormCard";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api/client";
-import { invalidateEmbeddedCounts } from "@/lib/functions/invalidate-counts";
+import { invalidateVintageCounts } from "@/lib/functions/invalidate-vintage-counts";
 import { queryGate } from "@/lib/functions/query-gate";
 import { bottleFields } from "@/lib/fields/bottles";
 import type { Bottle } from "@cellarboss/types";
@@ -36,7 +36,12 @@ export default function EditBottleScreen() {
       status: data.status as Bottle["status"],
       size: data.size as Bottle["size"],
     });
-    if (result.ok) invalidateEmbeddedCounts(queryClient);
+    if (result.ok) {
+      invalidateVintageCounts(queryClient, [
+        bottle.vintageId,
+        Number(data.vintageId),
+      ]);
+    }
     return result;
   };
 

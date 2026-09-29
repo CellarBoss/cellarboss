@@ -4,7 +4,7 @@ import { ScreenHeader } from "@/components/ScreenHeader";
 import { FormCard } from "@/components/form/FormCard";
 import { useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api/client";
-import { invalidateEmbeddedCounts } from "@/lib/functions/invalidate-counts";
+import { invalidateVintageCounts } from "@/lib/functions/invalidate-vintage-counts";
 import { bottleFields } from "@/lib/fields/bottles";
 import type { FieldConfig } from "@/lib/types/field";
 import type { ApiResult } from "@cellarboss/common";
@@ -59,7 +59,9 @@ export default function NewBottleScreen() {
 
   const saveAndInvalidate = async (data: Record<string, string>) => {
     const result = await processSave(data);
-    if (result.ok) invalidateEmbeddedCounts(queryClient);
+    if (result.ok) {
+      invalidateVintageCounts(queryClient, [Number(data.vintageId)]);
+    }
     return result;
   };
   return (
