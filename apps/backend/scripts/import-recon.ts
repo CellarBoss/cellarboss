@@ -80,11 +80,20 @@ async function recordApi(
   url: URL,
   html: string,
 ): Promise<Api[]> {
-  const requests = [
-    ...importer.apiRequests(buildContext({ url, html: "" })),
-    ...importer.apiRequests(buildContext({ url, html })),
+  // The page-aware requests must succeed. A URL-only request the page
+  // replaces (a stale Vivino vintage_id) is kept only if it still answers.
+  const required = importer.apiRequests(buildContext({ url, html }));
+  const optional = importer
+    .apiRequests(buildContext({ url, html: "" }))
+    .filter((u) => !required.some((r) => r.href === u.href));
+  const unique = [
+    ...new Map(
+      [...optional, ...required].map((u) => [
+        u.href,
+        { url: u, required: !required.length || required.includes(u) },
+      ]),
+    ).values(),
   ];
-  const unique = [...new Map(requests.map((u) => [u.href, u])).values()];
   if (!unique.length) return [];
 
   const { request } = await import("playwright-core");
@@ -96,8 +105,14 @@ async function recordApi(
   });
   try {
     const api: Api[] = [];
-    for (const apiUrl of unique) {
+    for (const { url: apiUrl, required: mustSucceed } of unique) {
       const response = await context.get(apiUrl.href, { timeout: 30_000 });
+      if (!response.ok() && !mustSucceed) {
+        console.warn(
+          `Skipping ${apiUrl.href} (HTTP ${response.status()}); using the page's own request`,
+        );
+        continue;
+      }
       // Stop before anything is written, so the fixture on disk stays whole.
       if (!response.ok()) {
         throw new Error(
@@ -242,11 +257,17 @@ async function main() {
     const expected = JSON.parse(
       readFileSync(expectedPath, "utf8"),
     ) as FixtureExpectation;
-    if (expected.reviewed && before !== recordedInputs(dir)) {
+    const changed =
+      before !== recordedInputs(dir) ||
+      expected.url !== url.href ||
+      expected.currentYear !== currentYear;
+    expected.url = url.href;
+    expected.currentYear = currentYear;
+    if (expected.reviewed && changed) {
       expected.reviewed = false;
-      writeFileSync(expectedPath, JSON.stringify(expected, null, 2) + "\n");
-      console.log("The recorded page changed, so expected.json is unreviewed.");
+      console.log("The recording changed, so expected.json is unreviewed.");
     }
+    writeFileSync(expectedPath, JSON.stringify(expected, null, 2) + "\n");
   } else {
     const expected: FixtureExpectation = {
       url: url.href,
