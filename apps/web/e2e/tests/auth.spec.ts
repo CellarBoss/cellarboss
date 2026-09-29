@@ -1,7 +1,4 @@
-import { test, expect } from "@playwright/test";
-import { setMockSession, resetState } from "../fixtures/auth";
-
-const SESSION_COOKIE_NAME = "better-auth.session_token";
+import { test, expect } from "../fixtures/auth";
 
 test.describe("Authentication", () => {
   test("redirects unauthenticated user to login page", async ({ page }) => {
@@ -27,39 +24,16 @@ test.describe("Authentication", () => {
     await expect(page).toHaveURL(/\/login/);
   });
 
-  test("authenticated user can access protected page", async ({ browser }) => {
-    await setMockSession("admin");
-    const context = await browser.newContext();
-    await context.addCookies([
-      {
-        name: SESSION_COOKIE_NAME,
-        value: "any-value-middleware-checks-presence-only",
-        domain: "localhost",
-        path: "/",
-      },
-    ]);
-    const page = await context.newPage();
+  test("authenticated user can access protected page", async ({
+    adminPage: page,
+  }) => {
     await page.goto("/wines");
     await expect(page).not.toHaveURL(/\/login/);
-    await context.close();
   });
 
   test("logout button clears session and redirects to login", async ({
-    browser,
+    adminPage: page,
   }) => {
-    await setMockSession("admin");
-    const context = await browser.newContext();
-    await context.addCookies([
-      {
-        name: SESSION_COOKIE_NAME,
-        value: "mock-admin-token",
-        domain: "localhost",
-        path: "/",
-        httpOnly: true,
-        sameSite: "Lax",
-      },
-    ]);
-    const page = await context.newPage();
     await page.goto("/wines");
     await expect(page).not.toHaveURL(/\/login/);
 
@@ -74,8 +48,5 @@ test.describe("Authentication", () => {
     // should redirect back to login
     await page.goto("/wines");
     await expect(page).toHaveURL(/\/login/);
-
-    await context.close();
-    await resetState();
   });
 });

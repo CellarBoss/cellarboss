@@ -94,11 +94,11 @@ pnpm test:e2e:headed   # visible browser
 ### How it works
 
 1. **Global setup** starts a mock Hono server on port 5173
-2. **Playwright** launches Next.js dev server on port 3000, pointed at the mock via `CELLARBOSS_SERVER=http://localhost:5173`
+2. **Playwright** builds and starts Next.js on port 3000, pointed at the mock via `CELLARBOSS_SERVER=http://localhost:5173`
 3. Tests run sequentially (single worker) against Chromium
 4. **Global teardown** stops the mock server
 
-### Mock Server (`e2e/mock-server/`)
+### Mock Server (`packages/mock-server/`)
 
 A Hono app that simulates the backend API. It provides control endpoints for test setup:
 
@@ -107,20 +107,25 @@ A Hono app that simulates the backend API. It provides control endpoints for tes
 | `POST /__test/set-session` | Set the mock auth session (admin or user)   |
 | `POST /__test/set-state`   | Merge partial state into mock data          |
 | `POST /__test/reset`       | Reset mock data to defaults (keeps session) |
+| `GET /__test/state`        | Read the current mock data                  |
+
+The default data (`packages/mock-server/src/defaults.ts`) is a small working cellar, so tests that don't need specific data can run against it without seeding.
 
 ### Auth in Tests
 
-The middleware only checks for the presence of a `better-auth.session_token` cookie. Test fixtures (`e2e/fixtures/auth.ts`) provide:
+The proxy only checks for the presence of a `better-auth.session_token` cookie. Test fixtures (`e2e/fixtures/auth.ts`) provide:
 
-- `adminContext` / `userContext` — browser contexts with pre-set session cookies
-- `setMockSession(role)` — configure the mock server's session response
-- `setState(partial)` / `resetState()` — manage mock data
+- `adminPage` / `userPage` — pages signed in as an admin or a regular user
+- `adminContext` / `userContext` — the browser contexts behind them
+- `setState(partial)` / `getState()` — seed and inspect mock data
 
-State is reset between tests via `resetState()`.
+Mock data is reset automatically after every test, so specs don't need their own `afterEach`.
+
+`e2e/fixtures/form.ts` has helpers for the shared `GenericCard` forms: `fieldCombobox`, `chooseOption` and `saveForm`.
 
 ### Test Files
 
-Tests live in `e2e/tests/` and cover auth flows, wine/bottle management, DataTable behaviour, and tasting notes.
+Tests live in `e2e/tests/`. Alongside page-specific specs, `resources.spec.ts` runs the same create/edit/delete tests over every name-only resource (countries, grapes, locations, winemakers), `forms.spec.ts` covers saving the richer forms, and `details.spec.ts` covers the detail pages. Tests that change data should check the result with `getState()` as well as on screen.
 
 ### Playwright Configuration
 

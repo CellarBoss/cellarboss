@@ -1,4 +1,4 @@
-import { test, expect, setState, resetState } from "../fixtures/auth";
+import { test, expect, setState } from "../fixtures/auth";
 
 const BASE_STATE = {
   winemakers: [{ id: 1, name: "Château Margaux" }],
@@ -45,26 +45,21 @@ test.describe("Image gallery on vintage detail page", () => {
     await setState(BASE_STATE);
   });
 
-  test.afterEach(async () => {
-    await resetState();
-  });
-
-  test("shows empty state when no images", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("shows empty state when no images", async ({ adminPage: page }) => {
     await page.goto("/vintages/1");
 
     await expect(page.getByText("No images yet")).toBeVisible();
   });
 
-  test("shows upload cell", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("shows upload cell", async ({ adminPage: page }) => {
     await page.goto("/vintages/1");
 
     await expect(page.getByText("Upload")).toBeVisible();
   });
 
-  test("uploading a file adds it to the gallery", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("uploading a file adds it to the gallery", async ({
+    adminPage: page,
+  }) => {
     await page.goto("/vintages/1");
 
     await page.locator('input[type="file"]').setInputFiles({
@@ -76,9 +71,10 @@ test.describe("Image gallery on vintage detail page", () => {
     await expect(page.locator('img[src*="/api/image/"]')).toBeVisible();
   });
 
-  test("delete button opens confirmation dialog", async ({ adminContext }) => {
+  test("delete button opens confirmation dialog", async ({
+    adminPage: page,
+  }) => {
     await setState({ images: [SEED_IMAGE] });
-    const page = await adminContext.newPage();
     await page.goto("/vintages/1");
 
     // Hover to reveal the delete button
@@ -91,10 +87,9 @@ test.describe("Image gallery on vintage detail page", () => {
   });
 
   test("confirming delete removes the image from the gallery", async ({
-    adminContext,
+    adminPage: page,
   }) => {
     await setState({ images: [SEED_IMAGE] });
-    const page = await adminContext.newPage();
     await page.goto("/vintages/1");
 
     await page.locator('img[src*="/api/image/"]').hover();
@@ -108,10 +103,9 @@ test.describe("Image gallery on vintage detail page", () => {
   });
 
   test("cancelling delete dialog does not remove the image", async ({
-    adminContext,
+    adminPage: page,
   }) => {
     await setState({ images: [SEED_IMAGE] });
-    const page = await adminContext.newPage();
     await page.goto("/vintages/1");
 
     await page.locator('img[src*="/api/image/"]').hover();
@@ -124,9 +118,10 @@ test.describe("Image gallery on vintage detail page", () => {
     await expect(page.locator('img[src*="/api/image/"]')).toBeVisible();
   });
 
-  test("favourite button toggles favourite state", async ({ adminContext }) => {
+  test("favourite button toggles favourite state", async ({
+    adminPage: page,
+  }) => {
     await setState({ images: [SEED_IMAGE] });
-    const page = await adminContext.newPage();
     await page.goto("/vintages/1");
 
     await page.locator('img[src*="/api/image/"]').hover();

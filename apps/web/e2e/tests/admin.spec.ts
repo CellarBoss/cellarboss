@@ -1,30 +1,23 @@
-import { test, expect, setState, resetState } from "../fixtures/auth";
+import { test, expect, setState } from "../fixtures/auth";
 
 test.describe("Admin access control", () => {
-  test.afterEach(async () => {
-    await resetState();
-  });
-
-  test("admin user sees Users link in sidebar", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("admin user sees Users link in sidebar", async ({ adminPage: page }) => {
     await page.goto("/wines");
 
     await expect(page.getByRole("link", { name: "Users" })).toBeVisible();
   });
 
   test("non-admin user does not see Users link in sidebar", async ({
-    userContext,
+    userPage: page,
   }) => {
-    const page = await userContext.newPage();
     await page.goto("/wines");
 
     await expect(page.getByRole("link", { name: "Users" })).not.toBeVisible();
   });
 
   test("non-admin visiting /users sees permission denied", async ({
-    userContext,
+    userPage: page,
   }) => {
-    const page = await userContext.newPage();
     await page.goto("/users");
 
     await expect(
@@ -34,9 +27,8 @@ test.describe("Admin access control", () => {
   });
 
   test("non-admin visiting /settings sees permission denied", async ({
-    userContext,
+    userPage: page,
   }) => {
-    const page = await userContext.newPage();
     await page.goto("/settings");
 
     await expect(
@@ -44,7 +36,7 @@ test.describe("Admin access control", () => {
     ).toBeVisible();
   });
 
-  test("admin can access /users page", async ({ adminContext }) => {
+  test("admin can access /users page", async ({ adminPage: page }) => {
     await setState({
       users: [
         {
@@ -58,7 +50,6 @@ test.describe("Admin access control", () => {
         },
       ],
     });
-    const page = await adminContext.newPage();
     await page.goto("/users");
 
     await expect(page.getByRole("heading", { name: "Users" })).toBeVisible();
@@ -68,7 +59,7 @@ test.describe("Admin access control", () => {
   });
 
   test("admin can access /settings page and see settings", async ({
-    adminContext,
+    adminPage: page,
   }) => {
     await setState({
       settings: [
@@ -76,7 +67,6 @@ test.describe("Admin access control", () => {
         { key: "date", value: "yyyy-MM-dd" },
       ],
     });
-    const page = await adminContext.newPage();
     await page.goto("/settings");
 
     await expect(
@@ -87,9 +77,8 @@ test.describe("Admin access control", () => {
   });
 
   test("admin sees admin user name in sidebar footer", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/wines");
 
     await page.getByRole("button", { name: "User menu" }).click();
@@ -102,9 +91,8 @@ test.describe("Admin access control", () => {
   });
 
   test("non-admin shows user name in sidebar footer", async ({
-    userContext,
+    userPage: page,
   }) => {
-    const page = await userContext.newPage();
     await page.goto("/wines");
 
     await page.getByRole("button", { name: "User menu" }).click();
