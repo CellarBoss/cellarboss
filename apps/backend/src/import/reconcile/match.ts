@@ -1,15 +1,15 @@
 import Fuse from "fuse.js";
-import type { GenericType } from "@cellarboss/types";
+import type {
+  GenericType,
+  ImportCandidate,
+  ImportResolution,
+} from "@cellarboss/types";
 import { foldKey } from "../normalise/text.js";
 
-export type Candidate = { id: number; name: string; score: number };
+export type Candidate = ImportCandidate;
 
 /** How an imported name relates to existing records. */
-export type Resolution =
-  | { status: "matched"; id: number; name: string; score: number }
-  | { status: "suggested"; proposedName: string; candidates: Candidate[] }
-  | { status: "new"; proposedName: string }
-  | { status: "absent" };
+export type Resolution = ImportResolution;
 
 export interface MatchOptions<T extends GenericType = GenericType> {
   /** Alternative names, e.g. { shiraz: "Syrah" }. Compared on folded keys. */

@@ -17,3 +17,15 @@ export type {
 } from "./tasting-note";
 export type { Image } from "./image";
 export type { Preference, UpsertPreference } from "./preference";
+export type {
+  ImportFieldSource,
+  ImportField,
+  ImportedWineDetails,
+  ImportCandidate,
+  ImportResolution,
+  ImportPreview,
+  ImportSite,
+  ImportEntityRef,
+  ImportCommit,
+  ImportCommitResult,
+} from "./import";

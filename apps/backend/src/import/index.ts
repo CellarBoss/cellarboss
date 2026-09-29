@@ -14,6 +14,7 @@ export {
   type Resolution,
   type MatchOptions,
 } from "./reconcile/match.js";
+export { foldKey } from "./normalise/text.js";
 export {
   reconcileWine,
   type ReconcileLookups,

@@ -17,6 +17,7 @@ import { registerUserRoutes } from "./routes/users";
 import { registerWinegrapeRoutes } from "./routes/winegrapes";
 import { registerTastingNoteRoutes } from "./routes/tasting-notes";
 import { registerImageRoutes } from "./routes/images";
+import { registerImportRoutes } from "./routes/import";
 import { defaultState } from "./defaults";
 import { trackIds } from "./ids";
 import type {
@@ -155,6 +156,7 @@ export function createMockApp(state: MockState): Hono {
   registerWinegrapeRoutes(app, state);
   registerTastingNoteRoutes(app, state);
   registerImageRoutes(app, state);
+  registerImportRoutes(app, state);
 
   return app;
 }

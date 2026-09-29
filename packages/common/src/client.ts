@@ -15,6 +15,7 @@ import { usersResource } from "./resources/users";
 import { versionResource } from "./resources/version";
 import { imagesResource } from "./resources/images";
 import { preferencesResource } from "./resources/preferences";
+import { importResource } from "./resources/import";
 
 export type ApiClientConfig = {
   request: RequestFn;
@@ -39,6 +40,7 @@ export function createApiClient(config: ApiClientConfig) {
     version: versionResource(request),
     images: imagesResource(request),
     preferences: preferencesResource(request),
+    import: importResource(request),
   };
 }
 

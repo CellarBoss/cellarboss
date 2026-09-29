@@ -1,22 +1,16 @@
 import type { CheerioAPI } from "cheerio";
-import type { BottleSize, WineType } from "@cellarboss/validators";
+import type {
+  ImportedWineDetails,
+  ImportField,
+  ImportFieldSource,
+} from "@cellarboss/types";
+import type { BottleSize } from "@cellarboss/validators";
 
 /** Where a value came from. Used for precedence and shown as a hint in the UI. */
-export type FieldSource =
-  | "api"
-  | "site"
-  | "json-ld"
-  | "microdata"
-  | "label-table"
-  | "open-graph"
-  | "heuristic";
+export type FieldSource = ImportFieldSource;
 
 /** A value plus where it came from and how sure the extractor is (0–1). */
-export interface Extracted<T> {
-  value: T;
-  source: FieldSource;
-  confidence: number;
-}
+export type Extracted<T> = ImportField<T>;
 
 /**
  * Raw fields as found on the page, before normalisation. Extractors and site
@@ -51,31 +45,15 @@ export interface Diagnostic {
   message: string;
 }
 
-/** The normalised result of an import. Diagnostics are server-side only. */
-export interface ImportedWine {
-  sourceUrl: string;
-  importerId: string;
-  /** The page's own title, kept so the UI can show it as a hint. */
-  title?: Extracted<string>;
-  /** Wine name with producer, vintage and size removed. */
-  name?: Extracted<string>;
-  type?: Extracted<WineType>;
-  winemaker?: Extracted<string>;
-  country?: Extracted<string>;
-  /** Most specific first, e.g. ["Haut-Médoc", "Bordeaux"]. */
-  regions?: Extracted<string[]>;
-  grapes?: Extracted<string[]>;
-  vintage?: {
-    year?: Extracted<number | null>;
-    drinkFrom?: Extracted<number>;
-    drinkUntil?: Extracted<number>;
-  };
-  /** Extracted for a future bottle import; not used by the wine/vintage import. */
+/**
+ * The normalised result of an import: the details clients see, plus bottle
+ * fields kept for a future bottle import and diagnostics that are only logged.
+ */
+export interface ImportedWine extends ImportedWineDetails {
   bottle?: {
     size?: Extracted<BottleSize>;
     price?: Extracted<{ amount: number; currency: string | null }>;
   };
-  imageUrl?: Extracted<string>;
   diagnostics: Diagnostic[];
 }
 
