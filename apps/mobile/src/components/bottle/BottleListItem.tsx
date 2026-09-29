@@ -98,11 +98,9 @@ export function BottleListItem({
 
   const updateMutation = useMutation({
     mutationFn: (updated: Bottle) => api.bottles.update(updated),
-    onSuccess: (_, updated) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bottles"] });
-      if (updated.status !== bottle.status) {
-        invalidateVintageCounts(queryClient, [bottle.vintageId]);
-      }
+      invalidateVintageCounts(queryClient, [bottle.vintageId]);
     },
   });
 
