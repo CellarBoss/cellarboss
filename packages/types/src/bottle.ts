@@ -22,3 +22,5 @@ export interface Bottle {
 export type CreateBottle = Omit<Bottle, "id">;
 
 export type UpdateBottle = Partial<Omit<Bottle, "id">>;
+
+export type BottleCounts = Record<Bottle["status"], number>;

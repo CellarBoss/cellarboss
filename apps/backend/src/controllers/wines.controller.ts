@@ -1,17 +1,33 @@
 import { db } from "@utils/database.js";
 import { insertReturning, updateReturning } from "@utils/query-helpers.js";
-import type { CreateWine, UpdateWine } from "@cellarboss/types";
+import { tastingNoteCountsByWineIds } from "@utils/aggregates.js";
+import type {
+  CreateWine,
+  UpdateWine,
+  Wine,
+  WineDetail,
+} from "@cellarboss/types";
 
-export async function list() {
-  return await db.selectFrom("wine").selectAll().execute();
+export async function list(): Promise<WineDetail[]> {
+  const [rows, noteCounts] = await Promise.all([
+    db.selectFrom("wine").selectAll().execute(),
+    tastingNoteCountsByWineIds(),
+  ]);
+  return rows.map((row) => toDetail(row, noteCounts));
 }
 
-export async function getById(id: number) {
-  return await db
+export async function getById(id: number): Promise<WineDetail | undefined> {
+  const row = await db
     .selectFrom("wine")
     .selectAll()
     .where("id", "=", id)
     .executeTakeFirst();
+  if (!row) return undefined;
+  return toDetail(row, await tastingNoteCountsByWineIds([id]));
+}
+
+function toDetail(row: Wine, noteCounts: Map<number, number>): WineDetail {
+  return { ...row, tastingNotesCount: noteCounts.get(row.id) ?? 0 };
 }
 
 export async function create(data: CreateWine) {

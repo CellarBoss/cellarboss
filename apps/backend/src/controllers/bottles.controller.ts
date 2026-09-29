@@ -37,12 +37,14 @@ export async function getByVintageId(vintageId: number): Promise<Bottle[]> {
 }
 
 export async function getCountsByVintageId(vintageId: number) {
-  return await db
+  const rows = await db
     .selectFrom("bottle")
     .select((eb) => ["status", eb.fn.count("id").as("count")])
     .where("vintageId", "=", vintageId)
     .groupBy("status")
     .execute();
+  // COUNT() is returned as a string on Postgres
+  return rows.map((row) => ({ status: row.status, count: Number(row.count) }));
 }
 
 export async function create(data: CreateBottle): Promise<Bottle> {
