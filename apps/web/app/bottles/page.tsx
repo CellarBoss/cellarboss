@@ -184,17 +184,24 @@ export default function BottlesPage() {
     partial: Record<string, string | number>,
   ): Promise<void> {
     const status = BOTTLE_STATUSES.find((s) => s === partial.status);
-    for (const row of rows) {
-      const result = await updateBottle({
-        ...row,
-        ...(status ? { status } : {}),
-        ...(partial.storageId ? { storageId: Number(partial.storageId) } : {}),
-      });
-      if (!result.ok)
-        throw new Error("Error updating bottle: " + result.error.message);
+    const updated: Bottle[] = [];
+    try {
+      for (const row of rows) {
+        const result = await updateBottle({
+          ...row,
+          ...(status ? { status } : {}),
+          ...(partial.storageId
+            ? { storageId: Number(partial.storageId) }
+            : {}),
+        });
+        if (!result.ok)
+          throw new Error("Error updating bottle: " + result.error.message);
+        updated.push(row);
+      }
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ["bottles"] });
+      if (status) invalidateCounts(updated);
     }
-    queryClient.invalidateQueries({ queryKey: ["bottles"] });
-    if (status) invalidateCounts(rows);
   }
 
   const bulkEditFields: BulkEditField<Bottle>[] = [
