@@ -24,3 +24,14 @@ export type GroupedMultiSelectFilterDef = {
 
 export type MultiSelectFilterDef =
   FlatMultiSelectFilterDef | GroupedMultiSelectFilterDef;
+
+/** Adds or removes a value, returning undefined once nothing is selected. */
+export function toggleFilterValue(
+  current: string[] | undefined,
+  value: string,
+  checked: boolean,
+): string[] | undefined {
+  const others = (current ?? []).filter((v) => v !== value);
+  const next = checked ? [...others, value] : others;
+  return next.length > 0 ? next : undefined;
+}

@@ -24,12 +24,15 @@ export async function capture(
   await page.waitForTimeout(500);
   await captureScreenshot(page, outputDir, "datatable-search");
 
-  // Filter — open a filter popover to show filter options
+  // Filter — open the Filters panel to show filter options
   await page.goto("http://localhost:3000/bottles");
   await page.waitForSelector("table");
-  const filterButton = page.locator("button", { hasText: "Status" });
-  await filterButton.click();
+  // Open the Filters panel and pick the Status filter
+  await page.getByRole("button", { name: /^Filters/ }).click();
   await page.waitForSelector("[data-slot='popover-content']");
+  await page
+    .locator("[data-slot='popover-content'] nav button", { hasText: "Status" })
+    .click();
   await page.waitForTimeout(300);
   await captureScreenshot(page, outputDir, "datatable-filter");
   // Close popover
