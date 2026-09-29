@@ -55,15 +55,12 @@ async function record(url: URL): Promise<Recording> {
     const pending: Promise<void>[] = [];
 
     page.on("response", (response) => {
-      const responseUrl = new URL(response.url());
       const type = response.headers()["content-type"] ?? "";
-      // Only the product's own host: another site's JSON (analytics, ads)
-      // doesn't belong in a fixture.
-      if (!type.includes("json") || responseUrl.host !== url.host) return;
+      if (!type.includes("json")) return;
       pending.push(
         response
           .text()
-          .then((body) => void api.push({ url: responseUrl.href, body }))
+          .then((body) => void api.push({ url: response.url(), body }))
           .catch(() => undefined),
       );
     });
@@ -76,7 +73,10 @@ async function record(url: URL): Promise<Recording> {
       throw new Error(`Page returned HTTP ${main?.status() ?? "no response"}`);
     const html = await main.text();
     await Promise.all(pending);
-    return { html, api };
+    // Only the product's own host, after any redirect: another site's JSON
+    // (analytics, ads) doesn't belong in a fixture.
+    const host = new URL(main.url()).host;
+    return { html, api: api.filter((r) => new URL(r.url).host === host) };
   } finally {
     await browser.close();
   }
@@ -172,11 +172,17 @@ async function main() {
     const expected = JSON.parse(
       readFileSync(expectedPath, "utf8"),
     ) as FixtureExpectation;
-    if (expected.reviewed && before !== recordedInputs(dir)) {
+    const changed =
+      before !== recordedInputs(dir) ||
+      expected.url !== url.href ||
+      expected.currentYear !== currentYear;
+    expected.url = url.href;
+    expected.currentYear = currentYear;
+    if (expected.reviewed && changed) {
       expected.reviewed = false;
-      writeFileSync(expectedPath, JSON.stringify(expected, null, 2) + "\n");
-      console.log("The recorded page changed, so expected.json is unreviewed.");
+      console.log("The recording changed, so expected.json is unreviewed.");
     }
+    writeFileSync(expectedPath, JSON.stringify(expected, null, 2) + "\n");
   } else {
     const expected: FixtureExpectation = {
       url: url.href,
