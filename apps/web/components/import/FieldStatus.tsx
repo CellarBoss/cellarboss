@@ -1,14 +1,39 @@
 import type { ImportResolution } from "@cellarboss/types";
+import { CircleAlert, CircleCheck, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fieldStatus, pendingName, pendingValue } from "@/lib/functions/import";
 
-function StatusText({ children }: { children: React.ReactNode }) {
+type StatusKind = "matched" | "new" | "check";
+
+const statusIcons: Record<StatusKind, { Icon: LucideIcon; className: string }> =
+  {
+    matched: {
+      Icon: CircleCheck,
+      className: "text-green-600 dark:text-green-500",
+    },
+    new: { Icon: CircleCheck, className: "text-blue-600 dark:text-blue-400" },
+    check: {
+      Icon: CircleAlert,
+      className: "text-amber-500 dark:text-amber-400",
+    },
+  };
+
+function StatusText({
+  kind,
+  children,
+}: {
+  kind: StatusKind;
+  children: React.ReactNode;
+}) {
+  const { Icon, className } = statusIcons[kind];
   return (
     <p
-      className="-mt-1 mb-2 text-xs text-muted-foreground"
+      className="-mt-1 mb-2 flex items-start gap-1.5 text-xs text-muted-foreground"
       data-testid="import-field-status"
+      data-status={kind}
     >
-      {children}
+      <Icon className={`size-4 shrink-0 ${className}`} aria-hidden="true" />
+      <span>{children}</span>
     </p>
   );
 }
@@ -46,13 +71,20 @@ export function FieldStatusLine({
   if (!status) return null;
   switch (status.kind) {
     case "matched":
-      return <StatusText>Matched</StatusText>;
+      return (
+        <StatusText kind="matched">
+          Matched: will use the one you already have
+        </StatusText>
+      );
     case "new":
-      return <StatusText>New: will be created</StatusText>;
+      return (
+        <StatusText kind="new">New: will be created when you save</StatusText>
+      );
     case "suggested":
       return (
-        <StatusText>
-          Close match for &ldquo;{status.proposedName}&rdquo;.{" "}
+        <StatusText kind="check">
+          Check: close match for &ldquo;{status.proposedName}&rdquo;, will use
+          the one you already have.{" "}
           <CreateInstead
             name={status.proposedName}
             onClick={() => onCreateInstead(pendingValue(status.proposedName))}
@@ -84,8 +116,9 @@ export function GrapeStatusLines({
   return (
     <>
       {suggestions.map((s) => (
-        <StatusText key={s.id}>
-          Close match for &ldquo;{s.proposedName}&rdquo;.{" "}
+        <StatusText key={s.id} kind="check">
+          Check: close match for &ldquo;{s.proposedName}&rdquo;, will use the
+          one you already have.{" "}
           <CreateInstead
             name={s.proposedName}
             onClick={() =>
@@ -99,7 +132,9 @@ export function GrapeStatusLines({
         </StatusText>
       ))}
       {created.length > 0 && (
-        <StatusText>New: {created.join(", ")} will be created</StatusText>
+        <StatusText kind="new">
+          New: {created.join(", ")} will be created when you save
+        </StatusText>
       )}
     </>
   );
@@ -107,6 +142,8 @@ export function GrapeStatusLines({
 
 export function LowConfidenceHint() {
   return (
-    <StatusText>Check this: the page didn&rsquo;t say this clearly</StatusText>
+    <StatusText kind="check">
+      Check: the page didn&rsquo;t say this clearly
+    </StatusText>
   );
 }

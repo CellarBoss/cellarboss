@@ -82,7 +82,7 @@ test.describe("Import wine", () => {
 
     await expect(fieldCombobox(page, "Region")).toHaveText("Bordeaux");
     await expect(
-      page.getByText("Close match for “Bordeaux Supérieur”."),
+      page.getByText("close match for “Bordeaux Supérieur”"),
     ).toBeVisible();
 
     await page

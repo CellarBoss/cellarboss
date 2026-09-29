@@ -16,14 +16,14 @@ Importing works best with **The Wine Society**, **Naked Wines** and **Vivino**, 
 
 ## Checking what was found
 
-Each winemaker, country, region and grape is matched against what's already in your cellar, and a note under the field says what will happen:
+Each winemaker, country, region and grape is matched against what's already in your cellar, and a note with a coloured icon under the field says what will happen:
 
-| Note                 | Meaning                                                                                                                                     |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Matched              | The page's value matches one you already have.                                                                                              |
-| Close match for "…"  | The page's value is similar to one you already have, and that one is selected. Click **Create "…" instead** if it's really a different one. |
-| New: will be created | Nothing similar exists, so a new one will be created when you save.                                                                         |
-| Check this           | The page didn't say this clearly, so it's worth a look.                                                                                     |
+| Icon               | Note                       | Meaning                                                                                                                                     |
+| ------------------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Green tick         | Matched                    | The page's value matches one you already have, and that one will be used.                                                                   |
+| Blue tick          | New                        | Nothing similar exists, so a new one will be created when you save.                                                                         |
+| Yellow exclamation | Check: close match for "…" | The page's value is similar to one you already have, and that one is selected. Click **Create "…" instead** if it's really a different one. |
+| Yellow exclamation | Check                      | The page didn't say this clearly, so it's worth a look.                                                                                     |
 
 You can pick a different value in any field, or type a new name in a selector and choose **Create "…"**.
 
