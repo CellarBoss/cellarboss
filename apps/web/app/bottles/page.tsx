@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { invalidateEmbeddedCounts } from "@/lib/functions/invalidate-counts";
+import { invalidateVintageCounts } from "@/lib/functions/invalidate-vintage-counts";
 import { useRouter } from "next/navigation";
 import { getBottles, deleteBottle, updateBottle } from "@/lib/api/bottles";
 import { getVintages } from "@/lib/api/vintages";
@@ -128,12 +128,20 @@ export default function BottlesPage() {
   const treeData = buildTree(storages, "parent");
   const descendantsMap = buildDescendantsMap(storages);
 
+  function invalidateCounts(changed: Bottle[]) {
+    const vintageIds = new Set(changed.map((b) => b.vintageId));
+    for (const vintageId of vintageIds) {
+      const vintage = vintageMap.get(vintageId);
+      if (vintage) invalidateVintageCounts(queryClient, vintage);
+    }
+  }
+
   async function handleDelete(row: Bottle): Promise<boolean> {
     const delResult = await deleteBottle(row.id);
     if (!delResult.ok)
       throw new Error("Error deleting bottle: " + delResult.error.message);
     queryClient.invalidateQueries({ queryKey: ["bottles"] });
-    invalidateEmbeddedCounts(queryClient);
+    invalidateCounts([row]);
     return true;
   }
 
@@ -144,7 +152,6 @@ export default function BottlesPage() {
     const result = await updateBottle({ ...bottle, storageId: newStorageId });
     if (!result.ok) throw new Error(result.error.message);
     queryClient.invalidateQueries({ queryKey: ["bottles"] });
-    invalidateEmbeddedCounts(queryClient);
   }
 
   async function handleChangeStatus(
@@ -154,7 +161,7 @@ export default function BottlesPage() {
     const result = await updateBottle({ ...bottle, status: newStatus });
     if (!result.ok) throw new Error(result.error.message);
     queryClient.invalidateQueries({ queryKey: ["bottles"] });
-    invalidateEmbeddedCounts(queryClient);
+    invalidateCounts([bottle]);
   }
 
   async function handleBulkDelete(rows: Bottle[]): Promise<void> {
@@ -166,7 +173,7 @@ export default function BottlesPage() {
       }
     } finally {
       queryClient.invalidateQueries({ queryKey: ["bottles"] });
-      invalidateEmbeddedCounts(queryClient);
+      invalidateCounts(rows);
     }
     if (errors.length)
       throw new Error("Error deleting bottle: " + errors.join(", "));
@@ -187,7 +194,7 @@ export default function BottlesPage() {
         throw new Error("Error updating bottle: " + result.error.message);
     }
     queryClient.invalidateQueries({ queryKey: ["bottles"] });
-    invalidateEmbeddedCounts(queryClient);
+    if (status) invalidateCounts(rows);
   }
 
   const bulkEditFields: BulkEditField<Bottle>[] = [

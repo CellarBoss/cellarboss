@@ -184,7 +184,7 @@ export default function ViewVintagePage() {
 
         <div className="flex flex-col gap-6">
           <VintageImageGallery vintageId={vintageId} className="" />
-          <TastingNotesSection className="" vintageId={vintageId} />
+          <TastingNotesSection className="" vintage={vintage} />
         </div>
       </div>
     </section>

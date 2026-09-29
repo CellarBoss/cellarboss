@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { invalidateEmbeddedCounts } from "@/lib/functions/invalidate-counts";
+import { invalidateVintageCounts } from "@/lib/functions/invalidate-vintage-counts";
 import type { TastingNote, Vintage } from "@cellarboss/types";
 import { useApiQuery } from "@/hooks/use-api-query";
 import {
@@ -21,8 +21,8 @@ import { TastingNoteCard } from "./TastingNoteCard";
 const PAGE_SIZE = 10;
 
 type TastingNotesSectionProps = (
-  | { vintageId: number; wineId?: never; vintages?: never }
-  | { wineId: number; vintages: Vintage[]; vintageId?: never }
+  | { vintage: Vintage; wineId?: never; vintages?: never }
+  | { wineId: number; vintages: Vintage[]; vintage?: never }
 ) & { className?: string };
 
 export function TastingNotesSection({
@@ -35,14 +35,15 @@ export function TastingNotesSection({
     string | undefined;
 
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const isVintageMode = props.vintageId !== undefined;
+  const isVintageMode = props.vintage !== undefined;
+  const vintageId = props.vintage?.id;
 
   const notesQuery = useApiQuery<TastingNote[]>({
     queryKey: isVintageMode
-      ? ["tastingNotes", "vintage", props.vintageId]
+      ? ["tastingNotes", "vintage", vintageId]
       : ["tastingNotes", "wine", props.wineId],
     queryFn: isVintageMode
-      ? () => getTastingNotesByVintageId(props.vintageId!)
+      ? () => getTastingNotesByVintageId(vintageId!)
       : () => getTastingNotesByWineId(props.wineId!),
   });
 
@@ -58,17 +59,20 @@ export function TastingNotesSection({
       : String(vintageId);
   }
 
-  function invalidateNotes() {
+  function invalidateNotes(note: TastingNote) {
     queryClient.invalidateQueries({
       queryKey: isVintageMode
-        ? ["tastingNotes", "vintage", props.vintageId]
+        ? ["tastingNotes", "vintage", vintageId]
         : ["tastingNotes", "wine", props.wineId],
     });
-    invalidateEmbeddedCounts(queryClient);
+    invalidateVintageCounts(
+      queryClient,
+      props.vintage ?? { id: note.vintageId, wineId: props.wineId! },
+    );
   }
 
   const addHref = isVintageMode
-    ? `/tasting-notes/new?vintageId=${props.vintageId}`
+    ? `/tasting-notes/new?vintageId=${vintageId}`
     : `/tasting-notes/new?wineId=${props.wineId}`;
 
   const sortedNotes = [...notes].sort(
@@ -124,7 +128,7 @@ export function TastingNotesSection({
                     onDelete={async () => {
                       const result = await deleteTastingNote(note.id);
                       if (!result.ok) throw new Error(result.error.message);
-                      invalidateNotes();
+                      invalidateNotes(note);
                       return true;
                     }}
                     deleteDescription={`tasting note by ${note.author}`}
