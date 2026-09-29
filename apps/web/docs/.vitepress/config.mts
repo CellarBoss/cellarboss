@@ -85,6 +85,7 @@ export default defineConfig({
           { text: "DataTable", link: "/features/datatable" },
           { text: "Storage Hierarchy", link: "/features/storage-hierarchy" },
           { text: "MCP Server", link: "/features/mcp" },
+          { text: "Import from a Link", link: "/features/import" },
         ],
       },
     ],
