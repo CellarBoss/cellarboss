@@ -1,10 +1,4 @@
-import {
-  test,
-  expect,
-  setState,
-  resetState,
-  MOCK_SERVER,
-} from "../fixtures/auth";
+import { test, expect, setState, getState } from "../fixtures/auth";
 
 test.describe("DataTable interactions", () => {
   test.beforeEach(async () => {
@@ -28,22 +22,16 @@ test.describe("DataTable interactions", () => {
     });
   });
 
-  test.afterEach(async () => {
-    await resetState();
-  });
-
   test("shows pagination controls with multiple pages", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/wines");
 
-    // With 15 items and default page size, there should be 2 pages
-    await expect(page.getByText(/page \d+ of \d+/i)).toBeVisible();
+    // 25 wines at the default page size of 20 is two pages
+    await expect(page.getByText(/page 1 of 2/i)).toBeVisible();
   });
 
-  test("can navigate to next page", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("can navigate to next page", async ({ adminPage: page }) => {
     await page.goto("/wines");
 
     // PaginationNext renders as an <a> element; target it by its aria-label
@@ -54,23 +42,15 @@ test.describe("DataTable interactions", () => {
     await expect(page).toHaveURL(/page=2/);
   });
 
-  test("page parameter in URL", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("page parameter in URL opens that page", async ({ adminPage: page }) => {
     await page.goto("/wines?page=2");
 
-    await expect(page).toHaveURL(/page=2/);
+    await expect(page.getByText(/page 2 of 2/i)).toBeVisible();
+    await expect(page.getByText("Wine 21")).toBeVisible();
+    await expect(page.getByText("Wine 01")).toBeHidden();
   });
 
-  test("row count info is visible", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
-    await page.goto("/wines");
-
-    // DataTable pagination shows "Page N of M" indicating total page count
-    await expect(page.getByText(/page \d+ of \d+/i)).toBeVisible();
-  });
-
-  test("can sort by column header", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("can sort by column header", async ({ adminPage: page }) => {
     await page.goto("/wines");
 
     // Default sort is ascending — "Wine 01" should be first
@@ -85,8 +65,7 @@ test.describe("DataTable interactions", () => {
     await expect(page.getByRole("row").nth(1)).toContainText("Wine 25");
   });
 
-  test("can select rows with checkboxes", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("can select rows with checkboxes", async ({ adminPage: page }) => {
     await page.goto("/wines");
 
     const firstRowCheckbox = page.getByRole("row").nth(1).getByRole("checkbox");
@@ -101,9 +80,8 @@ test.describe("DataTable interactions", () => {
   });
 
   test("primary column cannot be hidden from the columns control", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/wines");
 
     await page.getByRole("button", { name: /configure table/i }).click();
@@ -115,9 +93,8 @@ test.describe("DataTable interactions", () => {
   });
 
   test("can hide a column via the columns control", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/wines");
 
     await expect(
@@ -133,9 +110,8 @@ test.describe("DataTable interactions", () => {
   });
 
   test("column visibility preference persists across reload", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/wines");
 
     await page.getByRole("button", { name: /configure table/i }).click();
@@ -148,9 +124,8 @@ test.describe("DataTable interactions", () => {
     // the mock server until the preference is persisted before reloading.
     await expect
       .poll(async () => {
-        const res = await fetch(`${MOCK_SERVER}/api/user/preferences`);
-        const prefs: Array<{ key: string }> = await res.json();
-        return prefs.some((p) => p.key.includes("columns.visibility"));
+        const { preferences } = await getState();
+        return preferences.some((p) => p.key.includes("columns.visibility"));
       })
       .toBe(true);
 
@@ -163,9 +138,8 @@ test.describe("DataTable interactions", () => {
   });
 
   test("column order preference persists across reload", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/wines");
 
     // Column 0 is the selection checkbox, so the first data column is nth(1).
@@ -209,9 +183,8 @@ test.describe("DataTable interactions", () => {
     // the mock server until the order preference is persisted before reloading.
     await expect
       .poll(async () => {
-        const res = await fetch(`${MOCK_SERVER}/api/user/preferences`);
-        const prefs: Array<{ key: string }> = await res.json();
-        return prefs.some((p) => p.key.includes("columns.order"));
+        const { preferences } = await getState();
+        return preferences.some((p) => p.key.includes("columns.order"));
       })
       .toBe(true);
 

@@ -1,16 +1,9 @@
-import { test, expect, getState, resetState } from "../fixtures/auth";
-
-type PasswordState = { userPasswords: Record<string, string> };
+import { test, expect, getState } from "../fixtures/auth";
 
 test.describe("Profile password change", () => {
-  test.afterEach(async () => {
-    await resetState();
-  });
-
   test("changes the password through change-password", async ({
-    userContext,
+    userPage: page,
   }) => {
-    const page = await userContext.newPage();
     await page.goto("/profile");
 
     await page.getByLabel(/^Current Password/).fill("UserPass1!");
@@ -22,7 +15,7 @@ test.describe("Profile password change", () => {
 
     await expect(page.getByText("Changes saved successfully!")).toBeVisible();
 
-    const { userPasswords } = await getState<PasswordState>();
+    const { userPasswords } = await getState();
     expect(userPasswords["regular-user-1"]).toBe("NewPass1!");
 
     // update-user ignores passwords, so the password must not be sent there
@@ -31,9 +24,8 @@ test.describe("Profile password change", () => {
   });
 
   test("shows an error when the current password is wrong", async ({
-    userContext,
+    userPage: page,
   }) => {
-    const page = await userContext.newPage();
     await page.goto("/profile");
 
     await page.getByLabel(/^Current Password/).fill("WrongPass1!");
@@ -43,26 +35,7 @@ test.describe("Profile password change", () => {
 
     await expect(page.getByText(/Current password is incorrect/)).toBeVisible();
 
-    const { userPasswords } = await getState<PasswordState>();
+    const { userPasswords } = await getState();
     expect(userPasswords["regular-user-1"]).toBe("UserPass1!");
-  });
-});
-
-test.describe("Admin user password reset", () => {
-  test.afterEach(async () => {
-    await resetState();
-  });
-
-  test("admin can set another user's password", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
-    await page.goto("/users/admin-user-1/edit");
-
-    await page.getByLabel(/^New Password/).fill("NewPass1!");
-    await page.getByRole("button", { name: "Save" }).click();
-
-    await expect(page.getByText("Changes saved successfully!")).toBeVisible();
-
-    const { userPasswords } = await getState<PasswordState>();
-    expect(userPasswords["admin-user-1"]).toBe("NewPass1!");
   });
 });

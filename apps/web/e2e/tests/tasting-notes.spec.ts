@@ -1,4 +1,4 @@
-import { test, expect, setState, resetState } from "../fixtures/auth";
+import { test, expect, setState } from "../fixtures/auth";
 
 test.describe("Tasting Notes page", () => {
   test.beforeEach(async () => {
@@ -60,12 +60,7 @@ test.describe("Tasting Notes page", () => {
     });
   });
 
-  test.afterEach(async () => {
-    await resetState();
-  });
-
-  test("renders tasting notes list", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("renders tasting notes list", async ({ adminPage: page }) => {
     await page.goto("/tasting-notes");
 
     await expect(
@@ -77,18 +72,16 @@ test.describe("Tasting Notes page", () => {
     await expect(page.getByText("Elegant and well-balanced.")).toBeVisible();
   });
 
-  test("shows empty state when no notes", async ({ adminContext }) => {
+  test("shows empty state when no notes", async ({ adminPage: page }) => {
     await setState({ tastingNotes: [] });
-    const page = await adminContext.newPage();
     await page.goto("/tasting-notes");
 
     await expect(page.getByText("No tasting notes yet.")).toBeVisible();
   });
 
   test("Add Tasting Note button navigates to new page", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/tasting-notes");
 
     await page
@@ -97,8 +90,7 @@ test.describe("Tasting Notes page", () => {
     await expect(page).toHaveURL("/tasting-notes/new");
   });
 
-  test("displays score badges", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("displays score badges", async ({ adminPage: page }) => {
     await page.goto("/tasting-notes");
 
     // Both scores should be visible
@@ -106,15 +98,13 @@ test.describe("Tasting Notes page", () => {
     await expect(page.getByText("7").first()).toBeVisible();
   });
 
-  test("displays author names", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("displays author names", async ({ adminPage: page }) => {
     await page.goto("/tasting-notes");
 
     await expect(page.getByText("Test Admin").first()).toBeVisible();
   });
 
-  test("edit button navigates to edit page", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("edit button navigates to edit page", async ({ adminPage: page }) => {
     await page.goto("/tasting-notes");
 
     const editButtons = page.getByRole("button", { name: /edit/i });
@@ -123,9 +113,8 @@ test.describe("Tasting Notes page", () => {
   });
 
   test("tasting notes button on the wines list opens the wine's notes", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/wines");
 
     await page
@@ -136,9 +125,8 @@ test.describe("Tasting Notes page", () => {
   });
 
   test("new note from a wine page preselects that wine", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/tasting-notes/new?wineId=2");
 
     await expect(
@@ -152,9 +140,8 @@ test.describe("Tasting Notes page", () => {
   });
 
   test("new note from a vintage page preselects that wine and vintage", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/tasting-notes/new?vintageId=1");
 
     await expect(
@@ -165,8 +152,7 @@ test.describe("Tasting Notes page", () => {
     ).toBeVisible();
   });
 
-  test("new note ignores an invalid wineId", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("new note ignores an invalid wineId", async ({ adminPage: page }) => {
     await page.goto("/tasting-notes/new?wineId=abc");
 
     await expect(

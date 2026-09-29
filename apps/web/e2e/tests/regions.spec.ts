@@ -1,4 +1,4 @@
-import { test, expect, setState, resetState } from "../fixtures/auth";
+import { test, expect, setState } from "../fixtures/auth";
 import { fieldCombobox } from "../fixtures/form";
 
 test.describe("Regions page", () => {
@@ -15,12 +15,9 @@ test.describe("Regions page", () => {
     });
   });
 
-  test.afterEach(async () => {
-    await resetState();
-  });
-
-  test("renders regions table with all regions", async ({ adminContext }) => {
-    const page = await adminContext.newPage();
+  test("renders regions table with all regions", async ({
+    adminPage: page,
+  }) => {
     await page.goto("/regions");
 
     await expect(page.getByText("Bordeaux")).toBeVisible();
@@ -28,27 +25,24 @@ test.describe("Regions page", () => {
   });
 
   test("new region form pre-selects country from URL parameter", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/regions/new?countryId=2");
 
     await expect(fieldCombobox(page, "Country")).toHaveText(/Italy/);
   });
 
   test("new region form has no selection without URL parameters", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/regions/new");
 
     await expect(fieldCombobox(page, "Country")).toHaveText(/Choose an option/);
   });
 
   test("Add region from country page pre-selects that country", async ({
-    adminContext,
+    adminPage: page,
   }) => {
-    const page = await adminContext.newPage();
     await page.goto("/countries/1");
 
     await page.getByRole("link", { name: "Add region" }).click();
