@@ -243,7 +243,6 @@ async function findExisting(
 
 export interface PreviewInput {
   url: string;
-  html?: string;
 }
 
 /**
@@ -290,34 +289,24 @@ export async function preview(
   }
 
   let data: PageData;
-  if (input.html !== undefined) {
-    data = { html: input.html, api: [] };
+  const cached = cacheGet(url);
+  if (cached) {
+    data = cached;
     attempts.push({
-      strategy: "supplied",
+      strategy: "cache",
       url: loggableUrl(url),
       outcome: "ok",
       ms: 0,
     });
   } else {
-    const cached = cacheGet(url);
-    if (cached) {
-      data = cached;
-      attempts.push({
-        strategy: "cache",
-        url: loggableUrl(url),
-        outcome: "ok",
-        ms: 0,
-      });
-    } else {
-      try {
-        data = await gather(importer, url, fetcher, attempts);
-      } catch (error) {
-        const reason = reasonOf(error);
-        log(reason);
-        return { ok: false, reason };
-      }
-      cacheSet(url, data);
+    try {
+      data = await gather(importer, url, fetcher, attempts);
+    } catch (error) {
+      const reason = reasonOf(error);
+      log(reason);
+      return { ok: false, reason };
     }
+    cacheSet(url, data);
   }
 
   let wine: ImportedWine;

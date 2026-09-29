@@ -11,7 +11,7 @@ pages. The backend's fetcher and import routes do the I/O.
    when no adapter handles the host.
 2. The backend fetches the page (and any `apiRequests()`), then
    `buildContext()` parses it once.
-3. `importer.extract(ctx)` runs the generic extractors (OpenGraph, microdata,
+3. `importer.extract(ctx)` runs the generic extractors (the page h1, OpenGraph, microdata,
    labelled facts tables, JSON-LD), then the adapter's `extractSite()` and
    `extractApi()`. Each field comes from the most confident source.
 4. `normalise()` turns the raw strings into typed values: the wine name

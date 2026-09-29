@@ -16,16 +16,16 @@ Importing works best with **The Wine Society**, **Naked Wines** and **Vivino**, 
 
 ## Checking what was found
 
-Each winemaker, country, region and grape is matched against what's already in your cellar, and a note under the field says what will happen:
+Each winemaker, country, region and grape is matched against what's already in your cellar, and a note with a coloured icon under the field says what will happen:
 
-| Note                 | Meaning                                                                                                                                     |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Matched              | The page's value matches one you already have.                                                                                              |
-| Close match for "…"  | The page's value is similar to one you already have, and that one is selected. Click **Create "…" instead** if it's really a different one. |
-| New: will be created | Nothing similar exists, so a new one will be created when you save.                                                                         |
-| Check this           | The page didn't say this clearly, so it's worth a look.                                                                                     |
+| Icon               | Note                       | Meaning                                                                                                                                     |
+| ------------------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Green tick         | Matched                    | The page's value matches one you already have, and that one will be used.                                                                   |
+| Blue tick          | New                        | Nothing similar exists, so a new one will be created when you save.                                                                         |
+| Yellow exclamation | Check: close match for "…" | The page's value is similar to one you already have, and that one is selected. Click **Create "…" instead** if it's really a different one. |
+| Yellow exclamation | Check                      | The page didn't say this clearly, so it's worth a look.                                                                                     |
 
-You can pick a different value in any field, or type a new name in a selector and choose **Create "…"**.
+You can pick a different value in any field, or type a new name in a selector and choose **Create "…"**. If you change a winemaker, country, region or grapes by mistake, click **Reset to "…"** under the field to go back to what the import found.
 
 ## When you already have the wine
 
@@ -34,9 +34,7 @@ You can pick a different value in any field, or type a new name in a selector an
 
 ## When a link doesn't work
 
-If CellarBoss can't read the page, you'll see "Couldn't get details from this link" and an empty form to fill in yourself.
-
-Some shops block requests from servers. If that happens, open the page in your browser, view its source (usually **Ctrl+U** or **Cmd+Option+U**), copy it, click **Paste the page source instead**, and paste it in alongside the link.
+If CellarBoss can't read the page, you'll see "Couldn't get details from this link" and an empty form to fill in yourself. Some shops block requests from servers, so their links may never work.
 
 ## For server operators
 

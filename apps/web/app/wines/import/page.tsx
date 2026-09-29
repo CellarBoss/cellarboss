@@ -9,11 +9,9 @@ import { BackButton } from "@/components/buttons/BackButton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { ImportForm } from "@/components/import/ImportForm";
-import { getImportSites, previewImport } from "@/lib/api/import";
-import { useApiQuery } from "@/hooks/use-api-query";
+import { previewImport } from "@/lib/api/import";
 
 type ImportState =
   | { step: "enter" }
@@ -23,26 +21,15 @@ type ImportState =
 
 export default function ImportWinePage() {
   const [url, setUrl] = useState("");
-  const [html, setHtml] = useState("");
-  const [pasteSource, setPasteSource] = useState(false);
   const [state, setState] = useState<ImportState>({ step: "enter" });
   const [attempts, setAttempts] = useState(0);
-
-  const sitesQuery = useApiQuery({
-    queryKey: ["import-sites"],
-    queryFn: getImportSites,
-  });
-  const siteNames = sitesQuery.data?.map((s) => s.label) ?? [];
 
   async function handleRead(e: React.FormEvent) {
     e.preventDefault();
     const attempt = attempts + 1;
     setAttempts(attempt);
     setState({ step: "loading" });
-    const result = await previewImport(
-      url.trim(),
-      pasteSource && html.trim() ? html : undefined,
-    ).catch(() => null);
+    const result = await previewImport(url.trim()).catch(() => null);
     setState(
       result?.ok
         ? { step: "found", preview: result.data, attempt }
@@ -73,33 +60,9 @@ export default function ImportWinePage() {
                   autoComplete="off"
                 />
                 <FieldDescription>
-                  {siteNames.length > 0
-                    ? `Works best with ${formatList(siteNames)}. Other shops often work too.`
-                    : "Paste a link to a wine on a shop's website."}
+                  Paste a link to a wine&rsquo;s page on a shop&rsquo;s website.
                 </FieldDescription>
               </Field>
-
-              {pasteSource ? (
-                <Field>
-                  <FieldLabel htmlFor="import-html">Page source</FieldLabel>
-                  <Textarea
-                    id="import-html"
-                    rows={4}
-                    value={html}
-                    onChange={(e) => setHtml(e.target.value)}
-                    placeholder="Open the page in your browser, view its source, and paste it here"
-                  />
-                </Field>
-              ) : (
-                <Button
-                  type="button"
-                  variant="link"
-                  className="h-auto self-start p-0"
-                  onClick={() => setPasteSource(true)}
-                >
-                  Paste the page source instead
-                </Button>
-              )}
 
               <Button
                 type="submit"
@@ -154,9 +117,4 @@ export default function ImportWinePage() {
       )}
     </section>
   );
-}
-
-function formatList(items: string[]): string {
-  if (items.length <= 1) return items.join("");
-  return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
 }

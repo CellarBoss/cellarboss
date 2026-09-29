@@ -3,6 +3,7 @@ import {
   labelTable,
   microdata,
   openGraph,
+  pageHeading,
 } from "./extractors/index.js";
 import { mergeByPrecedence } from "./merge.js";
 import { normalise } from "./normalise/index.js";
@@ -30,7 +31,7 @@ export abstract class BaseImporter {
   abstract readonly hosts: string[];
 
   /** Fetch strategies to try, in order. */
-  readonly strategies: Strategy[] = ["http", "supplied"];
+  readonly strategies: Strategy[] = ["http"];
 
   readonly required: RequiredField[] = ["name"];
 
@@ -58,7 +59,7 @@ export abstract class BaseImporter {
 
   /** Generic extractors, lowest precedence first. Override to reorder or drop. */
   protected extractors(): Extractor[] {
-    return [openGraph, microdata, labelTable, jsonLd];
+    return [pageHeading, openGraph, microdata, labelTable, jsonLd];
   }
 
   /** Fields read from the responses of `apiRequests()`. */

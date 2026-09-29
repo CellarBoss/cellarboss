@@ -25,7 +25,7 @@ export class VivinoImporter extends BaseImporter {
   readonly id = "vivino";
   readonly label = "Vivino";
   readonly hosts = ["vivino.com"];
-  override readonly strategies: Strategy[] = ["api", "http", "supplied"];
+  override readonly strategies: Strategy[] = ["api", "http"];
   override readonly required: RequiredField[] = [
     "name",
     "winemaker",

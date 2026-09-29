@@ -66,6 +66,62 @@ export function valueFor(resolution: ImportResolution): string {
   }
 }
 
+/** The grapes' form values, without duplicates or absent ones. */
+function grapeValues(resolutions: ImportResolution[]): string[] {
+  return [...new Set(resolutions.map(valueFor).filter(Boolean))];
+}
+
+/** The name of the record `valueFor` picks, or null when there's none. */
+export function resolvedName(resolution: ImportResolution): string | null {
+  switch (resolution.status) {
+    case "matched":
+      return resolution.name;
+    case "suggested":
+      return resolution.candidates[0].name;
+    case "new":
+      return resolution.proposedName;
+    case "absent":
+      return null;
+  }
+}
+
+export type ResetTarget = { value: string; name: string } | null;
+
+/**
+ * What the import filled a selector with, once the user has changed it, so
+ * the form can offer it back. Null while the value is still the import's.
+ */
+export function resetTarget(
+  resolution: ImportResolution | undefined,
+  value: string,
+): ResetTarget {
+  if (!resolution) return null;
+  const name = resolvedName(resolution);
+  const original = valueFor(resolution);
+  if (name === null || value === original) return null;
+  return { value: original, name };
+}
+
+/** As `resetTarget`, for the grapes: the whole list the import filled in. */
+export function grapesResetTarget(
+  resolutions: ImportResolution[],
+  values: string[],
+): { values: string[]; names: string[] } | null {
+  const original = grapeValues(resolutions);
+  const same =
+    original.length === values.length &&
+    original.every((v) => values.includes(v));
+  if (same || original.length === 0) return null;
+  const names = [
+    ...new Set(
+      resolutions
+        .map(resolvedName)
+        .filter((name): name is string => name !== null),
+    ),
+  ];
+  return { values: original, names };
+}
+
 const text = (value: number | null | undefined) =>
   value === null || value === undefined ? "" : String(value);
 
@@ -79,7 +135,7 @@ export function formValuesFromPreview(
     wineMakerId: valueFor(resolution.winemaker),
     countryId: valueFor(resolution.country),
     regionId: valueFor(resolution.region),
-    grapeIds: [...new Set(resolution.grapes.map(valueFor).filter(Boolean))],
+    grapeIds: grapeValues(resolution.grapes),
     year: text(wine.vintage?.year?.value),
     drinkFrom: text(wine.vintage?.drinkFrom?.value),
     drinkUntil: text(wine.vintage?.drinkUntil?.value),

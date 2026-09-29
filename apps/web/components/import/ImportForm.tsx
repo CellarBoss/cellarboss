@@ -133,7 +133,7 @@ export function ImportForm({ preview }: ImportFormProps) {
   const resolution = preview?.resolution;
   const lowConfidence = (confidence: number | undefined) =>
     confidence !== undefined && confidence < LOW_CONFIDENCE;
-  const createInstead =
+  const setSelector =
     (key: "wineMakerId" | "countryId" | "regionId") => (value: string) =>
       form.setFieldValue(key, value);
 
@@ -210,7 +210,7 @@ export function ImportForm({ preview }: ImportFormProps) {
                     <FieldStatusLine
                       resolution={resolution?.winemaker}
                       value={value}
-                      onCreateInstead={createInstead("wineMakerId")}
+                      onChange={setSelector("wineMakerId")}
                     />
                   )}
                 </form.Subscribe>
@@ -230,7 +230,7 @@ export function ImportForm({ preview }: ImportFormProps) {
                     <FieldStatusLine
                       resolution={resolution?.country}
                       value={value}
-                      onCreateInstead={createInstead("countryId")}
+                      onChange={setSelector("countryId")}
                     />
                   )}
                 </form.Subscribe>
@@ -255,7 +255,7 @@ export function ImportForm({ preview }: ImportFormProps) {
                     <FieldStatusLine
                       resolution={resolution?.region}
                       value={value}
-                      onCreateInstead={createInstead("regionId")}
+                      onChange={setSelector("regionId")}
                     />
                   )}
                 </form.Subscribe>

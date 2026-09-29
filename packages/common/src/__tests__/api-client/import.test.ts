@@ -26,18 +26,6 @@ describe("importResource", () => {
     );
   });
 
-  it("preview sends supplied HTML", async () => {
-    await imports.preview("https://example.com/wine", "<html></html>");
-    expect(mockRequest).toHaveBeenCalledWith(
-      "import/preview",
-      "POST",
-      JSON.stringify({
-        url: "https://example.com/wine",
-        html: "<html></html>",
-      }),
-    );
-  });
-
   it("commit sends the reviewed import", async () => {
     const data = {
       wine: { id: 1 },
