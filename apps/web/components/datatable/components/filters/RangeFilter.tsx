@@ -3,15 +3,7 @@
 import { useState } from "react";
 import type { RowData } from "@tanstack/react-table";
 import type { AppTable } from "../../tableFeatures";
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { ChevronDown } from "lucide-react";
 import type { RangeFilterValue } from "../../filters/rangeFilter";
 
 export type RangeFilterDef = {
@@ -32,10 +24,6 @@ export function RangeFilter<T extends RowData>({
   table,
   activeValue: rangeVal,
 }: Props<T>) {
-  const activeCount =
-    (rangeVal?.min !== undefined ? 1 : 0) +
-    (rangeVal?.max !== undefined ? 1 : 0);
-
   const minFromProp = rangeVal?.min?.toString() ?? "";
   const maxFromProp = rangeVal?.max?.toString() ?? "";
 
@@ -47,63 +35,45 @@ export function RangeFilter<T extends RowData>({
   if (maxInput !== maxFromProp) setMaxInput(maxFromProp);
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-10">
-          {filter.label}
-          <ChevronDown className="ml-2 h-4 w-4" />
-          {activeCount > 0 && (
-            <Badge variant="secondary" className="ml-2">
-              {activeCount}
-            </Badge>
-          )}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-56 p-4">
-        <div className="space-y-3">
-          <div className="text-sm font-medium">{filter.label}</div>
-          <div className="flex gap-2">
-            <Input
-              type="number"
-              placeholder="Min"
-              min="0"
-              value={minInput}
-              onChange={(e) => {
-                setMinInput(e.target.value);
-                const min = e.target.value ? Number(e.target.value) : undefined;
-                const newVal = { ...(rangeVal ?? {}), min };
-                table
-                  .getColumn(filter.columnId)
-                  ?.setFilterValue(
-                    newVal.min === undefined && newVal.max === undefined
-                      ? undefined
-                      : newVal,
-                  );
-              }}
-              className="w-24"
-            />
-            <Input
-              type="number"
-              placeholder="Max"
-              min="0"
-              value={maxInput}
-              onChange={(e) => {
-                setMaxInput(e.target.value);
-                const max = e.target.value ? Number(e.target.value) : undefined;
-                const newVal = { ...(rangeVal ?? {}), max };
-                table
-                  .getColumn(filter.columnId)
-                  ?.setFilterValue(
-                    newVal.min === undefined && newVal.max === undefined
-                      ? undefined
-                      : newVal,
-                  );
-              }}
-              className="w-24"
-            />
-          </div>
-        </div>
-      </PopoverContent>
-    </Popover>
+    <div className="flex gap-2">
+      <Input
+        type="number"
+        placeholder="Min"
+        min="0"
+        value={minInput}
+        onChange={(e) => {
+          setMinInput(e.target.value);
+          const min = e.target.value ? Number(e.target.value) : undefined;
+          const newVal = { ...(rangeVal ?? {}), min };
+          table
+            .getColumn(filter.columnId)
+            ?.setFilterValue(
+              newVal.min === undefined && newVal.max === undefined
+                ? undefined
+                : newVal,
+            );
+        }}
+        className="w-24"
+      />
+      <Input
+        type="number"
+        placeholder="Max"
+        min="0"
+        value={maxInput}
+        onChange={(e) => {
+          setMaxInput(e.target.value);
+          const max = e.target.value ? Number(e.target.value) : undefined;
+          const newVal = { ...(rangeVal ?? {}), max };
+          table
+            .getColumn(filter.columnId)
+            ?.setFilterValue(
+              newVal.min === undefined && newVal.max === undefined
+                ? undefined
+                : newVal,
+            );
+        }}
+        className="w-24"
+      />
+    </div>
   );
 }

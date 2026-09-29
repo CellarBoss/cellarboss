@@ -27,7 +27,7 @@ It also contains shortcuts to the [bottles](/resources/bottles) view.
 
 ### Filtering
 
-Filter wines by type, winemaker, or region using the multi-select filters above the table.
+Filter wines by type, winemaker, or region using the Filters button above the table.
 
 ![Wines filtered](/screenshots/wines-filter.png)
 

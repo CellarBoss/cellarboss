@@ -227,8 +227,8 @@ export function DataTable<T extends RowData>({
 
   return (
     <RowSelectionContext.Provider value={state.rowSelection}>
-      <div className="relative flex w-full flex-col gap-2 sm:flex-row sm:items-center">
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="relative flex w-full flex-col gap-2 py-4 sm:flex-row sm:items-start">
+        <div className="flex flex-1 flex-wrap items-center gap-2">
           <DataTableSearchControl
             table={table}
             filterColumnName={filterColumnName}
