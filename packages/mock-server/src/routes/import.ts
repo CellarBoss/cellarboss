@@ -166,6 +166,10 @@ export function registerImportRoutes(app: Hono, state: MockState) {
       wineId = wine.id;
     } else {
       const w = input.wine;
+      // Check before creating anything, so a rejected commit leaves no rows.
+      if (w.region && !("id" in w.region) && w.country === null) {
+        return c.json({ error: "A new region needs a country" }, 400);
+      }
       const wineMakerId = named(state.winemakers, w.winemaker, (name) => {
         const row = { id: nextId(state.winemakers), name };
         state.winemakers.push(row);
@@ -181,7 +185,7 @@ export function registerImportRoutes(app: Hono, state: MockState) {
       let regionId: number | null = null;
       if (w.region) {
         if (!("id" in w.region) && countryId === null) {
-          return c.json({ error: "A new region needs a country" }, 400);
+          return c.json({ error: "Referenced record not found" }, 404);
         }
         regionId = named(state.regions, w.region, (name) => {
           const row = {

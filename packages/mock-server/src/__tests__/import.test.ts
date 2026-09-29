@@ -71,4 +71,14 @@ describe("mock server import", () => {
     expect(data.existing.wine).not.toBeNull();
     expect(data.existing.vintage).not.toBeNull();
   });
+
+  it("rejects a new region without a country before creating anything", async () => {
+    const winemakers = state.winemakers.length;
+    const res = await post(app, "/api/import/commit", {
+      wine: { ...newWine, country: null },
+      vintage,
+    });
+    expect(res.status).toBe(400);
+    expect(state.winemakers).toHaveLength(winemakers);
+  });
 });
