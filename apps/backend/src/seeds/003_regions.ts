@@ -1,7 +1,7 @@
 import type { UntypedKysely } from "@schema/untyped.js";
 import { env } from "@utils/env.js";
 
-const regionsByCountry: Record<string, string[]> = {
+export const regionsByCountry: Record<string, string[]> = {
   France: [
     "Alsace",
     "Beaujolais",
