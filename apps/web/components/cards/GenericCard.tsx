@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "@tanstack/react-form";
 import { Card, CardContent } from "@/components/ui/card";
+import { FieldGroup } from "@/components/ui/field";
 import { GenericField } from "./GenericField";
 import { SaveButton } from "@/components/buttons/SaveButton";
 import { ResetButton } from "@/components/buttons/ResetButton";
@@ -105,7 +106,7 @@ export function GenericCard<T extends { id: number | string }>({
       >
         <Card>
           <CardContent>
-            <div className="w-full max-w-md">
+            <FieldGroup className="max-w-md">
               {fields.map((field) => (
                 <GenericField
                   form={form}
@@ -123,7 +124,7 @@ export function GenericCard<T extends { id: number | string }>({
                   }
                 />
               ))}
-            </div>
+            </FieldGroup>
           </CardContent>
         </Card>
 

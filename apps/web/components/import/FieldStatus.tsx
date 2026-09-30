@@ -40,7 +40,7 @@ function StatusText({
   const { Icon, className } = statusIcons[kind];
   return (
     <p
-      className="-mt-1 mb-2 flex items-start gap-1.5 text-xs text-muted-foreground"
+      className="flex items-start gap-1.5 text-xs text-muted-foreground"
       data-testid="import-field-status"
       data-status={kind}
     >
