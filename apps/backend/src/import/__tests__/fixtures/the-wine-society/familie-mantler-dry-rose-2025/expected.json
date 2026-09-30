@@ -1,0 +1,18 @@
+{
+  "url": "https://www.thewinesociety.com/product/familie-mantler-dry-rose-vom-rotburger-niederosterreich-2025-en.aspx",
+  "importer": "the-wine-society",
+  "recordedAt": "2026-09-27T20:24:25.568Z",
+  "currentYear": 2026,
+  "reviewed": true,
+  "fields": {
+    "name": "Dry Rosé, Niederösterreich",
+    "winemaker": "Familie Mantler",
+    "country": "Austria",
+    "regions": ["Lower Austria"],
+    "grapes": ["Zweigelt"],
+    "type": "rose",
+    "vintage": 2025,
+    "drinkFrom": 2026,
+    "drinkUntil": 2027
+  }
+}

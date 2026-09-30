@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { invalidateVintageCounts } from "@/lib/functions/invalidate-vintage-counts";
 import type { TastingNote, Vintage, Wine, WineMaker } from "@cellarboss/types";
 import { useApiQuery } from "@/hooks/use-api-query";
 import { useSettingsContext } from "@/contexts/settings-context";
@@ -75,6 +76,9 @@ export default function TastingNotesPage() {
         const result = await deleteTastingNote(noteId);
         if (!result.ok) throw new Error(result.error.message);
         queryClient.invalidateQueries({ queryKey: ["tastingNotes", "all"] });
+        const note = notes.find((n) => n.id === noteId);
+        const vintage = note && vintageMap.get(note.vintageId);
+        if (vintage) invalidateVintageCounts(queryClient, vintage);
         return true;
       }}
       onAdd={async () => {

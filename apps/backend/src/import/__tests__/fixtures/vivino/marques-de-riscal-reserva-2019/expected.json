@@ -1,0 +1,18 @@
+{
+  "url": "https://www.vivino.com/GB/en/marques-de-riscal-reserva/w/1163903?year=2019",
+  "importer": "vivino",
+  "recordedAt": "2026-09-27T20:25:22.515Z",
+  "currentYear": 2026,
+  "reviewed": true,
+  "fields": {
+    "name": "Reserva",
+    "winemaker": "Marqués de Riscal",
+    "country": "Spain",
+    "regions": ["Rioja"],
+    "grapes": ["Tempranillo"],
+    "type": "red",
+    "vintage": 2019,
+    "drinkFrom": 2022,
+    "drinkUntil": 2034
+  }
+}

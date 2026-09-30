@@ -15,3 +15,4 @@ export * from "./settings.validator";
 export * from "./tasting-notes.validator";
 export * from "./images.validator";
 export * from "./preferences.validator";
+export * from "./import.validator";

@@ -11,6 +11,8 @@ interface CrudRouteConfig {
   createSchema: ZodType;
   updateSchema: ZodType;
   responseSchema: ZodType;
+  // Returned by list/getById when reads embed more than create/update return
+  readResponseSchema?: ZodType;
   security?: typeof authSecurity;
 }
 
@@ -28,6 +30,7 @@ export function createCrudRoutes(config: CrudRouteConfig) {
     createSchema,
     updateSchema,
     responseSchema,
+    readResponseSchema = responseSchema,
     security = authSecurity,
   } = config;
 
@@ -38,7 +41,7 @@ export function createCrudRoutes(config: CrudRouteConfig) {
     security,
     summary: `List all ${resourceName}s`,
     responses: {
-      200: jsonContent(z.array(responseSchema), `List of ${resourceName}s`),
+      200: jsonContent(z.array(readResponseSchema), `List of ${resourceName}s`),
       401: jsonContent(errorSchema, "Unauthorized"),
     },
   });
@@ -51,7 +54,7 @@ export function createCrudRoutes(config: CrudRouteConfig) {
     summary: `Get a ${resourceName} by ID`,
     request: { params: idParamSchema },
     responses: {
-      200: jsonContent(responseSchema, `The ${resourceName}`),
+      200: jsonContent(readResponseSchema, `The ${resourceName}`),
       400: jsonContent(errorSchema, "Invalid ID"),
       401: jsonContent(errorSchema, "Unauthorized"),
       404: jsonContent(errorSchema, "Not found"),

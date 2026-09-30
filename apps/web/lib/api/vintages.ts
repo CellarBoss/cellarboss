@@ -1,16 +1,16 @@
 "use server";
 
-import type { Vintage, CreateVintage } from "@cellarboss/types";
+import type { Vintage, VintageDetail, CreateVintage } from "@cellarboss/types";
 import type { ApiResult } from "@cellarboss/common";
 import { api } from "./client";
 
-export async function getVintages(): Promise<ApiResult<Vintage[]>> {
+export async function getVintages(): Promise<ApiResult<VintageDetail[]>> {
   return api.vintages.getAll();
 }
 
 export async function getVintagesByWineId(
   wineId: number,
-): Promise<ApiResult<Vintage[]>> {
+): Promise<ApiResult<VintageDetail[]>> {
   return api.vintages.getByWineId(wineId);
 }
 
@@ -18,7 +18,9 @@ export async function deleteVintage(id: number): Promise<ApiResult<boolean>> {
   return api.vintages.delete(id);
 }
 
-export async function getVintageById(id: number): Promise<ApiResult<Vintage>> {
+export async function getVintageById(
+  id: number,
+): Promise<ApiResult<VintageDetail>> {
   return api.vintages.getById(id);
 }
 

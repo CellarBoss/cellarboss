@@ -18,22 +18,20 @@ export function DataTableSearchControl<T extends RowData>({
   return (
     <>
       {filterColumnName != null && (
-        <div className="flex items-center py-4">
-          <Input
-            placeholder="Search..."
-            type="search"
-            value={
-              (columnFilters.find((f) => f.id === filterColumnName)
-                ?.value as string) ?? ""
-            }
-            onChange={(event) =>
-              table
-                .getColumn(filterColumnName)
-                ?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm h-10"
-          />
-        </div>
+        <Input
+          placeholder="Search..."
+          type="search"
+          value={
+            (columnFilters.find((f) => f.id === filterColumnName)
+              ?.value as string) ?? ""
+          }
+          onChange={(event) =>
+            table
+              .getColumn(filterColumnName)
+              ?.setFilterValue(event.target.value)
+          }
+          className="h-10 w-full sm:w-60"
+        />
       )}
     </>
   );

@@ -2,6 +2,8 @@
 
 Wines are the core entity in CellarBoss. Each wine has a name, type, and is associated with a [winemaker](/resources/winemakers) and [region](/resources/regions).
 
+To add a wine from a shop's website, use **Import from link** on the list view. See [Import from a Link](/features/import).
+
 ## List View
 
 ![Wines list](/screenshots/wines-list.png)
@@ -27,7 +29,7 @@ It also contains shortcuts to the [bottles](/resources/bottles) view.
 
 ### Filtering
 
-Filter wines by type, winemaker, or region using the multi-select filters above the table.
+Filter wines by type, winemaker, or region using the Filters button above the table.
 
 ![Wines filtered](/screenshots/wines-filter.png)
 

@@ -16,12 +16,15 @@ export async function capture(
   await page.waitForSelector("table");
   await captureScreenshot(page, outputDir, "wines-list");
 
-  // Filtered view — open a filter popover and select an option
+  // Filtered view — open the Filters panel and select an option
   await page.goto("http://localhost:3000/wines");
   await page.waitForSelector("table");
-  const filterButton = page.locator("button", { hasText: "Type" });
-  await filterButton.click();
+  // Open the Filters panel and pick the Type filter
+  await page.getByRole("button", { name: /^Filters/ }).click();
   await page.waitForSelector("[data-slot='popover-content']");
+  await page
+    .locator("[data-slot='popover-content'] nav button", { hasText: "Type" })
+    .click();
   const filterCheckbox = page
     .locator("[data-slot='popover-content'] button[role='checkbox']")
     .first();

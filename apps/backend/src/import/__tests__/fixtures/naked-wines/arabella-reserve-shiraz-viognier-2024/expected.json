@@ -1,0 +1,19 @@
+{
+  "url": "https://www.nakedwines.co.uk/wines/arabella-reserve-shiraz-viognier-2024",
+  "importer": "naked-wines",
+  "recordedAt": "2026-09-27T20:24:39.575Z",
+  "currentYear": 2026,
+  "reviewed": true,
+  "notes": "Naked Wines names only the main grape of a blend (\"Syrah | Shiraz Blend\"), so Viognier is missing.",
+  "fields": {
+    "name": "Arabella Reserve Shiraz Viognier",
+    "winemaker": "Stephen and Jamie de Wet",
+    "country": "South Africa",
+    "regions": ["Western Cape"],
+    "grapes": ["Syrah"],
+    "type": "red",
+    "vintage": 2024,
+    "drinkFrom": 2026,
+    "drinkUntil": 2029
+  }
+}

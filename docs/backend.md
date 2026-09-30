@@ -24,7 +24,10 @@ DATABASE_URL=database.sqlite
 NODE_ENV=development
 UPLOAD_DIR=/path/to/uploads
 MCP_ENABLED=false
+IMPORT_PROXY_URL=http://proxy.internal:3128
 ```
+
+`IMPORT_PROXY_URL` is optional. When set, pages fetched for "Import from URL" go through that proxy (`http://`, `https://` or `socks5://`). Without it, the standard `HTTPS_PROXY` / `HTTP_PROXY` / `NO_PROXY` variables are honoured. The backend refuses to connect to private, loopback and link-local addresses itself, including for `NO_PROXY` hosts. Through a proxy it checks the address before sending the request, but the proxy makes the connection, so a proxy you configure should also block those ranges.
 
 ## Scripts
 
@@ -42,6 +45,7 @@ MCP_ENABLED=false
 | `pnpm seed`          | Seed the database with initial data            |
 | `pnpm format`        | Format code with Prettier                      |
 | `pnpm generate:docs` | Generate API documentation                     |
+| `pnpm import:recon`  | Record a page as an import test fixture        |
 
 ## Architecture
 
@@ -49,6 +53,7 @@ MCP_ENABLED=false
 src/
 ├── index.ts           # Entry point — creates Hono app, registers routes
 ├── controllers/       # Business logic (CRUD operations per entity)
+├── import/            # Import from URL: extractors, site adapters, matching
 ├── routes/            # API route definitions with OpenAPI schemas
 ├── mcp/                # Optional read-only MCP server (server.ts, route.ts)
 ├── middleware/        # auth.ts, admin.ts, error.ts

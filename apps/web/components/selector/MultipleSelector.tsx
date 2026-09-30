@@ -16,25 +16,37 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { GenericType } from "@cellarboss/types";
+import { useState } from "react";
+import { pendingName, pendingValue } from "@/lib/functions/import";
+import { CreateOption } from "./CreateOption";
 
 export default function MultiSelector<T extends GenericType>({
   options,
   isInvalid,
   editable,
   field,
+  allowCreate = false,
 }: {
   options: T[];
   isInvalid: boolean;
   editable: boolean;
   field: FieldBinding<string[]>;
+  allowCreate?: boolean;
 }) {
+  const [search, setSearch] = useState("");
   const selectedIds: string[] = Array.isArray(field.state.value)
     ? field.state.value
     : [];
 
-  const selectedNames = options
-    .filter((o) => selectedIds.includes(o.id.toString()))
-    .map((o) => o.name);
+  const selectedNames = [
+    ...options
+      .filter((o) => selectedIds.includes(o.id.toString()))
+      .map((o) => o.name),
+    ...selectedIds
+      .map(pendingName)
+      .filter((name): name is string => name !== null)
+      .map((name) => `${name} (new)`),
+  ];
 
   function handleToggle(id: string) {
     const current: string[] = Array.isArray(field.state.value)
@@ -92,9 +104,26 @@ export default function MultiSelector<T extends GenericType>({
         align="start"
       >
         <Command>
-          <CommandInput placeholder="Search..." />
+          <CommandInput
+            placeholder="Search..."
+            value={search}
+            onValueChange={setSearch}
+          />
           <CommandList>
             <CommandEmpty>No options found.</CommandEmpty>
+            {allowCreate && (
+              <CreateOption
+                search={search}
+                options={options}
+                onCreate={(name) => {
+                  const value = pendingValue(name);
+                  if (!selectedIds.includes(value)) {
+                    field.handleChange([...selectedIds, value]);
+                  }
+                  setSearch("");
+                }}
+              />
+            )}
             <CommandGroup>
               {options.map((option) => {
                 const id = option.id.toString();

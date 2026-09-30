@@ -41,6 +41,7 @@ import {
 } from "@/lib/functions/format";
 import { useSettingsContext } from "@/contexts/settings-context";
 import { useQueryClient } from "@tanstack/react-query";
+import { invalidateVintageCounts } from "@/lib/functions/invalidate-vintage-counts";
 
 export default function ViewBottlePage() {
   const params = useParams();
@@ -154,6 +155,7 @@ export default function ViewBottlePage() {
                 queryClient.invalidateQueries({
                   queryKey: ["bottle", bottleId],
                 });
+                if (vintage) invalidateVintageCounts(queryClient, vintage);
               }}
             />
             <MoveBottleButton
@@ -246,7 +248,7 @@ export default function ViewBottlePage() {
         {vintage && (
           <div className="flex flex-col gap-6">
             <VintageImageGallery vintageId={vintage.id} className="" />
-            <TastingNotesSection className="" vintageId={vintage.id} />
+            <TastingNotesSection className="" vintage={vintage} />
           </div>
         )}
       </div>

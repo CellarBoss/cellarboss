@@ -9,7 +9,11 @@ import {
 import { requireAuth } from "@middleware/auth.middleware.js";
 import { parseId } from "@utils/id.js";
 import { createCrudRoutes, jsonContent } from "@openapi/helpers.js";
-import { vintageResponseSchema, errorSchema } from "@openapi/schemas.js";
+import {
+  vintageResponseSchema,
+  vintageDetailResponseSchema,
+  errorSchema,
+} from "@openapi/schemas.js";
 
 const crudRoutes = createCrudRoutes({
   tag: "Vintages",
@@ -17,6 +21,7 @@ const crudRoutes = createCrudRoutes({
   createSchema: createVintageSchema,
   updateSchema: updateVintageSchema,
   responseSchema: vintageResponseSchema,
+  readResponseSchema: vintageDetailResponseSchema,
 });
 
 const wineIdParamSchema = z.object({
@@ -32,7 +37,7 @@ const getByWineRoute = createRoute({
   request: { params: wineIdParamSchema },
   responses: {
     200: jsonContent(
-      vintageResponseSchema.array(),
+      vintageDetailResponseSchema.array(),
       "List of vintages for the wine",
     ),
     400: jsonContent(errorSchema, "Invalid ID"),

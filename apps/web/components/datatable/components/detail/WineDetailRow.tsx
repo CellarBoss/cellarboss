@@ -1,6 +1,6 @@
 "use client";
 
-import type { Wine } from "@cellarboss/types";
+import type { WineDetail } from "@cellarboss/types";
 import { getWinemakerById } from "@/lib/api/winemakers";
 import { getGrapes } from "@/lib/api/grapes";
 import { getWineGrapesByWineId } from "@/lib/api/winegrapes";
@@ -26,7 +26,7 @@ import { DrinkingWindowDisplay } from "@/components/vintage/DrinkingWindowDispla
 import { BottleCountDisplay } from "@/components/vintage/BottleCountDisplay";
 import { VintageTastingNotesButton } from "@/components/buttons/TastingNotesButton";
 
-export default function WineDetailRow({ wine }: { wine: Wine }) {
+export default function WineDetailRow({ wine }: { wine: WineDetail }) {
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -161,7 +161,7 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
                         />
                       </td>
                       <td className="py-1 pr-4 text-muted-foreground">
-                        <BottleCountDisplay vintageId={v.id} />
+                        <BottleCountDisplay vintage={v} />
                       </td>
                       <td className="py-1 text-right">
                         <span className="inline-flex items-center gap-1">
@@ -170,7 +170,10 @@ export default function WineDetailRow({ wine }: { wine: Wine }) {
                               router.push(`/bottles/new?vintageId=${v.id}`)
                             }
                           />
-                          <VintageTastingNotesButton vintageId={v.id} />
+                          <VintageTastingNotesButton
+                            vintageId={v.id}
+                            count={v.tastingNotesCount}
+                          />
                           <EditButton
                             onEdit={async () =>
                               router.push(`/vintages/${v.id}/edit`)
