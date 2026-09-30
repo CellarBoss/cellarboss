@@ -7,6 +7,7 @@ import { parseId } from "@utils/id.js";
 import { createCrudRoutes, jsonContent } from "@openapi/helpers.js";
 import {
   wineResponseSchema,
+  wineDetailResponseSchema,
   errorSchema,
   successSchema,
   idParamSchema,
@@ -18,6 +19,7 @@ const crudRoutes = createCrudRoutes({
   createSchema: createWineSchema,
   updateSchema: updateWineSchema,
   responseSchema: wineResponseSchema,
+  readResponseSchema: wineDetailResponseSchema,
 });
 
 // Override delete route to include 409 response

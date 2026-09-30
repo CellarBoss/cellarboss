@@ -1,5 +1,9 @@
 import { db } from "@utils/database.js";
 import { toNumber } from "@utils/query-helpers.js";
+import {
+  bottleCountsByVintageIds,
+  emptyBottleCounts,
+} from "@utils/aggregates.js";
 
 export interface EnrichedWine {
   id: number; // vintage id — the primary key of this view
@@ -82,18 +86,7 @@ async function enrichWineRows(rows: WineRow[]): Promise<EnrichedWine[]> {
     grapesByWineId.set(wineId, grapes);
   }
 
-  const countRows = await db
-    .selectFrom("bottle")
-    .select((eb) => ["vintageId", "status", eb.fn.count("id").as("count")])
-    .where("vintageId", "in", vintageIds)
-    .groupBy(["vintageId", "status"])
-    .execute();
-  const bottleCountsByVintageId = new Map<number, Record<string, number>>();
-  for (const row of countRows) {
-    const counts = bottleCountsByVintageId.get(row.vintageId) ?? {};
-    counts[row.status] = Number(row.count);
-    bottleCountsByVintageId.set(row.vintageId, counts);
-  }
+  const bottleCountsByVintageId = await bottleCountsByVintageIds(vintageIds);
 
   const noteAggRows = await db
     .selectFrom("tastingNote")
@@ -128,7 +121,7 @@ async function enrichWineRows(rows: WineRow[]): Promise<EnrichedWine[]> {
     year: row.year,
     drinkFrom: row.drinkFrom,
     drinkUntil: row.drinkUntil,
-    bottleCounts: bottleCountsByVintageId.get(row.id) ?? {},
+    bottleCounts: bottleCountsByVintageId.get(row.id) ?? emptyBottleCounts(),
     averageScore: noteAggByVintageId.get(row.id)?.averageScore ?? null,
     noteCount: noteAggByVintageId.get(row.id)?.noteCount ?? 0,
   }));
