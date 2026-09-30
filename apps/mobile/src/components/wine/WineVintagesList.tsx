@@ -20,27 +20,12 @@ export function WineVintagesList({ wineId }: { wineId: number }) {
     queryKey: ["vintages", "wine", wineId],
     queryFn: () => api.vintages.getByWineId(wineId),
   });
-  const bottleQuery = useApiQuery({
-    queryKey: ["bottles"],
-    queryFn: () => api.bottles.getAll(),
-  });
 
-  const result = queryGate([vintageQuery, bottleQuery]);
+  const result = queryGate([vintageQuery]);
   if (!result.ready) return result.gate;
 
-  const [vintages, bottles] = result.data;
+  const [vintages] = result.data;
   const currentYear = new Date().getFullYear();
-
-  const vintageIds = new Set(vintages.map((v) => v.id));
-  const bottleCountMap = new Map<number, number>();
-  for (const bottle of bottles) {
-    if (vintageIds.has(bottle.vintageId) && bottle.status === "stored") {
-      bottleCountMap.set(
-        bottle.vintageId,
-        (bottleCountMap.get(bottle.vintageId) ?? 0) + 1,
-      );
-    }
-  }
 
   const sorted = [...vintages].sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
 
@@ -124,7 +109,6 @@ export function WineVintagesList({ wineId }: { wineId: number }) {
               vintage.drinkUntil,
               currentYear,
             );
-            const bottleCount = bottleCountMap.get(vintage.id) ?? 0;
             const isLast = index === sorted.length - 1;
 
             return (
@@ -151,7 +135,9 @@ export function WineVintagesList({ wineId }: { wineId: number }) {
                     size={14}
                     color={theme.colors.onSurfaceVariant}
                   />
-                  <Text style={styles.bottleCount}>{bottleCount}</Text>
+                  <Text style={styles.bottleCount}>
+                    {vintage.bottles.stored}
+                  </Text>
                 </View>
               </Pressable>
             );

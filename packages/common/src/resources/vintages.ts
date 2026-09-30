@@ -1,16 +1,16 @@
-import type { Vintage, CreateVintage } from "@cellarboss/types";
+import type { Vintage, VintageDetail, CreateVintage } from "@cellarboss/types";
 import type { ApiResult, RequestFn } from "../types";
 
 export function vintagesResource(request: RequestFn) {
   return {
-    getAll: (): Promise<ApiResult<Vintage[]>> =>
-      request<Vintage[]>("vintage", "GET"),
+    getAll: (): Promise<ApiResult<VintageDetail[]>> =>
+      request<VintageDetail[]>("vintage", "GET"),
 
-    getByWineId: (wineId: number): Promise<ApiResult<Vintage[]>> =>
-      request<Vintage[]>("vintage/wine/" + wineId, "GET"),
+    getByWineId: (wineId: number): Promise<ApiResult<VintageDetail[]>> =>
+      request<VintageDetail[]>("vintage/wine/" + wineId, "GET"),
 
-    getById: (id: number): Promise<ApiResult<Vintage>> =>
-      request<Vintage>("vintage/" + id, "GET"),
+    getById: (id: number): Promise<ApiResult<VintageDetail>> =>
+      request<VintageDetail>("vintage/" + id, "GET"),
 
     create: (vintage: CreateVintage): Promise<ApiResult<Vintage>> => {
       const body = {

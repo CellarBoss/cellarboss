@@ -10,3 +10,8 @@ export interface Wine extends GenericType {
 export type CreateWine = Omit<Wine, "id">;
 
 export type UpdateWine = Partial<Omit<Wine, "id">>;
+
+// Read model returned by GET routes; create/update responses stay as Wine
+export interface WineDetail extends Wine {
+  tastingNotesCount: number;
+}

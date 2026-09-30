@@ -62,6 +62,31 @@ export const vintageResponseSchema = createVintageSchema.extend({
   id: z.number().describe("Unique identifier"),
 });
 
+export const bottleCountsByStatusSchema = z.object(
+  Object.fromEntries(
+    BOTTLE_STATUSES.map((status) => [
+      status,
+      z.number().describe(`Number of bottles with status "${status}"`),
+    ]),
+  ) as Record<(typeof BOTTLE_STATUSES)[number], z.ZodNumber>,
+);
+
+// Read models: GET responses embed aggregate counts, create/update do not
+export const wineDetailResponseSchema = wineResponseSchema.extend({
+  tastingNotesCount: z
+    .number()
+    .describe("Number of tasting notes across all vintages of this wine"),
+});
+
+export const vintageDetailResponseSchema = vintageResponseSchema.extend({
+  tastingNotesCount: z
+    .number()
+    .describe("Number of tasting notes for this vintage"),
+  bottles: bottleCountsByStatusSchema.describe(
+    "Number of bottles of this vintage in each status",
+  ),
+});
+
 export const bottleResponseSchema = createBottleSchema.extend({
   id: z.number().describe("Unique identifier"),
 });

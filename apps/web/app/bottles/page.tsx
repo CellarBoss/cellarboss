@@ -1,6 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
+import { invalidateVintageCounts } from "@/lib/functions/invalidate-vintage-counts";
 import { useRouter } from "next/navigation";
 import { getBottles, deleteBottle, updateBottle } from "@/lib/api/bottles";
 import { getVintages } from "@/lib/api/vintages";
@@ -127,11 +128,20 @@ export default function BottlesPage() {
   const treeData = buildTree(storages, "parent");
   const descendantsMap = buildDescendantsMap(storages);
 
+  function invalidateCounts(changed: Bottle[]) {
+    const vintageIds = new Set(changed.map((b) => b.vintageId));
+    for (const vintageId of vintageIds) {
+      const vintage = vintageMap.get(vintageId);
+      if (vintage) invalidateVintageCounts(queryClient, vintage);
+    }
+  }
+
   async function handleDelete(row: Bottle): Promise<boolean> {
     const delResult = await deleteBottle(row.id);
     if (!delResult.ok)
       throw new Error("Error deleting bottle: " + delResult.error.message);
     queryClient.invalidateQueries({ queryKey: ["bottles"] });
+    invalidateCounts([row]);
     return true;
   }
 
@@ -151,6 +161,7 @@ export default function BottlesPage() {
     const result = await updateBottle({ ...bottle, status: newStatus });
     if (!result.ok) throw new Error(result.error.message);
     queryClient.invalidateQueries({ queryKey: ["bottles"] });
+    invalidateCounts([bottle]);
   }
 
   async function handleBulkDelete(rows: Bottle[]): Promise<void> {
@@ -162,6 +173,7 @@ export default function BottlesPage() {
       }
     } finally {
       queryClient.invalidateQueries({ queryKey: ["bottles"] });
+      invalidateCounts(rows);
     }
     if (errors.length)
       throw new Error("Error deleting bottle: " + errors.join(", "));
@@ -172,16 +184,24 @@ export default function BottlesPage() {
     partial: Record<string, string | number>,
   ): Promise<void> {
     const status = BOTTLE_STATUSES.find((s) => s === partial.status);
-    for (const row of rows) {
-      const result = await updateBottle({
-        ...row,
-        ...(status ? { status } : {}),
-        ...(partial.storageId ? { storageId: Number(partial.storageId) } : {}),
-      });
-      if (!result.ok)
-        throw new Error("Error updating bottle: " + result.error.message);
+    const updated: Bottle[] = [];
+    try {
+      for (const row of rows) {
+        const result = await updateBottle({
+          ...row,
+          ...(status ? { status } : {}),
+          ...(partial.storageId
+            ? { storageId: Number(partial.storageId) }
+            : {}),
+        });
+        if (!result.ok)
+          throw new Error("Error updating bottle: " + result.error.message);
+        updated.push(row);
+      }
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ["bottles"] });
+      if (status) invalidateCounts(updated);
     }
-    queryClient.invalidateQueries({ queryKey: ["bottles"] });
   }
 
   const bulkEditFields: BulkEditField<Bottle>[] = [

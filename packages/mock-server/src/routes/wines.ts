@@ -1,18 +1,19 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
 import { nextId } from "../ids";
+import { toWineDetail } from "../counts";
 import { createWineSchema, updateWineSchema } from "@cellarboss/validators";
 
 export function registerWineRoutes(app: Hono, state: MockState) {
   app.get("/api/wine", (c) => {
-    return c.json(state.wines);
+    return c.json(state.wines.map((w) => toWineDetail(state, w)));
   });
 
   app.get("/api/wine/:id", (c) => {
     const id = Number(c.req.param("id"));
     const wine = state.wines.find((w) => w.id === id);
     if (!wine) return c.json({ error: "Not found" }, 404);
-    return c.json(wine);
+    return c.json(toWineDetail(state, wine));
   });
 
   app.post("/api/wine", async (c) => {

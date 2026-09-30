@@ -1,9 +1,4 @@
 import { useRouter } from "next/navigation";
-import { useApiQuery } from "@/hooks/use-api-query";
-import {
-  getTastingNotesByVintageId,
-  getTastingNotesByWineId,
-} from "@/lib/api/tastingNotes";
 import { NotebookPen } from "lucide-react";
 import { IconButton } from "./IconButton";
 
@@ -12,15 +7,14 @@ type TastingNotesButtonProps = {
   onClick: () => void;
 };
 
-export function WineTastingNotesButton({ wineId }: { wineId: number }) {
+export function WineTastingNotesButton({
+  wineId,
+  count,
+}: {
+  wineId: number;
+  count: number;
+}) {
   const router = useRouter();
-  const wineNotesQuery = useApiQuery({
-    queryKey: ["tastingNotes", "wine", wineId],
-    queryFn: () => getTastingNotesByWineId(wineId!),
-    enabled: !!wineId,
-  });
-
-  const count = wineNotesQuery.data?.length || 0;
 
   return (
     <TastingNotesButton
@@ -32,17 +26,12 @@ export function WineTastingNotesButton({ wineId }: { wineId: number }) {
 
 export function VintageTastingNotesButton({
   vintageId,
+  count,
 }: {
   vintageId: number;
+  count: number;
 }) {
   const router = useRouter();
-  const vintageNotesQuery = useApiQuery({
-    queryKey: ["tastingNotes", "vintage", vintageId],
-    queryFn: () => getTastingNotesByVintageId(vintageId!),
-    enabled: !!vintageId,
-  });
-
-  const count = vintageNotesQuery.data?.length || 0;
 
   return (
     <TastingNotesButton

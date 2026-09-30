@@ -1,12 +1,13 @@
-import type { Wine } from "@cellarboss/types";
+import type { Wine, WineDetail } from "@cellarboss/types";
 import type { ApiResult, RequestFn } from "../types";
 
 export function winesResource(request: RequestFn) {
   return {
-    getAll: (): Promise<ApiResult<Wine[]>> => request<Wine[]>("wine", "GET"),
+    getAll: (): Promise<ApiResult<WineDetail[]>> =>
+      request<WineDetail[]>("wine", "GET"),
 
-    getById: (id: number): Promise<ApiResult<Wine>> =>
-      request<Wine>("wine/" + id, "GET"),
+    getById: (id: number): Promise<ApiResult<WineDetail>> =>
+      request<WineDetail>("wine/" + id, "GET"),
 
     create: (wine: Wine): Promise<ApiResult<Wine>> => {
       const body = {

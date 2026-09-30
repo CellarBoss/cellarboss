@@ -1,6 +1,7 @@
 import type { Hono } from "hono";
 import type { MockState } from "../index";
 import { nextId } from "../ids";
+import { toVintageDetail } from "../counts";
 import {
   createVintageSchema,
   updateVintageSchema,
@@ -8,20 +9,20 @@ import {
 
 export function registerVintageRoutes(app: Hono, state: MockState) {
   app.get("/api/vintage", (c) => {
-    return c.json(state.vintages);
+    return c.json(state.vintages.map((v) => toVintageDetail(state, v)));
   });
 
   app.get("/api/vintage/wine/:wineId", (c) => {
     const wineId = Number(c.req.param("wineId"));
     const vintages = state.vintages.filter((v) => v.wineId === wineId);
-    return c.json(vintages);
+    return c.json(vintages.map((v) => toVintageDetail(state, v)));
   });
 
   app.get("/api/vintage/:id", (c) => {
     const id = Number(c.req.param("id"));
     const vintage = state.vintages.find((v) => v.id === id);
     if (!vintage) return c.json({ error: "Not found" }, 404);
-    return c.json(vintage);
+    return c.json(toVintageDetail(state, vintage));
   });
 
   app.post("/api/vintage", async (c) => {

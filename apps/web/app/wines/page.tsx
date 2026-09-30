@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import type { Wine } from "@cellarboss/types";
+import type { WineDetail } from "@cellarboss/types";
 import { getCountries } from "@/lib/api/countries";
 import { getWines, deleteWine, updateWine } from "@/lib/api/wines";
 import { getWinemakers } from "@/lib/api/winemakers";
@@ -38,11 +38,11 @@ export default function WinesPage() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  async function handleEdit(row: Wine): Promise<void> {
+  async function handleEdit(row: WineDetail): Promise<void> {
     router.push(`/wines/${row.id}/edit`);
   }
 
-  async function handleDelete(row: Wine): Promise<boolean> {
+  async function handleDelete(row: WineDetail): Promise<boolean> {
     const delResult = await deleteWine(row.id);
     if (!delResult.ok)
       throw new Error("Error deleting wine: " + delResult.error.message);
@@ -50,7 +50,7 @@ export default function WinesPage() {
     return true;
   }
 
-  async function handleBulkDelete(rows: Wine[]): Promise<void> {
+  async function handleBulkDelete(rows: WineDetail[]): Promise<void> {
     const errors: string[] = [];
     try {
       for (const row of rows) {
@@ -65,7 +65,7 @@ export default function WinesPage() {
   }
 
   async function handleBulkEdit(
-    rows: Wine[],
+    rows: WineDetail[],
     partial: Record<string, string | number>,
   ): Promise<void> {
     const type = WINE_TYPES.find((t) => t === partial.type);
@@ -108,7 +108,7 @@ export default function WinesPage() {
 
   const [winesList, winemakerList, regionList, countryList] = result.data;
 
-  const bulkEditFields: BulkEditField<Wine>[] = [
+  const bulkEditFields: BulkEditField<WineDetail>[] = [
     {
       key: "type",
       label: "Type",
@@ -165,7 +165,7 @@ export default function WinesPage() {
     },
   ];
 
-  const columns: AppColumnDef<Wine>[] = [
+  const columns: AppColumnDef<WineDetail>[] = [
     {
       accessorKey: "name",
       header: "Wine Name",
@@ -196,7 +196,7 @@ export default function WinesPage() {
       header: "Winemaker",
       enableColumnFilter: false,
       enableSorting: true,
-      sortFn: (rowA: AppRow<Wine>, rowB: AppRow<Wine>) => {
+      sortFn: (rowA: AppRow<WineDetail>, rowB: AppRow<WineDetail>) => {
         const winemakerA = winemakerList.find(
           (w) => w.id === rowA.original.wineMakerId,
         );
@@ -224,7 +224,7 @@ export default function WinesPage() {
       header: "Region",
       enableColumnFilter: false,
       enableSorting: true,
-      sortFn: (rowA: AppRow<Wine>, rowB: AppRow<Wine>) => {
+      sortFn: (rowA: AppRow<WineDetail>, rowB: AppRow<WineDetail>) => {
         const regionA = regionList.find((r) => r.id === rowA.original.regionId);
         const regionB = regionList.find((r) => r.id === rowB.original.regionId);
         const nameA = regionA?.name ?? "";
@@ -279,7 +279,10 @@ export default function WinesPage() {
                 router.push(`/vintages/new?wineId=${row.original.id}`)
               }
             />
-            <WineTastingNotesButton wineId={row.original.id} />
+            <WineTastingNotesButton
+              wineId={row.original.id}
+              count={row.original.tastingNotesCount}
+            />
             <EditButton onEdit={() => handleEdit(row.original)} />
             <DeleteButton
               itemDescription={row.original.name}
@@ -294,7 +297,7 @@ export default function WinesPage() {
   return (
     <section>
       <PageHeader title="Wines" />
-      <DataTable<Wine>
+      <DataTable<WineDetail>
         data={winesList}
         columns={columns}
         filterColumnName="name"
