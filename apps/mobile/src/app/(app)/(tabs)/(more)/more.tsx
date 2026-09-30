@@ -11,6 +11,7 @@ import { api } from "@/lib/api/client";
 import { getApiBaseUrl } from "@/lib/api/base-url";
 import type { ThemePreference } from "@/lib/auth/secure-store";
 import * as Application from "expo-application";
+import { normalizeVersion } from "@cellarboss/common";
 
 const themeLabels: Record<ThemePreference, string> = {
   light: "Light",
@@ -201,7 +202,10 @@ export default function MoreScreen() {
               <List.Item
                 testID="menu-server-version"
                 title="Version"
-                description={versionQuery.data?.version}
+                description={
+                  versionQuery.data?.version &&
+                  normalizeVersion(versionQuery.data.version)
+                }
                 left={(props) => <List.Icon {...props} icon="tag-outline" />}
               />
             </List.Section>
