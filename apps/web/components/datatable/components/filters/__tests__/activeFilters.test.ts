@@ -68,6 +68,27 @@ describe("summarizeFilterValue", () => {
     expect(summarizeFilterValue(storageFilter, ["2"])).toBe("Wine Fridge");
   });
 
+  it("drops the indentation from nested option labels", () => {
+    const nestedFilter: GroupedMultiSelectFilterDef = {
+      type: "grouped-multiselect",
+      columnId: "storageId",
+      label: "Storage",
+      options: [
+        {
+          group: "Cellar",
+          options: [
+            { value: "1", label: "Rack" },
+            { value: "2", label: "\u00A0\u00A0Shelf A" },
+            { value: "3", label: "\u00A0\u00A0\u00A0\u00A0Shelf B" },
+          ],
+        },
+      ],
+    };
+    expect(summarizeFilterValue(nestedFilter, ["2", "3"])).toBe(
+      "Shelf A, Shelf B",
+    );
+  });
+
   it("falls back to the raw value for an unknown option", () => {
     expect(summarizeFilterValue(typeFilter, ["orange"])).toBe("orange");
   });
