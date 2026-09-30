@@ -3,12 +3,19 @@ import type { ServerVersion } from "../resources/version";
 import { useApiQuery } from "./use-api-query";
 
 /**
+ * Strip a leading "v" from a version string, so release tags like "v0.9.8"
+ * can be displayed with a single "v" prefix.
+ */
+export function normalizeVersion(version: string): string {
+  return version.replace(/^v/, "");
+}
+
+/**
  * Parse a semver string into [major, minor, patch].
  * Returns null if the string is not valid semver.
  */
 function parseSemver(version: string): [number, number, number] | null {
-  const cleaned = version.replace(/^v/, "");
-  const parts = cleaned.split(".");
+  const parts = normalizeVersion(version).split(".");
   if (parts.length !== 3) return null;
 
   const nums = parts.map((p) => parseInt(p, 10));
@@ -54,7 +61,10 @@ export function useVersionMismatch(options: {
     staleTime: Infinity,
   });
 
-  const backendVersion = query.data?.version ?? null;
+  // Release servers report the git tag (e.g. "v0.9.8"), so strip the prefix
+  // before callers add their own.
+  const backendVersion =
+    query.data?.version != null ? normalizeVersion(query.data.version) : null;
   const isMismatch =
     backendVersion !== null &&
     isVersionMismatch(frontendVersion, backendVersion);

@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { isVersionMismatch } from "../hooks/use-version-mismatch";
+import {
+  isVersionMismatch,
+  normalizeVersion,
+} from "../hooks/use-version-mismatch";
 
 describe("isVersionMismatch", () => {
   it("returns true when frontend major is newer", () => {
@@ -56,5 +59,19 @@ describe("isVersionMismatch", () => {
 
   it("compares correctly when major is lower but minor is higher", () => {
     expect(isVersionMismatch("1.9.0", "2.0.0")).toBe(false);
+  });
+});
+
+describe("normalizeVersion", () => {
+  it("strips a leading v", () => {
+    expect(normalizeVersion("v0.9.8")).toBe("0.9.8");
+  });
+
+  it("leaves a bare version unchanged", () => {
+    expect(normalizeVersion("0.9.8")).toBe("0.9.8");
+  });
+
+  it("leaves development unchanged", () => {
+    expect(normalizeVersion("development")).toBe("development");
   });
 });
