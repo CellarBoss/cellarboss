@@ -1,6 +1,6 @@
 {
   "private": true,
-  "packageManager": "pnpm@12.6.0",
+  "packageManager": "pnpm@12.7.0",
   "scripts": {
     "lint": "pnpm -r lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "lefthook": "2.1.14",
-    "lint-staged": "17.5.1",
+    "lint-staged": "17.6.0",
     "prettier": "3.9.9"
   }
 }
