@@ -62,7 +62,10 @@ export function summarizeFilterValue(
   if (selected.length > MAX_LISTED_VALUES) {
     return `${selected.length} selected`;
   }
-  const labels = new Map(optionsOf(filter).map((o) => [o.value, o.label]));
+  // Hierarchical options indent labels with leading spaces, which a tag shouldn't show
+  const labels = new Map(
+    optionsOf(filter).map((o) => [o.value, o.label.trim()]),
+  );
   return selected.map((v) => labels.get(v) ?? v).join(", ");
 }
 
