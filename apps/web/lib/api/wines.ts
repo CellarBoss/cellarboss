@@ -1,10 +1,10 @@
 "use server";
 
-import type { Wine } from "@cellarboss/types";
+import type { Wine, WineDetail } from "@cellarboss/types";
 import type { ApiResult } from "@cellarboss/common";
 import { api } from "./client";
 
-export async function getWines(): Promise<ApiResult<Wine[]>> {
+export async function getWines(): Promise<ApiResult<WineDetail[]>> {
   return api.wines.getAll();
 }
 
@@ -12,7 +12,7 @@ export async function deleteWine(id: number): Promise<ApiResult<boolean>> {
   return api.wines.delete(id);
 }
 
-export async function getWineById(id: number): Promise<ApiResult<Wine>> {
+export async function getWineById(id: number): Promise<ApiResult<WineDetail>> {
   return api.wines.getById(id);
 }
 

@@ -14,12 +14,6 @@ export async function getBottlesByVintageId(
   return api.bottles.getByVintageId(vintageId);
 }
 
-export async function getBottleCountsByVintageId(
-  vintageId: number,
-): Promise<ApiResult<Array<{ status: string; count: number }>>> {
-  return api.bottles.getCountsByVintageId(vintageId);
-}
-
 export async function getBottleById(id: number): Promise<ApiResult<Bottle>> {
   return api.bottles.getById(id);
 }

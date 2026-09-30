@@ -151,4 +151,62 @@ test.describe("Wines page", () => {
     await expect(page).toHaveURL(/\/wines\/new\?regionId=2/);
     await expect(fieldCombobox(page, "Region")).toHaveText(/Burgundy/);
   });
+
+  test("shows embedded tasting note and bottle counts", async ({
+    adminPage: page,
+  }) => {
+    const note = (id: number, vintageId: number) => ({
+      id,
+      vintageId,
+      date: "2025-11-15T19:30:00.000Z",
+      authorId: "admin-1",
+      author: "Test Admin",
+      score: 8,
+      notes: "Note",
+    });
+    const bottle = (id: number, vintageId: number, status: string) => ({
+      id,
+      vintageId,
+      status,
+      purchaseDate: "2024-01-01",
+      purchasePrice: 20,
+      storageId: null,
+      size: "standard",
+    });
+    await setState({
+      wines: [
+        {
+          id: 1,
+          name: "Margaux Reserve",
+          type: "red",
+          wineMakerId: 1,
+          regionId: 1,
+        },
+      ],
+      vintages: [
+        { id: 1, wineId: 1, year: 2015, drinkFrom: null, drinkUntil: null },
+        { id: 2, wineId: 1, year: 2016, drinkFrom: null, drinkUntil: null },
+      ],
+      tastingNotes: [note(1, 1), note(2, 1), note(3, 2)],
+      bottles: [
+        bottle(1, 1, "stored"),
+        bottle(2, 1, "stored"),
+        bottle(3, 1, "drunk"),
+        bottle(4, 2, "ordered"),
+      ],
+    });
+    await page.goto("/wines?expanded=1");
+
+    const notesButtons = page.getByRole("button", {
+      name: "View Tasting Notes",
+    });
+    // Wine row total, then one button per vintage (2016 first)
+    await expect(notesButtons.nth(0)).toHaveText("3");
+    await expect(notesButtons.nth(1)).toHaveText("1");
+    await expect(notesButtons.nth(2)).toHaveText("2");
+
+    await expect(page.getByRole("link", { name: "2 Stored" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "1 Ordered" })).toBeVisible();
+    await expect(page.getByText("1 Drunk")).not.toBeVisible();
+  });
 });
