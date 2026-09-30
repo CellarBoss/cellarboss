@@ -218,7 +218,11 @@ export default function MoreScreen() {
           <List.Item
             testID="menu-app-version"
             title="Application Version"
-            description={Application.nativeApplicationVersion ?? "Unknown"}
+            description={
+              Application.nativeApplicationVersion
+                ? normalizeVersion(Application.nativeApplicationVersion)
+                : "Unknown"
+            }
             left={(props) => <List.Icon {...props} icon="wrench-outline" />}
           />
         </List.Section>

@@ -63,12 +63,12 @@ describe("isVersionMismatch", () => {
 });
 
 describe("normalizeVersion", () => {
-  it("strips a leading v", () => {
-    expect(normalizeVersion("v0.9.8")).toBe("0.9.8");
+  it("keeps a single leading v on a release tag", () => {
+    expect(normalizeVersion("v0.9.8")).toBe("v0.9.8");
   });
 
-  it("leaves a bare version unchanged", () => {
-    expect(normalizeVersion("0.9.8")).toBe("0.9.8");
+  it("adds a leading v to a bare version", () => {
+    expect(normalizeVersion("0.9.8")).toBe("v0.9.8");
   });
 
   it("leaves development unchanged", () => {

@@ -9,7 +9,7 @@ const appVersion = Application.nativeApplicationVersion ?? "0.0.0";
 
 export function VersionMismatchBanner() {
   const [dismissed, setDismissed] = useState(false);
-  const { isMismatch, backendVersion } = useVersionMismatch({
+  const { isMismatch, frontendVersion, backendVersion } = useVersionMismatch({
     frontendVersion: appVersion,
     queryFn: () => api.version.get(),
   });
@@ -23,8 +23,8 @@ export function VersionMismatchBanner() {
         icon="alert"
         actions={[{ label: "Dismiss", onPress: () => setDismissed(true) }]}
       >
-        Your app (v{appVersion}) is newer than the server (v{backendVersion}).
-        Some features may not work until the server is updated.
+        Your app ({frontendVersion}) is newer than the server ({backendVersion}
+        ). Some features may not work until the server is updated.
       </Banner>
     </SafeAreaView>
   );
