@@ -46,6 +46,7 @@ export { createSettingsHooks } from "./hooks/use-settings";
 export { createPreferencesHooks } from "./hooks/use-preferences";
 export {
   isVersionMismatch,
+  normalizeVersion,
   useVersionMismatch,
 } from "./hooks/use-version-mismatch";
 

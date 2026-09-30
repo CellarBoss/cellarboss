@@ -3,12 +3,21 @@ import type { ServerVersion } from "../resources/version";
 import { useApiQuery } from "./use-api-query";
 
 /**
+ * Format a version for display with exactly one leading "v", whether it came
+ * in as a release tag ("v0.9.8") or a bare version ("0.9.8"). Non-numeric
+ * versions such as "development" are returned unchanged.
+ */
+export function normalizeVersion(version: string): string {
+  const bare = version.replace(/^v/, "");
+  return /^\d/.test(bare) ? `v${bare}` : version;
+}
+
+/**
  * Parse a semver string into [major, minor, patch].
  * Returns null if the string is not valid semver.
  */
 function parseSemver(version: string): [number, number, number] | null {
-  const cleaned = version.replace(/^v/, "");
-  const parts = cleaned.split(".");
+  const parts = version.replace(/^v/, "").split(".");
   if (parts.length !== 3) return null;
 
   const nums = parts.map((p) => parseInt(p, 10));
@@ -45,7 +54,12 @@ export function isVersionMismatch(
 export function useVersionMismatch(options: {
   frontendVersion: string;
   queryFn: () => Promise<ApiResult<ServerVersion>>;
-}): { isMismatch: boolean; backendVersion: string | null; isLoading: boolean } {
+}): {
+  isMismatch: boolean;
+  frontendVersion: string;
+  backendVersion: string | null;
+  isLoading: boolean;
+} {
   const { frontendVersion, queryFn } = options;
 
   const query = useApiQuery<ServerVersion>({
@@ -54,10 +68,16 @@ export function useVersionMismatch(options: {
     staleTime: Infinity,
   });
 
-  const backendVersion = query.data?.version ?? null;
+  const rawBackendVersion = query.data?.version ?? null;
   const isMismatch =
-    backendVersion !== null &&
-    isVersionMismatch(frontendVersion, backendVersion);
+    rawBackendVersion !== null &&
+    isVersionMismatch(frontendVersion, rawBackendVersion);
 
-  return { isMismatch, backendVersion, isLoading: query.isLoading };
+  return {
+    isMismatch,
+    frontendVersion: normalizeVersion(frontendVersion),
+    backendVersion:
+      rawBackendVersion !== null ? normalizeVersion(rawBackendVersion) : null,
+    isLoading: query.isLoading,
+  };
 }

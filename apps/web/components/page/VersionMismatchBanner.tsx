@@ -5,7 +5,7 @@ import { AlertTriangle, X } from "lucide-react";
 import { useVersionMismatch } from "@cellarboss/common";
 import { api } from "@/lib/api/client";
 
-const frontendVersion = process.env.NEXT_PUBLIC_APP_VERSION ?? "development";
+const appVersion = process.env.NEXT_PUBLIC_APP_VERSION ?? "development";
 
 export function VersionMismatchBanner() {
   const [dismissed, setDismissed] = useState(
@@ -13,8 +13,8 @@ export function VersionMismatchBanner() {
       typeof window !== "undefined" &&
       sessionStorage.getItem("version-mismatch-dismissed") === "true",
   );
-  const { isMismatch, backendVersion } = useVersionMismatch({
-    frontendVersion,
+  const { isMismatch, frontendVersion, backendVersion } = useVersionMismatch({
+    frontendVersion: appVersion,
     queryFn: () => api.version.get(),
   });
 
