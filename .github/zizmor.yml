@@ -13,10 +13,6 @@ rules:
       # forks. It downloads artifacts produced by the untrusted PR run but never
       # checks out or executes that PR's code.
       - pr-report.yml
-      # PR Labeler uses `pull_request_target` so release-drafter's autolabeler
-      # gets a write-scoped token on fork PRs. It runs only the release-drafter
-      # actions and never checks out or executes the PR's code.
-      - pr-labeler.yml
 
   cache-poisoning:
     ignore:
