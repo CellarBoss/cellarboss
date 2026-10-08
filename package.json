@@ -10,7 +10,7 @@
     "*.{ts,tsx,md}": "prettier --write"
   },
   "devDependencies": {
-    "lefthook": "2.1.16",
+    "lefthook": "2.1.17",
     "lint-staged": "17.6.0",
     "prettier": "3.9.9"
   }
