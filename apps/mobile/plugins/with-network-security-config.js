@@ -8,19 +8,15 @@ const fs = require("fs");
 
 const NETWORK_SECURITY_CONFIG_XML = `<?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-  <base-config cleartextTrafficPermitted="false" />
-  <domain-config cleartextTrafficPermitted="true">
-    <!-- Android emulator host loopback (for E2E tests) -->
-    <domain includeSubdomains="false">10.0.2.2</domain>
-    <domain includeSubdomains="false">localhost</domain>
-  </domain-config>
+  <!-- Self-hosted servers are often reached over plain HTTP on a LAN -->
+  <base-config cleartextTrafficPermitted="true" />
 </network-security-config>
 `;
 
 /**
  * Expo config plugin that adds a network security config allowing cleartext
- * HTTP only to the Android emulator loopback address (10.0.2.2) and localhost.
- * All other traffic requires HTTPS.
+ * HTTP to any host. Android blocks cleartext by default (API 28+), which stops
+ * the app reaching self-hosted servers that aren't behind HTTPS.
  */
 function withNetworkSecurityConfig(config) {
   // Step 1: Write the XML file into android/app/src/main/res/xml/
