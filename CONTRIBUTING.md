@@ -27,7 +27,7 @@ Thank you for your interest in contributing. This document covers everything you
    pnpm install
    ```
 
-   This also installs the Git pre-commit hook via [Lefthook](https://lefthook.dev/) (through the `prepare` script), which auto-formats staged files on commit.
+   This also installs the Git pre-commit hook via [Lefthook](https://lefthook.dev/) (through the `prepare` script), which auto-formats and lints staged files on commit.
 
 3. **Configure environment variables**
 
@@ -88,7 +88,7 @@ See [docs/backend.md](docs/backend.md) and [docs/web.md](docs/web.md) for more d
 
 - TypeScript is used throughout; avoid `any` where possible
 - Formatting is enforced by Prettier — a Lefthook pre-commit hook formats staged files automatically, or run `pnpm format` to format the whole repo manually
-- ESLint is configured for the web and mobile apps (not yet run in CI) — check with `pnpm --filter @cellarboss/web lint` or `pnpm --filter @cellarboss/mobile lint`
+- ESLint runs in every workspace and any warning fails it — the pre-commit hook lints staged files, CI runs `pnpm lint`, and you can check one workspace with e.g. `pnpm --filter @cellarboss/web lint`
 - Prefer editing existing abstractions over introducing new ones unless clearly necessary
 
 ## Commit Messages

@@ -1,4 +1,31 @@
 pre-commit:
+  piped: true
   commands:
     lint-staged:
+      priority: 1
       run: pnpm lint-staged
+    # ESLint on staged files only, from each workspace so its own config applies.
+    # --no-warn-ignored stops files the config ignores counting as warnings.
+    eslint-backend: &eslint
+      priority: 2
+      root: apps/backend/
+      glob: "*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}"
+      run: pnpm exec eslint --max-warnings 0 --no-warn-ignored {staged_files}
+    eslint-mobile:
+      <<: *eslint
+      root: apps/mobile/
+    eslint-web:
+      <<: *eslint
+      root: apps/web/
+    eslint-common:
+      <<: *eslint
+      root: packages/common/
+    eslint-mock-server:
+      <<: *eslint
+      root: packages/mock-server/
+    eslint-types:
+      <<: *eslint
+      root: packages/types/
+    eslint-validators:
+      <<: *eslint
+      root: packages/validators/
