@@ -27,7 +27,7 @@ Thank you for your interest in contributing. This document covers everything you
    pnpm install
    ```
 
-   This also installs the Git pre-commit hook via [Lefthook](https://lefthook.dev/) (through the `prepare` script), which auto-formats and lints staged files on commit.
+   This also installs the Git pre-commit hook via [Lefthook](https://lefthook.dev/) (through the `prepare` script), which auto-formats and lints staged files on commit, auto-fixing what ESLint can.
 
 3. **Configure environment variables**
 

@@ -4,13 +4,15 @@ pre-commit:
     lint-staged:
       priority: 1
       run: pnpm lint-staged
-    # ESLint on staged files only, from each workspace so its own config applies.
+    # ESLint --fix on staged files only, from each workspace so its own config applies;
+    # fixes are re-staged and anything left over blocks the commit.
     # --no-warn-ignored stops files the config ignores counting as warnings.
     eslint-backend: &eslint
       priority: 2
       root: apps/backend/
       glob: "*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}"
-      run: pnpm exec eslint --max-warnings 0 --no-warn-ignored {staged_files}
+      run: pnpm exec eslint --fix --max-warnings 0 --no-warn-ignored {staged_files}
+      stage_fixed: true
     eslint-mobile:
       <<: *eslint
       root: apps/mobile/
