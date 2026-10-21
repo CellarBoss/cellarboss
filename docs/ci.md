@@ -24,7 +24,7 @@ Files prefixed with `_` are reusable workflows (`workflow_call`), called by the 
 
 | Action                 | What it does                                                                                                                               |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `setup-node`           | pnpm + Node.js 24.21.0, `pnpm install --frozen-lockfile`                                                                                   |
+| `setup-node`           | pnpm + Node.js 24.22.1, `pnpm install --frozen-lockfile`                                                                                   |
 | `setup-playwright`     | Caches and installs Playwright Chromium and its system dependencies                                                                        |
 | `setup-android`        | Java 17, Android SDK, Expo prebuild (cached unless `prebuild-cache: false`), Gradle cache. `native-project: false` sets up only Java + SDK |
 | `run-android-emulator` | API 31 AVD (cached), KVM, Maestro; boots the emulator, installs an APK, then runs the given `script`                                       |

@@ -1,4 +1,4 @@
-FROM node:24.19.0-alpine@sha256:d32cdf619f63fe0471182d08996dd516c6275bb5fd31ae06e55a570bd9e1ad43 AS builder
+FROM node:24.22.1-alpine@sha256:6a1c190e17215d844926b0677f4bf87273ff7d5e54db06d3b5b5863ab0b09a3d AS builder
 WORKDIR /app
 
 # Mark this as a non-interactive build: skips the root "prepare" hook install
@@ -19,7 +19,7 @@ ENV APP_VERSION=$APP_VERSION
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm --filter @cellarboss/web build
 
-FROM node:24.19.0-alpine@sha256:d32cdf619f63fe0471182d08996dd516c6275bb5fd31ae06e55a570bd9e1ad43 AS runner
+FROM node:24.22.1-alpine@sha256:6a1c190e17215d844926b0677f4bf87273ff7d5e54db06d3b5b5863ab0b09a3d AS runner
 WORKDIR /app
 
 ARG APP_VERSION=development
