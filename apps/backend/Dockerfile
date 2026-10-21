@@ -1,4 +1,4 @@
-FROM node:24.19.0-alpine@sha256:d32cdf619f63fe0471182d08996dd516c6275bb5fd31ae06e55a570bd9e1ad43 AS builder
+FROM node:24.22.1-alpine@sha256:eb37f58646a901dc7727cf448cae36daaefaba79de33b5058dab79aa4c04aefb AS builder
 WORKDIR /app
 
 # Mark this as a non-interactive build: skips the root "prepare" hook install
@@ -24,7 +24,7 @@ RUN pnpm --filter backend build
 # is live and the dependency graph can be resolved.
 RUN pnpm --filter backend deploy --legacy /deployment
 
-FROM node:24.19.0-alpine@sha256:d32cdf619f63fe0471182d08996dd516c6275bb5fd31ae06e55a570bd9e1ad43 AS runner
+FROM node:24.22.1-alpine@sha256:eb37f58646a901dc7727cf448cae36daaefaba79de33b5058dab79aa4c04aefb AS runner
 WORKDIR /app
 
 ARG APP_VERSION=development
