@@ -213,7 +213,7 @@ importers:
         version: link:../../packages/validators
       '@hono/mcp':
         specifier: 0.3.2
-        version: 0.3.2(@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.6.7))(hono-rate-limiter@0.5.3(hono@4.13.13))(hono@4.13.13)(zod@4.6.7)
+        version: 0.3.2(@modelcontextprotocol/sdk@1.32.1(supports-color@8.1.1)(zod@4.6.7))(hono-rate-limiter@0.5.3(hono@4.13.13))(hono@4.13.13)(zod@4.6.7)
       '@hono/node-server':
         specifier: 2.1.5
         version: 2.1.5(hono@4.13.13)
@@ -230,8 +230,8 @@ importers:
         specifier: 3.3.0
         version: 3.3.0(pino@10.3.1)
       '@modelcontextprotocol/sdk':
-        specifier: 1.32.0
-        version: 1.32.0(supports-color@8.1.1)(zod@4.6.7)
+        specifier: 1.32.1
+        version: 1.32.1(supports-color@8.1.1)(zod@4.6.7)
       '@scalar/hono-api-reference':
         specifier: 0.12.13
         version: 0.12.13(hono@4.13.13)
@@ -2673,8 +2673,8 @@ packages:
     resolution: {integrity: sha512-fFh4XaX24FiyZtpzOjBP2PScA3sQk1rfka287FsYXkGMm2/n74BOVj6/D/oLaiI+cJMy7fv3dtyy5sUtNil5UQ==}
     engines: {node: '>=18'}
 
-  '@modelcontextprotocol/sdk@1.32.0':
-    resolution: {integrity: sha512-8BviX/hK4Gd2eL1KdTwm0gfl4d3wdoErW0Jd00h6nomUAtk6IJk5vwQJc6kfWtJTzN5OEV/lgIiJKI8fiDGAlA==}
+  '@modelcontextprotocol/sdk@1.32.1':
+    resolution: {integrity: sha512-2DdE+SJDtzLEEWzY1ZjY7Q+VcPhcV1KisD3zI4u0XZyktsjHum1mwbMI+JaulUBi2OZk+KJAi2uPXzxichPkdw==}
     engines: {node: '>=18'}
     peerDependencies:
       '@cfworker/json-schema': ^4.1.1
@@ -11019,9 +11019,9 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
-  '@hono/mcp@0.3.2(@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.6.7))(hono-rate-limiter@0.5.3(hono@4.13.13))(hono@4.13.13)(zod@4.6.7)':
+  '@hono/mcp@0.3.2(@modelcontextprotocol/sdk@1.32.1(supports-color@8.1.1)(zod@4.6.7))(hono-rate-limiter@0.5.3(hono@4.13.13))(hono@4.13.13)(zod@4.6.7)':
     dependencies:
-      '@modelcontextprotocol/sdk': 1.32.0(supports-color@8.1.1)(zod@4.6.7)
+      '@modelcontextprotocol/sdk': 1.32.1(supports-color@8.1.1)(zod@4.6.7)
       hono: 4.13.13
       hono-rate-limiter: 0.5.3(hono@4.13.13)
       pkce-challenge: 5.0.1
@@ -11418,7 +11418,7 @@ snapshots:
     dependencies:
       '@loglayer/shared': 4.4.0
 
-  '@modelcontextprotocol/sdk@1.32.0(supports-color@8.1.1)(zod@4.6.7)':
+  '@modelcontextprotocol/sdk@1.32.1(supports-color@8.1.1)(zod@4.6.7)':
     dependencies:
       '@hono/node-server': 2.1.5(hono@4.13.13)
       ajv: 8.20.0
