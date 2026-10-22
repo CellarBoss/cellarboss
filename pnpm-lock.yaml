@@ -171,8 +171,8 @@ catalogs:
       specifier: 5.104.5
       version: 5.104.5
     '@tanstack/react-table':
-      specifier: 9.2.8
-      version: 9.2.8
+      specifier: 9.3.1
+      version: 9.3.1
     '@types/react':
       specifier: 19.2.18
       version: 19.2.18
@@ -542,7 +542,7 @@ importers:
         version: 5.104.5(@types/react@19.2.18)(react@19.2.0)
       '@tanstack/react-table':
         specifier: 'catalog:'
-        version: 9.2.8(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 9.3.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       better-auth:
         specifier: 1.7.11
         version: 1.7.11(@prisma/client@5.22.0)(mysql2@3.24.3(@types/node@24.19.2))(next@16.3.8(@babel/core@7.29.7(supports-color@8.1.1))(@playwright/test@1.63.0)(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(pg@8.23.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vitest@5.0.5)(vue@3.5.41(typescript@5.9.3))
@@ -3882,8 +3882,8 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@tanstack/react-table@9.2.8':
-    resolution: {integrity: sha512-cJxgratJm3uMm2sXnmY3PCTvcvIEFleCJ2uSOM2nxCmIY8RWA1KjXt5fsWGlYisL7DODr2w9YpLRQ3i/7MdIsQ==}
+  '@tanstack/react-table@9.3.1':
+    resolution: {integrity: sha512-E6Ya5TnY6EaGyZYIUqig/29Lr/gJSAubQkLJFqiWkUl5nRCr0Xr9hvJot+NiRTtG+TzGxHTiqUW3bnLtQxlHug==}
     engines: {node: '>=20'}
     peerDependencies:
       react: '>=18'
@@ -3891,8 +3891,8 @@ packages:
   '@tanstack/store@0.11.2':
     resolution: {integrity: sha512-sJ4mjol8uQsHV0gOJzzjwXfh2Fwm+Sz0+8deqiTm4jGbMdjzNSW+xZCFm0kUa870uhd8yi+DpKnZb5Kc4apa0Q==}
 
-  '@tanstack/table-core@9.2.8':
-    resolution: {integrity: sha512-M4D6fY5jnc7z7TaoD3Pjvz5R+8MbhzCGYdkcFf2T1AgjigwLinvFWZh6mtqfN016A7yGIroOL0GiTlVGsTh6Vg==}
+  '@tanstack/table-core@9.3.1':
+    resolution: {integrity: sha512-zQvlxSNi2qGM3L4jh85Z6hqMfdIR5qOfD9KHOU32nuKFJGN0RlJ7UvV1lsPb1fPVhpFYI0VP3jJGxLdLDpTKjQ==}
     engines: {node: '>=20'}
 
   '@testing-library/react-native@13.3.3':
@@ -12572,17 +12572,17 @@ snapshots:
       react-dom: 19.2.0(react@19.2.0)
       use-sync-external-store: 1.6.0(react@19.2.0)
 
-  '@tanstack/react-table@9.2.8(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@tanstack/react-table@9.3.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@tanstack/react-store': 0.11.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      '@tanstack/table-core': 9.2.8
+      '@tanstack/table-core': 9.3.1
       react: 19.2.0
     transitivePeerDependencies:
       - react-dom
 
   '@tanstack/store@0.11.2': {}
 
-  '@tanstack/table-core@9.2.8':
+  '@tanstack/table-core@9.3.1':
     dependencies:
       '@tanstack/store': 0.11.2
 
