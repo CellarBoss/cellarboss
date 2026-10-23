@@ -317,7 +317,7 @@ jobs:
         working-directory: apps/mobile
         env:
           # renovate: datasource=npm depName=expo-doctor
-          EXPO_DOCTOR_VERSION: 1.20.4
+          EXPO_DOCTOR_VERSION: 1.21.5
         run: npx "expo-doctor@${EXPO_DOCTOR_VERSION}" --verbose
 
       - name: Expo dependency check
