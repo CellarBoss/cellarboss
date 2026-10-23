@@ -32,7 +32,7 @@ runs:
       shell: bash
       env:
         # renovate: datasource=github-releases depName=mobile-dev-inc/maestro extractVersion=^cli-(?<version>.+)$
-        MAESTRO_VERSION: 2.10.0
+        MAESTRO_VERSION: 2.11.0
       # Writes a constant path; nothing here is attacker-controlled.
       run: | # zizmor: ignore[github-env]
         curl -Ls "https://get.maestro.mobile.dev" | bash
