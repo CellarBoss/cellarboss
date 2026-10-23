@@ -228,7 +228,7 @@ importers:
         version: 2.4.0(hono@4.13.13)(loglayer@9.4.0)
       '@loglayer/transport-pino':
         specifier: 3.3.0
-        version: 3.3.0(pino@10.3.1)
+        version: 3.3.0(pino@10.4.0)
       '@modelcontextprotocol/sdk':
         specifier: 1.32.1
         version: 1.32.1(supports-color@8.1.1)(zod@4.6.7)
@@ -275,8 +275,8 @@ importers:
         specifier: 8.23.1
         version: 8.23.1
       pino:
-        specifier: 10.3.1
-        version: 10.3.1
+        specifier: 10.4.0
+        version: 10.4.0
       serialize-error:
         specifier: 13.0.2
         version: 13.0.2
@@ -7756,8 +7756,8 @@ packages:
   pino-std-serializers@7.1.0:
     resolution: {integrity: sha512-BndPH67/JxGExRgiX1dX0w1FvZck5Wa4aal9198SrRhZjH3GxKQUKIBnYJTdj2HDN3UQAS06HlfcSbQj2OHmaw==}
 
-  pino@10.3.1:
-    resolution: {integrity: sha512-r34yH/GlQpKZbU1BvFFqOjhISRo1MNx1tWYsYvmj6KIRHSPMT2+yHOEb1SG6NMvRoHRF0a07kCOox/9yakl1vg==}
+  pino@10.4.0:
+    resolution: {integrity: sha512-bk1ZMTwG/Vymx+zPoa28MhNzucFvXJWp3csrSuxuHPSMeUettaCoQ5Jvg07mtC4JGNpcfTwz41oVCnNgBK9+vA==}
     hasBin: true
 
   pirates@4.0.7:
@@ -8140,10 +8140,6 @@ packages:
   readdirp@5.1.1:
     resolution: {integrity: sha512-Kko+Y5XQ6fM+Ce3dq3m9YGxnacYZYl9cA1wZjaF3Vbry2L3i1qVg8+CAgNPsXRArPMUMCaOR7oa9Nqntc43JKA==}
     engines: {node: '>= 20.19.0'}
-
-  real-require@0.2.0:
-    resolution: {integrity: sha512-57frrGM/OCTLqLOAh0mhVA9VBMHd+9U7Zb2THMGdBUoZVOtGbJzjxsYGDJ3A9AYYCP4hn6y1TVbaOfzWtm5GFg==}
-    engines: {node: '>= 12.13.0'}
 
   real-require@1.0.0:
     resolution: {integrity: sha512-P4nbQYQfePJxRSmY+v/KINxVucm4NF3p3s7pJveMTtom52FR4YGltUQLB8idDXwDDWW+eYrWDFbuzUnjoWHF7g==}
@@ -11406,10 +11402,10 @@ snapshots:
 
   '@loglayer/shared@4.4.0': {}
 
-  '@loglayer/transport-pino@3.3.0(pino@10.3.1)':
+  '@loglayer/transport-pino@3.3.0(pino@10.4.0)':
     dependencies:
       '@loglayer/transport': 3.3.0
-      pino: 10.3.1
+      pino: 10.4.0
 
   '@loglayer/transport@3.3.0':
     dependencies:
@@ -17267,7 +17263,7 @@ snapshots:
 
   pino-std-serializers@7.1.0: {}
 
-  pino@10.3.1:
+  pino@10.4.0:
     dependencies:
       '@pinojs/redact': 0.4.0
       atomic-sleep: 1.0.0
@@ -17276,7 +17272,7 @@ snapshots:
       pino-std-serializers: 7.1.0
       process-warning: 5.1.0
       quick-format-unescaped: 4.0.4
-      real-require: 0.2.0
+      real-require: 1.0.0
       safe-stable-stringify: 2.5.0
       sonic-boom: 4.2.1
       thread-stream: 4.2.0
@@ -17678,8 +17674,6 @@ snapshots:
   readdirp@4.1.2: {}
 
   readdirp@5.1.1: {}
-
-  real-require@0.2.0: {}
 
   real-require@1.0.0: {}
 
