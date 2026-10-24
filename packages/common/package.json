@@ -35,7 +35,7 @@
     "@vitest/coverage-v8": "5.0.5",
     "eslint": "10.13.0",
     "eslint-plugin-react-hooks": "7.1.1",
-    "globals": "16.5.0",
+    "globals": "17.13.0",
     "react": "catalog:",
     "typescript": "5.9.3",
     "typescript-eslint": "8.72.0",
