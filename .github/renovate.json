@@ -19,7 +19,8 @@
     "**/dist/**",
     "**/build/**",
     "**/.next/**",
-    "**/coverage/**"
+    "**/coverage/**",
+    "**/__tests__/fixtures/**"
   ],
   "lockFileMaintenance": {
     "enabled": true,
