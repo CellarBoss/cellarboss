@@ -54,7 +54,7 @@ describe("SetupScreen", () => {
   });
 
   it("auto-prepends https:// and connects", async () => {
-    mockTestServerConnection.mockResolvedValue(true);
+    mockTestServerConnection.mockResolvedValue("ok");
 
     render(<SetupScreen />);
 
@@ -75,7 +75,7 @@ describe("SetupScreen", () => {
   });
 
   it("shows error when server connection fails", async () => {
-    mockTestServerConnection.mockResolvedValue(false);
+    mockTestServerConnection.mockResolvedValue("unreachable");
 
     render(<SetupScreen />);
 
@@ -88,8 +88,41 @@ describe("SetupScreen", () => {
     });
   });
 
+  it("explains when the URL isn't a CellarBoss backend", async () => {
+    mockTestServerConnection.mockResolvedValue("not-cellarboss");
+
+    render(<SetupScreen />);
+
+    const input = screen.getByPlaceholderText("e.g. cellar.example.com");
+    fireEvent.changeText(input, "http://nas.local:3000");
+    fireEvent.press(screen.getByText("Connect"));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/doesn't look like a CellarBoss server/),
+      ).toBeTruthy();
+    });
+    expect(mockSetServerUrl).not.toHaveBeenCalled();
+    expect(mockRouter.replace).not.toHaveBeenCalled();
+  });
+
+  it("does not save the URL when the server is unreachable", async () => {
+    mockTestServerConnection.mockResolvedValue("unreachable");
+
+    render(<SetupScreen />);
+
+    const input = screen.getByPlaceholderText("e.g. cellar.example.com");
+    fireEvent.changeText(input, "bad.server.com");
+    fireEvent.press(screen.getByText("Connect"));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Could not connect to this server/)).toBeTruthy();
+    });
+    expect(mockSetServerUrl).not.toHaveBeenCalled();
+  });
+
   it("strips trailing slashes", async () => {
-    mockTestServerConnection.mockResolvedValue(true);
+    mockTestServerConnection.mockResolvedValue("ok");
 
     render(<SetupScreen />);
 

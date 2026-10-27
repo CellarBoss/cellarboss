@@ -11,7 +11,7 @@
 | Data Fetching | TanStack React Query v5                                 |
 | Forms         | TanStack React Form                                     |
 | Validation    | Zod 4                                                   |
-| Auth          | Better Auth (Bearer token via `expo-secure-store`)      |
+| Auth          | Better Auth Expo client (`@better-auth/expo`)           |
 | Gestures      | react-native-gesture-handler                            |
 | Animations    | react-native-reanimated 4, react-native-worklets        |
 | Charts/SVG    | react-native-svg                                        |
@@ -107,9 +107,15 @@ Tapping a tab resets that tab's navigation stack back to its root screen.
 1. **Bootstrap** — `AuthProvider` checks `expo-secure-store` for a saved server URL.
 2. **`needs-setup`** — No server URL stored → redirect to Setup screen. User enters their CellarBoss server URL; the app tests connectivity before saving it.
 3. **`unauthenticated`** — Server URL present but no valid session → redirect to Login screen.
-4. **`authenticated`** — Bearer token validated via `GET /api/auth/get-session`.
+4. **`authenticated`** — Session cookie validated via `GET /api/auth/get-session`.
 
-The auth token and server URL are both stored in `expo-secure-store`. Tokens are sent as `Authorization: Bearer <token>` on every API request.
+The setup screen checks `GET /api/version` so it can tell an unreachable server apart from a URL that points at something other than the backend (usually the web app).
+
+Sign-in, sign-out and session checks go through the Better Auth client in `src/lib/auth/auth-client.ts`, using the `expoClient` plugin. It stores the session cookie in `expo-secure-store` (keys prefixed `cellarboss_`), and `getAuthHeaders()` turns it into a `Cookie` header for API requests, uploads and images. Requests use `credentials: "omit"` so React Native's own cookie jar is never involved.
+
+Every auth request sends `Origin: cellarboss://`. The backend trusts that scheme (`MOBILE_APP_ORIGIN` in `apps/backend/src/utils/auth.ts`), so the app works without any `CORS` changes. The server-side `expo()` plugin isn't used because its dependencies would pull Expo into the backend image.
+
+The server URL is also stored in `expo-secure-store`. Changing server clears the stored session.
 
 Auth state is a discriminated union: `loading | needs-setup | unauthenticated | authenticated`.
 
@@ -120,7 +126,7 @@ makeRequest<T>(path, method, body?) → ApiResult<T>
 ```
 
 - Base URL resolved from secure-store, falling back to `mobileEnv.apiBaseUrl`
-- Auth token attached as `Authorization: Bearer <token>`
+- Session cookie attached as a `Cookie` header from `getAuthHeaders()`
 - `api` client built via `createApiClient({ request: makeRequest })` from `@cellarboss/common`
 - `useApiQuery` re-exported from `@cellarboss/common/hooks/use-api-query` — same pattern as web (unwraps `ApiResult<T>`, throws `ApiQueryError` on `ok: false`)
 
@@ -138,21 +144,24 @@ pnpm test:watch       # watch mode
 
 - Preset: `jest-expo`
 - Path alias: `@` maps to `src/`
-- Setup: `mock-haptics.ts` (silences Expo Haptics in tests)
+- Setup: `mock-haptics.ts` (silences Expo Haptics in tests) and `mock-expo-linking.ts` (stubs the deep-link URLs the Better Auth Expo client builds)
+- Transform: Better Auth and its dependencies ship ES modules, so they're listed in `transformIgnorePatterns` and `.mjs` files go through `babel-jest`
 - Matchers: `@testing-library/react-native/matchers` via `setupFilesAfterEnv`
 - Coverage: excludes `src/app/**` and `src/__tests__/**`
 
 **Test helpers** (`src/__tests__/helpers/`):
 
-| File                  | Purpose                                                                                         |
-| --------------------- | ----------------------------------------------------------------------------------------------- |
-| `test-utils.tsx`      | `renderWithProviders()` — wraps PaperProvider + QueryClientProvider + NavigationHistoryProvider |
-| `mock-api.ts`         | `mockOk(data)` / `mockError(msg)` — build `ApiResult` values                                    |
-| `mock-api-client.ts`  | Jest mock for `@/lib/api/client`                                                                |
-| `mock-navigation.tsx` | Jest mock for `expo-router`                                                                     |
-| `mock-haptics.ts`     | Silences `expo-haptics` (used in `setupFiles`)                                                  |
-| `mock-safe-area.tsx`  | Mock for `react-native-safe-area-context`                                                       |
-| `fixtures.ts`         | Shared test data fixtures                                                                       |
+| File                   | Purpose                                                                                         |
+| ---------------------- | ----------------------------------------------------------------------------------------------- |
+| `test-utils.tsx`       | `renderWithProviders()` — wraps PaperProvider + QueryClientProvider + NavigationHistoryProvider |
+| `mock-api.ts`          | `mockOk(data)` / `mockError(msg)` — build `ApiResult` values                                    |
+| `mock-api-client.ts`   | Jest mock for `@/lib/api/client`                                                                |
+| `mock-navigation.tsx`  | Jest mock for `expo-router`                                                                     |
+| `mock-haptics.ts`      | Silences `expo-haptics` (used in `setupFiles`)                                                  |
+| `mock-expo-linking.ts` | Stubs `expo-linking` URL creation for the Better Auth Expo client (used in `setupFiles`)        |
+| `responses.ts`         | `jsonResponse()` / `htmlResponse()` and session cookie fixtures for mocking `fetch`             |
+| `mock-safe-area.tsx`   | Mock for `react-native-safe-area-context`                                                       |
+| `fixtures.ts`          | Shared test data fixtures                                                                       |
 
 ## E2E Testing (Maestro)
 

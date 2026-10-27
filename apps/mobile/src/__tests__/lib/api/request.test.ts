@@ -1,4 +1,10 @@
-import { makeRequest } from "@/lib/api/request";
+import {
+  makeRequest,
+  parseResponseBody,
+  UNEXPECTED_RESPONSE_MESSAGE,
+} from "@/lib/api/request";
+import { clearAuthStorage } from "@/lib/auth/auth-client";
+import { SESSION_COOKIE, STORED_SESSION } from "../../helpers/responses";
 
 // Mock secure store
 const mockStore = new Map<string, string>();
@@ -18,8 +24,10 @@ jest.mock("expo-secure-store", () => ({
 
 // Mock expo-constants for env.ts
 jest.mock("expo-constants", () => ({
+  __esModule: true,
   default: {
     expoConfig: {
+      scheme: "cellarboss",
       extra: {
         apiBaseUrl: "http://localhost:5000",
       },
@@ -31,15 +39,16 @@ jest.mock("expo-constants", () => ({
 const mockFetch = jest.fn();
 (globalThis as any).fetch = mockFetch;
 
-beforeEach(() => {
+beforeEach(async () => {
+  await clearAuthStorage();
   mockStore.clear();
   mockFetch.mockReset();
   mockStore.set("cellarboss_server_url", "https://cellar.example.com");
 });
 
 describe("makeRequest", () => {
-  it("sends GET request with bearer token", async () => {
-    mockStore.set("cellarboss_auth_token", "my-token");
+  it("sends GET request with the session cookie", async () => {
+    mockStore.set("cellarboss_cookie", STORED_SESSION);
 
     mockFetch.mockResolvedValueOnce({
       ok: true,
@@ -55,15 +64,15 @@ describe("makeRequest", () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Origin: "https://cellar.example.com",
-          Authorization: "Bearer my-token",
+          Cookie: SESSION_COOKIE,
         },
+        credentials: "omit",
       }),
     );
   });
 
   it("sends POST request with body", async () => {
-    mockStore.set("cellarboss_auth_token", "my-token");
+    mockStore.set("cellarboss_cookie", STORED_SESSION);
     const body = JSON.stringify({ name: "New Wine" });
 
     mockFetch.mockResolvedValueOnce({
@@ -83,7 +92,7 @@ describe("makeRequest", () => {
     );
   });
 
-  it("omits Authorization header when no token", async () => {
+  it("omits the Cookie header when signed out", async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
       text: () => Promise.resolve("null"),
@@ -92,11 +101,12 @@ describe("makeRequest", () => {
     await makeRequest("wines", "GET");
 
     const headers = mockFetch.mock.calls[0][1].headers;
+    expect(headers).not.toHaveProperty("Cookie");
     expect(headers).not.toHaveProperty("Authorization");
   });
 
   it("processes validation errors from backend", async () => {
-    mockStore.set("cellarboss_auth_token", "token");
+    mockStore.set("cellarboss_cookie", STORED_SESSION);
 
     mockFetch.mockResolvedValueOnce({
       ok: false,
@@ -128,7 +138,7 @@ describe("makeRequest", () => {
   });
 
   it("processes general backend errors", async () => {
-    mockStore.set("cellarboss_auth_token", "token");
+    mockStore.set("cellarboss_cookie", STORED_SESSION);
 
     mockFetch.mockResolvedValueOnce({
       ok: false,
@@ -149,7 +159,7 @@ describe("makeRequest", () => {
   });
 
   it("handles network errors", async () => {
-    mockStore.set("cellarboss_auth_token", "token");
+    mockStore.set("cellarboss_cookie", STORED_SESSION);
 
     mockFetch.mockRejectedValueOnce(new Error("Network request failed"));
 
@@ -162,5 +172,53 @@ describe("makeRequest", () => {
         status: 0,
       },
     });
+  });
+
+  it("returns a readable error for a non-JSON response", async () => {
+    mockStore.set("cellarboss_cookie", STORED_SESSION);
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      text: () => Promise.resolve("<!DOCTYPE html><html></html>"),
+    });
+
+    const result = await makeRequest("wines", "GET");
+
+    expect(result).toEqual({
+      ok: false,
+      error: { message: UNEXPECTED_RESPONSE_MESSAGE, status: 0 },
+    });
+  });
+
+  it("returns a readable error for a non-JSON error response", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 502,
+      text: () => Promise.resolve("<html>Bad Gateway</html>"),
+    });
+
+    const result = await makeRequest("wines", "GET");
+
+    expect(result).toEqual({
+      ok: false,
+      error: { message: UNEXPECTED_RESPONSE_MESSAGE, status: 0 },
+    });
+  });
+});
+
+describe("parseResponseBody", () => {
+  it("parses JSON", () => {
+    expect(parseResponseBody('{"id":1}')).toEqual({ id: 1 });
+  });
+
+  it("returns null for an empty body", () => {
+    expect(parseResponseBody("")).toBeNull();
+  });
+
+  it("throws a readable error for HTML", () => {
+    expect(() => parseResponseBody("<html></html>")).toThrow(
+      UNEXPECTED_RESPONSE_MESSAGE,
+    );
   });
 });

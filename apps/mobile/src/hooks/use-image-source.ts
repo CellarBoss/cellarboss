@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getApiBaseUrl } from "@/lib/api/base-url";
-import { getToken } from "@/lib/auth/secure-store";
+import { getAuthHeaders } from "@/lib/auth/auth-client";
 import { api } from "@/lib/api/client";
 
 type ImageSource = { uri: string; headers: Record<string, string> };
@@ -16,9 +16,12 @@ export function useImageSource(): UseImageSourceResult {
 
   useEffect(() => {
     async function loadAuth() {
-      const [url, token] = await Promise.all([getApiBaseUrl(), getToken()]);
+      const [url, headers] = await Promise.all([
+        getApiBaseUrl(),
+        getAuthHeaders(),
+      ]);
       if (url) setBaseUrl(url);
-      if (token) setAuthHeaders({ Authorization: `Bearer ${token}` });
+      setAuthHeaders(headers);
     }
     loadAuth();
   }, []);

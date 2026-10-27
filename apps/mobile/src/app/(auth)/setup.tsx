@@ -16,6 +16,13 @@ import { testServerConnection } from "@/lib/auth/auth-service";
 import { useAuth } from "@/contexts/auth-context";
 import { useAppTheme } from "@/hooks/use-app-theme";
 
+const SERVER_CHECK_ERRORS = {
+  unreachable:
+    "Could not connect to this server. Please check the URL and try again.",
+  "not-cellarboss":
+    "This doesn't look like a CellarBoss server. Make sure you're using the address of the CellarBoss backend, not the web app.",
+} as const;
+
 export default function SetupScreen() {
   const styles = useAuthStyles();
   const theme = useAppTheme();
@@ -46,12 +53,10 @@ export default function SetupScreen() {
 
     setTesting(true);
 
-    const reachable = await testServerConnection(trimmed);
+    const result = await testServerConnection(trimmed);
 
-    if (!reachable) {
-      setError(
-        "Could not connect to this server. Please check the URL and try again.",
-      );
+    if (result !== "ok") {
+      setError(SERVER_CHECK_ERRORS[result]);
       setTesting(false);
       return;
     }

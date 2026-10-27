@@ -56,7 +56,7 @@ You should replace the `BETTER_AUTH_SECRET` variable with a secure password, suc
 
 If you wish to configure a reverse proxy, note that the `CORS` environment variable will need to be set to the domain you're accessing CellarBoss at.
 
-`CORS` accepts a comma-separated list if you access the web interface at more than one address.
+`CORS` accepts a comma-separated list if you access the web interface at more than one address. The mobile app is trusted automatically, so it doesn't need adding here.
 
 ## Database
 

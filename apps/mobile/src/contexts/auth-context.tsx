@@ -8,7 +8,12 @@ import {
 } from "react";
 import type { AuthUser } from "@/lib/auth/auth-service";
 import * as authService from "@/lib/auth/auth-service";
-import { getServerUrl, clearServerUrl } from "@/lib/auth/secure-store";
+import { clearAuthStorage } from "@/lib/auth/auth-client";
+import {
+  getServerUrl,
+  clearServerUrl,
+  clearLegacyToken,
+} from "@/lib/auth/secure-store";
 
 type AuthState =
   | { status: "loading" }
@@ -36,6 +41,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
 
     async function bootstrap() {
+      // Sessions now live in the Better Auth client's storage
+      await clearLegacyToken();
+
       const serverUrl = await getServerUrl();
 
       if (!serverUrl) {
@@ -81,7 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const resetServer = useCallback(async () => {
-    await clearServerUrl();
+    await Promise.all([clearServerUrl(), clearAuthStorage()]);
     setState({ status: "needs-setup" });
   }, []);
 

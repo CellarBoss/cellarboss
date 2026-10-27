@@ -1,7 +1,5 @@
 import {
-  getToken,
-  setToken,
-  clearToken,
+  clearLegacyToken,
   getServerUrl,
   setServerUrl,
   clearServerUrl,
@@ -33,20 +31,15 @@ beforeEach(() => {
 });
 
 describe("secure-store", () => {
-  describe("token", () => {
-    it("returns null when no token is stored", async () => {
-      expect(await getToken()).toBeNull();
+  describe("legacy token", () => {
+    it("removes the bearer token stored by older app versions", async () => {
+      mockStore.set("cellarboss_auth_token", "old-token");
+      await clearLegacyToken();
+      expect(mockStore.has("cellarboss_auth_token")).toBe(false);
     });
 
-    it("stores and retrieves a token", async () => {
-      await setToken("my-token");
-      expect(await getToken()).toBe("my-token");
-    });
-
-    it("clears the token", async () => {
-      await setToken("my-token");
-      await clearToken();
-      expect(await getToken()).toBeNull();
+    it("does nothing when there is no legacy token", async () => {
+      await expect(clearLegacyToken()).resolves.toBeUndefined();
     });
   });
 
@@ -82,13 +75,13 @@ describe("secure-store", () => {
 
   describe("clearAll", () => {
     it("clears all stored values", async () => {
-      await setToken("token");
+      mockStore.set("cellarboss_auth_token", "old-token");
       await setServerUrl("https://example.com");
       await setSavedEmail("user@example.com");
 
       await clearAll();
 
-      expect(await getToken()).toBeNull();
+      expect(mockStore.has("cellarboss_auth_token")).toBe(false);
       expect(await getServerUrl()).toBeNull();
       expect(await getSavedEmail()).toBeNull();
     });
