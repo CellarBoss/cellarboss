@@ -106,6 +106,15 @@ Used by tests to configure server state without going through the normal API:
 | `/__test/set-state`   | POST   | Merges a partial object into state       |
 | `/__test/reset`       | POST   | Resets state to defaults (keeps session) |
 
+### Auth behaviour
+
+The auth routes behave like Better Auth where clients depend on it:
+
+- `POST /api/auth/sign-in/email` returns `{ redirect, token, user }` for the configured session and sets the `better-auth.session_token` cookie. It returns 401 when no session is configured.
+- `POST /api/auth/sign-out` clears the session and expires the cookie.
+- Any non-GET `/api/auth/*` request with an untrusted `Origin` header gets 403 `INVALID_ORIGIN`. `cellarboss://` and `localhost`/`127.0.0.1` origins are trusted, and requests without an `Origin` are let through.
+- `GET /api/version` returns `{ version: "development" }`, which the mobile setup screen uses to recognise a CellarBoss backend.
+
 ### Scripts
 
 | Script       | Description                                                                            |
