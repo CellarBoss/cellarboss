@@ -88,7 +88,8 @@ export async function getSession(): Promise<SessionResult> {
 }
 
 /**
- * Sign out. The Expo client clears the stored session cookie.
+ * Sign out. The Expo client clears the stored session cookie before it sends
+ * the request, so the app forgets the session even if the server call fails.
  */
 export async function signOut(): Promise<void> {
   const client = await getAuthClient();

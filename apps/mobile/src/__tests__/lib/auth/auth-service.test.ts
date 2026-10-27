@@ -237,13 +237,30 @@ describe("auth-service", () => {
       expect(await getAuthHeaders()).toEqual({});
     });
 
-    it("does not throw when the server can't be reached", async () => {
+    it("forgets the session even when the server can't be reached", async () => {
+      await signInSuccessfully();
       respondWith({
         "/api/auth/sign-out": () =>
           Promise.reject(new Error("Network request failed")),
       });
 
       await expect(signOut()).resolves.toBeUndefined();
+      expect(await getAuthHeaders()).toEqual({});
+    });
+
+    it("forgets the session when the server refuses the sign-out", async () => {
+      await signInSuccessfully();
+      respondWith({
+        "/api/auth/sign-out": () =>
+          jsonResponse(
+            { code: "INVALID_ORIGIN", message: "Invalid origin" },
+            { status: 403 },
+          ),
+      });
+
+      await signOut();
+
+      expect(await getAuthHeaders()).toEqual({});
     });
   });
 
