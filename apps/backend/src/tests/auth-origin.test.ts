@@ -2,7 +2,14 @@ import { describe, it, expect } from "vitest";
 import { betterAuth } from "better-auth";
 import { memoryAdapter } from "better-auth/adapters/memory";
 import { bearer } from "better-auth/plugins";
-import { auth, getTrustedOrigins, MOBILE_APP_ORIGIN } from "@utils/auth.js";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import {
+  auth,
+  getCorsOrigins,
+  getTrustedOrigins,
+  MOBILE_APP_ORIGIN,
+} from "@utils/auth.js";
 
 describe("getTrustedOrigins", () => {
   it("defaults to the local web frontend plus the mobile app", () => {
@@ -27,6 +34,57 @@ describe("getTrustedOrigins", () => {
       "https://cellar.example.com",
       MOBILE_APP_ORIGIN,
     ]);
+  });
+});
+
+describe("getCorsOrigins", () => {
+  it("splits a comma-separated CORS value and leaves out the mobile app", () => {
+    expect(
+      getCorsOrigins(
+        "https://cellar.example.com, http://nas.local:3000",
+        "production",
+      ),
+    ).toEqual(["https://cellar.example.com", "http://nas.local:3000"]);
+  });
+
+  it("defaults to the local web frontend only in development", () => {
+    expect(getCorsOrigins(undefined, "development")).toEqual([
+      "http://localhost:3000",
+    ]);
+    expect(getCorsOrigins(undefined, "production")).toEqual([]);
+  });
+
+  it("allows each configured web origin in a preflight", async () => {
+    const app = new Hono();
+    app.use(
+      cors({
+        origin: getCorsOrigins(
+          "https://cellar.example.com,http://nas.local:3000",
+          "production",
+        ),
+        credentials: true,
+      }),
+    );
+    app.post("/api/wine", (c) => c.json({}));
+
+    const preflight = (origin: string) =>
+      app.request("/api/wine", {
+        method: "OPTIONS",
+        headers: {
+          Origin: origin,
+          "Access-Control-Request-Method": "POST",
+        },
+      });
+
+    for (const origin of [
+      "https://cellar.example.com",
+      "http://nas.local:3000",
+    ]) {
+      const res = await preflight(origin);
+      expect(res.headers.get("access-control-allow-origin")).toBe(origin);
+    }
+    const res = await preflight("https://evil.example.com");
+    expect(res.headers.get("access-control-allow-origin")).toBeNull();
   });
 });
 

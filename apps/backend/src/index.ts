@@ -3,7 +3,7 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { Scalar } from "@scalar/hono-api-reference";
 import { serve } from "@hono/node-server";
 import { cors } from "hono/cors";
-import { auth } from "@utils/auth.js";
+import { auth, getCorsOrigins } from "@utils/auth.js";
 import { env } from "@utils/env.js";
 import { registerRoutes } from "@routes/index.js";
 import { registerMcpRoutes } from "@mcp/route.js";
@@ -27,9 +27,7 @@ app.use(
 // CORS
 app.use(
   cors({
-    origin:
-      env.CORS ||
-      (env.NODE_ENV === "development" ? "http://localhost:3000" : ""),
+    origin: getCorsOrigins(env.CORS, env.NODE_ENV),
     allowHeaders: ["Content-Type", "Authorization"],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     exposeHeaders: ["Content-Length"],

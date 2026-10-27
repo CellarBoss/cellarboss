@@ -10,13 +10,29 @@ import { env } from "./env";
  */
 export const MOBILE_APP_ORIGIN = "cellarboss://";
 
-export function getTrustedOrigins(cors: string | undefined): string[] {
-  const webOrigins = (cors || "http://localhost:3000")
+/** Splits the comma-separated `CORS` setting into individual web origins. */
+export function parseOrigins(cors: string | undefined): string[] {
+  return (cors ?? "")
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
+}
 
-  return [...webOrigins, MOBILE_APP_ORIGIN];
+/**
+ * Origins for the CORS middleware. Only the web frontend makes cross-origin
+ * browser requests, so the mobile app's origin is deliberately left out.
+ */
+export function getCorsOrigins(
+  cors: string | undefined,
+  nodeEnv: string,
+): string[] {
+  return parseOrigins(
+    cors || (nodeEnv === "development" ? "http://localhost:3000" : ""),
+  );
+}
+
+export function getTrustedOrigins(cors: string | undefined): string[] {
+  return [...parseOrigins(cors || "http://localhost:3000"), MOBILE_APP_ORIGIN];
 }
 
 export const auth = betterAuth({
