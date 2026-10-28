@@ -33,7 +33,7 @@
     "cheerio": "1.2.0",
     "dotenv": "18.0.9",
     "fuse.js": "7.5.0",
-    "hono": "4.13.13",
+    "hono": "4.13.14",
     "ipaddr.js": "2.5.0",
     "kysely": "0.29.7",
     "kysely-ctl": "0.22.0",
@@ -49,7 +49,7 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@types/better-sqlite3": "9.6.0",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.5",
     "@types/pg": "8.23.1",
     "@vitest/coverage-v8": "5.0.5",
     "@vitest/ui": "5.0.5",
