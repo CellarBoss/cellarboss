@@ -20,6 +20,7 @@
     "docs:screenshots:build": "pnpm docs:screenshots && pnpm docs:build"
   },
   "dependencies": {
+    "@better-auth/expo": "1.7.12",
     "@cellarboss/common": "workspace:*",
     "@cellarboss/types": "workspace:*",
     "@cellarboss/validators": "workspace:*",
@@ -27,6 +28,7 @@
     "@react-navigation/native": "^7.1.33",
     "@tanstack/react-form": "catalog:",
     "@tanstack/react-query": "catalog:",
+    "better-auth": "1.7.12",
     "date-fns": "4.4.0",
     "expo": "~55.0.32",
     "expo-application": "55.0.19",
@@ -68,8 +70,11 @@
   },
   "jest": {
     "preset": "jest-expo",
+    "transform": {
+      "^.+\\.mjs$": "babel-jest"
+    },
     "transformIgnorePatterns": [
-      "node_modules/(?!(.pnpm|((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|color|color-string|@cellarboss/.*))"
+      "node_modules/(?!(.pnpm|((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|color|color-string|@cellarboss/.*|better-auth|@better-auth/.*|@better-fetch/.*|better-call|nanostores|@nanostores/.*|defu|jose|rou3|uncrypto))"
     ],
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
@@ -79,7 +84,8 @@
       "src/__tests__/helpers/"
     ],
     "setupFiles": [
-      "<rootDir>/src/__tests__/helpers/mock-haptics.ts"
+      "<rootDir>/src/__tests__/helpers/mock-haptics.ts",
+      "<rootDir>/src/__tests__/helpers/mock-expo-linking.ts"
     ],
     "setupFilesAfterEnv": [
       "@testing-library/react-native/matchers"

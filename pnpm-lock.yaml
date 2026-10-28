@@ -344,6 +344,9 @@ importers:
 
   apps/mobile:
     dependencies:
+      '@better-auth/expo':
+        specifier: 1.7.12
+        version: 1.7.12(@better-auth/core@1.7.12(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.2)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5))(better-auth@1.7.12(mysql2@3.24.6(@types/node@26.6.5))(next@16.4.3(@babel/core@7.29.7(supports-color@8.1.1))(@playwright/test@1.64.1)(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(pg@8.23.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vitest@5.0.5)(vue@3.5.44(typescript@5.9.3)))(expo-constants@55.0.17)(expo-linking@55.0.17)(expo-secure-store@55.0.18(expo@55.0.32))
       '@cellarboss/common':
         specifier: workspace:*
         version: link:../../packages/common
@@ -365,6 +368,9 @@ importers:
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.104.5(@types/react@19.2.18)(react@19.2.0)
+      better-auth:
+        specifier: 1.7.12
+        version: 1.7.12(mysql2@3.24.6(@types/node@26.6.5))(next@16.4.3(@babel/core@7.29.7(supports-color@8.1.1))(@playwright/test@1.64.1)(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(pg@8.23.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vitest@5.0.5)(vue@3.5.44(typescript@5.9.3))
       date-fns:
         specifier: 4.4.0
         version: 4.4.0
@@ -1452,6 +1458,28 @@ packages:
       drizzle-orm: ^0.45.2 || >=1.0.0-rc.1 <2.0.0
     peerDependenciesMeta:
       drizzle-orm:
+        optional: true
+
+  '@better-auth/expo@1.7.12':
+    resolution: {integrity: sha512-2QIEoQ0wc2y3rGhc6tj8nvpx3MtPEregdfTcGQUKq0OqVdMmVxZwWORegLcEAb/j+ASoyE5VIboD9xn82p8NGQ==}
+    peerDependencies:
+      '@better-auth/core': ^1.7.12
+      better-auth: ^1.7.12
+      expo-constants: '>=17.0.0'
+      expo-linking: '>=7.0.0'
+      expo-network: '>=8.0.7'
+      expo-secure-store: '>=12.5.0'
+      expo-web-browser: '>=14.0.0'
+    peerDependenciesMeta:
+      expo-constants:
+        optional: true
+      expo-linking:
+        optional: true
+      expo-network:
+        optional: true
+      expo-secure-store:
+        optional: true
+      expo-web-browser:
         optional: true
 
   '@better-auth/kysely-adapter@1.7.12':
@@ -9819,6 +9847,18 @@ snapshots:
     dependencies:
       '@better-auth/core': 1.7.12(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.2)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5)
       '@better-auth/utils': 0.5.0
+
+  '@better-auth/expo@1.7.12(@better-auth/core@1.7.12(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.2)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5))(better-auth@1.7.12(mysql2@3.24.6(@types/node@26.6.5))(next@16.4.3(@babel/core@7.29.7(supports-color@8.1.1))(@playwright/test@1.64.1)(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(pg@8.23.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vitest@5.0.5)(vue@3.5.44(typescript@5.9.3)))(expo-constants@55.0.17)(expo-linking@55.0.17)(expo-secure-store@55.0.18(expo@55.0.32))':
+    dependencies:
+      '@better-auth/core': 1.7.12(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.2)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5)
+      '@better-fetch/fetch': 1.3.2
+      better-auth: 1.7.12(mysql2@3.24.6(@types/node@26.6.5))(next@16.4.3(@babel/core@7.29.7(supports-color@8.1.1))(@playwright/test@1.64.1)(@types/node@26.6.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(pg@8.23.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vitest@5.0.5)(vue@3.5.44(typescript@5.9.3))
+      better-call: 1.4.4(zod@4.6.7)
+      zod: 4.6.7
+    optionalDependencies:
+      expo-constants: 55.0.17(expo@55.0.32)(react-native@0.83.10(@babel/core@7.29.7(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(supports-color@8.1.1)
+      expo-linking: 55.0.17(expo@55.0.32)(react-native@0.83.10(@babel/core@7.29.7(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(react@19.2.0)(supports-color@8.1.1)
+      expo-secure-store: 55.0.18(expo@55.0.32)
 
   '@better-auth/kysely-adapter@1.7.12(@better-auth/core@1.7.12(@better-auth/utils@0.5.0)(@better-fetch/fetch@1.3.2)(better-call@1.4.4(zod@4.6.7))(jose@6.2.13)(kysely@0.29.7)(nanostores@1.5.5))(@better-auth/utils@0.5.0)(kysely@0.29.7)':
     dependencies:

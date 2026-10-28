@@ -22,6 +22,13 @@ jest.mock("@/lib/auth/secure-store", () => ({
   clearServerUrl: () => mockClearServerUrl(),
 }));
 
+// Mock auth client storage
+const mockClearAuthStorage = jest.fn();
+
+jest.mock("@/lib/auth/auth-client", () => ({
+  clearAuthStorage: () => mockClearAuthStorage(),
+}));
+
 function wrapper({ children }: { children: ReactNode }) {
   return <AuthProvider>{children}</AuthProvider>;
 }
@@ -30,6 +37,7 @@ describe("AuthContext", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockClearServerUrl.mockResolvedValue(undefined);
+    mockClearAuthStorage.mockResolvedValue(undefined);
     mockSignOut.mockResolvedValue(undefined);
   });
 
@@ -172,6 +180,7 @@ describe("AuthContext", () => {
     });
 
     expect(mockClearServerUrl).toHaveBeenCalled();
+    expect(mockClearAuthStorage).toHaveBeenCalled();
     expect(result.current.status).toBe("needs-setup");
   });
 });

@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import type { ServerType } from "@hono/node-server";
-import { registerAuthRoutes } from "./routes/auth";
+import { registerAuthOriginCheck, registerAuthRoutes } from "./routes/auth";
 import { registerWineRoutes } from "./routes/wines";
 import { registerBottleRoutes } from "./routes/bottles";
 import { registerWinemakerRoutes } from "./routes/winemakers";
@@ -120,6 +120,12 @@ export function createMockApp(state: MockState): Hono {
     return c.json({ ok: true });
   });
 
+  // Mirrors the backend's /api/version, which the mobile app uses to check
+  // that a server URL points at a CellarBoss backend
+  app.get("/api/version", (c) => {
+    return c.json({ version: "development" });
+  });
+
   app.post("/__test/reset", (c) => {
     const { session } = state;
     const fresh = createDefaultState();
@@ -133,6 +139,9 @@ export function createMockApp(state: MockState): Hono {
     trackIds(state);
     return c.json({ ok: true });
   });
+
+  // Runs ahead of every /api/auth route, including the admin ones in users
+  registerAuthOriginCheck(app);
 
   // Register all domain routes
   // Preference routes must be registered before user routes because users has

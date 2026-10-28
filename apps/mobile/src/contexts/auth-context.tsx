@@ -8,6 +8,7 @@ import {
 } from "react";
 import type { AuthUser } from "@/lib/auth/auth-service";
 import * as authService from "@/lib/auth/auth-service";
+import { clearAuthStorage } from "@/lib/auth/auth-client";
 import { getServerUrl, clearServerUrl } from "@/lib/auth/secure-store";
 
 type AuthState =
@@ -81,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const resetServer = useCallback(async () => {
-    await clearServerUrl();
+    await Promise.all([clearServerUrl(), clearAuthStorage()]);
     setState({ status: "needs-setup" });
   }, []);
 

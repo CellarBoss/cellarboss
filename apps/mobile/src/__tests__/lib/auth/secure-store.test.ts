@@ -1,7 +1,4 @@
 import {
-  getToken,
-  setToken,
-  clearToken,
   getServerUrl,
   setServerUrl,
   clearServerUrl,
@@ -33,23 +30,6 @@ beforeEach(() => {
 });
 
 describe("secure-store", () => {
-  describe("token", () => {
-    it("returns null when no token is stored", async () => {
-      expect(await getToken()).toBeNull();
-    });
-
-    it("stores and retrieves a token", async () => {
-      await setToken("my-token");
-      expect(await getToken()).toBe("my-token");
-    });
-
-    it("clears the token", async () => {
-      await setToken("my-token");
-      await clearToken();
-      expect(await getToken()).toBeNull();
-    });
-  });
-
   describe("server URL", () => {
     it("returns null when no URL is stored", async () => {
       expect(await getServerUrl()).toBeNull();
@@ -82,13 +62,11 @@ describe("secure-store", () => {
 
   describe("clearAll", () => {
     it("clears all stored values", async () => {
-      await setToken("token");
       await setServerUrl("https://example.com");
       await setSavedEmail("user@example.com");
 
       await clearAll();
 
-      expect(await getToken()).toBeNull();
       expect(await getServerUrl()).toBeNull();
       expect(await getSavedEmail()).toBeNull();
     });
