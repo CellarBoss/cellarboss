@@ -22,10 +22,13 @@ BETTER_AUTH_URL=http://localhost:3000
 DATABASE_TYPE=sqlite
 DATABASE_URL=database.sqlite
 NODE_ENV=development
+CORS=http://localhost:3000
 UPLOAD_DIR=/path/to/uploads
 MCP_ENABLED=false
 IMPORT_PROXY_URL=http://proxy.internal:3128
 ```
+
+`CORS` is a comma-separated list of web origins allowed to call the API. It defaults to `http://localhost:3000`. The same list is passed to Better Auth as its trusted origins, along with the mobile app's `cellarboss://` scheme (`MOBILE_APP_ORIGIN` in `src/utils/auth.ts`). The mobile app sends that scheme as its `Origin`, so it works without being added to `CORS`. Browsers can't send a custom-scheme origin, so trusting it doesn't weaken CSRF protection for the web frontend.
 
 `IMPORT_PROXY_URL` is optional. When set, pages fetched for "Import from URL" go through that proxy (`http://`, `https://` or `socks5://`). Without it, the standard `HTTPS_PROXY` / `HTTP_PROXY` / `NO_PROXY` variables are honoured. The backend refuses to connect to private, loopback and link-local addresses itself, including for `NO_PROXY` hosts. Through a proxy it checks the address before sending the request, but the proxy makes the connection, so a proxy you configure should also block those ranges.
 

@@ -56,6 +56,8 @@ You should replace the `BETTER_AUTH_SECRET` variable with a secure password, suc
 
 If you wish to configure a reverse proxy, note that the `CORS` environment variable will need to be set to the domain you're accessing CellarBoss at.
 
+`CORS` accepts a comma-separated list if you access the web interface at more than one address.
+
 ## Database
 
 CellarBoss supports three database engines: **SQLite**, **PostgreSQL**, and **MySQL**. Set the `DATABASE_TYPE` and `DATABASE_URL` environment variables on the backend container to configure your chosen engine.
