@@ -16,12 +16,10 @@ jest.mock("@/lib/auth/auth-service", () => ({
 // Mock secure store
 const mockGetServerUrl = jest.fn();
 const mockClearServerUrl = jest.fn();
-const mockClearLegacyToken = jest.fn();
 
 jest.mock("@/lib/auth/secure-store", () => ({
   getServerUrl: () => mockGetServerUrl(),
   clearServerUrl: () => mockClearServerUrl(),
-  clearLegacyToken: () => mockClearLegacyToken(),
 }));
 
 // Mock auth client storage
@@ -39,7 +37,6 @@ describe("AuthContext", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockClearServerUrl.mockResolvedValue(undefined);
-    mockClearLegacyToken.mockResolvedValue(undefined);
     mockClearAuthStorage.mockResolvedValue(undefined);
     mockSignOut.mockResolvedValue(undefined);
   });
@@ -185,16 +182,5 @@ describe("AuthContext", () => {
     expect(mockClearServerUrl).toHaveBeenCalled();
     expect(mockClearAuthStorage).toHaveBeenCalled();
     expect(result.current.status).toBe("needs-setup");
-  });
-
-  it("removes the bearer token left by older app versions on start", async () => {
-    mockGetServerUrl.mockResolvedValue(null);
-
-    const { result } = renderHook(() => useAuth(), { wrapper });
-
-    await waitFor(() => {
-      expect(result.current.status).toBe("needs-setup");
-    });
-    expect(mockClearLegacyToken).toHaveBeenCalled();
   });
 });

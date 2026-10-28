@@ -1,19 +1,10 @@
 import * as SecureStore from "expo-secure-store";
 
 const KEYS = {
-  // Bearer token stored by app versions before the Better Auth Expo client
-  LEGACY_TOKEN: "cellarboss_auth_token",
   SERVER_URL: "cellarboss_server_url",
   EMAIL: "cellarboss_email",
   THEME_PREFERENCE: "cellarboss_theme_preference",
 } as const;
-
-// --- Legacy auth token ---
-
-/** Remove the bearer token left behind by older app versions */
-export async function clearLegacyToken(): Promise<void> {
-  await SecureStore.deleteItemAsync(KEYS.LEGACY_TOKEN);
-}
 
 // --- Server URL ---
 
@@ -64,5 +55,5 @@ export async function setThemePreference(
 // --- Clear all ---
 
 export async function clearAll(): Promise<void> {
-  await Promise.all([clearLegacyToken(), clearServerUrl(), clearSavedEmail()]);
+  await Promise.all([clearServerUrl(), clearSavedEmail()]);
 }
