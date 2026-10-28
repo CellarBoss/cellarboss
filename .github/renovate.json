@@ -105,6 +105,12 @@
       "matchPackageNames": ["@types/react", "@types/react-dom"],
       "matchUpdateTypes": ["major", "minor"],
       "enabled": false
+    },
+    {
+      "description": "Keep CI's Node version and the Node Docker base images in step",
+      "matchManagers": ["github-actions", "dockerfile"],
+      "matchDepNames": ["node"],
+      "groupName": "Node.js"
     }
   ]
 }
