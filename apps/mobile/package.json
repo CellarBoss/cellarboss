@@ -20,7 +20,7 @@
     "docs:screenshots:build": "pnpm docs:screenshots && pnpm docs:build"
   },
   "dependencies": {
-    "@better-auth/expo": "1.7.13",
+    "@better-auth/expo": "1.7.14",
     "@cellarboss/common": "workspace:*",
     "@cellarboss/types": "workspace:*",
     "@cellarboss/validators": "workspace:*",
@@ -28,7 +28,7 @@
     "@react-navigation/native": "^7.1.33",
     "@tanstack/react-form": "catalog:",
     "@tanstack/react-query": "catalog:",
-    "better-auth": "1.7.13",
+    "better-auth": "1.7.14",
     "date-fns": "4.4.0",
     "expo": "~55.0.32",
     "expo-application": "55.0.19",
