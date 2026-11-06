@@ -11,7 +11,9 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # node-gyp, which needs Python and a C++ toolchain to compile from source.
 RUN apk add --no-cache python3 make g++
 
-RUN corepack enable && corepack prepare --activate
+# Node 25+ no longer bundles corepack, so install it before using it to
+# activate the pnpm version pinned in package.json.
+RUN npm install -g corepack@0.36.0 && corepack enable && corepack prepare --activate
 COPY apps/backend ./apps/backend
 COPY packages ./packages
 

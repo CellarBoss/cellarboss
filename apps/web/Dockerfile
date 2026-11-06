@@ -7,7 +7,9 @@ ENV CI=true
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-RUN corepack enable && corepack prepare --activate
+# Node 25+ no longer bundles corepack, so install it before using it to
+# activate the pnpm version pinned in package.json.
+RUN npm install -g corepack@0.36.0 && corepack enable && corepack prepare --activate
 COPY apps/web ./apps/web
 COPY packages ./packages
 
