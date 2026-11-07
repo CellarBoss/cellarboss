@@ -51,8 +51,8 @@
     "@types/better-sqlite3": "9.6.0",
     "@types/node": "26.6.6",
     "@types/pg": "8.23.1",
-    "@vitest/coverage-v8": "5.0.5",
-    "@vitest/ui": "5.0.5",
+    "@vitest/coverage-v8": "5.1.0",
+    "@vitest/ui": "5.1.0",
     "domhandler": "6.0.1",
     "eslint": "10.14.0",
     "globals": "17.14.0",
@@ -63,6 +63,6 @@
     "typescript": "5.9.3",
     "typescript-eslint": "8.72.1",
     "vite": "8.3.5",
-    "vitest": "5.0.5"
+    "vitest": "5.1.0"
   }
 }
