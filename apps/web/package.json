@@ -67,7 +67,7 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "6.2.1",
-    "@vitest/coverage-v8": "5.0.5",
+    "@vitest/coverage-v8": "5.1.0",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "10.14.0",
     "eslint-config-next": "16.4.5",
@@ -77,6 +77,6 @@
     "typescript": "5.9.3",
     "vite": "8.3.5",
     "vitepress": "1.6.4",
-    "vitest": "5.0.5"
+    "vitest": "5.1.0"
   }
 }
