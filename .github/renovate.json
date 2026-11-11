@@ -12,7 +12,9 @@
   "branchConcurrentLimit": 10,
   "prHourlyLimit": 4,
   "draftPR": false,
-  "dependencyDashboard": true,
+  "dependencyDashboard": {
+    "enabled": true
+  },
   "postUpdateOptions": ["pnpmDedupe"],
   "statusCheckNames": { "minimumReleaseAge": null },
   "ignorePaths": [
