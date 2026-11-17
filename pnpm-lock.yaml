@@ -251,8 +251,8 @@ importers:
         specifier: 1.7.23
         version: 1.7.23(mysql2@3.24.6(@types/node@26.6.6))(next@16.4.6(@babel/core@7.29.13(supports-color@8.1.1))(@playwright/test@1.65.1)(@types/node@26.6.6)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(pg@8.23.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vitest@5.1.0)(vue@3.5.45(typescript@5.9.3))
       better-sqlite3:
-        specifier: 13.1.1
-        version: 13.1.1
+        specifier: 13.2.0
+        version: 13.2.0
       cheerio:
         specifier: 1.2.0
         version: 1.2.0
@@ -4569,8 +4569,8 @@ packages:
     resolution: {integrity: sha512-aVNobHnJqLiUelTaHat9DZ1qM2w0C0Eym4LPI/3JxOnSokGVdsl1T1kN7TFvsEAD8G47A6VKQ0TVHqbBnYMJlQ==}
     engines: {node: '>=12.0.0'}
 
-  better-sqlite3@13.1.1:
-    resolution: {integrity: sha512-JjyLCATp+VLxZVFyWkicyzKYwpEFLCrV4MmshW97xv3JXdhw5jBDcsbEWRGm2L/96E+k7rtjON8q9nml05h3Pw==}
+  better-sqlite3@13.2.0:
+    resolution: {integrity: sha512-Z8Q/9x/uNyKxA1v4FNodyItRVRw1TeKBrmj32JhxhR0ceNcBY+wMobt/Bv7M7TzwPAXjnZRtNaEsATnUZSKWZQ==}
     engines: {node: '>=22'}
 
   big-integer@1.6.52:
@@ -13099,7 +13099,7 @@ snapshots:
     dependencies:
       open: 8.4.2
 
-  better-sqlite3@13.1.1:
+  better-sqlite3@13.2.0:
     dependencies:
       node-addon-api: 8.9.2
 
