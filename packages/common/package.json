@@ -33,7 +33,7 @@
     "@tanstack/react-query": "catalog:",
     "@types/react": "catalog:",
     "@vitest/coverage-v8": "5.1.0",
-    "eslint": "10.14.0",
+    "eslint": "10.15.0",
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "17.14.0",
     "react": "catalog:",
