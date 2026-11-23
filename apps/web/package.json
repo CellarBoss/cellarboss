@@ -54,7 +54,7 @@
     "react-day-picker": "10.0.2",
     "react-dom": "catalog:",
     "recharts": "3.11.0",
-    "tailwind-merge": "3.7.0",
+    "tailwind-merge": "3.7.1",
     "tailwind-variants": "4.0.2",
     "zod": "4.6.7"
   },
