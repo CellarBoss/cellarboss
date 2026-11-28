@@ -17,7 +17,7 @@
     "@cellarboss/types": "workspace:*",
     "@cellarboss/validators": "workspace:*",
     "@hono/node-server": "2.1.11",
-    "hono": "4.13.21"
+    "hono": "4.13.22"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
